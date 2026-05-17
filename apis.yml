@@ -1,6 +1,6 @@
 aid: corva-ai
 name: Corva AI
-x-type: company
+kind: company
 description: >-
   Corva is a Houston-based AI software company that provides a real-time
   drilling, completions, geoscience, and sustainability analytics platform
