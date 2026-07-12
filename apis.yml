@@ -86,6 +86,8 @@ apis:
       - Python SDK
       - SDK
 common:
+  - type: DomainSecurity
+    url: security/corva-ai-domain-security.yml
   - type: Website
     url: https://www.corva.ai/
   - type: Platform
@@ -118,6 +120,8 @@ common:
     url: https://www.linkedin.com/company/corva-ai
   - type: Twitter
     url: https://twitter.com/corvaai
+  - url: https://www.corva.ai/blog
+    type: Blog
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
