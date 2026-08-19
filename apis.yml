@@ -46,7 +46,7 @@ tags:
   - Sustainability
 created: '2024-07-02'
 modified: '2026-04-28'
-specificationVersion: '0.20'
+specificationVersion: '0.23'
 apis:
   - aid: corva-ai:corva-data-api
     name: Corva Data API
