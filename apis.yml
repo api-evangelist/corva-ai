@@ -38,7 +38,7 @@ accessModel:
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/corva-ai.png
 type: Index
 access: Public
-position: Provider
+position: Producing
 tags:
   - Artificial Intelligence
   - Analytics
