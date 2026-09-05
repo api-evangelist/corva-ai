@@ -1,0 +1,59 @@
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://registry.npmjs.org/@corva/create-app, https://registry.npmjs.org/@corva/fe-dev-helper-cli,
+  and https://dc-docs.corva.ai/docs/Frontend/Getting%20Started/
+description: >-
+  Corva ships no general-purpose API CLI — there is no `corva` binary for querying wells or
+  datasets from a shell. What it ships is Dev Center app tooling: a scaffolder and a frontend
+  developer helper, both distributed on npm.
+api_cli:
+  exists: false
+  detail: >-
+    No first-party command-line client for the Platform API or Data API exists in any registry or
+    in the documentation. An operator wanting shell access uses curl or the Python SDK's API
+    client. Corva's documented non-code path is instead a Power BI tutorial.
+    See https://dc-docs.corva.ai/docs/API/Guides/api-power-bi-tutorial.
+tools:
+  - name: '@corva/create-app'
+    kind: scaffolder
+    install:
+      - npx @corva/create-app
+      - npm install -g @corva/create-app
+    version: 0.123.0
+    published: '2026-08-28'
+    official: true
+    repository: https://github.com/corva-ai/create-corva-app
+    registry: https://www.npmjs.com/package/@corva/create-app
+    description: >-
+      Generates a new Corva Dev Center app from the official templates. This is the documented
+      starting point for Dev Center development.
+    app_types_scaffolded:
+      - frontend
+      - backend
+      - scheduled
+      - stream
+      - task
+    docs: https://dc-docs.corva.ai/docs/Frontend/Getting%20Started/
+    release_count: 555
+  - name: '@corva/fe-dev-helper-cli'
+    kind: developer helper
+    install: npm install -g @corva/fe-dev-helper-cli
+    version: 0.9.0
+    published: '2026-08-06'
+    official: true
+    repository: https://github.com/corva-ai/corva-fe-dev-helper-cli
+    registry: https://www.npmjs.com/package/@corva/fe-dev-helper-cli
+    description: Helper CLI for local development of Corva frontend apps.
+    release_count: 11
+    note: >-
+      Pre-1.0 and lightly released. Its npm description is a copy-paste of @corva/ui's ("Shared
+      components/utils for Corva ui projects") rather than a description of the CLI, so its
+      published surface is not documented in the registry.
+related:
+  - >-
+    Local development additionally needs hostname/Windows setup steps documented under
+    dc-docs.corva.ai/docs/Frontend/Troubleshooting/.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

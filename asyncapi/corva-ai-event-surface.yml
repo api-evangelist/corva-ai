@@ -1,0 +1,103 @@
+specification: API Commons Webhooks / Event Surface
+specificationVersion: '0.1'
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://dc-docs.corva.ai/docs/API/API%20Clients/socket-client,
+  https://dc-docs.corva.ai/docs/API/Core%20Concepts/historical-and-real-time,
+  https://dc-docs.corva.ai/docs/API/choose-the-right-api, and the publish/produce operations
+  declared in openapi/_original/corva-ai-data-api-openapi-original.json.
+provider: Corva AI
+providerId: corva-ai
+description: >-
+  Corva ships a real, first-class streaming surface — it is a real-time drilling and completions
+  platform, and "receive the next record as it arrives" is the core product motion. What it does
+  NOT ship is a machine-readable description of that surface.
+
+asyncapi_document:
+  published: false
+  probed:
+    - url: https://api.corva.ai/asyncapi.yaml
+      status: 404
+    - url: https://dc-docs.corva.ai/asyncapi.yaml
+      status: 404
+  detail: >-
+    No AsyncAPI document is published on any Corva host, and no event catalog or schema registry
+    was found. NOTHING IS FABRICATED HERE: the surface below is catalogued from Corva's own
+    documentation and from operations declared in the saved Data API contract, and is deliberately
+    NOT written as an AsyncAPI document, because Corva does not publish one. No AsyncAPI pointer is
+    emitted.
+
+webhooks:
+  published: false
+  detail: >-
+    Corva documents NO outbound HTTP webhook mechanism — no subscription registration endpoint, no
+    delivery retry policy, no signing secret, and no event-type catalogue. Event delivery is
+    in-platform (socket subscription and Dev Center stream apps), not push-to-customer-endpoint.
+    No Webhooks pointer is emitted.
+
+event_surface:
+  transport: WebSocket subscription plus in-platform app execution
+  consumer_side:
+    - name: socketClient
+      package: '@corva/ui'
+      description: >-
+        Authenticated client that subscribes a Dev Center frontend app to newly arriving records
+        for a dataset. The documented pattern pairs it with an initial Data API read: fetch history
+        over REST, then subscribe for updates.
+      docs: https://dc-docs.corva.ai/docs/API/API%20Clients/socket-client
+      availability: >-
+        Dev Center frontend apps only. It is a browser client bound to the Corva app shell, not a
+        general-purpose external subscription an outside integration can open.
+    - name: Dev Center stream apps
+      description: >-
+        Backend apps that Corva invokes per arriving record. Built with corva-sdk (Python) or
+        @corva/node-sdk (Node) and hosted by Corva.
+      docs: https://dc-docs.corva.ai/docs/Backend/Software%20Development%20Kits/Python/Stream%20App
+      availability: Requires deploying an app into Corva Dev Center.
+  producer_side:
+    - operation: 'POST /api/v1/subscriptions/{provider}/{dataset}/{asset_id}/'
+      operationId: publish_api_v1_subscriptions__provider___dataset___asset_id___post
+      description: Publish a record onto a dataset subscription for a given asset.
+      contract: openapi/corva-ai-data-api-openapi.yml
+    - operation: 'POST /api/v1/message_producer/'
+      operationId: produce_api_v1_message_producer__post
+      description: Produce a message into the platform message pipeline.
+      contract: openapi/corva-ai-data-api-openapi.yml
+    - operation: 'POST /api/v1/message_producer/{app_key}'
+      operationId: produce_api_v1_message_producer__app_key__post
+      description: Produce a message scoped to a specific app key.
+      contract: openapi/corva-ai-data-api-openapi.yml
+    - operation: 'POST /v1/message_producer/'
+      operationId: produce_v1_message_producer__post
+      description: Unprefixed alias of the produce operation.
+      contract: openapi/corva-ai-data-api-openapi.yml
+    - operation: 'POST /v1/message_producer/{app_key}'
+      operationId: produce_v1_message_producer__app_key__post
+      description: Unprefixed alias of the app-scoped produce operation.
+      contract: openapi/corva-ai-data-api-openapi.yml
+  message_schemas_declared:
+    - MessageProduce
+    - MessageProducerData
+    - ProduceTimeIn
+    - ProduceDepthIn
+    - TimeSeriesMetadata
+    - DataDocument
+  schema_note: >-
+    These ARE declared in the Data API OpenAPI contract, so the produce side of the event surface
+    is genuinely typed — ProduceTimeIn and ProduceDepthIn distinguish time-indexed from
+    depth-indexed records, which is the central modelling distinction in drilling data. The
+    consume side has no published schema.
+  related_platform_tag: >-
+    The Platform API additionally declares a MessageProducer tag, so the produce concept spans both
+    APIs.
+
+gap_summary: >-
+  The asymmetry is the finding. Corva's PRODUCE path is declared in an OpenAPI contract with named
+  request schemas; its CONSUME path — the one that actually carries the real-time value — is
+  reachable only through a Corva-hosted app or the @corva/ui browser client, and is described
+  in prose alone. An external system cannot subscribe to Corva events without deploying an app
+  inside Corva, and no AsyncAPI or webhook catalogue exists to describe what it would receive.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

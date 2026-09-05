@@ -1,0 +1,36 @@
+generated: '2026-09-05'
+method: generated
+provider: Corva AI
+providerId: corva-ai
+source: >-
+  Authored by API Evangelist from Corva's published documentation on dc-docs.corva.ai and from
+  operations verified present in openapi/_original/. Corva publishes no skills/, AGENTS.md or
+  llms.txt of its own (probed 2026-09-05), so these are generated, not harvested.
+description: >-
+  Packaged Agent Skills for the Corva API surface. Each is grounded in operations that were checked
+  against the saved contracts — the Data API by operationId, the Platform API by METHOD+PATH,
+  because that contract declares operationIds on only 4 of its 771 operations.
+skills:
+  - name: corva-find-well-and-read-data
+    file: corva-ai-find-well-and-read-data.md
+    description: >-
+      The marquee flow: resolve a well to its asset_id on the Platform API, then read that asset's
+      dataset records from the Data API. Covers both auth schemes, the two-host split, the
+      attributes.asset_id vs id depth trap, and Corva's documented error table.
+    apis: [Corva Platform API, Corva Data API]
+  - name: corva-export-time-series
+    file: corva-ai-export-time-series.md
+    description: >-
+      Page a large export with a timestamp cursor rather than an unbounded skip, including the
+      shared-timestamp collision hazard Corva warns about and checkpointing against an
+      unpredictable 429.
+    apis: [Corva Data API]
+  - name: corva-write-and-delete-safely
+    file: corva-ai-write-and-delete-safely.md
+    description: >-
+      Write and delete on an API with no idempotency mechanism and no undo. Covers the ambiguous
+      POST retry, the 1,000-record batch bound, and using /count/ to rehearse a bulk delete.
+    apis: [Corva Data API]
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

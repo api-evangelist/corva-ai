@@ -1,0 +1,71 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enrichment overlay — Corva Platform API
+  version: 1.0.0
+extends: ../openapi/corva-ai-platform-api-openapi.yml
+x-generated: '2026-09-05'
+x-method: generated
+x-source: >-
+  Enhancements API Evangelist derived from Corva's own published documentation
+  (https://dc-docs.corva.ai/docs/API/*) and live probes on 2026-09-05. The original contract at
+  https://api.corva.ai/documentation/swagger.json is never mutated; this overlay carries every
+  addition separately so the provider's document stays verbatim.
+x-note: >-
+  The base document is Swagger 2.0, which has no `servers` array. It also omits `host`, `basePath`
+  and `schemes` entirely, so the contract as published does not name its own base URL. The base is
+  established from Corva's documentation ("Platform API — Base URL: https://api.corva.ai") and
+  confirmed live: GET https://api.corva.ai/ returns
+  {"status":"OK","environment":"production","version":"v2.222.1"}. The actions below add it using
+  the Swagger 2.0 fields rather than inventing an OpenAPI 3 servers block.
+actions:
+  - target: $
+    description: >-
+      Declare the base URL the published contract omits, using Swagger 2.0 host/basePath/schemes.
+    update:
+      host: api.corva.ai
+      schemes:
+        - https
+  - target: $.info
+    description: Record documentation, status and provenance links alongside the provider's own info block.
+    update:
+      x-documentation: https://dc-docs.corva.ai/docs/API/overview
+      x-api-reference: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
+      x-authentication-docs: https://dc-docs.corva.ai/docs/API/authentication
+      x-status-page: https://status.corva.ai/
+      x-status-api: https://status.corva.ai/api/v2/summary.json
+      x-sibling-api:
+        name: Corva Data API
+        base_url: https://data.corva.ai
+        contract: https://data.corva.ai/api/v1/openapi.json
+        relationship: >-
+          Resolve an asset here, then query its records there. attributes.asset_id from
+          /v2/wells (or the top-level id from /v2/assets) is the join key.
+  - target: $.info
+    description: >-
+      Record measured contract-quality findings so a consumer sees them without re-deriving them.
+    update:
+      x-contract-findings:
+        operation_id_coverage: >-
+          4 of 771 operations declare an operationId (pads, fracFleets, getJwks,
+          getRigTemplatesAggregatedValues). Clients and agents must bind by METHOD+PATH.
+        description_coverage: 771 of 771 operations carry a summary; 51 carry a description.
+        error_schemas: >-
+          401/403/404 are declared on ~750 operations each with no response schema attached.
+        idempotency: >-
+          None. 451 mutating operations (222 POST, 110 DELETE, 107 PATCH, 12 PUT) with no
+          Idempotency-Key or replay mechanism.
+        rate_limit_headers: None documented; 429 is not declared on any operation.
+  - target: $.securityDefinitions.api_key
+    description: >-
+      Document the exact header format Corva requires. The published definition names the header
+      but not its value format, and the "API " prefix plus the following space are mandatory.
+    update:
+      description: >-
+        Corva API key. The header value MUST be the literal string "API ", including the trailing
+        space, followed by the key — e.g. "Authorization: API YOUR_API_KEY". Key creation is not
+        enabled by default for most customer users and is requested through a Corva representative.
+        Permission levels are read, read/write and admin, additionally scoped by company and owner.
+      x-docs: https://dc-docs.corva.ai/docs/API/authentication
+      x-alternative-scheme: >-
+        A Bearer JWT from POST https://api.corva.ai/v1/user_token is accepted on the same
+        Authorization header; it is not declared in the published contract.

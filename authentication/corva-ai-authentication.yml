@@ -1,0 +1,27 @@
+generated: '2026-09-05'
+method: derived
+source: openapi/corva-ai-data-api-openapi.yml, openapi/corva-ai-platform-api-openapi.yml
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - header
+schemes:
+- name: HTTPBearer
+  type: http
+  scheme: bearer
+  sources:
+  - openapi/corva-ai-data-api-openapi.yml
+- name: APIKeyHeader
+  type: apiKey
+  in: header
+  parameter: Authorization
+  sources:
+  - openapi/corva-ai-data-api-openapi.yml
+- name: api_key
+  type: apiKey
+  in: header
+  parameter: authorization
+  sources:
+  - openapi/corva-ai-platform-api-openapi.yml

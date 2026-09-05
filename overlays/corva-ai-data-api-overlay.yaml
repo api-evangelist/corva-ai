@@ -1,0 +1,78 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enrichment overlay — Corva Data API
+  version: 1.0.0
+extends: ../openapi/corva-ai-data-api-openapi.yml
+x-generated: '2026-09-05'
+x-method: generated
+x-source: >-
+  Enhancements API Evangelist derived from Corva's published documentation
+  (https://dc-docs.corva.ai/docs/API/Core%20Concepts/*) and live probes on 2026-09-05. The original
+  contract at https://data.corva.ai/api/v1/openapi.json is never mutated.
+actions:
+  - target: $
+    description: >-
+      Add the servers block the published contract omits. FastAPI emitted no servers array; the
+      base is documented by Corva as "Data API — Base URL: https://data.corva.ai" and the contract
+      itself is served from that host.
+    update:
+      servers:
+        - url: https://data.corva.ai
+          description: Corva Data API production
+  - target: $.info
+    description: >-
+      Replace the untouched FastAPI default version with the real provenance, and link the
+      documentation and sibling API.
+    update:
+      x-version-note: >-
+        info.version is "0.1.0" — the FastAPI default, never set by Corva. It does not track the
+        deployed service and must not be used for change detection.
+      x-documentation: https://dc-docs.corva.ai/docs/API/API%20Reference/data-api
+      x-query-controls-docs: https://dc-docs.corva.ai/docs/API/Core%20Concepts/query-controls
+      x-limits-docs: https://dc-docs.corva.ai/docs/API/Core%20Concepts/limits-and-performance
+      x-sibling-api:
+        name: Corva Platform API
+        base_url: https://api.corva.ai
+        contract: https://api.corva.ai/documentation/swagger.json
+        relationship: Resolve asset_id there first; it is the required filter for most reads here.
+  - target: $.info
+    description: Record the runtime semantics an agent needs before it writes.
+    update:
+      x-agent-warnings:
+        idempotency: >-
+          NONE. No Idempotency-Key header and no replay window across 26 mutating operations. A
+          timed-out POST cannot be safely retried; a retry may duplicate up to 1,000 records.
+        destructive_operations: >-
+          DELETE /api/v1/data/{provider}/{dataset}/ deletes MANY records matching a query in one
+          call. No restore, trash or undo operation exists anywhere in the API.
+        dry_run: >-
+          No dry-run parameter. GET /api/v1/data/{provider}/{dataset}/count/ is the closest
+          rehearsal — count what a query matches before issuing it as a delete.
+        rate_limits: >-
+          Not published. 429 is documented in prose but declared on no operation, and no
+          RateLimit-* or Retry-After header is documented.
+  - target: $.paths['/api/v1/data/{provider}/{dataset}/'].get
+    description: >-
+      Document the pagination strategy Corva recommends in prose but does not express in the
+      contract.
+    update:
+      x-pagination:
+        style: offset with recommended timestamp cursor
+        limit: Required, 1-10000.
+        skip: Optional, defaults to 0, no documented ceiling.
+        recommended: >-
+          For large time-series exports, sort by timestamp ascending, take up to 10,000 records,
+          record the last timestamp returned, then add timestamp {"$gt": last_timestamp} to the
+          next query and stop on an empty array. Add a second stable sort field where timestamps
+          can collide.
+        response_header: 'Total — present when include_count is true.'
+        docs: https://dc-docs.corva.ai/docs/API/Core%20Concepts/query-controls
+  - target: $.paths['/api/legacy/v1/data']
+    description: >-
+      Mark the legacy family as deprecated. Corva names these paths "legacy" and tags them
+      legacy-data but does not set the machine-readable deprecated flag on any of them, so no
+      client or agent can detect it from the contract.
+    update:
+      x-deprecation-note: >-
+        Path and tag both say legacy; the contract sets deprecated:false. No sunset date is
+        published. Treat as deprecated and prefer /api/v1/data/.

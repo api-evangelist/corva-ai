@@ -2,16 +2,17 @@ aid: corva-ai
 name: Corva AI
 kind: company
 description: >-
-  Corva is a Houston-based AI software company that provides a real-time
-  drilling, completions, geoscience, and sustainability analytics platform
-  for the oil and gas industry. The Corva platform ingests sensor and rig
-  data and exposes it through a RESTful Data API used by E&P operators and
-  service companies. Corva Dev Center is an SDK and app hosting environment
-  that lets customers build frontend, backend, scheduled, and stream
-  applications on top of Corva data assets, with Python and JavaScript SDKs
-  and UI component libraries.
-url: >-
-  https://raw.githubusercontent.com/api-evangelist/corva-ai/refs/heads/main/apis.yml
+  Corva is a Houston-based AI software company providing a real-time drilling, completions, geoscience
+  and sustainability analytics platform for upstream oil and gas. Corva ingests rig sensor and operational
+  data and exposes it through TWO REST APIs on two hosts: the Platform API at api.corva.ai (wells, rigs,
+  pads, programs, frac fleets, users, dashboards, alerts and apps; 513 paths and 771 operations described
+  by a published Swagger 2.0 contract) and the Data API at data.corva.ai (time, depth, reference and timeseries
+  dataset records, aggregations and permitted customer writes; described by a published OpenAPI 3.1 contract).
+  Corva Dev Center is an SDK and app-hosting environment where customers build frontend, backend, scheduled,
+  stream and task applications on Corva data, with a Python SDK, npm component libraries and a public
+  app marketplace. Access is enterprise-only: there is no public pricing, no free tier and no self-serve
+  signup, and API key creation is not enabled by default for most customer users.
+url: https://raw.githubusercontent.com/api-evangelist/corva-ai/refs/heads/main/apis.yml
 deliveryModel:
   model: unknown
   open_source: false
@@ -40,127 +41,233 @@ type: Index
 access: Public
 position: Producing
 tags:
-  - Artificial Intelligence
-  - Analytics
-  - Completions
-  - Custom Apps
-  - Data API
-  - Dev Center
-  - Drilling
-  - Energy
-  - Geoscience
-  - Oil and Gas
-  - Predictive Drilling
-  - Python SDK
-  - Real-Time
-  - Sensor Data
-  - Sustainability
+- Analytics
+- Artificial Intelligence
+- Completions
+- Custom Apps
+- Data API
+- Dev Center
+- Dev Center Apps
+- Drilling
+- Energy
+- Geoscience
+- Oil and Gas
+- Platform API
+- Predictive Drilling
+- Python SDK
+- Real-Time
+- Real-Time Analytics
+- Sensor Data
+- Sustainability
+- Time Series
+- WITS
+- Well Data
 tags_raw:
-  - AI
-  - Analytics
-  - Completions
-  - Custom Apps
-  - Data API
-  - Dev Center
-  - Drilling
-  - Energy
-  - Geoscience
-  - Oil and Gas
-  - Predictive Drilling
-  - Python SDK
-  - Real-time
-  - Sensor Data
-  - Sustainability
+- AI
+- Analytics
+- Completions
+- Custom Apps
+- Data API
+- Dev Center
+- Drilling
+- Energy
+- Geoscience
+- Oil and Gas
+- Predictive Drilling
+- Python SDK
+- Real-time
+- Sensor Data
+- Sustainability
 created: '2024-07-02'
-modified: '2026-04-28'
+modified: '2026-09-05'
 specificationVersion: '0.23'
 apis:
-  - aid: corva-ai:corva-data-api
-    name: Corva Data API
-    description: >-
-      The Corva Data API is a RESTful interface providing flexibility and
-      extensibility into the Corva drilling and completions data platform.
-      Use cases include UI visualizations, data entry, replication and sync
-      tasks, real-time stream processing, and complex machine learning
-      workloads. The API is documented via Swagger UI and accessed with an
-      API key.
-    humanURL: https://api.corva.ai/documentation/index.html
-    baseURL: https://api.corva.ai
-    properties:
-      - type: Documentation
-        url: https://api.corva.ai/documentation/index.html
-      - type: DevCenterDocs
-        url: https://dc-docs.corva.ai/
-      - type: Swagger
-        url: https://api.corva.ai/documentation/index.html
-    tags:
-      - Data API
-      - Drilling
-      - REST
-      - Swagger
-  - aid: corva-ai:corva-dev-center-api
-    name: Corva Dev Center
-    description: >-
-      Corva Dev Center is an SDK and app hosting environment for building
-      custom applications on top of Corva data assets. It provides Python and
-      JavaScript SDKs, UI component libraries, app templates (frontend,
-      backend, scheduled, stream, and task apps), cloud deployment tools, and
-      a public app marketplace.
-    humanURL: https://dc-docs.corva.ai/
-    properties:
-      - type: Documentation
-        url: https://dc-docs.corva.ai/
-      - type: GettingStarted
-        url: https://dc-docs.corva.ai/docs/Frontend/Getting%20Started/
-      - type: PythonSDK
-        url: https://dc-docs.corva.ai/docs/Backend/Software%20Development%20Kits/Python/
-      - type: GitHub
-        url: https://github.com/corva-ai
-      - type: Community
-        url: https://community.corva.ai/
-    tags:
-      - Custom Apps
-      - Dev Center
-      - JavaScript SDK
-      - Python SDK
-      - SDK
-common:
-  - type: DomainSecurity
-    url: security/corva-ai-domain-security.yml
-  - type: Website
-    url: https://www.corva.ai/
-  - type: Platform
-    url: https://www.corva.ai/platform
-  - type: DevCenter
-    url: https://www.corva.ai/platform/dev-center
-  - type: DevCenterDocs
-    url: https://dc-docs.corva.ai/
+- aid: corva-ai:corva-platform-api
+  name: Corva Platform API
+  description: >-
+    The Corva Platform API serves platform entities and their relationships — wells, rigs, drillout units,
+    programs, pads and frac fleets, together with users, dashboards, alerts, apps, tasks, files and API
+    keys. It is where an integration resolves the asset_id that every Data API query filters on: read
+    attributes.asset_id from GET /v2/wells, or the top-level id from GET /v2/assets. It publishes a Swagger
+    2.0 contract (version v2.222.1) with 513 paths, 771 operations and 574 definitions, rendered by Swagger
+    UI.
+  humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
+  baseURL: https://api.corva.ai
+  properties:
+  - type: OpenAPI
+    url: openapi/corva-ai-platform-api-openapi.yml
   - type: Documentation
+    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
+  - type: APIReference
+    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
+  - type: Swagger
     url: https://api.corva.ai/documentation/index.html
+  - type: Overlay
+    url: overlays/corva-ai-platform-api-overlay.yaml
+  - type: GettingStarted
+    url: https://dc-docs.corva.ai/docs/API/quickstart
+  tags:
+  - Platform API
+  - Assets
+  - Wells
+  - Rigs
+  - Swagger
+  - Drilling
+- aid: corva-ai:corva-data-api
+  name: Corva Data API
+  description: >-
+    The Corva Data API serves the records stored in Corva datasets — one-second operational data, engineering
+    calculations and metrics, time- and depth-based datasets, reference datasets and aggregation queries
+    — plus writes to permitted customer datasets in batches of up to 1,000 records. Reads filter by asset_id
+    or company_id with a MongoDB-style query object, a required limit of 1 to 10,000, sort, skip and field
+    projection. It publishes an OpenAPI 3.1.0 contract with 27 paths and 40 operations, served with Swagger
+    UI at /docs and ReDoc at /redoc.
+  humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/data-api
+  baseURL: https://data.corva.ai
+  properties:
+  - type: OpenAPI
+    url: openapi/corva-ai-data-api-openapi.yml
+  - type: Documentation
+    url: https://dc-docs.corva.ai/docs/API/API%20Reference/data-api
+  - type: APIReference
+    url: https://dc-docs.corva.ai/docs/API/API%20Reference/data-api
+  - type: Swagger
+    url: https://data.corva.ai/docs
+  - type: Overlay
+    url: overlays/corva-ai-data-api-overlay.yaml
+  - type: GettingStarted
+    url: https://dc-docs.corva.ai/docs/API/quickstart
+  tags:
+  - Data API
+  - Datasets
+  - Time Series
+  - Real-Time
+  - OpenAPI
+  - Drilling
+- aid: corva-ai:corva-dev-center-api
+  name: Corva Dev Center
+  description: >-
+    Corva Dev Center is an SDK and app hosting environment for building custom applications on top of
+    Corva data assets. It provides Python and JavaScript SDKs, UI component libraries, app templates (frontend,
+    backend, scheduled, stream, and task apps), cloud deployment tools, and a public app marketplace.
+  humanURL: https://dc-docs.corva.ai/docs/intro
+  properties:
+  - type: Documentation
+    url: https://dc-docs.corva.ai/docs/intro
+  - type: DeveloperPortal
+    url: https://dc-docs.corva.ai/docs/intro
+  - type: GettingStarted
+    url: https://dc-docs.corva.ai/docs/Frontend/Getting%20Started/
+  - type: Python SDK
+    url: https://dc-docs.corva.ai/docs/Backend/Software%20Development%20Kits/Intro%20SDK
+  - type: GitHub
+    url: https://github.com/corva-ai
   - type: Community
     url: https://community.corva.ai/
-  - type: GitHubOrganization
-    url: https://github.com/corva-ai
-  - type: Drilling
-    url: https://www.corva.ai/energy/drilling
-  - type: Completions
-    url: https://www.corva.ai/energy/completions
-  - type: Geoscience
-    url: https://www.corva.ai/energy/geoscience
-  - type: Sustainability
-    url: https://www.corva.ai/energy/sustainability
-  - type: News
-    url: https://www.corva.ai/news
-  - type: Careers
-    url: https://www.corva.ai/careers
-  - type: Contact
-    url: https://www.corva.ai/contact
-  - type: LinkedIn
-    url: https://www.linkedin.com/company/corva-ai
-  - type: Twitter
-    url: https://twitter.com/corvaai
-  - url: https://www.corva.ai/blog
-    type: Blog
+  tags:
+  - Custom Apps
+  - Dev Center
+  - JavaScript SDK
+  - Python SDK
+  - SDK
+common:
+- type: Authentication
+  url: authentication/corva-ai-authentication.yml
+- type: DomainSecurity
+  url: security/corva-ai-domain-security.yml
+- type: Website
+  url: https://www.corva.ai/
+- type: Platform
+  url: https://www.corva.ai/platform
+- type: DevCenter
+  url: https://www.corva.ai/platform/dev-center
+- type: DevCenterDocs
+  url: https://dc-docs.corva.ai/docs/intro
+- type: Community
+  url: https://community.corva.ai/
+- type: GitHubOrganization
+  url: https://github.com/corva-ai
+- type: Drilling
+  url: https://www.corva.ai/energy/drilling
+- type: Completions
+  url: https://www.corva.ai/energy/completions
+- type: Geoscience
+  url: https://www.corva.ai/energy/geoscience
+- type: Sustainability
+  url: https://www.corva.ai/energy/sustainability
+- type: Careers
+  url: https://www.corva.ai/careers
+- type: Contact
+  url: https://www.corva.ai/contact
+- type: Twitter
+  url: https://twitter.com/corvaai
+- url: https://www.corva.ai/blog
+  type: Blog
+- type: LinkedIn
+  url: https://www.linkedin.com/company/corva/
+- type: Newsroom
+  url: https://www.corva.ai/company/insights
+- type: Documentation
+  url: https://dc-docs.corva.ai/docs/intro
+- type: DeveloperPortal
+  url: https://dc-docs.corva.ai/docs/intro
+- type: APIReference
+  url: https://dc-docs.corva.ai/docs/API/overview
+- type: GettingStarted
+  url: https://dc-docs.corva.ai/docs/API/quickstart
+- type: Support
+  url: https://www.corva.ai/contact
+- type: HelpCenter
+  url: https://community.corva.ai/
+- type: StatusPage
+  url: https://status.corva.ai/
+- type: TermsOfService
+  url: https://www.corva.ai/terms-and-conditions/
+- type: PrivacyPolicy
+  url: https://www.corva.ai/privacy-policy
+- type: TermsOfUse
+  url: https://www.corva.ai/acceptable-use-policy
+- type: About
+  url: https://www.corva.ai/company/about-corva-real-time-energy-data-solutions
+- type: Packages
+  url: packages/corva-ai-packages.yml
+- type: SDKs
+  url: packages/corva-ai-packages.yml
+- type: CLI
+  url: cli/corva-ai-cli.yml
+- type: Components
+  url: components/corva-ai-components.yml
+- type: Conventions
+  url: conventions/corva-ai-conventions.yml
+- type: Conformance
+  url: conformance/corva-ai-conformance.yml
+- type: Compliance
+  url: conformance/corva-ai-conformance.yml
+- type: ErrorCatalog
+  url: errors/corva-ai-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/corva-ai-lifecycle.yml
+- type: DataModel
+  url: data-model/corva-ai-data-model.yml
+- type: Plans
+  url: plans/corva-ai-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/corva-ai-rate-limits.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: LLMsTxt
+  url: llms/corva-ai-llms.txt
+- type: X-MCPServerCandidate
+  url: mcp/corva-ai-mcp.yml
+- type: X-EventSurface
+  url: asyncapi/corva-ai-event-surface.yml
+- type: X-WellKnownProbe
+  url: well-known/corva-ai-well-known.yml
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com
+x-enrichment:
+  date: '2026-09-05'
+  status: enriched
+  artifacts_added: 23
+  pass: local-v3

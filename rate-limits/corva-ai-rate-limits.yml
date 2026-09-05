@@ -3,105 +3,111 @@ specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
 provider: Corva AI
 providerId: corva-ai
-created: '2026-05-04'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-04'
-tags:
-  - AI
-  - Analytics
-  - Completions
-  - Custom Apps
-  - Data API
-  - Dev Center
-  - Drilling
-  - Energy
-  - Geoscience
-  - Oil and Gas
-  - Predictive Drilling
-  - Python SDK
-  - Real-time
-  - Sensor Data
-  - Sustainability
-  - Rate Limiting
-  - Quotas
-  - Throttling
-description: Machine-readable rate limit definitions for the Corva AI API surface. Captures per-tier quotas,
-  burst behavior, response signaling, and recovery semantics. Defaults are scaffold values to be replaced
-  with published provider limits.
+generated: '2026-09-05'
+modified: '2026-09-05'
+method: searched
+source: https://dc-docs.corva.ai/docs/API/Core%20Concepts/limits-and-performance
+supersedes: >-
+  REPLACES the scaffold written by the 2026-05-04 bulk sweep (method: generated), which invented a
+  free/professional/enterprise tier ladder with 10/100/1000 requests-per-minute and 1k/100k/uncapped
+  monthly quotas, and asserted X-RateLimit-* and RateLimit-Policy response headers. NONE of those
+  values were published by Corva; the tiers do not exist and the headers are not returned. They are
+  removed rather than corrected. See roadmap#35.
+
+description: >-
+  What Corva actually publishes about limits. There is no published throttling policy; there ARE
+  three published per-request bounds, and they are enforced by request validation.
+
+throttling:
+  rate_limits_published: false
+  detail: >-
+    Corva publishes NO rate limit — no requests-per-second/minute/hour figure, no quota, no burst
+    allowance, and no per-key or per-account tier. The documentation names 429 Too Many Requests in
+    its error table with the action "Back off before retrying", which confirms throttling EXISTS,
+    but no number, window or scope for it is stated anywhere in the docs or either contract.
+  status_on_exhaustion: 429
+  status_source: https://dc-docs.corva.ai/docs/API/Core%20Concepts/limits-and-performance
+  declared_in_contract: false
+  declared_in_contract_note: >-
+    Neither the Platform API (771 operations) nor the Data API (40 operations) declares a 429
+    response on a single operation, even though the docs tell clients to handle one.
+
 headers:
-  limit: X-RateLimit-Limit
-  remaining: X-RateLimit-Remaining
-  reset: X-RateLimit-Reset
-  retryAfter: Retry-After
-  policy: RateLimit-Policy
-responseCodes:
-  throttled: 429
-  quotaExceeded: 429
-  serviceUnavailable: 503
+  published: false
+  limit: null
+  remaining: null
+  reset: null
+  retryAfter: null
+  policy: null
+  detail: >-
+    NO rate-limit response headers are documented. No RateLimit-*, no X-RateLimit-*, and no
+    Retry-After. This is the runtime-signal gap that matters most for an agent: it receives a stop
+    signal with no budget, no reset time and no instruction on how long to wait. Corva's guidance
+    is client-side only — exponential backoff with jitter.
+  verification_note: >-
+    Not probed against a live 429. Both APIs reject unauthenticated requests, so observing
+    rate-limit headers would require a customer credential this pass does not hold. Recorded as
+    "not documented" (which is verifiable) rather than "not returned" (which is not).
+
+limit_count: 3
 limits:
-  - tier: free
-    name: Free Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 10
-    burst: 20
-    timeFrame: minute
+  - name: Data API read limit
+    scope: per-request
+    metric: records_returned
+    limit: 10000
+    minimum: 1
+    required: true
+    window: none
     applies:
-      - Corva Data API
-      - Corva Dev Center
-  - tier: free
-    name: Free Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
+      - 'GET /api/v1/data/{provider}/{dataset}/'
+    detail: >-
+      `limit` is a REQUIRED parameter, not an optional cap, and must fall between 1 and 10,000. A
+      value outside the range returns 422.
+    source: https://dc-docs.corva.ai/docs/API/Core%20Concepts/limits-and-performance
+  - name: Data API insert batch size
+    scope: per-request
+    metric: records_written
     limit: 1000
-    timeFrame: month
+    minimum: 1
+    window: none
     applies:
-      - Corva Data API
-      - Corva Dev Center
-  - tier: professional
-    name: Professional Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 100
-    burst: 200
-    timeFrame: minute
-    applies:
-      - Corva Data API
-      - Corva Dev Center
-  - tier: professional
-    name: Professional Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 100000
-    timeFrame: month
-    applies:
-      - Corva Data API
-      - Corva Dev Center
-  - tier: enterprise
-    name: Enterprise Negotiated Limit
-    scope: contract
-    metric: requests_per_minute
-    limit: 1000
-    burst: 5000
-    timeFrame: minute
-    applies:
-      - Corva Data API
-      - Corva Dev Center
+      - 'POST /api/v1/data/{provider}/{dataset}/'
+    detail: 1 to 1,000 records per insert request.
+    source: https://dc-docs.corva.ai/docs/API/Core%20Concepts/limits-and-performance
+  - name: Data API read skip
+    scope: per-request
+    metric: records_skipped
+    limit: null
+    default: 0
+    window: none
+    detail: >-
+      Optional, defaults to 0, with no documented ceiling. Corva advises against unbounded skip and
+      recommends timestamp-cursor paging for large exports instead.
+    source: https://dc-docs.corva.ai/docs/API/Core%20Concepts/query-controls
+
+timeout:
+  value_published: false
+  detail: >-
+    A platform request timeout exists — the docs say to "keep individual requests comfortably below
+    the platform timeout by paging results" — but the actual duration is never stated. A client
+    cannot set a matching client-side timeout from published information.
+  source: https://dc-docs.corva.ai/docs/API/Core%20Concepts/limits-and-performance
+
 policies:
-  - name: Backoff Strategy
-    description: Clients should implement exponential backoff with jitter, honoring the Retry-After header
-      when present.
-  - name: Burst Handling
-    description: Short bursts above the steady-state limit are tolerated up to the documented burst ceiling
-      before throttling engages.
-  - name: Quota Reset
-    description: Monthly quotas reset at the start of each calendar month in UTC. Per-minute and per-second
-      windows reset on a sliding-window basis.
-  - name: Fair Use
-    description: Even on uncapped enterprise tiers, sustained usage that materially impacts shared infrastructure
-      may be subject to fair-use throttling.
+  - name: Backoff
+    published: true
+    description: >-
+      Retry transient failures with exponential backoff and jitter. Do not retry authentication,
+      authorization or validation errors without changing the request. Retry 5xx a bounded number
+      of times.
+    source: https://dc-docs.corva.ai/docs/API/Core%20Concepts/limits-and-performance
+  - name: Query efficiency
+    published: true
+    description: >-
+      Filter on an indexed field (asset_id, company_id, time), select only needed fields, sort on
+      indexed fields, request a small limit while developing, page large exports and checkpoint
+      progress. Corva frames these as the way to stay inside the limits rather than as a quota.
+    source: https://dc-docs.corva.ai/docs/API/Core%20Concepts/limits-and-performance
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com

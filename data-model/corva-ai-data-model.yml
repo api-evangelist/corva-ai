@@ -1,0 +1,234 @@
+generated: '2026-09-05'
+method: derived
+source: >-
+  Derived from the schema definitions and id-reference fields in
+  openapi/_original/corva-ai-platform-api-swagger-original.json (574 definitions) and
+  openapi/_original/corva-ai-data-api-openapi-original.json (35 component schemas), cross-checked
+  against https://dc-docs.corva.ai/docs/API/Core%20Concepts/assets-and-datasets and
+  https://dc-docs.corva.ai/docs/API/overview.
+description: >-
+  The Corva domain graph. Two ids carry the whole model: `company_id` is the tenancy boundary and
+  `asset_id` is the join key between the Platform API (what a thing IS) and the Data API (what
+  happened to it). Corva's documented integration flow is exactly a traversal of this graph:
+  resolve an asset, then read its datasets.
+
+core_keys:
+  - field: company_id
+    role: tenancy
+    detail: >-
+      The most widely referenced id in the Platform contract (10 definitions) and a first-class
+      field on every Data API document and dataset. Scopes permissions, dataset visibility and
+      billing.
+  - field: asset_id
+    role: join key
+    detail: >-
+      The pivot of the entire API surface. Referenced by 9 Platform definitions and present on
+      every DataDocument. Corva's docs make the traversal explicit: read `attributes.asset_id`
+      from a /v2/wells response, or the top-level `id` from a /v2/assets response, then pass it as
+      the filter on a Data API dataset query.
+    caution: >-
+      The two Platform endpoints return the asset id at DIFFERENT depths — nested under
+      `attributes` for /v2/wells, top-level `id` for /v2/assets. This is a documented and easy
+      client bug.
+
+entities:
+  - name: Asset
+    api: Corva Platform API
+    schema: Asset
+    path: /v2/assets
+    description: >-
+      The polymorphic supertype. An asset is a well, rig, pad, program, frac fleet or drillout
+      unit. Supports parent/child hierarchy, exact API-number lookup and autocomplete.
+    operations:
+      - 'GET /v2/assets'
+      - 'GET /v2/assets/{id}'
+      - 'GET /v2/assets/{id}/ancestor_ids'
+      - 'GET /v2/assets/autocomplete'
+      - 'POST /v2/assets/resolve'
+  - name: Well
+    api: Corva Platform API
+    schema: Well
+    path: /v2/wells
+    description: The primary operational asset; the usual starting point for an integration.
+    operations: ['GET /v2/wells', 'POST /v2/wells', 'GET /v2/wells/{id}', 'PATCH /v2/wells/{id}', 'DELETE /v2/wells/{id}']
+  - name: Rig
+    api: Corva Platform API
+    schema: Rig
+    description: Drilling rig, with an associated RigTemplate describing its configuration.
+  - name: Pad
+    api: Corva Platform API
+    schema: Pad
+    path: /v2/pads
+    description: Surface location grouping one or more wells. One of only four operations in the whole Platform contract that carries an operationId (`pads`).
+  - name: Program
+    api: Corva Platform API
+    schema: Program
+    description: A drilling or completions program grouping assets and plans.
+  - name: FracFleet
+    api: Corva Platform API
+    path: /v2/frac_fleets
+    description: Completions fleet asset. Carries the operationId `fracFleets`.
+  - name: Company
+    api: Corva Platform API
+    description: >-
+      Tenancy root. Owns users, datasets, security policy (CompanySecurityPolicy — which controls
+      JWT lifetime), domains and alert RBAC.
+  - name: User
+    api: Corva Platform API
+    schema: User
+    description: Platform user; dashboards, alerts and API keys hang off a user.
+  - name: Dataset
+    api: both
+    schema: DatasetSerializer
+    description: >-
+      A named collection of records addressed as `provider#name` — the contract's own example is
+      provider "corva", name "corva#wits", description "Save WITS data". Carries a schema object, a
+      data_type, settings, statistics, indexes and a permission_workflow whose defaults are
+      {read: request, write: request, delete: request}.
+    data_types: [time, depth, reference, timeseries]
+    operations:
+      - 'GET /api/v1/dataset/'
+      - 'GET /api/v1/dataset/company/'
+      - 'GET /api/v1/dataset/{provider}/{name}/'
+      - 'POST /api/v1/dataset/{provider}/{name}/'
+      - 'PATCH /api/v1/dataset/{provider}/{name}/'
+      - 'DELETE /api/v1/dataset/{provider}/{name}/'
+  - name: DataDocument
+    api: Corva Data API
+    schema: DataDocument
+    description: >-
+      The record itself. Fields: _id (a MongoDB ObjectId — the storage engine is visible through
+      the contract), company_id, asset_id, version, provider, collection, timestamp, and a
+      free-form `data` object with additionalProperties true.
+    modelling_note: >-
+      The payload is UNTYPED. `data` is an open object, so the contract describes the envelope but
+      not the content of any dataset. What is actually inside corva#wits is discoverable only by
+      calling GET /api/v1/dataset/{provider}/{name}/ for that dataset's `schema` with a credential.
+      This is the single biggest limit on what an unauthenticated agent can learn about Corva.
+  - name: Index
+    api: Corva Data API
+    schema: IndexSerializer
+    description: >-
+      Dataset indexes are first-class and manageable over the API (create, fetch, delete, check,
+      and perform actions), which matters because Corva's performance guidance is built entirely
+      around filtering and sorting on indexed fields.
+  - name: Alert / AlertDefinition / AlertGroup
+    api: Corva Platform API
+    description: Event-based alerting configured per company, scoped by RBAC, targeting assets.
+  - name: Dashboard
+    api: Corva Platform API
+    description: User-owned dashboards composed of DashboardApps, organised into DashboardFolders and shareable.
+  - name: App
+    api: Corva Platform API
+    description: A Dev Center application, with AppDatasets linking it to the datasets it reads or writes, plus reviews and marketplace metadata.
+  - name: Task / TaskSchedule
+    api: Corva Platform API
+    description: Dev Center task-app executions and their schedules.
+  - name: ApiKey
+    api: Corva Platform API
+    path: /v2/api_keys
+    description: Integration credential, scoped by company, owner and permission level; deactivatable.
+
+relationships:
+  - from: Company
+    to: User
+    type: has_many
+    via: company_id
+  - from: Company
+    to: Dataset
+    type: has_many
+    via: company_id
+  - from: Company
+    to: Asset
+    type: has_many
+    via: company_id
+  - from: Asset
+    to: Asset
+    type: has_many
+    via: ancestor_ids
+    note: Self-referential parent/child hierarchy, exposed by GET /v2/assets/{id}/ancestor_ids.
+  - from: Well
+    to: Asset
+    type: belongs_to
+    via: asset_id
+    note: A Well IS an Asset; asset_id is the identity a Well surfaces for cross-API use.
+  - from: Pad
+    to: Well
+    type: has_many
+    via: pad_id
+    note: Navigable as GET /v2/pads/{id}/wells.
+  - from: Program
+    to: Asset
+    type: has_many
+    via: program_id
+  - from: Pad
+    to: FracFleet
+    type: has_many
+    via: PadFracFleet
+  - from: Rig
+    to: RigTemplate
+    type: belongs_to
+    via: template_id
+  - from: Asset
+    to: DataDocument
+    type: has_many
+    via: asset_id
+    note: >-
+      THE CENTRAL EDGE. It crosses an API and a HOST boundary — Asset lives on api.corva.ai, the
+      DataDocument on data.corva.ai — and it is not expressible as an OpenAPI $ref because the two
+      entities are described in two separate contracts. Nothing in either document tells a client
+      the join exists; only the prose docs do.
+  - from: Dataset
+    to: DataDocument
+    type: has_many
+    via: provider + collection
+  - from: Dataset
+    to: Index
+    type: has_many
+    via: dataset name
+  - from: User
+    to: Dashboard
+    type: has_many
+    via: user_id
+  - from: Dashboard
+    to: DashboardApp
+    type: has_many
+    via: dashboard_id
+  - from: App
+    to: Dataset
+    type: has_many
+    via: AppDataset
+  - from: AlertDefinition
+    to: Alert
+    type: has_many
+    via: alert_definition_id
+  - from: AlertGroup
+    to: User
+    type: has_many
+    via: AlertGroupUser
+  - from: User
+    to: ApiKey
+    type: has_many
+    via: owner
+
+id_reference_fields:
+  note: Counted across Platform API definitions; the shape of the graph in one table.
+  fields:
+    company_id: 10
+    asset_id: 9
+    resource_id: 5
+    user_id: 4
+    asset_ids: 4
+    app_id: 4
+    scope_id: 3
+    alert_id: 3
+    well_id: 3
+    app_connection_id: 3
+    pad_id: 2
+    well_ids: 2
+    program_id: 2
+    integration_id: 2
+    app_stream_id: 2
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

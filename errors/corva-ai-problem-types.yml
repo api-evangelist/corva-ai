@@ -1,0 +1,143 @@
+generated: '2026-09-05'
+method: derived
+source: >-
+  Derived from the 4xx/5xx responses declared in
+  openapi/_original/corva-ai-platform-api-swagger-original.json and
+  openapi/_original/corva-ai-data-api-openapi-original.json, enriched from the published error
+  table at https://dc-docs.corva.ai/docs/API/Core%20Concepts/limits-and-performance
+format: proprietary
+rfc9457: false
+description: >-
+  Corva does not use RFC 9457 problem+json. The two APIs return two different error envelopes, and
+  the Platform API declares no error body schema at all.
+
+envelopes:
+  - api: Corva Data API
+    media_type: application/json
+    schema: ExceptionResponse
+    shape: '{ "code": <integer>, "message": <string> }'
+    required: [code, message]
+    note: >-
+      Declared in the contract as components.schemas.HTTPValidationError, whose `title` is
+      ExceptionResponse. Every one of the 38 documented 422 responses uses it.
+    source: https://data.corva.ai/api/v1/openapi.json
+  - api: Corva Platform API
+    media_type: application/json
+    shape: undeclared
+    note: >-
+      GAP. The Swagger 2.0 contract declares 401/403/404 on ~750 operations each and 400 on 75, but
+      attaches NO response schema to any of them. A client cannot learn the error body shape from
+      the contract; it must be discovered at runtime.
+    source: https://api.corva.ai/documentation/swagger.json
+  - api: Corva Platform API (observed)
+    media_type: application/json
+    shape: '{ "errors": { "<field>": ["<message>", ...] } }'
+    method: probed
+    observed:
+      request: 'POST https://api.corva.ai/v1/user_token with body {} and no credentials'
+      status: 401
+      body: '{"errors":{"login":["Invalid email or password"]}}'
+      control: >-
+        POST https://api.corva.ai/v1/user_token_does_not_exist_control returned 404
+        {"status":"Route Not Found"} — so the 401 above is the real endpoint answering, not a
+        catch-all. The control is what makes this observation meaningful.
+      checked: '2026-09-05'
+    detail: >-
+      The Platform API's real error envelope, recovered by probe because the contract declares
+      none. It is a Rails-style errors object keyed by field, with an ARRAY of messages per field —
+      structurally different from the Data API's flat {code, message}. A client must therefore
+      parse two different error shapes depending on which Corva host it called. Recorded from ONE
+      observed response; other Platform operations may vary, and this is not a substitute for a
+      declared schema.
+  - api: routing layer
+    media_type: application/json
+    shape: '{ "status": "Route Not Found" }'
+    note: >-
+      Observed on every unrouted path on api.corva.ai (probed 2026-09-05). Not declared in the
+      contract.
+    method: probed
+
+problem_types:
+  - status: 400
+    title: Bad Request
+    declared_on_operations: 75
+    remediation: Correct malformed JSON or unsupported parameters.
+    docs: https://dc-docs.corva.ai/docs/API/Core%20Concepts/limits-and-performance
+    retryable: false
+  - status: 401
+    title: Unauthorized
+    declared_on_operations: 750
+    remediation: >-
+      Check the Authorization header, the API key's status, and Bearer token expiry. On a refresh
+      that returns 401, discard stored tokens and re-authenticate; do not resubmit a failed refresh
+      token.
+    docs: https://dc-docs.corva.ai/docs/API/authentication
+    retryable: false
+  - status: 403
+    title: Forbidden
+    declared_on_operations: 750
+    remediation: >-
+      Request access or choose a resource the key can reach. A VALID key still receives 403 when
+      its company, owner or permission level does not cover the requested resource — 403 here means
+      authenticated-but-unauthorized, not a bad credential.
+    docs: https://dc-docs.corva.ai/docs/API/authentication
+    retryable: false
+  - status: 404
+    title: Not Found
+    declared_on_operations: 751
+    remediation: Verify the endpoint, provider, dataset and asset identifiers.
+    docs: https://dc-docs.corva.ai/docs/API/Core%20Concepts/limits-and-performance
+    retryable: false
+  - status: 409
+    title: Conflict
+    declared_on_operations: 18
+    remediation: Resolve the conflicting state before retrying. Platform API only.
+    retryable: false
+  - status: 412
+    title: Precondition Failed
+    declared_on_operations: 3
+    remediation: Satisfy the stated precondition. Platform API only.
+    retryable: false
+  - status: 422
+    title: Unprocessable Entity / Validation Error
+    declared_on_operations: 50
+    body: '{ "code": <integer>, "message": <string> }'
+    remediation: Correct a missing or out-of-range parameter.
+    detail: >-
+      The dominant documented error on the Data API — declared on 38 of its 40 operations,
+      typically for a limit outside 1-10,000, a malformed query/sort JSON object, or an insert
+      batch outside 1-1,000 records.
+    docs: https://dc-docs.corva.ai/docs/API/Core%20Concepts/limits-and-performance
+    retryable: false
+  - status: 429
+    title: Too Many Requests
+    declared_on_operations: 0
+    remediation: Back off before retrying.
+    detail: >-
+      DOCUMENTED BUT UNDECLARED. Corva's error-handling table instructs clients to handle 429, yet
+      neither contract declares a 429 response on any operation, and no rate-limit or Retry-After
+      header is documented. See rate-limits/corva-ai-rate-limits.yml.
+    docs: https://dc-docs.corva.ai/docs/API/Core%20Concepts/limits-and-performance
+    retryable: true
+  - status: 502
+    title: Bad Gateway
+    declared_on_operations: 1
+    retryable: true
+  - status: 503
+    title: Service Unavailable
+    declared_on_operations: 1
+    remediation: >-
+      Retry a bounded number of times; preserve diagnostics if failures continue.
+    retryable: true
+
+retry_policy:
+  source: https://dc-docs.corva.ai/docs/API/Core%20Concepts/limits-and-performance
+  guidance: >-
+    Corva publishes an explicit retry stance: retry transient failures with exponential backoff and
+    jitter; do NOT retry authentication, authorization or validation errors without changing the
+    request; retry 5xx a bounded number of times. Clients are told to log endpoint, status, elapsed
+    time and non-sensitive error detail, and never to log API keys, Bearer tokens, refresh tokens
+    or passwords.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

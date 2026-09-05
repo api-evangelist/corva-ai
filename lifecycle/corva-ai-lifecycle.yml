@@ -1,0 +1,108 @@
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://dc-docs.corva.ai/docs/API/overview, https://status.corva.ai/ (Atlassian Statuspage,
+  including its /api/v2/summary.json), and the version metadata carried in both saved contracts.
+description: >-
+  Versioning, deprecation posture, availability signalling and support surface for the Corva API.
+
+versioning:
+  scheme: URI path versioning
+  detail: >-
+    Both APIs version in the path. The Platform API mixes /v1/ and /v2/ prefixes within a single
+    contract — of 513 paths, both generations are live simultaneously and some resources exist at
+    both (for example /v1/users/{user_id}/dashboards and /v2/users/{user_id}/dashboards). The Data
+    API serves /api/v1/ and additionally carries an explicitly named legacy family under
+    /api/legacy/v1/data.
+  header_negotiation: none
+  build_version:
+    platform_api: v2.222.1
+    source: >-
+      info.version in https://api.corva.ai/documentation/swagger.json, and echoed live at
+      GET https://api.corva.ai/ -> {"status":"OK","environment":"production","version":"v2.222.1"}
+    note: >-
+      A genuinely useful signal: the Platform API exposes its running build version on an
+      unauthenticated root endpoint, so a client can detect a deploy without credentials.
+    method: probed
+  data_api_version: '0.1.0'
+  data_api_version_note: >-
+    The Data API contract declares info.version "0.1.0" — the FastAPI default, left unset. It does
+    not track the service, so it cannot be used to detect a change.
+
+deprecation:
+  policy_published: false
+  detail: >-
+    NO deprecation or sunset policy is published anywhere on Corva's documentation surface. No RFC
+    8594 Sunset header, no Deprecation header, and no stated notice period were found.
+  deprecated_operations_declared: 0
+  deprecated_operations_detail: >-
+    Neither contract marks a single operation `deprecated: true` — 0 of 771 Platform operations and
+    0 of 40 Data operations.
+  legacy_surface:
+    present: true
+    detail: >-
+      The Data API carries 6 operations under /api/legacy/v1/data, tagged `legacy-data`, which are
+      SEMANTICALLY deprecated by their own path and tag but are NOT machine-marked deprecated and
+      carry no sunset date. An agent reading the contract cannot tell they are on the way out; only
+      the word "legacy" in the path says so.
+      Operations: GET /api/legacy/v1/data, GET /api/legacy/v1/data/{provider},
+      GET /api/legacy/v1/data/{provider}/{dataset},
+      GET|PATCH|PUT /api/legacy/v1/data/{provider}/{dataset}/{id}.
+    source: https://data.corva.ai/api/v1/openapi.json
+  docs_supersession:
+    detail: >-
+      Corva's own docs deprecate the Swagger explorers in prose: "The Swagger interfaces remain
+      available as supplemental interactive explorers, but generated parameter descriptions and
+      examples may lag behind the services." The maintained references are the Platform API
+      Reference and Data API Reference pages.
+    source: https://dc-docs.corva.ai/docs/API/overview
+
+status_page:
+  published: true
+  url: https://status.corva.ai/
+  provider: Atlassian Statuspage
+  page_name: Corva Status Page
+  machine_readable: true
+  api: https://status.corva.ai/api/v2/summary.json
+  observed:
+    status: All Systems Operational
+    indicator: none
+    checked: '2026-09-05'
+  component_classes: [Data Ingestion, Data Processing, Website, Cloud]
+  detail: >-
+    A real, machine-readable status page with per-region components grouped into Data Ingestion,
+    Data Processing, Website and Cloud classes. Statuspage's standard JSON API (summary.json,
+    status.json, components.json, incidents.json) is available unauthenticated, so an agent can
+    check availability programmatically.
+  method: probed
+
+sla:
+  published: false
+  detail: >-
+    No public SLA or uptime commitment. Corva sells through enterprise agreements and AWS
+    Marketplace private offers, so availability terms are contractual rather than published.
+  evidence: https://aws.amazon.com/marketplace/pp/prodview-fkatffbptqdn4
+
+support:
+  channels:
+    - type: community
+      url: https://community.corva.ai/
+    - type: in-app
+      detail: Intercom in-app support, per the AWS Marketplace listing.
+    - type: phone
+      detail: '24/7 operations line published on the AWS Marketplace listing.'
+      source: https://aws.amazon.com/marketplace/pp/prodview-fkatffbptqdn4
+    - type: contact-form
+      url: https://www.corva.ai/contact
+
+changelog:
+  published: false
+  detail: >-
+    No dated API changelog or release-notes feed was found on any Corva host. Product announcements
+    are published as blog posts under https://www.corva.ai/blog and company insights under
+    https://www.corva.ai/company/insights, but neither is an API changelog: entries are marketing
+    and case-study narratives, not versioned change records. No changelog/ artifact is emitted —
+    recording an absence is the honest result.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

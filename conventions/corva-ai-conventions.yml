@@ -1,0 +1,272 @@
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://dc-docs.corva.ai/docs/API/overview, /docs/API/authentication,
+  /docs/API/choose-the-right-api, /docs/API/Core%20Concepts/query-controls and
+  /docs/API/Core%20Concepts/limits-and-performance, derived against the two saved contracts in
+  openapi/_original/.
+description: >-
+  Cross-cutting request/response semantics for the Corva API surface — the runtime behaviour that
+  applies across operations and that OpenAPI does not fully express.
+
+surfaces:
+  apis:
+  - name: Corva Platform API
+    base_url: https://api.corva.ai
+    purpose: >-
+      Platform entities and relationships — wells, rigs, drillout units, programs, pads, frac
+      fleets, and their status/state/visibility metadata. This is where an integration resolves an
+      asset_id.
+    contract: openapi/corva-ai-platform-api-openapi.yml
+    style: REST over HTTPS, JSON, Swagger 2.0
+  - name: Corva Data API
+    base_url: https://data.corva.ai
+    purpose: >-
+      Records inside Corva datasets — one-second operational data, engineering calculations,
+      time- and depth-based datasets, reference datasets, aggregations, and writes to permitted
+      customer datasets.
+    contract: openapi/corva-ai-data-api-openapi.yml
+    style: REST over HTTPS, JSON, OpenAPI 3.1.0
+  two_api_flow: >-
+    Corva documents an explicit two-call pattern and most integrations need both APIs: query the
+    Platform API for the well or asset, read attributes.asset_id from a /v2/wells response (or the
+    top-level id from /v2/assets), then pass that asset_id into a Data API dataset query.
+  docs: https://dc-docs.corva.ai/docs/API/choose-the-right-api
+
+authentication:
+  schemes:
+    - kind: api-key
+      header: 'Authorization: API <key>'
+      note: >-
+        The "API " prefix AND the space before the key are required. Corva calls this out
+        explicitly because the header is otherwise easily malformed.
+      best_for: Long-running services, scheduled exports, scoped integrations.
+      provisioning: >-
+        GATED BY DEFAULT. Corva states most customer users do NOT have permission to create or
+        approve API keys, and that if "API Keys" is unavailable in Control Center the customer must
+        contact their Corva representative. This is a material onboarding barrier: a developer
+        cannot self-serve a credential.
+      expiry: >-
+        Standard customer keys have no automatic expiration and remain valid until deactivated,
+        revoked or replaced. Corva can issue time-limited keys for a specific workflow.
+      permission_levels: [read, read/write, admin]
+    - kind: bearer-jwt
+      header: 'Authorization: Bearer <jwt>'
+      best_for: User-scoped access and API-only customers authenticating with Corva credentials.
+      token_endpoint: POST https://api.corva.ai/v1/user_token
+      request_shape: '{ "auth": { "email": <string>, "password": <string> } }'
+      response_fields: [jwt, auth_key, refresh_token, user_id, intercom_hash]
+      access_token_lifetime: >-
+        7 days by default; a company security policy can change it, so clients are told to read the
+        token's exp claim rather than assume 7 days.
+      refresh_token_lifetime: >-
+        6 months, and may be invalidated earlier when the account or session is revoked.
+      refresh_flow: >-
+        POST the same /v1/user_token endpoint with { "auth": { "refresh_token": <token> } }. The
+        response returns a NEW jwt and a NEW refresh_token — both stored values must be replaced.
+        On a 401 from refresh, discard both and re-authenticate; do not resubmit.
+      compatibility_note: >-
+        auth_key currently carries the same value as jwt and is retained for backwards
+        compatibility. Use jwt.
+  oauth2: false
+  detail: authentication/corva-ai-authentication.yml
+  docs: https://dc-docs.corva.ai/docs/API/authentication
+
+idempotency:
+  supported: false
+  coverage: none
+  mechanism: null
+  detail: >-
+    Corva publishes NO replay-protection mechanism. There is no Idempotency-Key header, no
+    client-supplied request identifier, no documented replay window and no conflict semantics —
+    neither in the two contracts nor anywhere in the documentation set. The mutating surface is
+    large: 451 mutating operations on the Platform API (222 POST, 110 DELETE, 107 PATCH, 12 PUT)
+    and 26 on the Data API (14 POST, 5 PATCH, 4 DELETE, 3 PUT), 477 in total, none of them
+    replay-protected.
+  http_semantics_caveat: >-
+    PUT and DELETE are idempotent by HTTP definition, which covers 129 of those 477 operations by
+    method semantics alone. That is NOT an idempotency mechanism: it gives an agent no way to
+    safely retry a POST whose response was lost, which is the case that actually costs data.
+  agent_impact: >-
+    An agent that times out mid-write to POST /api/v1/data/{provider}/{dataset}/ has no safe retry.
+    Re-sending may duplicate up to 1,000 records into a customer dataset; not re-sending may lose
+    them. Nothing in the contract lets it tell which happened.
+  docs: https://dc-docs.corva.ai/docs/API/Core%20Concepts/limits-and-performance
+
+reversibility:
+  grade: documented
+  detail: >-
+    Reversal paths EXIST and are discoverable in the contract, but NOT ONE of them states a window.
+    Corva publishes no deprecation, retention, undo or restore policy, so an agent can see that an
+    action is reversible but cannot learn for how long. That is the difference between `documented`
+    and `verified`, and it is recorded rather than filled in: inventing a window here could cost a
+    customer real operational data.
+  reversal_operations:
+    - surface: subscriptions
+      operations:
+        - 'POST /v2/product_subscriptions/{uuid}/cancel'
+        - 'POST /v2/platform_subscriptions/{uuid}/cancel'
+        - 'POST /v2/provisioning_subscriptions/{uuid}/cancel'
+        - 'POST /v2/purchase_subscriptions/{uuid}/cancel'
+      reverses: subscription creation
+      window: null
+      window_note: No cancellation window, proration rule or effective-date semantics documented.
+    - surface: credentials
+      operations:
+        - 'POST /v2/api_keys/{id}/deactivate'
+        - 'POST /v2/api_keys_management/{id}/deactivate'
+      reverses: API key issuance
+      window: null
+      window_note: >-
+        Deactivation is the documented revocation path. Whether a deactivated key can be
+        reactivated, and within what period, is not stated.
+    - surface: alerting
+      operations:
+        - 'POST /v1/alerts/definitions/{alert_definition_id}/enable'
+        - 'POST /v1/alerts/definitions/{alert_definition_id}/disable'
+        - 'POST /v2/companies/{company_id}/alert_rbac/enable'
+        - 'POST /v2/companies/{company_id}/alert_rbac/disable'
+      reverses: each other — a true paired toggle, the cleanest reversible surface Corva ships
+      window: not applicable
+    - surface: data reprocessing
+      operations:
+        - 'PATCH /v2/partial_reruns/{id}/cancel'
+      reverses: 'POST /v2/wells/{well_id}/partial_reruns'
+      window: null
+      window_note: >-
+        Presumably only cancellable while the rerun is still in flight, but the contract does not
+        declare the states in which cancel is valid.
+    - surface: tool ordering
+      operations:
+        - 'POST /v2/tool_ordering/orders/{id}/cancel'
+      reverses: order placement
+      window: null
+  irreversible_operations:
+    - surface: dataset records
+      operations:
+        - 'DELETE /api/v1/data/{provider}/{dataset}/{id}/'
+        - 'DELETE /api/v1/data/{provider}/{dataset}/'
+      detail: >-
+        HARD DELETE, NO UNDO. The Data API offers no restore, trash, soft-delete or
+        point-in-time recovery operation, and DELETE on the collection form removes MANY records
+        matching a query in one call. Corva's own tutorial set includes "How to Delete a Dataset
+        Using Data API in Python". This is the highest-consequence write in the surface and it is
+        the one with no reversal path at all.
+        NOTE: no retention or recovery period is documented, so this artifact does not assert that
+        recovery is impossible — only that no published operation performs it.
+    - surface: datasets
+      operations:
+        - 'DELETE /api/v1/dataset/{provider}/{name}/'
+        - 'DELETE /api/v1/dataset/{provider}/{dataset}/index/{index}/'
+      detail: Dataset and index deletion declare no reversal operation.
+  dry_run_mode:
+    supported: false
+    detail: >-
+      No dry-run, preview, validate-only or simulate parameter appears in either contract. The one
+      adjacent affordance is GET /api/v1/data/{provider}/{dataset}/count/, which lets a client
+      learn how many records a query matches BEFORE issuing the same query as a DELETE. That is a
+      genuine and useful rehearsal for the most dangerous operation, but it is a separate call
+      against a separate code path, not a guaranteed dry run of the delete itself.
+
+pagination:
+  styles:
+    - api: Corva Platform API
+      style: offset
+      request_params:
+        page: page number
+        per_page: page size
+        sort: sort field
+        order: sort direction
+      prevalence: >-
+        per_page appears on 72 operations and page on 64 of 771 — pagination is NOT uniform across
+        the Platform surface; most operations declare neither.
+      response_fields: undeclared in the contract
+    - api: Corva Data API
+      style: offset, with cursor paging recommended
+      request_params:
+        limit: 'REQUIRED. Integer 1-10,000.'
+        skip: 'Optional. Defaults to 0.'
+        sort: 'JSON object. 1 ascending, -1 descending.'
+        query: 'JSON object of match conditions.'
+        fields: Comma-separated field projection.
+        include_count: 'Boolean. Adds the total match count to the Total response header.'
+      response_headers:
+        Total: Total number of matching documents, when include_count is true.
+      recommended_pattern: >-
+        Corva explicitly recommends cursor-style paging over unbounded skip for large time-series
+        exports: sort by timestamp ascending, request up to 10,000 records, record the last
+        timestamp returned, then add timestamp: {"$gt": last_timestamp} to the next query, and stop
+        on an empty array. Where multiple records can share a timestamp, add a second stable field
+        to both the sort and the cursor to avoid duplicates and gaps.
+      encoding_warning: >-
+        query and sort are JSON objects passed as query-string parameters. Corva tells clients to
+        encode them through an HTTP library's parameter encoder rather than concatenating them into
+        a URL by hand.
+  docs: https://dc-docs.corva.ai/docs/API/Core%20Concepts/query-controls
+
+field_selection:
+  supported: true
+  mechanism: 'fields — comma-separated dot-path list, e.g. fields=timestamp,asset_id,data.hole_depth'
+  applies_to: Data API; a `fields` query parameter also appears on 26 Platform operations.
+  purpose: Reduce response size and client parsing work.
+  docs: https://dc-docs.corva.ai/docs/API/Core%20Concepts/query-controls
+
+filtering:
+  mechanism: >-
+    A `query` JSON object of match conditions, using MongoDB-style comparison operators
+    ($gt and friends) — for example {"asset_id": 12345, "timestamp": {"$gt": 1710000000}}.
+  guidance: >-
+    Filter on an indexed field (asset_id, company_id, time). Sorting on an unindexed field can
+    produce a slow request or a timeout.
+  aggregation: >-
+    The Data API exposes aggregation endpoints including full pipeline forms
+    (/aggregate/, /aggregate/pipeline/, /aggregate_summary/), reinforcing the MongoDB-shaped
+    query model.
+
+request_tracing:
+  request_id_header: none documented
+  detail: >-
+    GAP. No correlation or request-id response header is documented or declared in either contract.
+    Corva's logging guidance tells clients to log "the endpoint, response status, elapsed time and
+    non-sensitive error details" — i.e. to reconstruct context client-side, because the API returns
+    no server-side handle. A support conversation therefore has no shared identifier.
+
+versioning:
+  scheme: URI path (/v1/, /v2/; /api/v1/ and /api/legacy/v1/ on the Data API)
+  header_negotiation: none
+  detail: lifecycle/corva-ai-lifecycle.yml
+
+error_envelope:
+  rfc9457: false
+  data_api_shape: '{ "code": <integer>, "message": <string> }'
+  platform_api_shape: undeclared
+  detail: errors/corva-ai-problem-types.yml
+
+rate_limit_signaling:
+  status_on_exhaustion: 429
+  headers: none documented
+  detail: >-
+    Corva documents 429 as a status to handle and back off from, but publishes NO rate-limit
+    headers and NO numeric limits. An agent gets a stop signal with no budget, no reset time and no
+    Retry-After. See rate-limits/corva-ai-rate-limits.yml.
+  hard_limits_documented:
+    read_limit: 'Required, 1-10,000 records per Data API read.'
+    read_skip: 'Optional, defaults to 0.'
+    insert_batch: '1-1,000 records per POST /api/v1/data/{provider}/{dataset}/ request.'
+    source: https://dc-docs.corva.ai/docs/API/Core%20Concepts/limits-and-performance
+
+realtime:
+  supported: true
+  mechanism: >-
+    socketClient from @corva/ui subscribes a Dev Center frontend app to newly arriving dataset
+    records. The documented pattern is an initial Data API read for history, then a live
+    subscription for updates.
+  server_side: >-
+    The Data API also exposes a publish path — POST /api/v1/subscriptions/{provider}/{dataset}/{asset_id}/
+    and POST /api/v1/message_producer/ (plus an /{app_key} form) — so producing into the stream is a
+    first-class contract operation.
+  detail: asyncapi/corva-ai-event-surface.yml
+  docs: https://dc-docs.corva.ai/docs/API/API%20Clients/socket-client
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

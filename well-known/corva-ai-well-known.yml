@@ -1,0 +1,175 @@
+generated: '2026-09-05'
+method: probed
+source: live probes of /.well-known/ on every host this record knows
+summary: >-
+  Nothing is served. Five hosts x eight paths = 40 probes, zero real documents. No security.txt
+  (RFC 9116), no OIDC discovery, no RFC 8414 authorization-server metadata, no RFC 9728
+  protected-resource metadata, no api-catalog (RFC 9727), no ai-plugin.json, and no A2A agent card
+  at either the canonical or the legacy path.
+pointer_basis: >-
+  NO WellKnown pointer and NO SecurityTxt pointer are emitted. Every probe below is a miss, and a
+  file that documents an absence must never be wired as a presence. Corva authenticates with a
+  static API key or a JWT minted at POST https://api.corva.ai/v1/user_token — neither is OAuth 2.0,
+  so the absence of the OAuth discovery documents is consistent with the published auth design
+  rather than a gap in it.
+false_positive_watch: >-
+  corva.ai and www.corva.ai return HTTP 404 but with the full 111,921-byte marketing SPA shell as
+  the body, and community.corva.ai returns a 14,213-byte "Page Not Found" shell. Those are correctly
+  recorded as misses. api.corva.ai is the only host that answers a machine-shaped
+  {"status":"Route Not Found"} 404. A future round must not read any of these bodies as a document.
+hosts:
+  - host: https://corva.ai
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+    note: >-
+      Marketing site. Returns the 111,921-byte SPA shell as the 404 body for every /.well-known/*
+      path. Same behaviour on www.corva.ai.
+  - host: https://www.corva.ai
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: https://api.corva.ai
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+        body: '{"status":"Route Not Found"}'
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+        body: '{"status":"Route Not Found"}'
+      - path: /.well-known/agent.json
+        status: 404
+        body: '{"status":"Route Not Found"}'
+      - path: /v1/.well-known/jwks.json
+        status: 200
+        served_document: true
+        functional: false
+        body: '{"keys":[]}'
+        verdict: >-
+          SERVED BUT EMPTY. This is a real JSON Web Key Set endpoint, declared in the Platform API
+          contract as operationId getJwks, and it answers 200 with correct JWKS shape. It publishes
+          ZERO keys, so nothing can actually verify a Corva-issued JWT with it. It also sits under
+          the /v1/ API prefix rather than at the host root, so it is not RFC 8615 root discovery.
+          NO WellKnown pointer is emitted on its strength — a stub that teaches an agent nothing is
+          not a published document. Worth re-probing: if Corva ever populates keys[], this becomes
+          a genuine hit.
+        checked: '2026-09-05'
+      - path: /v1/.well-known/openid-configuration
+        status: 404
+      - path: /v1/.well-known/oauth-authorization-server
+        status: 404
+    note: >-
+      Platform API host. Unauthenticated requests reach the router (GET / returns
+      {"status":"OK","environment":"production","version":"v2.222.1"}), so these 404s are confirmed
+      absences rather than an edge refusing us.
+  - host: https://dc-docs.corva.ai
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+    note: >-
+      Docusaurus documentation site on S3 behind CloudFront; 404s carry the S3 NoSuchKey XML body.
+  - host: https://community.corva.ai
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+llms_txt:
+  found: false
+  probed:
+    - url: https://dc-docs.corva.ai/llms.txt
+      status: 404
+    - url: https://dc-docs.corva.ai/llms-full.txt
+      status: 404
+    - url: https://www.corva.ai/llms.txt
+      status: 404
+    - url: https://api.corva.ai/llms.txt
+      status: 404
+  checked: '2026-09-05'
+a2a:
+  agent_card_found: false
+  hosts_probed: [corva.ai, www.corva.ai, api.corva.ai, dc-docs.corva.ai, community.corva.ai]
+  paths_probed: [/.well-known/agent-card.json, /.well-known/agent.json]
+  checked: '2026-09-05'
+  result: >-
+    No A2A agent card on any host at either the canonical or the legacy path. No a2a/ artifact and
+    no AgentCard pointer are written. An agent card may only ever be recorded from a real 200
+    carrying AgentCard shape; authoring one on the provider's behalf would destroy the property
+    that earns it its weight.
+mcp:
+  server_found: false
+  probed:
+    - url: https://mcp.corva.ai/mcp
+      status: 0
+      note: host does not resolve (NXDOMAIN)
+    - url: https://api.corva.ai/mcp
+      status: 404
+      body: '{"status":"Route Not Found"}'
+  checked: '2026-09-05'
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

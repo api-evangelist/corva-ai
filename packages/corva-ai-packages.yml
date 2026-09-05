@@ -1,0 +1,218 @@
+generated: '2026-09-05'
+method: searched
+source: >-
+  Registry sweeps of registry.npmjs.org (search + per-package metadata endpoints), pypi.org/pypi/*/json,
+  RubyGems, crates.io, NuGet, pkg.go.dev and Maven Central, plus the GitHub organization
+  https://github.com/corva-ai and the Dev Center SDK documentation on https://dc-docs.corva.ai.
+summary:
+  first_party_package_count: 9
+  third_party_package_count: 7
+  registries: [npm, pypi]
+  note: >-
+    Corva publishes a genuinely maintained SDK surface. Eight first-party npm packages under the
+    @corva scope back the Dev Center frontend/app-building story and one PyPI distribution
+    (corva-sdk) backs the Python backend-app story. Currency is good: six of the nine shipped a
+    release within the last five weeks of 2026-09-05.
+  decay_signal: >-
+    ONE clear laggard. @corva/node-sdk — the Node.js SDK for building Corva apps, and the direct
+    counterpart to the Python corva-sdk — last published a stable release on 2023-12-05 (8.5.0),
+    nearly three years before this pass. Prerelease work continued (8.6.0-rc.10) but never
+    graduated. Meanwhile corva-sdk (Python) shipped 2.1.1 on 2026-01-15 and the frontend packages
+    ship monthly. A consumer choosing the Node SDK today is choosing the abandoned half of a
+    two-language SDK story; the Dev Center docs still document both.
+
+packages:
+  - language: python
+    registry: pypi
+    name: corva-sdk
+    url: https://pypi.org/project/corva-sdk/
+    install: pip install corva-sdk
+    official: true
+    version: 2.1.1
+    published: '2026-01-15'
+    release_count: 61
+    requires_python: '>=3.10,<4.0'
+    repository: https://github.com/corva-ai/python-sdk
+    description: >-
+      Framework for building Corva Dev Center Python apps — stream, scheduled, task and
+      followable app types, plus the Corva API client, cache, secrets, logging and testing helpers.
+    docs: https://dc-docs.corva.ai/docs/Backend/Software%20Development%20Kits/Intro%20SDK
+    source: https://pypi.org/pypi/corva-sdk/json
+  - language: javascript
+    registry: npm
+    name: '@corva/ui'
+    url: https://www.npmjs.com/package/@corva/ui
+    install: npm install @corva/ui
+    official: true
+    version: 3.74.3
+    published: '2026-09-03'
+    release_count: 3606
+    repository: https://github.com/corva-ai/corva-ui.git
+    description: >-
+      Shared component and utility library for Corva frontend apps. Also ships the authenticated
+      API clients Dev Center apps use — corvaAPI (Platform API), corvaDataAPI (Data API) and
+      socketClient (live dataset subscriptions).
+    docs: https://dc-docs.corva.ai/docs/Frontend/Data%20visualization/Components%20library
+    source: https://registry.npmjs.org/@corva/ui
+  - language: javascript
+    registry: npm
+    name: '@corva/node-sdk'
+    url: https://www.npmjs.com/package/@corva/node-sdk
+    install: npm install @corva/node-sdk
+    official: true
+    version: 8.5.0
+    published: '2023-12-05'
+    release_count: 195
+    description: >-
+      Node.js SDK for building Corva Dev Center backend apps. The Node counterpart to the Python
+      corva-sdk.
+    docs: https://dc-docs.corva.ai/docs/Backend/Software%20Development%20Kits/Node/Stream%20App
+    currency: stale
+    currency_note: >-
+      Latest STABLE release 8.5.0 on 2023-12-05 — 2 years 9 months before this pass. A
+      prerelease line reached 8.6.0-rc.10 but no stable successor was published. Recorded as an
+      abandonment signal, not a guess: the date is read from the npm registry `time` map.
+    source: https://registry.npmjs.org/@corva/node-sdk
+  - language: javascript
+    registry: npm
+    name: '@corva/create-app'
+    url: https://www.npmjs.com/package/@corva/create-app
+    install: npx @corva/create-app
+    official: true
+    version: 0.123.0
+    published: '2026-08-28'
+    release_count: 555
+    repository: https://github.com/corva-ai/create-corva-app.git
+    description: >-
+      Scaffolding CLI that generates a new Corva Dev Center app from the official frontend,
+      backend, scheduled, stream and task templates.
+    kind: cli
+    docs: https://dc-docs.corva.ai/docs/Frontend/Getting%20Started/
+    source: https://registry.npmjs.org/@corva/create-app
+  - language: javascript
+    registry: npm
+    name: '@corva/fe-ai-tools'
+    url: https://www.npmjs.com/package/@corva/fe-ai-tools
+    install: npm install @corva/fe-ai-tools
+    official: true
+    version: 1.9.0
+    published: '2026-08-31'
+    release_count: 13
+    repository: https://github.com/corva-ai/corva-fe-ai-tools.git
+    description: >-
+      The "Ask Corva" app-tools kit — result builders, command/overlay/budget primitives,
+      createToolset, register/eval hooks and typed param readers used to expose a Corva frontend
+      app's capabilities as tools to Corva's in-product AI agent. This is Corva's agent-tooling
+      surface; it is in-product, not a remote MCP endpoint. See mcp/corva-ai-mcp.yml.
+    kind: agent-tooling
+    source: https://registry.npmjs.org/@corva/fe-ai-tools
+  - language: javascript
+    registry: npm
+    name: '@corva/dc-platform-shared'
+    url: https://www.npmjs.com/package/@corva/dc-platform-shared
+    install: npm install @corva/dc-platform-shared
+    official: true
+    version: 0.67.0
+    published: '2026-09-01'
+    release_count: 312
+    repository: https://github.com/corva-ai/corva-dc-platform-shared.git
+    description: Shared Dev Center platform code used across Corva frontend applications.
+    source: https://registry.npmjs.org/@corva/dc-platform-shared
+  - language: javascript
+    registry: npm
+    name: '@corva/convert-units'
+    url: https://www.npmjs.com/package/@corva/convert-units
+    install: npm install @corva/convert-units
+    official: true
+    version: 3.2.0
+    published: '2026-09-02'
+    release_count: 4
+    repository: https://github.com/corva-ai/corva-convert-units.git
+    description: >-
+      Unit conversion between oilfield quantities. Backs the Dev Center units functionality
+      documented under Frontend/Units.
+    docs: https://dc-docs.corva.ai/docs/Frontend/Units/Converting%20Units
+    source: https://registry.npmjs.org/@corva/convert-units
+  - language: javascript
+    registry: npm
+    name: '@corva/fe-dev-helper-cli'
+    url: https://www.npmjs.com/package/@corva/fe-dev-helper-cli
+    install: npm install -g @corva/fe-dev-helper-cli
+    official: true
+    version: 0.9.0
+    published: '2026-08-06'
+    release_count: 11
+    repository: https://github.com/corva-ai/corva-fe-dev-helper-cli.git
+    description: Developer helper CLI for Corva frontend app projects.
+    kind: cli
+    source: https://registry.npmjs.org/@corva/fe-dev-helper-cli
+  - language: javascript
+    registry: npm
+    name: '@corva/eslint-config-browser'
+    url: https://www.npmjs.com/package/@corva/eslint-config-browser
+    install: npm install --save-dev @corva/eslint-config-browser
+    official: true
+    version: 1.1.2
+    published: '2026-08-31'
+    release_count: 30
+    repository: https://github.com/corva-ai/eslint-config-browser.git
+    description: Shared ESLint configuration for Corva.AI frontend projects. Tooling, not a client library.
+    kind: tooling
+    source: https://registry.npmjs.org/@corva/eslint-config-browser
+
+third_party_packages:
+  - language: javascript
+    registry: npm
+    names:
+      - '@corvaui/tokens'
+      - '@corvaui/web-components'
+      - '@corvaui/react'
+      - '@corvaui/angular'
+      - '@corvaui/svelte'
+      - '@corvaui/astro'
+      - '@corvaui/vanilla'
+    official: false
+    version: 0.2.1
+    published: '2026-08-31'
+    repository: https://github.com/RyanVerWey/CorvaUI.git
+    description: >-
+      "CorvaUI" — a Stencil-based web-component design system published under the @corvaui npm
+      scope by an individual GitHub account (RyanVerWey), NOT by Corva AI.
+    ownership_note: >-
+      NAME COLLISION — DO NOT WIRE THESE AS CORVA SDKs. The @corvaui scope is one character from
+      Corva's real @corva scope and the packages describe themselves as a UI kit, which makes them
+      a plausible false positive for Corva's genuine @corva/ui library. They resolve to
+      github.com/RyanVerWey/CorvaUI, a personal repository with no relationship to corva.ai.
+      Recorded here only so a future round does not promote them to official:true.
+    source: https://registry.npmjs.org/-/v1/search?text=corva
+
+not_published:
+  - name: python-api-client
+    repository: https://github.com/corva-ai/python-api-client
+    description: >-
+      Corva's own "lightweight wrapper for python api" repository, actively pushed (2026-09-04).
+      It is NOT published to PyPI — the PyPI name python_api_client (0.0.1, 2015-02-21, author
+      Josh Rowe / s-block.com) is an unrelated 2015 package and must not be credited to Corva.
+    version: null
+    published: null
+    note: >-
+      Source-only distribution. A consumer must install from git; there is no registry release to
+      pin or date.
+registries_checked:
+  - registry: npm
+    result: 8 first-party @corva packages found
+  - registry: pypi
+    result: 1 first-party package (corva-sdk) found
+  - registry: rubygems
+    result: none
+  - registry: crates.io
+    result: none
+  - registry: nuget
+    result: none
+  - registry: maven-central
+    result: none
+  - registry: pkg.go.dev
+    result: none
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

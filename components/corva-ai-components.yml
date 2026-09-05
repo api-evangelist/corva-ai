@@ -1,0 +1,72 @@
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://dc-docs.corva.ai/docs/Frontend/Data%20visualization/Components%20library,
+  https://dc-docs.corva.ai/docs/Frontend/Units/Overview, and https://registry.npmjs.org/@corva/ui
+description: >-
+  Corva ships a real client-side component surface, but it is NOT an embeddable-widget product for
+  third-party websites. It is the UI toolkit for apps that run INSIDE the Corva app shell and are
+  distributed through Corva's app marketplace.
+distribution_model: in-platform
+distribution_note: >-
+  Components render inside a Dev Center app, which is deployed to Corva and surfaced on a Corva
+  dashboard. There is no hosted embed, no iframe widget, no drop-in script tag and no public CDN
+  build. A customer cannot put a Corva chart on their own website with a <script> tag.
+families:
+  - name: Component library
+    package: '@corva/ui'
+    version: 3.74.3
+    published: '2026-09-03'
+    official: true
+    registry: https://www.npmjs.com/package/@corva/ui
+    repository: https://github.com/corva-ai/corva-ui
+    framework: React
+    description: >-
+      Shared components and utilities for Corva frontend apps. Beyond presentational components it
+      carries the authenticated API clients — corvaAPI (Platform API), corvaDataAPI (Data API) and
+      socketClient (live dataset subscriptions) — which is why it is the single package every Dev
+      Center frontend app depends on.
+    docs: https://dc-docs.corva.ai/docs/Frontend/Data%20visualization/Components%20library
+  - name: Charting
+    based_on: Highcharts
+    description: >-
+      Data visualization in Dev Center apps is documented against Highcharts, with Corva-specific
+      patterns for treatment plots, drilling WITS traces and gamma/depth displays.
+    docs: https://dc-docs.corva.ai/docs/Frontend/Data%20visualization/Charting%20with%20Highcharts
+    licensing_note: >-
+      Highcharts is a commercially licensed library. The documentation does not state how licensing
+      is handled for customer-built apps.
+  - name: Units
+    package: '@corva/convert-units'
+    version: 3.2.0
+    published: '2026-09-02'
+    official: true
+    registry: https://www.npmjs.com/package/@corva/convert-units
+    repository: https://github.com/corva-ai/corva-convert-units
+    description: >-
+      Unit conversion between oilfield quantities, backing the platform-wide units system. In an
+      oil and gas product this is a domain component, not a utility — field vs metric handling is
+      a correctness concern.
+    docs: https://dc-docs.corva.ai/docs/Frontend/Units/Converting%20Units
+  - name: Agent tooling
+    package: '@corva/fe-ai-tools'
+    version: 1.9.0
+    published: '2026-08-31'
+    official: true
+    registry: https://www.npmjs.com/package/@corva/fe-ai-tools
+    repository: https://github.com/corva-ai/corva-fe-ai-tools
+    description: >-
+      The "Ask Corva" app-tools kit — how a Dev Center app exposes its capabilities as tools to
+      Corva's in-product AI agent. Ships createToolset, register/eval hooks, typed param readers,
+      result builders and an eval harness.
+    note: In-product only; see mcp/corva-ai-mcp.yml for why this is not an MCP surface.
+examples:
+  description: Corva publishes working sample frontend apps in its GitHub organization.
+  repositories:
+    - https://github.com/corva-ai/example-frontend-app-drilling-wits
+    - https://github.com/corva-ai/example-frontend-app-drilling-gamma-depth
+    - https://github.com/corva-ai/example-frontend-app-completions-treatment-plot
+    - https://github.com/corva-ai/corva-example-python-apps
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

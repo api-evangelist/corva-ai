@@ -1,0 +1,140 @@
+generated: '2026-09-05'
+method: derived
+status: candidate
+source: >-
+  Derived from the two first-party contracts in this repo —
+  openapi/_original/corva-ai-platform-api-swagger-original.json (Swagger 2.0, 771 operations) and
+  openapi/_original/corva-ai-data-api-openapi-original.json (OpenAPI 3.1.0, 40 operations) —
+  after a live search for a published Corva MCP server returned nothing.
+search_result: >-
+  NO Model Context Protocol server is published by Corva. mcp.corva.ai does not resolve (NXDOMAIN),
+  https://api.corva.ai/mcp returns 404 {"status":"Route Not Found"}, no /.well-known/ MCP or OAuth
+  discovery document is served on any Corva host, no llms.txt exists, and no @corva MCP package is
+  published to npm or PyPI. The tools[] below are a DERIVED CANDIDATE, not a Corva product.
+
+deployment:
+  mode: none
+  auth: unknown
+  verified: derived
+  note: >-
+    Nobody ships a server. No remote endpoint exists to POST to and no stdio package exists to
+    install, so both endpoint and install are deliberately empty. Never populate them from a guess:
+    a fabricated MCP URL that happens to answer would read as a verified agent surface.
+
+adjacent_agent_surface:
+  name: Ask Corva
+  kind: in-product agent tooling (NOT MCP, NOT remotely callable)
+  package: '@corva/fe-ai-tools'
+  package_url: https://www.npmjs.com/package/@corva/fe-ai-tools
+  version: 1.9.0
+  published: '2026-08-31'
+  repository: https://github.com/corva-ai/corva-fe-ai-tools
+  description: >-
+    Corva does operate a first-party AI agent — "Ask Corva" — and publishes the kit its own and its
+    customers' Dev Center frontend apps use to expose capabilities to it: createToolset, a
+    register/eval hook pair, typed param readers, result builders, and an eval harness that grades
+    the agent against real UI state. The architecture is prompt -> agent -> app-call-tool ->
+    handler -> state, with a notion of deferred tools.
+  why_it_is_not_an_mcp_entry: >-
+    It is a client-side React toolkit that registers tools INTO Corva's own hosted agent inside the
+    Corva web app. An external agent cannot discover or call it. It is recorded here because it is
+    real, first-party, dated agent work that the MCP-shaped checks would otherwise render as a flat
+    zero — but it earns no MCPServer pointer, because no MCP server exists.
+  evidence: https://registry.npmjs.org/@corva/fe-ai-tools
+
+candidate_note: >-
+  Tool names below are OUR proposal for what a Corva MCP server would expose if Corva built one.
+  Each `rest:` binding below was verified to resolve to a real operation in the saved contracts —
+  by operationId for the Data API, and by METHOD+PATH for the Platform API, which declares
+  operationIds on only 4 of its 771 operations (see conformance/corva-ai-conformance.yml). No
+  separate ToolCrosswalk artifact is emitted: there is no served MCP or GraphQL surface to cross-walk
+  against, so the inline bindings here ARE the mapping, and publishing a crosswalk file would
+  overstate the surface.
+
+tools:
+  - name: find_wells
+    category: assets
+    description: Find wells and read the asset_id needed for every subsequent dataset query.
+    rest: ['GET /v2/wells']
+    binding_note: bound by METHOD+PATH — the Platform contract declares no operationId here
+    api: Corva Platform API
+  - name: list_assets
+    category: assets
+    description: >-
+      List mixed asset types (wells, rigs, pads, programs, frac fleets, drillout units) with
+      parent/child hierarchy and exact API-number lookup.
+    rest: ['GET /v2/assets', 'GET /v2/assets/autocomplete', 'POST /v2/assets/resolve']
+    binding_note: bound by METHOD+PATH — the Platform contract declares no operationId here
+    api: Corva Platform API
+  - name: get_asset
+    category: assets
+    description: Retrieve a single asset by id.
+    rest: ['GET /v2/assets/{id}']
+    binding_note: bound by METHOD+PATH — the Platform contract declares no operationId here
+    api: Corva Platform API
+  - name: list_datasets
+    category: data
+    description: List the datasets the calling company is permitted to read.
+    rest: [index_api_v1_dataset__get, by_company_api_v1_dataset_company__get]
+    api: Corva Data API
+  - name: describe_dataset
+    category: data
+    description: Fetch one dataset's schema, indexes and statistics before querying it.
+    rest: [fetch_api_v1_dataset__provider___name___get]
+    api: Corva Data API
+  - name: read_dataset_records
+    category: data
+    description: >-
+      Read records from a dataset filtered by asset_id/company_id/time, sorted, field-selected and
+      paged. The single highest-value read in the whole surface.
+    rest: [getDataByProviderAndDataset, listDataByProviderAndDataset]
+    api: Corva Data API
+  - name: count_dataset_records
+    category: data
+    description: Count records matching a query without transferring them.
+    rest: [count_api_v1_data__provider___dataset__count__get]
+    api: Corva Data API
+  - name: aggregate_dataset
+    category: data
+    description: Run grouped/projected aggregations, including full aggregation pipelines.
+    rest:
+      - aggregate_api_v1_data__provider___dataset__aggregate__get
+      - aggregate_pipeline_get_api_v1_data__provider___dataset__aggregate_pipeline__get
+      - aggregate_pipeline_post_api_v1_data__provider___dataset__aggregate_pipeline__post
+    api: Corva Data API
+  - name: write_dataset_records
+    category: data
+    write: true
+    description: Insert records into a permitted customer dataset, 1-1000 per request.
+    rest: [create_api_v1_data__provider___dataset___post]
+    api: Corva Data API
+  - name: list_alerts
+    category: alerts
+    description: List alerts and alert definitions configured for the company.
+    rest: ['GET /v2/alerts/definitions', 'GET /v1/alerts/definitions']
+    binding_note: bound by METHOD+PATH — the Platform contract declares no operationId here
+    api: Corva Platform API
+  - name: list_dashboards
+    category: dashboards
+    description: List a user's dashboards and the apps placed on them.
+    rest: ['GET /v2/users/{user_id}/dashboards']
+    binding_note: bound by METHOD+PATH — the Platform contract declares no operationId here
+    api: Corva Platform API
+  - name: list_tasks
+    category: tasks
+    description: List Dev Center task-app executions and their schedules.
+    rest: ['GET /v2/tasks', 'GET /v2/task_schedules']
+    binding_note: bound by METHOD+PATH — the Platform contract declares no operationId here
+    api: Corva Platform API
+
+coverage:
+  candidate_tools: 12
+  backing_operations_platform: 771
+  backing_operations_data: 40
+  note: >-
+    A deliberately small candidate set covering the documented "identify an asset, then query its
+    data" flow. The Platform API's 771 operations are overwhelmingly CRUD on internal platform
+    objects; a useful MCP server would not mirror them one-for-one.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
