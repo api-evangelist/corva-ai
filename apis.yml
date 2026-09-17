@@ -151,42 +151,6 @@ apis:
     url: https://api.corva.ai/documentation/index.html
   - type: GettingStarted
     url: https://dc-docs.corva.ai/docs/API/quickstart
-- aid: corva-ai:corva-ai-alertdefinitions-api
-  name: Corva AI Alert Definitions API
-  description: Alert definition management (V2)
-  humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  baseURL: https://api.corva.ai
-  tags:
-  - AlertDefinitions
-  properties:
-  - type: OpenAPI
-    url: openapi/corva-ai-alertdefinitions-api-openapi.yml
-  - type: Documentation
-    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  - type: APIReference
-    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  - type: Swagger
-    url: https://api.corva.ai/documentation/index.html
-  - type: GettingStarted
-    url: https://dc-docs.corva.ai/docs/API/quickstart
-- aid: corva-ai:corva-ai-alertgroups-api
-  name: Corva AI Alert Groups API
-  description: Alert group management - team-scoped alert configurations
-  humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  baseURL: https://api.corva.ai
-  tags:
-  - AlertGroups
-  properties:
-  - type: OpenAPI
-    url: openapi/corva-ai-alertgroups-api-openapi.yml
-  - type: Documentation
-    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  - type: APIReference
-    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  - type: Swagger
-    url: https://api.corva.ai/documentation/index.html
-  - type: GettingStarted
-    url: https://dc-docs.corva.ai/docs/API/quickstart
 - aid: corva-ai:corva-ai-alertrbac-api
   name: Corva AI Alert RBAC API
   description: The AlertRBAC API from Corva AI — 6 operation(s) for alertrbac.
@@ -233,42 +197,6 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/corva-ai-alerttags-api-openapi.yml
-  - type: Documentation
-    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  - type: APIReference
-    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  - type: Swagger
-    url: https://api.corva.ai/documentation/index.html
-  - type: GettingStarted
-    url: https://dc-docs.corva.ai/docs/API/quickstart
-- aid: corva-ai:corva-ai-alertworkflows-api
-  name: Corva AI Alert Workflows API
-  description: Alert status workflow definitions (global and company-specific)
-  humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  baseURL: https://api.corva.ai
-  tags:
-  - AlertWorkflows
-  properties:
-  - type: OpenAPI
-    url: openapi/corva-ai-alertworkflows-api-openapi.yml
-  - type: Documentation
-    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  - type: APIReference
-    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  - type: Swagger
-    url: https://api.corva.ai/documentation/index.html
-  - type: GettingStarted
-    url: https://dc-docs.corva.ai/docs/API/quickstart
-- aid: corva-ai:corva-ai-apikey-api
-  name: Corva AI API Key API
-  description: The ApiKey API from Corva AI — 5 operation(s) for apikey.
-  humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  baseURL: https://api.corva.ai
-  tags:
-  - ApiKey
-  properties:
-  - type: OpenAPI
-    url: openapi/corva-ai-apikey-api-openapi.yml
   - type: Documentation
     url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
   - type: APIReference
@@ -1165,24 +1093,6 @@ apis:
     url: https://api.corva.ai/documentation/index.html
   - type: GettingStarted
     url: https://dc-docs.corva.ai/docs/API/quickstart
-- aid: corva-ai:corva-ai-notificationpolicies-api
-  name: Corva AI Notification Policies API
-  description: The NotificationPolicies API from Corva AI — 2 operation(s) for notificationpolicies.
-  humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  baseURL: https://api.corva.ai
-  tags:
-  - NotificationPolicies
-  properties:
-  - type: OpenAPI
-    url: openapi/corva-ai-notificationpolicies-api-openapi.yml
-  - type: Documentation
-    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  - type: APIReference
-    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  - type: Swagger
-    url: https://api.corva.ai/documentation/index.html
-  - type: GettingStarted
-    url: https://dc-docs.corva.ai/docs/API/quickstart
 - aid: corva-ai:corva-ai-notifications-api
   name: Corva AI Notifications API
   description: Manage Notifications
@@ -1310,24 +1220,6 @@ apis:
     url: https://api.corva.ai/documentation/index.html
   - type: GettingStarted
     url: https://dc-docs.corva.ai/docs/API/quickstart
-- aid: corva-ai:corva-ai-productsubscriptions-api
-  name: Corva AI Product Subscriptions API
-  description: The ProductSubscriptions API from Corva AI — 5 operation(s) for productsubscriptions.
-  humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  baseURL: https://api.corva.ai
-  tags:
-  - ProductSubscriptions
-  properties:
-  - type: OpenAPI
-    url: openapi/corva-ai-productsubscriptions-api-openapi.yml
-  - type: Documentation
-    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  - type: APIReference
-    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  - type: Swagger
-    url: https://api.corva.ai/documentation/index.html
-  - type: GettingStarted
-    url: https://dc-docs.corva.ai/docs/API/quickstart
 - aid: corva-ai:corva-ai-projectfiles-api
   name: Corva AI Project Files API
   description: The ProjectFiles API from Corva AI — 2 operation(s) for projectfiles.
@@ -1419,24 +1311,6 @@ apis:
     url: https://api.corva.ai/documentation/index.html
   - type: GettingStarted
     url: https://dc-docs.corva.ai/docs/API/quickstart
-- aid: corva-ai:corva-ai-registeredmodels-api
-  name: Corva AI Registered Models API
-  description: The RegisteredModels API from Corva AI — 1 operation(s) for registeredmodels.
-  humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  baseURL: https://api.corva.ai
-  tags:
-  - RegisteredModels
-  properties:
-  - type: OpenAPI
-    url: openapi/corva-ai-registeredmodels-api-openapi.yml
-  - type: Documentation
-    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  - type: APIReference
-    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  - type: Swagger
-    url: https://api.corva.ai/documentation/index.html
-  - type: GettingStarted
-    url: https://dc-docs.corva.ai/docs/API/quickstart
 - aid: corva-ai:corva-ai-revoltchat-api
   name: Corva AI Revolt Chat API
   description: The RevoltChat API from Corva AI — 1 operation(s) for revoltchat.
@@ -1447,24 +1321,6 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/corva-ai-revoltchat-api-openapi.yml
-  - type: Documentation
-    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  - type: APIReference
-    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  - type: Swagger
-    url: https://api.corva.ai/documentation/index.html
-  - type: GettingStarted
-    url: https://dc-docs.corva.ai/docs/API/quickstart
-- aid: corva-ai:corva-ai-searchsuggestions-api
-  name: Corva AI Search Suggestions API
-  description: The SearchSuggestions API from Corva AI — 1 operation(s) for searchsuggestions.
-  humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  baseURL: https://api.corva.ai
-  tags:
-  - SearchSuggestions
-  properties:
-  - type: OpenAPI
-    url: openapi/corva-ai-searchsuggestions-api-openapi.yml
   - type: Documentation
     url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
   - type: APIReference
@@ -1537,24 +1393,6 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/corva-ai-tasks-api-openapi.yml
-  - type: Documentation
-    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  - type: APIReference
-    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  - type: Swagger
-    url: https://api.corva.ai/documentation/index.html
-  - type: GettingStarted
-    url: https://dc-docs.corva.ai/docs/API/quickstart
-- aid: corva-ai:corva-ai-taskschedules-api
-  name: Corva AI Task Schedules API
-  description: Create and manage cron-based task schedules
-  humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
-  baseURL: https://api.corva.ai
-  tags:
-  - TaskSchedules
-  properties:
-  - type: OpenAPI
-    url: openapi/corva-ai-taskschedules-api-openapi.yml
   - type: Documentation
     url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
   - type: APIReference
@@ -1790,6 +1628,168 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/corva-ai-workflows-api-openapi.yml
+  - type: Documentation
+    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
+  - type: APIReference
+    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
+  - type: Swagger
+    url: https://api.corva.ai/documentation/index.html
+  - type: GettingStarted
+    url: https://dc-docs.corva.ai/docs/API/quickstart
+- aid: corva-ai:corva-ai-alert-definitions-api
+  name: Corva AI Alert Definitions API
+  description: Alert definition management (V2)
+  humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/data-api
+  baseURL: https://data.corva.ai
+  tags:
+  - Alert Definitions
+  properties:
+  - type: OpenAPI
+    url: openapi/corva-ai-alert-definitions-api-openapi.yml
+  - type: Documentation
+    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
+  - type: APIReference
+    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
+  - type: Swagger
+    url: https://api.corva.ai/documentation/index.html
+  - type: GettingStarted
+    url: https://dc-docs.corva.ai/docs/API/quickstart
+- aid: corva-ai:corva-ai-alert-groups-api
+  name: Corva AI Alert Groups API
+  description: Alert group management - team-scoped alert configurations
+  humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/data-api
+  baseURL: https://data.corva.ai
+  tags:
+  - Alert Groups
+  properties:
+  - type: OpenAPI
+    url: openapi/corva-ai-alert-groups-api-openapi.yml
+  - type: Documentation
+    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
+  - type: APIReference
+    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
+  - type: Swagger
+    url: https://api.corva.ai/documentation/index.html
+  - type: GettingStarted
+    url: https://dc-docs.corva.ai/docs/API/quickstart
+- aid: corva-ai:corva-ai-alert-workflows-api
+  name: Corva AI Alert Workflows API
+  description: Alert status workflow definitions (global and company-specific)
+  humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/data-api
+  baseURL: https://data.corva.ai
+  tags:
+  - Alert Workflows
+  properties:
+  - type: OpenAPI
+    url: openapi/corva-ai-alert-workflows-api-openapi.yml
+  - type: Documentation
+    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
+  - type: APIReference
+    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
+  - type: Swagger
+    url: https://api.corva.ai/documentation/index.html
+  - type: GettingStarted
+    url: https://dc-docs.corva.ai/docs/API/quickstart
+- aid: corva-ai:corva-ai-api-key-api
+  name: Corva AI API Key API
+  description: The API Key API from Corva AI — 5 operation(s) for api key.
+  humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/data-api
+  baseURL: https://data.corva.ai
+  tags:
+  - API Key
+  properties:
+  - type: OpenAPI
+    url: openapi/corva-ai-api-key-api-openapi.yml
+  - type: Documentation
+    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
+  - type: APIReference
+    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
+  - type: Swagger
+    url: https://api.corva.ai/documentation/index.html
+  - type: GettingStarted
+    url: https://dc-docs.corva.ai/docs/API/quickstart
+- aid: corva-ai:corva-ai-notification-policies-api
+  name: Corva AI Notification Policies API
+  description: The Notification Policies API from Corva AI — 2 operation(s) for notification policies.
+  humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/data-api
+  baseURL: https://data.corva.ai
+  tags:
+  - Notification Policies
+  properties:
+  - type: OpenAPI
+    url: openapi/corva-ai-notification-policies-api-openapi.yml
+  - type: Documentation
+    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
+  - type: APIReference
+    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
+  - type: Swagger
+    url: https://api.corva.ai/documentation/index.html
+  - type: GettingStarted
+    url: https://dc-docs.corva.ai/docs/API/quickstart
+- aid: corva-ai:corva-ai-product-subscriptions-api
+  name: Corva AI Product Subscriptions API
+  description: The Product Subscriptions API from Corva AI — 5 operation(s) for product subscriptions.
+  humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/data-api
+  baseURL: https://data.corva.ai
+  tags:
+  - Product Subscriptions
+  properties:
+  - type: OpenAPI
+    url: openapi/corva-ai-product-subscriptions-api-openapi.yml
+  - type: Documentation
+    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
+  - type: APIReference
+    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
+  - type: Swagger
+    url: https://api.corva.ai/documentation/index.html
+  - type: GettingStarted
+    url: https://dc-docs.corva.ai/docs/API/quickstart
+- aid: corva-ai:corva-ai-registered-models-api
+  name: Corva AI Registered Models API
+  description: The Registered Models API from Corva AI — 1 operation(s) for registered models.
+  humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/data-api
+  baseURL: https://data.corva.ai
+  tags:
+  - Registered Models
+  properties:
+  - type: OpenAPI
+    url: openapi/corva-ai-registered-models-api-openapi.yml
+  - type: Documentation
+    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
+  - type: APIReference
+    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
+  - type: Swagger
+    url: https://api.corva.ai/documentation/index.html
+  - type: GettingStarted
+    url: https://dc-docs.corva.ai/docs/API/quickstart
+- aid: corva-ai:corva-ai-search-suggestions-api
+  name: Corva AI Search Suggestions API
+  description: The Search Suggestions API from Corva AI — 1 operation(s) for search suggestions.
+  humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/data-api
+  baseURL: https://data.corva.ai
+  tags:
+  - Search Suggestions
+  properties:
+  - type: OpenAPI
+    url: openapi/corva-ai-search-suggestions-api-openapi.yml
+  - type: Documentation
+    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
+  - type: APIReference
+    url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
+  - type: Swagger
+    url: https://api.corva.ai/documentation/index.html
+  - type: GettingStarted
+    url: https://dc-docs.corva.ai/docs/API/quickstart
+- aid: corva-ai:corva-ai-task-schedules-api
+  name: Corva AI Task Schedules API
+  description: Create and manage cron-based task schedules
+  humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/data-api
+  baseURL: https://data.corva.ai
+  tags:
+  - Task Schedules
+  properties:
+  - type: OpenAPI
+    url: openapi/corva-ai-task-schedules-api-openapi.yml
   - type: Documentation
     url: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
   - type: APIReference
