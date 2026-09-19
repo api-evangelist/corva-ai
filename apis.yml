@@ -373,6 +373,8 @@ apis:
   humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
   baseURL: https://api.corva.ai
   tags:
+  - Application
+  tags_raw:
   - Apps
   properties:
   - type: OpenAPI
@@ -608,6 +610,8 @@ apis:
   humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
   baseURL: https://api.corva.ai
   tags:
+  - Audit
+  tags_raw:
   - Audits
   properties:
   - type: OpenAPI
@@ -737,6 +741,8 @@ apis:
   humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
   baseURL: https://api.corva.ai
   tags:
+  - Competitor Analysis
+  tags_raw:
   - CompetitorAnalysis
   properties:
   - type: OpenAPI
@@ -827,6 +833,8 @@ apis:
   humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
   baseURL: https://api.corva.ai
   tags:
+  - Datasets
+  tags_raw:
   - datasets
   properties:
   - type: OpenAPI
@@ -935,6 +943,8 @@ apis:
   humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
   baseURL: https://api.corva.ai
   tags:
+  - File
+  tags_raw:
   - Files
   properties:
   - type: OpenAPI
@@ -1099,6 +1109,8 @@ apis:
   humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
   baseURL: https://api.corva.ai
   tags:
+  - Notification
+  tags_raw:
   - Notifications
   properties:
   - type: OpenAPI
@@ -1262,6 +1274,8 @@ apis:
   humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
   baseURL: https://api.corva.ai
   tags:
+  - Project
+  tags_raw:
   - Projects
   properties:
   - type: OpenAPI
@@ -1389,6 +1403,8 @@ apis:
   humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
   baseURL: https://api.corva.ai
   tags:
+  - Task
+  tags_raw:
   - Tasks
   properties:
   - type: OpenAPI
@@ -1479,6 +1495,8 @@ apis:
   humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/platform-api
   baseURL: https://api.corva.ai
   tags:
+  - User
+  tags_raw:
   - Users
   properties:
   - type: OpenAPI
@@ -1696,6 +1714,8 @@ apis:
   humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/data-api
   baseURL: https://data.corva.ai
   tags:
+  - APIKeys
+  tags_raw:
   - API Key
   properties:
   - type: OpenAPI
@@ -1786,6 +1806,8 @@ apis:
   humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/data-api
   baseURL: https://data.corva.ai
   tags:
+  - Task-Schedules
+  tags_raw:
   - Task Schedules
   properties:
   - type: OpenAPI
