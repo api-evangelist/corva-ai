@@ -1,0 +1,490 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva App Store Articles API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: AppStoreArticles
+paths:
+  /v2/app_store_articles:
+    get:
+      summary: List AppStoreArticles
+      tags:
+      - AppStoreArticles
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppStoreArticleList'
+      parameters:
+      - in: query
+        name: page
+        description: Number of page
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of items to list per page
+        schema:
+          type: integer
+      - in: query
+        name: sort
+        description: 'One or more fields to sort by. Prefix with a - for descending order. Ex: name,-updated_at'
+        schema:
+          type: string
+          enum:
+          - caption
+          - name
+          - created_at
+          - updated_at
+      - in: query
+        name: visibility
+        description: Filter by visibility
+        required: false
+        schema:
+          type: string
+          enum:
+          - public
+          - private
+      - in: query
+        name: search
+        description: Search by caption, name
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: order
+        description: A sorting direction
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+      operationId: getV2AppStoreArticles
+      x-operation-id-source: derived
+    post:
+      summary: Create a AppStoreArticle
+      tags:
+      - AppStoreArticles
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created AppStoreArticle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppStoreArticleObject'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppStoreArticlePayload'
+        description: AppStoreArticle Payload
+        required: true
+      operationId: postV2AppStoreArticles
+      x-operation-id-source: derived
+  /v2/app_store_articles/{id}:
+    get:
+      summary: Show AppStoreArticle
+      tags:
+      - AppStoreArticles
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppStoreArticleObject'
+      parameters:
+      - in: path
+        name: id
+        description: AppStoreArticle article_key or ID
+        required: true
+        schema:
+          type: string
+      operationId: getV2AppStoreArticlesById
+      x-operation-id-source: derived
+    patch:
+      summary: Update a AppStoreArticle
+      tags:
+      - AppStoreArticles
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated AppStoreArticle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppStoreArticleObject'
+      parameters:
+      - in: path
+        name: id
+        description: AppStoreArticle article_key or ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppStoreArticlePayload'
+        description: AppStoreArticle Payload
+        required: true
+      operationId: patchV2AppStoreArticlesById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a AppStoreArticle
+      tags:
+      - AppStoreArticles
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: AppStoreArticle deleted
+      parameters:
+      - in: path
+        name: id
+        description: AppStoreArticle article_key or ID
+        required: true
+        schema:
+          type: string
+      operationId: deleteV2AppStoreArticlesById
+      x-operation-id-source: derived
+  /v2/app_store_articles/{id}/remove_section:
+    patch:
+      summary: Remove Section from AppStoreArticle
+      tags:
+      - AppStoreArticles
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: AppStoreTemplateSection removed from Article
+      parameters:
+      - in: path
+        name: id
+        description: AppStoreArticle article_key or ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: AppStoreTemplateSection ID
+        required: true
+      operationId: patchV2AppStoreArticlesByIdRemoveSection
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AppStoreArticleList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppStoreArticleObject'
+      example:
+        data:
+        - id: 12345
+          type: app_store_article
+          attributes:
+            id: 12345
+            article_key: provider.article_name
+            caption: Caption
+            name: Article name
+            visibility: public
+            cover_url: https://example.com
+            date: '2022-11-11T09:11:52.326Z'
+            overview: Some overview description for Article
+            text: Some content long text
+            position: 1
+            app_store_template_section_id: 1
+            created_at: '2022-11-11T09:11:52.326Z'
+            updated_at: '2022-11-11T09:11:52.326Z'
+          relationships:
+            app_store_template_sections:
+              data:
+              - id: 111
+                type: app_store_template_section
+        included:
+        - id: 111
+          type: app_store_template_section
+          attributes:
+            id: 111
+            title: Section Title
+            section_type: section
+    AppStoreArticlePayload:
+      properties:
+        app_store_article:
+          type: object
+          properties:
+            caption:
+              type: string
+            name:
+              type: string
+            visibility:
+              type: string
+            cover_url:
+              type: string
+            position:
+              type: integer
+            app_store_template_section_id:
+              type: integer
+              format: int64
+            date:
+              type: string
+              format: date-time
+            overview:
+              type: text
+            text:
+              type: text
+      example:
+        app_store_article:
+          caption: Caption
+          name: Article name
+          visibility: public
+          cover_url: https://example.com
+          date: '2022-11-11T09:11:52.326Z'
+          position: 1
+          app_store_template_section_id: 1
+          overview: Some overview description for Article
+          text: Some content long text
+    AppStoreArticleObject:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            article_key:
+              type: string
+            caption:
+              type: string
+            name:
+              type: string
+            visibility:
+              type: string
+            cover_url:
+              type: string
+            position:
+              type: string
+            app_store_template_section_ids:
+              type: array
+            date:
+              type: string
+              format: date-time
+            overview:
+              type: text
+            text:
+              type: text
+            created_at:
+              type: string
+              format: date-time
+            updated:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            app_store_template_sections:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                      type:
+                        type: string
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        id: 12345
+        type: app_store_article
+        attributes:
+          id: 12345
+          article_key: provider.article_name
+          caption: Caption
+          name: Article name
+          visibility: public
+          cover_url: https://example.com
+          date: '2022-11-11T09:11:52.326Z'
+          overview: Some overview description for Article
+          text: Some content long text
+          position: 1
+          app_store_template_section_ids:
+          - 1
+          created_at: '2022-11-11T09:11:52.326Z'
+          updated_at: '2022-11-11T09:11:52.326Z'
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

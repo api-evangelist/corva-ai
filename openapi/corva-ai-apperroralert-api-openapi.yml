@@ -1,0 +1,377 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva App Error Alert API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: AppErrorAlert
+paths:
+  /v2/apps/{app_id}/app_error_alerts:
+    post:
+      summary: Create an AppErrorAlert
+      tags:
+      - AppErrorAlert
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created AppErrorAlert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppErrorAlert'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppErrorAlertPayload'
+        description: AppErrorAlert Payload
+        required: true
+      operationId: postV2AppsByAppIdAppErrorAlerts
+      x-operation-id-source: derived
+    get:
+      summary: Show AppErrorAlert
+      tags:
+      - AppErrorAlert
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppErrorAlert'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2AppsByAppIdAppErrorAlerts
+      x-operation-id-source: derived
+    patch:
+      summary: Update an AppErrorAlert
+      tags:
+      - AppErrorAlert
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated AppErrorAlert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppErrorAlert'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppErrorAlertPayload'
+        description: AppErrorAlert Payload
+        required: true
+      operationId: patchV2AppsByAppIdAppErrorAlerts
+      x-operation-id-source: derived
+    delete:
+      summary: Delete an AppErrorAlert
+      tags:
+      - AppErrorAlert
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: AppErrorAlert deleted
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2AppsByAppIdAppErrorAlerts
+      x-operation-id-source: derived
+  /v2/apps/{app_id}/app_error_alerts/subscribe:
+    post:
+      summary: Subscribe a user to AppErrorAlert
+      tags:
+      - AppErrorAlert
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: AppErrorAlert with users data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppErrorAlert'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Notification types for user
+      operationId: postV2AppsByAppIdAppErrorAlertsSubscribe
+      x-operation-id-source: derived
+  /v2/apps/{app_id}/app_error_alerts/unsubscribe:
+    post:
+      summary: Unsubscribe a user from AppErrorAlert
+      tags:
+      - AppErrorAlert
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: AppErrorAlert with users data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppErrorAlert'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2AppsByAppIdAppErrorAlertsUnsubscribe
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AppErrorAlertPayload:
+      properties:
+        app_error_alert:
+          type: object
+          properties:
+            errors_number:
+              type: integer
+            period:
+              type: string
+              enum:
+              - minute
+              - hour
+              - day
+              - week
+              - month
+            notification_types:
+              type: array
+      example:
+        app_error_alert:
+          errors_number: 50
+          period: week
+          notification_types:
+          - mobile
+          - desktop
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AppErrorAlert:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            errors_number:
+              type: integer
+            period:
+              type: string
+            notification_types:
+              type: array
+            created_by:
+              type: string
+            users:
+              type: array
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+      example:
+        id: 111
+        type: AppErrorAlert
+        attributes:
+          id: 1
+          errors_number: 10
+          period: week
+          notification_types:
+          - mobile
+          - desktop
+          created_by: user@email.com
+          users:
+          - id: 111
+            first_name: John
+            last_name: Doe
+            email: example@email.com
+            profile_photo: photo
+          created_at: '2010-01-01T00:00:00.000Z'
+          updated_at: '2010-01-01T00:00:00.000Z'
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

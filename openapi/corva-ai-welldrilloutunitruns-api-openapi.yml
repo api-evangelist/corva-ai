@@ -1,0 +1,280 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Well Drillout Unit Runs API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: WellDrilloutUnitRuns
+paths:
+  /v2/well_drillout_unit_runs:
+    get:
+      summary: List well drillout unit runs
+      tags:
+      - WellDrilloutUnitRuns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List well drillout unit runs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WellDrilloutUnitRunList'
+      parameters:
+      - in: query
+        name: company_id
+        description: Filter by company ID
+        schema:
+          type: integer
+      - in: query
+        name: well_id
+        description: Filter by well ID
+        schema:
+          type: integer
+      - in: query
+        name: drillout_unit_id
+        description: Filter by drillout unit ID
+        schema:
+          type: integer
+      - in: query
+        name: fields
+        description: Respond with only the given list of fields, like well_drillout_unit_run.well_id
+        schema:
+          items:
+            type: string
+      - in: query
+        name: per_page
+        description: Number of well drillout unit runs per page
+        schema:
+          type: integer
+      - in: query
+        name: page
+        description: Page number
+        schema:
+          type: integer
+      operationId: getV2WellDrilloutUnitRuns
+      x-operation-id-source: derived
+  /v2/well_drillout_unit_runs/{id}:
+    get:
+      summary: Get a single well drillout unit run
+      tags:
+      - WellDrilloutUnitRuns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Get well drillout unit run
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WellDrilloutUnitRunResponse'
+      parameters:
+      - in: path
+        name: id
+        description: Well Drillout Unit Run ID
+        required: true
+        schema:
+          type: integer
+      - in: query
+        name: fields
+        description: Respond with only the given list of fields, like well_drillout_unit_run.well_id
+        schema:
+          items:
+            type: string
+      operationId: getV2WellDrilloutUnitRunsById
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    WellDrilloutUnitRun:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            drillout_unit_id:
+              type: integer
+              format: int64
+            well_id:
+              type: integer
+              format: int64
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            drillout_unit:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+            well:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+      example:
+        id: '123'
+        type: well_drillout_unit_run
+        attributes:
+          drillout_unit_id: 456
+          well_id: 789
+          created_at: '2026-06-02T00:00:00.000Z'
+          updated_at: '2026-06-02T00:00:00.000Z'
+        relationships:
+          drillout_unit:
+            data:
+              id: '456'
+              type: drillout_unit
+          well:
+            data:
+              id: '789'
+              type: well
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    WellDrilloutUnitRunResponse:
+      properties:
+        data:
+          $ref: '#/components/schemas/WellDrilloutUnitRun'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+          id: '123'
+          type: well_drillout_unit_run
+          attributes:
+            drillout_unit_id: 456
+            well_id: 789
+            created_at: '2026-06-02T00:00:00.000Z'
+            updated_at: '2026-06-02T00:00:00.000Z'
+        included: []
+    WellDrilloutUnitRunList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WellDrilloutUnitRun'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+        - id: '123'
+          type: well_drillout_unit_run
+          attributes:
+            drillout_unit_id: 456
+            well_id: 789
+            created_at: '2026-06-02T00:00:00.000Z'
+            updated_at: '2026-06-02T00:00:00.000Z'
+        included: []
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

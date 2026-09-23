@@ -1,23 +1,16 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Corva Data API
-  version: 0.1.0
+  title: Corva Ai Data API
+  version: '1.0'
+  description: 'Operations tagged data across 2 of this provider''s published API definitions: corva-ai-data-api-openapi-original.json, corva-ai-platform-api-swagger-original.json. Each path carries the servers of the definition it was published in.'
+tags:
+- name: Data
+  description: Operations to send and receive data from Datasets
 paths:
-  /metrics:
-    get:
-      summary: Metrics
-      description: Endpoint that serves Prometheus metrics.
-      operationId: metrics_metrics_get
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema: {}
   /api/v1/data/{provider}/{dataset}/:
     get:
       tags:
-      - data
+      - Data
       summary: Find Data
       operationId: getDataByProviderAndDataset
       security:
@@ -111,7 +104,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     post:
       tags:
-      - data
+      - Data
       summary: Insert new Documents
       operationId: create_api_v1_data__provider___dataset___post
       security:
@@ -158,7 +151,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     put:
       tags:
-      - data
+      - Data
       summary: Insert new Document
       operationId: replace_api_v1_data__provider___dataset___put
       security:
@@ -204,7 +197,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     delete:
       tags:
-      - data
+      - Data
       summary: Delete multiple Documents
       operationId: delete_many_api_v1_data__provider___dataset___delete
       security:
@@ -249,7 +242,7 @@ paths:
   /api/v1/data/{provider}/{dataset}/count/:
     get:
       tags:
-      - data
+      - Data
       summary: Count Data
       operationId: count_api_v1_data__provider___dataset__count__get
       security:
@@ -294,7 +287,7 @@ paths:
   /api/v1/data/{provider}/{dataset}/list/:
     post:
       tags:
-      - data
+      - Data
       summary: Find Data
       operationId: listDataByProviderAndDataset
       security:
@@ -338,7 +331,7 @@ paths:
   /api/v1/data/{provider}/{dataset}/aggregate/:
     get:
       tags:
-      - data
+      - Data
       summary: Find Data using MongoDB aggregation pipeline (simple)
       operationId: aggregate_api_v1_data__provider___dataset__aggregate__get
       security:
@@ -437,7 +430,7 @@ paths:
   /api/v1/data/{provider}/{dataset}/aggregate/pipeline/:
     get:
       tags:
-      - data
+      - Data
       summary: Find Data using MongoDB aggregation pipeline (complex)
       operationId: aggregate_pipeline_get_api_v1_data__provider___dataset__aggregate_pipeline__get
       security:
@@ -485,7 +478,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     post:
       tags:
-      - data
+      - Data
       summary: Find Data using MongoDB aggregation pipeline (complex)
       operationId: aggregate_pipeline_post_api_v1_data__provider___dataset__aggregate_pipeline__post
       security:
@@ -530,7 +523,7 @@ paths:
   /api/v1/data/{provider}/{source_collection}/aggregate_summary/:
     post:
       tags:
-      - data
+      - Data
       summary: Aggregate summary data by intervals and return results
       operationId: aggregate_summary_return_api_v1_data__provider___source_collection__aggregate_summary__post
       security:
@@ -576,7 +569,7 @@ paths:
   /api/v1/data/{provider}/{source_collection}/aggregate_summary/{target_collection}/:
     post:
       tags:
-      - data
+      - Data
       summary: Aggregate summary data by intervals and upsert results into target collection
       operationId: aggregate_summary_upsert_api_v1_data__provider___source_collection__aggregate_summary__target_collection___post
       security:
@@ -618,8 +611,7 @@ paths:
                 items:
                   type: object
                   additionalProperties: true
-                title: Response Aggregate Summary Upsert Api V1 Data  Provider   Source Collection  Aggregate Summary  Target
-                  Collection   Post
+                title: Response Aggregate Summary Upsert Api V1 Data  Provider   Source Collection  Aggregate Summary  Target Collection   Post
         '422':
           description: Validation Error
           content:
@@ -629,7 +621,7 @@ paths:
   /api/v1/data/{provider}/{dataset}/batch_update/:
     patch:
       tags:
-      - data
+      - Data
       summary: Batch Document Update
       operationId: batch_update_api_v1_data__provider___dataset__batch_update__patch
       security:
@@ -677,7 +669,7 @@ paths:
   /api/v1/data/{provider}/{dataset}/batch_update_with_object/:
     patch:
       tags:
-      - data
+      - Data
       summary: Batch Document Update with single object value
       operationId: batch_update_with_object_api_v1_data__provider___dataset__batch_update_with_object__patch
       security:
@@ -718,7 +710,7 @@ paths:
   /api/v1/data/{provider}/{dataset}/{id}/:
     get:
       tags:
-      - data
+      - Data
       summary: Load Record
       operationId: retrieve_api_v1_data__provider___dataset___id___get
       security:
@@ -758,7 +750,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     put:
       tags:
-      - data
+      - Data
       summary: Replace Document
       operationId: replace_api_v1_data__provider___dataset___id___put
       security:
@@ -804,7 +796,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     patch:
       tags:
-      - data
+      - Data
       summary: Update Document
       operationId: update_api_v1_data__provider___dataset___id___patch
       security:
@@ -835,10 +827,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DataUpdate'
-              description: "\n        Data to update the document. Fields that are excluded from update asset_id, timestamp,\
-                \ _id, id, company_id,\n        collection, provider, but are essential to identify permissions to do such\
-                \ an action.\n        Other fields could be a part of a shard key, which will result in error response.\n\
-                \    "
+              description: "\n        Data to update the document. Fields that are excluded from update asset_id, timestamp, _id, id, company_id,\n        collection, provider, but are essential to identify permissions to do such an action.\n        Other fields could be a part of a shard key, which will result in error response.\n    "
       responses:
         '200':
           description: Successful Response
@@ -854,7 +843,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     delete:
       tags:
-      - data
+      - Data
       summary: Delete Document
       operationId: delete_api_v1_data__provider___dataset___id___delete
       security:
@@ -892,467 +881,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-  /api/v1/dataset/:
-    get:
-      tags:
-      - datasets
-      summary: Get All Datasets
-      operationId: index_api_v1_dataset__get
-      security:
-      - HTTPBearer: []
-      - APIKeyHeader: []
-      parameters:
-      - name: search
-        in: query
-        required: false
-        schema:
-          type: string
-          description: Search by dataset name
-          default: ''
-          title: Search
-        description: Search by dataset name
-      - name: plottable
-        in: query
-        required: false
-        schema:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          description: Filter by plottable datasets
-          title: Plottable
-        description: Filter by plottable datasets
-      - name: temporary
-        in: query
-        required: false
-        schema:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          description: Filter by temporary datasets
-          title: Temporary
-        description: Filter by temporary datasets
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/DatasetSerializer'
-                title: Response Index Api V1 Dataset  Get
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/v1/dataset/company/:
-    get:
-      tags:
-      - datasets
-      summary: Get Datasets By Company
-      operationId: by_company_api_v1_dataset_company__get
-      security:
-      - HTTPBearer: []
-      - APIKeyHeader: []
-      parameters:
-      - name: plottable
-        in: query
-        required: false
-        schema:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          description: Filter by plottable datasets
-          title: Plottable
-        description: Filter by plottable datasets
-      - name: type
-        in: query
-        required: false
-        schema:
-          anyOf:
-          - $ref: '#/components/schemas/DataType'
-          - type: 'null'
-          description: 'Filter by dataset type: time, depth, reference'
-          title: Type
-        description: 'Filter by dataset type: time, depth, reference'
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CompanyDatasetSerializer'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/v1/dataset/{provider}/{name}/:
-    get:
-      tags:
-      - datasets
-      summary: Get Dataset
-      operationId: fetch_api_v1_dataset__provider___name___get
-      security:
-      - HTTPBearer: []
-      - APIKeyHeader: []
-      parameters:
-      - name: provider
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Provider
-      - name: name
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Name
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DatasetSerializer'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-    post:
-      tags:
-      - datasets
-      summary: Create Dataset
-      operationId: create_api_v1_dataset__provider___name___post
-      security:
-      - HTTPBearer: []
-      - APIKeyHeader: []
-      parameters:
-      - name: provider
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Provider
-      - name: name
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Name
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DatasetSchema'
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DatasetSerializer'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-    patch:
-      tags:
-      - datasets
-      summary: Update Dataset
-      operationId: update_api_v1_dataset__provider___name___patch
-      security:
-      - HTTPBearer: []
-      - APIKeyHeader: []
-      parameters:
-      - name: provider
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Provider
-      - name: name
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Name
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DatasetSchema'
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DatasetSerializer'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-    delete:
-      tags:
-      - datasets
-      summary: Delete Dataset
-      operationId: delete_api_v1_dataset__provider___name___delete
-      security:
-      - HTTPBearer: []
-      - APIKeyHeader: []
-      parameters:
-      - name: provider
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Provider
-      - name: name
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Name
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                title: Response Delete Api V1 Dataset  Provider   Name   Delete
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/v1/dataset/{provider}/{dataset}/index/{index}/:
-    get:
-      tags:
-      - datasets
-      summary: Get Index
-      operationId: fetch_index_api_v1_dataset__provider___dataset__index__index___get
-      security:
-      - HTTPBearer: []
-      - APIKeyHeader: []
-      parameters:
-      - name: provider
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Provider
-      - name: dataset
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Dataset
-      - name: index
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Index
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IndexSerializer'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-    delete:
-      tags:
-      - datasets
-      summary: Delete Index
-      operationId: delete_index_api_v1_dataset__provider___dataset__index__index___delete
-      security:
-      - HTTPBearer: []
-      - APIKeyHeader: []
-      parameters:
-      - name: provider
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Provider
-      - name: dataset
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Dataset
-      - name: index
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Index
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                title: Response Delete Index Api V1 Dataset  Provider   Dataset  Index  Index   Delete
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/v1/dataset/{provider}/{dataset}/index/:
-    post:
-      tags:
-      - datasets
-      summary: Create Index
-      operationId: create_index_api_v1_dataset__provider___dataset__index__post
-      security:
-      - HTTPBearer: []
-      - APIKeyHeader: []
-      parameters:
-      - name: provider
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Provider
-      - name: dataset
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Dataset
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/IndexSchema'
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IndexSerializer'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/v1/dataset/{provider}/{dataset}/index/{name}/check/:
-    post:
-      tags:
-      - datasets
-      summary: Check Index
-      operationId: check_index_api_v1_dataset__provider___dataset__index__name__check__post
-      security:
-      - HTTPBearer: []
-      - APIKeyHeader: []
-      parameters:
-      - name: provider
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Provider
-      - name: dataset
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Dataset
-      - name: name
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Name
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IndexSerializer'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/v1/dataset/{provider}/{dataset}/index/{name}/{action}/:
-    post:
-      tags:
-      - datasets
-      summary: Perform Index Action
-      operationId: perform_index_action_api_v1_dataset__provider___dataset__index__name___action___post
-      security:
-      - HTTPBearer: []
-      - APIKeyHeader: []
-      parameters:
-      - name: provider
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Provider
-      - name: dataset
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Dataset
-      - name: name
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Name
-      - name: action
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Action
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IndexSerializer'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
   /api/v1/message_producer/{app_key}:
     post:
       tags:
-      - data
+      - Data
       summary: Produce Messages (corva-api compatibility)
       operationId: produce_api_v1_message_producer__app_key__post
       security:
@@ -1388,7 +920,7 @@ paths:
   /api/v1/message_producer/:
     post:
       tags:
-      - data
+      - Data
       summary: Produce Messages
       operationId: produce_api_v1_message_producer__post
       security:
@@ -1424,8 +956,8 @@ paths:
   /api/v1/subscriptions/{provider}/{dataset}/{asset_id}/:
     post:
       tags:
-      - data
-      summary: Publish data to Corva Subscriptions Server.
+      - Data
+      summary: Publish data to Corva Subscriptions Server
       description: Publish data to **Corva Subscriptions Server** channel named `{provider}/{dataset}/{asset_id}`.
       operationId: publish_api_v1_subscriptions__provider___dataset___asset_id___post
       security:
@@ -1499,7 +1031,7 @@ paths:
   /v1/message_producer/{app_key}:
     post:
       tags:
-      - data
+      - Data
       summary: Produce Messages (corva-api compatibility)
       operationId: produce_v1_message_producer__app_key__post
       security:
@@ -1535,7 +1067,7 @@ paths:
   /v1/message_producer/:
     post:
       tags:
-      - data
+      - Data
       summary: Produce Messages
       operationId: produce_v1_message_producer__post
       security:
@@ -1568,483 +1100,481 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-  /api/legacy/v1/data:
+  /v1/data/{provider}/{dataset}:
     get:
+      summary: Retrieve records of data from a dataset
       tags:
-      - legacy-data
-      summary: Index Without Provider
-      operationId: index_without_provider_api_legacy_v1_data_get
+      - Data
       responses:
-        '200':
-          description: Successful Response
+        '401':
+          description: Authentication error
           content:
             application/json:
               schema:
-                title: Response Index Without Provider Api Legacy V1 Data Get
-      security:
-      - HTTPBearer: []
-      - APIKeyHeader: []
-  /api/legacy/v1/data/{provider}:
-    get:
-      tags:
-      - legacy-data
-      summary: Index Without Dataset
-      operationId: index_without_dataset_api_legacy_v1_data__provider__get
-      security:
-      - HTTPBearer: []
-      - APIKeyHeader: []
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List data for a provider and dataset
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Data'
+      description: Retrieve an array of records from a dataset based on one or more filters. Ensure that all values in the querystring are URL encoded to prevent misinterpretation, especially "#" and other symbols.
       parameters:
-      - name: provider
-        in: path
-        required: true
+      - in: path
+        name: provider
+        example: corva
+        description: Provider value for the company that owns the data dataset. Usually "corva".
         schema:
           type: string
-          title: Provider
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                title: Response Index Without Dataset Api Legacy V1 Data  Provider  Get
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/legacy/v1/data/{provider}/{dataset}:
-    get:
-      tags:
-      - legacy-data
-      summary: Index
-      operationId: index_api_legacy_v1_data__provider___dataset__get
+        required: true
+      - in: path
+        name: dataset
+        example: wits
+        description: Name of the dataset to retrieve data for.
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: company_id
+        description: Returns data only for the company with this ID. Otherwise, returns data for the current user or API key company. Only applies to Corva company admins.
+        schema:
+          type: integer
+      - in: query
+        name: asset_id
+        description: Returns data only for the asset with this ID. Otherwise, returns all data.
+        schema:
+          type: integer
+      - in: query
+        name: query
+        description: 'Value for any additional data filters. Accepts fields in the format {field#operator#value}. Ensure the value is URL encoded to avoid misinterpretation. Valid operators are gt, gte, lt, lte, eq, ne, in, exists and elemmatch. Multiple fields can be chained with "AND". Example: {state#eq#InSlips}AND{timestamp#gte#1577836800}AND{elements#elemmatch#{"key": "value"}}'
+        schema:
+          type: string
+      - in: query
+        name: where
+        description: Use a MongoDB $where query. This allows calculations on each data record to filter by. Do not include `function()`.
+        schema:
+          type: string
+      - in: query
+        name: map
+        description: Use a MongoDB $map aggregation. See MongoDB documentation for more detail.
+        schema:
+          type: string
+      - in: query
+        name: reduce
+        description: Use a MongoDB $reduce aggregation. See MongoDB documentation for more detail.
+        schema:
+          type: string
+      - in: query
+        name: aggregate
+        description: MongoDB aggregation pipeline. See MongoDB documentation for more details about pipelines and how to construct them.
+        schema:
+          type: string
+      - in: query
+        name: distinct
+        description: Field name to perform a MongoDB distinct grouping on. See MongoDB documentation for more details about pipelines and how to construct them.
+        schema:
+          type: string
+      - in: query
+        name: sort
+        description: 'Value for database sorting. Takes one or more fields in a key/value map. Example: {state: 1, timestamp: -1}'
+        schema:
+          type: string
+      - in: query
+        name: limit
+        description: 'How many data items to return. Best practice is to limit to a small dataset (usually ~100 records) and paginate to reduce server load and bandwidth. Default: 1. Maximum: 10000.'
+        schema:
+          type: integer
+      - in: query
+        name: fields
+        description: A comma separated list of fields to return from the queried document.
+        schema:
+          type: string
+      - in: query
+        name: projection
+        description: Use a MongoDB projection. If this field is provided, "fields" is ignored.
+        schema:
+          type: string
+      - in: query
+        name: filter_inaccessible_assets
+        description: Filters inaccessible assets from your query or aggregate instead of returning an error message. Set any value to turn filtering on.
+        schema:
+          type: string
+      - in: query
+        name: count
+        description: Returns count of documents after filters applied. "count=true" can be passed to receive count response
+        schema:
+          type: string
       security:
-      - HTTPBearer: []
-      - APIKeyHeader: []
-      parameters:
-      - name: provider
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Provider
-      - name: dataset
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Dataset
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                title: Response Index Api Legacy V1 Data  Provider   Dataset  Get
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/legacy/v1/data/{provider}/{dataset}/{id}:
-    get:
+      - api_key: []
+      operationId: getV1DataByProviderByDataset
+      x-operation-id-source: derived
+    post:
+      summary: Save one or more records of data to a dataset
       tags:
-      - legacy-data
-      summary: Show
-      operationId: show_api_legacy_v1_data__provider___dataset___id__get
-      security:
-      - HTTPBearer: []
-      - APIKeyHeader: []
-      parameters:
-      - name: provider
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Provider
-      - name: dataset
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Dataset
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Id
+      - Data
       responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
         '200':
-          description: Successful Response
+          description: Return saved data statistics
           content:
             application/json:
               schema:
-                title: Response Show Api Legacy V1 Data  Provider   Dataset   Id  Get
-        '422':
-          description: Validation Error
+                inserted_count: integer
+                updated_count: integer
+                failed_count: integer
+                ids: array
+                messages: array
+      description: Create data by inserting it a dataset. The provider and dataset must exist in order for data to be saved, although no error will be raised if either is not found. This endpoint accepts an array of records, and performs an upsert for each record that has a _id value.
+      parameters:
+      - in: path
+        name: provider
+        example: corva
+        description: Provider value for the company that owns the data dataset. Usually "corva".
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: dataset
+        example: wits
+        description: Name of the dataset to retrieve data for.
+        schema:
+          type: string
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Stores all custom data to be associated with a record. Can be deeply nested and should conform to the expected schema for the dataset.
+      security:
+      - api_key: []
+      operationId: postV1DataByProviderByDataset
+      x-operation-id-source: derived
+    delete:
+      summary: Delete selected data records from a dataset
+      tags:
+      - Data
+      responses:
+        '401':
+          description: Authentication error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Return deleted count
+          content:
+            application/json:
+              schema:
+                deleted_count: integer
+      description: Delete multiple records from a dataset, based on data filters that are provided. Use caution and ensure that your filters are not too broad, or you may end up unintentionally deleting data.
+      parameters:
+      - in: path
+        name: provider
+        example: corva
+        description: Provider value for the company that owns the data dataset. Usually "corva".
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: dataset
+        example: wits
+        description: Name of the dataset to retrieve data for.
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: query
+        description: 'Value for any data filters. Accepts fields in the format {field#operator#value}. Ensure the value is URL encoded to avoid misinterpretation. Valid operators are gt, gte, lt, lte, eq, ne, and in. Multiple fields can be chained with "AND". Example: {state#eq#InSlips}AND{timestamp#gte#1577836800}'
+        schema:
+          type: string
+      security:
+      - api_key: []
+      operationId: deleteV1DataByProviderByDataset
+      x-operation-id-source: derived
+  /v1/data/{provider}/{dataset}/{id}:
+    get:
+      summary: Retrieve a single data record from a dataset
+      tags:
+      - Data
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Show data record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Data'
+      parameters:
+      - in: path
+        name: provider
+        example: corva
+        description: Provider value for the company that owns the data dataset. Usually "corva".
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: dataset
+        example: wits
+        description: Name of the dataset to retrieve data for.
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        example: 5e3085c5cdc1ec37e5635a8c
+        description: Unique ID for the data record
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: fields
+        description: A comma separated list of fields to return from the queried document.
+        schema:
+          type: string
+      - in: query
+        name: projection
+        description: Use a MongoDB projection. If this field is provided, "fields" is ignored.
+        schema:
+          type: string
+      security:
+      - api_key: []
+      operationId: getV1DataByProviderByDatasetById
+      x-operation-id-source: derived
     patch:
+      summary: Update fields in a data record in a dataset
       tags:
-      - legacy-data
-      summary: Patch
-      operationId: patch_api_legacy_v1_data__provider___dataset___id__patch
-      security:
-      - HTTPBearer: []
-      - APIKeyHeader: []
-      parameters:
-      - name: provider
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Provider
-      - name: dataset
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Dataset
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Id
+      - Data
       responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
         '200':
-          description: Successful Response
+          description: Return data record
           content:
             application/json:
               schema:
-                title: Response Patch Api Legacy V1 Data  Provider   Dataset   Id  Patch
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                $ref: '#/components/schemas/Data'
+      description: Update metadata and fields in a data record. This will update existing fields and insert any new fields that are found, but will leave all existing fields alone
+      parameters:
+      - in: path
+        name: provider
+        example: corva
+        description: Provider value for the company that owns the data dataset. Usually "corva".
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: dataset
+        example: wits
+        description: Name of the dataset to retrieve data for.
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        example: 5e3085c5cdc1ec37e5635a8c
+        description: Mongo ObjectID to associate with the data record. Automatically generated if not provided. If provided and it matches an existing record, that record is overwritten. If it does not match an existing record, a new record is inserted.
+        schema:
+          type: string
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Data to be updated within the data record. Can be deeply nested and should conform to the expected schema for the dataset.
+      security:
+      - api_key: []
+      operationId: patchV1DataByProviderByDatasetById
+      x-operation-id-source: derived
     put:
+      summary: Replace data record in a dataset
       tags:
-      - legacy-data
-      summary: Put
-      operationId: put_api_legacy_v1_data__provider___dataset___id__put
-      security:
-      - HTTPBearer: []
-      - APIKeyHeader: []
-      parameters:
-      - name: provider
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Provider
-      - name: dataset
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Dataset
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Id
+      - Data
       responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
         '200':
-          description: Successful Response
+          description: Return saved data statistics
           content:
             application/json:
               schema:
-                title: Response Put Api Legacy V1 Data  Provider   Dataset   Id  Put
-        '422':
-          description: Validation Error
+                $ref: '#/components/schemas/Data'
+      description: Replace fields in a data record. This will completely delete any existing fields and replace them with the new data record that is passed in.
+      parameters:
+      - in: path
+        name: provider
+        example: corva
+        description: Provider value for the company that owns the data dataset. Usually "corva".
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: dataset
+        example: wits
+        description: Name of the dataset to retrieve data for.
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        example: 5e3085c5cdc1ec37e5635a8c
+        description: Mongo ObjectID to associate with the data record. Automatically generated if not provided. If provided and it matches an existing record, that record is overwritten. If it does not match an existing record, a new record is inserted.
+        schema:
+          type: string
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Data to replace the existing data record. Can be deeply nested and should conform to the expected schema for the dataset.
+      security:
+      - api_key: []
+      operationId: putV1DataByProviderByDatasetById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a single data record from a dataset
+      tags:
+      - Data
+      responses:
+        '401':
+          description: Authentication error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Deletion status
+      parameters:
+      - in: path
+        name: provider
+        example: corva
+        description: Provider value for the company that owns the data dataset. Usually "corva".
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: dataset
+        example: wits
+        description: Name of the dataset to retrieve data for.
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        example: 5e3085c5cdc1ec37e5635a8c
+        description: Unique data record identifier for the record to be deleted.
+        schema:
+          type: string
+        required: true
+      security:
+      - api_key: []
+      operationId: deleteV1DataByProviderByDatasetById
+      x-operation-id-source: derived
 components:
   schemas:
-    Body_aggregate_pipeline_post_api_v1_data__provider___dataset__aggregate_pipeline__post:
-      properties:
-        stages:
-          items:
-            additionalProperties: true
-            type: object
-          type: array
-          title: Stages
-          description: List of aggregation stages.
-      type: object
-      required:
-      - stages
-      title: Body_aggregate_pipeline_post_api_v1_data__provider___dataset__aggregate_pipeline__post
-    Body_batch_update_with_object_api_v1_data__provider___dataset__batch_update_with_object__patch:
-      properties:
-        data:
-          $ref: '#/components/schemas/DataUpdate'
-          description: Values for update
-        query:
-          type: string
-          contentMediaType: application/json
-          contentSchema: {}
-          title: Query
-          description: Search documents for update
-        limit:
-          type: integer
-          maximum: 10000.0
-          minimum: 1.0
-          title: Limit
-          description: Maximum number of results to return
-          default: 10000
-        batch:
-          type: integer
-          maximum: 1000000.0
-          minimum: 1.0
-          title: Batch
-          description: Batch number of query results restricted by limit to update
-          default: 1
-        sort:
-          $ref: '#/components/schemas/Sorting'
-          description: Sort conditions. Default is sorting asc by timestamp
-          default:
-            timestamp: 1
-      type: object
-      required:
-      - data
-      - query
-      title: Body_batch_update_with_object_api_v1_data__provider___dataset__batch_update_with_object__patch
-    Body_listDataByProviderAndDataset:
-      properties:
-        query:
-          additionalProperties: true
-          type: object
-          title: Query
-          description: Search conditions
-        sort:
-          $ref: '#/components/schemas/Sorting'
-          description: Sort conditions
-          default:
-            timestamp: 1
-        skip:
-          type: integer
-          minimum: 0.0
-          title: Skip
-          description: 'Number of records to skip (default: 0)'
-          default: 0
-        limit:
-          type: integer
-          maximum: 10000.0
-          minimum: 1.0
-          title: Limit
-          description: Maximum number of results to return
-        fields:
-          type: string
-          title: Fields
-          description: Comma separated list of fields to return
-        include_count:
-          type: boolean
-          title: Include Count
-          description: Include total count of matching documents in Total header
-          default: false
-      type: object
-      required:
-      - query
-      - limit
-      title: Body_listDataByProviderAndDataset
-    CompanyDatasetItemSerializer:
-      properties:
-        id:
-          type: integer
-          title: Id
-        provider:
-          type: string
-          title: Provider
-        name:
-          type: string
-          title: Name
-        type:
-          type: string
-          title: Type
-      type: object
-      required:
-      - id
-      - provider
-      - name
-      - type
-      title: CompanyDatasetItemSerializer
-    CompanyDatasetSerializer:
-      additionalProperties:
-        items:
-          $ref: '#/components/schemas/CompanyDatasetItemSerializer'
-        type: array
-      type: object
-      title: CompanyDatasetSerializer
-      example:
-        Big Data Energy:
-        - id: 74
-          name: depth-check
-          provider: big-data-energy
-          type: depth
-        Corva:
-        - id: 44
-          name: activities
-          provider: corva
-          type: time
-        - id: 95
-          name: activities.summary-2tours
-          provider: corva
-          type: time
-    DataCountResult:
-      properties:
-        count:
-          type: integer
-          title: Count
-          default: 0
-      type: object
-      title: DataCountResult
-    DataCreate:
-      properties:
-        company_id:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Company Id
-        provider:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Provider
-        collection:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Collection
-        asset_id:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Asset Id
-          description: Asset ID. Required for time and depth based data.
-        version:
-          type: integer
-          title: Version
-          description: Version of the data document
-        app_version:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: App Version
-          description: Version of the app that generated the data
-        data:
-          additionalProperties: true
-          type: object
-          title: Data
-        timestamp:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Timestamp
-          description: Timestamp (epoch time). Required for time based data, optional for rest.
-        log_identifier:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Log Identifier
-          description: Identifier to scope the data by app stream. Required for depth based data, optional for rest.
-        measured_depth:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Measured Depth
-          description: Measured depth. Required for depth based data, optional for rest.
-        metadata:
-          anyOf:
-          - $ref: '#/components/schemas/TimeSeriesMetadata'
-          - type: 'null'
-        stage_number:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Stage Number
-          description: Stage number for completion data
-        datetime:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Datetime
-          description: ISO 8601 datetime string representation. Used as index inside time-series collections.
-      additionalProperties: true
-      type: object
-      required:
-      - version
-      title: DataCreate
-    DataCreateResult:
-      properties:
-        inserted_ids:
-          items:
-            type: string
-          type: array
-          title: Inserted Ids
-          default: []
-        failed_count:
-          type: integer
-          title: Failed Count
-          default: 0
-        messages:
-          items:
-            type: string
-          type: array
-          title: Messages
-          default: []
-      type: object
-      title: DataCreateResult
-    DataCreateWithMessageProduce:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/DataCreate'
-          type: array
-          maxItems: 1000
-          minItems: 1
-          title: Data
-        producer:
-          $ref: '#/components/schemas/MessageProduce'
-      type: object
-      required:
-      - data
-      - producer
-      title: DataCreateWithMessageProduce
-      description: Input for data creation with message producing.
-    DataDeleteManyResult:
-      properties:
-        deleted_count:
-          type: integer
-          title: Deleted Count
-          default: 0
-      type: object
-      title: DataDeleteManyResult
-    DataDeleteResult:
-      properties:
-        deleted_docs:
-          items:
-            additionalProperties: true
-            type: object
-          type: array
-          title: Deleted Docs
-          default: []
-        failed_count:
-          type: integer
-          title: Failed Count
-          default: 0
-      type: object
-      title: DataDeleteResult
     DataDocument:
       properties:
         _id:
@@ -2123,6 +1653,216 @@ components:
       - collection
       - data
       title: DataDocument
+    Body_aggregate_pipeline_post_api_v1_data__provider___dataset__aggregate_pipeline__post:
+      properties:
+        stages:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Stages
+          description: List of aggregation stages.
+      type: object
+      required:
+      - stages
+      title: Body_aggregate_pipeline_post_api_v1_data__provider___dataset__aggregate_pipeline__post
+    SummaryAggregationPayload:
+      properties:
+        match_field:
+          type: string
+          title: Match Field
+          description: 'Field used for interval bounds on the source collection (regular dataset only; not timeseries). Allowed: timestamp, measured_depth.'
+          default: timestamp
+        operations:
+          items:
+            $ref: '#/components/schemas/SummaryAggregationOperation'
+          type: array
+          minItems: 1
+          title: Operations
+          description: Aggregation operations list.
+        intervals:
+          items:
+            $ref: '#/components/schemas/SummaryAggregationInterval'
+          type: array
+          minItems: 1
+          title: Intervals
+          description: Intervals to process.
+        asset_id:
+          type: integer
+          title: Asset Id
+          description: Restricts $match to this asset_id (same scoping as interval producers).
+        exclude_data_fields:
+          items:
+            type: string
+          type: array
+          title: Exclude Data Fields
+          description: Fields excluded from numeric aggregation in data object.
+        include_data_fields:
+          additionalProperties: true
+          type: object
+          title: Include Data Fields
+          description: Literal key-value pairs merged into the resulting summary data object.
+        publish_mode:
+          type: string
+          enum:
+          - concurrent
+          - batch
+          title: Publish Mode
+          description: 'Redis publishing mode: concurrent publishes each finished interval, batch publishes once after all intervals complete.'
+          default: concurrent
+      type: object
+      required:
+      - intervals
+      - asset_id
+      title: SummaryAggregationPayload
+      description: Request body for aggregate-summary upsert (writes target collection); includes Redis publish scheduling.
+    HTTPValidationError:
+      properties:
+        code:
+          type: integer
+          title: Code
+        message:
+          type: string
+          title: Message
+      type: object
+      required:
+      - code
+      - message
+      title: ExceptionResponse
+    DataDeleteResult:
+      properties:
+        deleted_docs:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Deleted Docs
+          default: []
+        failed_count:
+          type: integer
+          title: Failed Count
+          default: 0
+      type: object
+      title: DataDeleteResult
+    DataCreate:
+      properties:
+        company_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Company Id
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+        collection:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Collection
+        asset_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Asset Id
+          description: Asset ID. Required for time and depth based data.
+        version:
+          type: integer
+          title: Version
+          description: Version of the data document
+        app_version:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: App Version
+          description: Version of the app that generated the data
+        data:
+          additionalProperties: true
+          type: object
+          title: Data
+        timestamp:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Timestamp
+          description: Timestamp (epoch time). Required for time based data, optional for rest.
+        log_identifier:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Log Identifier
+          description: Identifier to scope the data by app stream. Required for depth based data, optional for rest.
+        measured_depth:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Measured Depth
+          description: Measured depth. Required for depth based data, optional for rest.
+        metadata:
+          anyOf:
+          - $ref: '#/components/schemas/TimeSeriesMetadata'
+          - type: 'null'
+        stage_number:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Stage Number
+          description: Stage number for completion data
+        datetime:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Datetime
+          description: ISO 8601 datetime string representation. Used as index inside time-series collections.
+      additionalProperties: true
+      type: object
+      required:
+      - version
+      title: DataCreate
+    SummaryAggregationReturnPayload:
+      properties:
+        match_field:
+          type: string
+          title: Match Field
+          description: 'Field used for interval bounds on the source collection (regular dataset only; not timeseries). Allowed: timestamp, measured_depth.'
+          default: timestamp
+        operations:
+          items:
+            $ref: '#/components/schemas/SummaryAggregationOperation'
+          type: array
+          minItems: 1
+          title: Operations
+          description: Aggregation operations list.
+        intervals:
+          items:
+            $ref: '#/components/schemas/SummaryAggregationInterval'
+          type: array
+          minItems: 1
+          title: Intervals
+          description: Intervals to process.
+        asset_id:
+          type: integer
+          title: Asset Id
+          description: Restricts $match to this asset_id (same scoping as interval producers).
+        exclude_data_fields:
+          items:
+            type: string
+          type: array
+          title: Exclude Data Fields
+          description: Fields excluded from numeric aggregation in data object.
+        include_data_fields:
+          additionalProperties: true
+          type: object
+          title: Include Data Fields
+          description: Literal key-value pairs merged into the resulting summary data object.
+      type: object
+      required:
+      - intervals
+      - asset_id
+      title: SummaryAggregationReturnPayload
+      description: Request body for aggregate-summary return (read-only); all intervals are aggregated before the response.
     DataPartialUpdate:
       properties:
         company_id:
@@ -2203,14 +1943,57 @@ components:
       additionalProperties: true
       type: object
       title: DataPartialUpdate
-    DataType:
+    SummaryAggregationOperation:
       type: string
       enum:
-      - time
-      - depth
-      - reference
-      - timeseries
-      title: DataType
+      - median
+      - avg
+      - min
+      - max
+      title: SummaryAggregationOperation
+    DataCountResult:
+      properties:
+        count:
+          type: integer
+          title: Count
+          default: 0
+      type: object
+      title: DataCountResult
+    Body_batch_update_with_object_api_v1_data__provider___dataset__batch_update_with_object__patch:
+      properties:
+        data:
+          $ref: '#/components/schemas/DataUpdate'
+          description: Values for update
+        query:
+          type: string
+          contentMediaType: application/json
+          contentSchema: {}
+          title: Query
+          description: Search documents for update
+        limit:
+          type: integer
+          maximum: 10000.0
+          minimum: 1.0
+          title: Limit
+          description: Maximum number of results to return
+          default: 10000
+        batch:
+          type: integer
+          maximum: 1000000.0
+          minimum: 1.0
+          title: Batch
+          description: Batch number of query results restricted by limit to update
+          default: 1
+        sort:
+          $ref: '#/components/schemas/Sorting'
+          description: Sort conditions. Default is sorting asc by timestamp
+          default:
+            timestamp: 1
+      type: object
+      required:
+      - data
+      - query
+      title: Body_batch_update_with_object_api_v1_data__provider___dataset__batch_update_with_object__patch
     DataUpdate:
       properties:
         company_id:
@@ -2299,319 +2082,46 @@ components:
           default: 0
       type: object
       title: DataUpdateManyResult
-    DatasetSchema:
+    ProduceDepthIn:
       properties:
-        company_id:
+        timestamp:
           anyOf:
           - type: integer
           - type: 'null'
-          title: Company Id
-          example: 123
-        provider:
-          type: string
-          title: Provider
-          default: ''
-          example: corva
-        name:
-          type: string
-          title: Name
-          default: ''
-          example: corva#wits
-        description:
+          title: Timestamp
+        collection:
           anyOf:
           - type: string
           - type: 'null'
-          title: Description
-          example: Save WITS data
-        schema:
-          additionalProperties: true
-          type: object
-          title: Schema
-          default: {}
-          example: {}
-        data_type:
-          $ref: '#/components/schemas/DataType'
-          default: time
-          example: time
-        settings:
-          additionalProperties: true
-          type: object
-          title: Settings
-          default: {}
-          example: {}
-        permission_workflow:
-          additionalProperties: true
-          type: object
-          title: Permission Workflow
-          default:
-            read: request
-            write: request
-            delete: request
-          example:
-            delete: request
-            read: request
-            write: request
-        plottable:
-          type: boolean
-          title: Plottable
-          default: false
-        temporary:
-          type: boolean
-          title: Temporary
-          default: false
-      type: object
-      title: DatasetSchema
-    DatasetSerializer:
-      properties:
-        company_id:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Company Id
-          example: 123
-        provider:
-          type: string
-          title: Provider
-          default: ''
-          example: corva
-        name:
-          type: string
-          title: Name
-          default: ''
-          example: corva#wits
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-          example: Save WITS data
-        schema:
-          additionalProperties: true
-          type: object
-          title: Schema
-          default: {}
-          example: {}
-        data_type:
-          $ref: '#/components/schemas/DataType'
-          default: time
-          example: time
-        settings:
-          additionalProperties: true
-          type: object
-          title: Settings
-          default: {}
-          example: {}
-        permission_workflow:
-          additionalProperties: true
-          type: object
-          title: Permission Workflow
-          default:
-            read: request
-            write: request
-            delete: request
-          example:
-            delete: request
-            read: request
-            write: request
-        plottable:
-          type: boolean
-          title: Plottable
-          default: false
-        temporary:
-          type: boolean
-          title: Temporary
-          default: false
-        id:
-          type: integer
-          title: Id
-          example: 15
-        friendly_name:
-          type: string
-          title: Friendly Name
-          default: ''
-          example: wits
-        indexes:
-          items:
-            $ref: '#/components/schemas/IndexSerializer'
-          type: array
-          title: Indexes
-          default: []
-          examples:
-          - - fields:
-              - _id: 1
-              name: _id_
-              statistics:
-                size: 165238
-                usage: 12.2995
-              status: active
-            - fields:
-              - asset_id: 1
-              - timestamp: -1
-              name: asset_id_timestamp
-              statistics:
-                size: 292310
-                usage: 923.18823
-              status: active
-              unique: true
-        statistics:
-          $ref: '#/components/schemas/DatasetStatistics'
-          example:
-            count: 282034
-            index_size: 154991
-            size: 1042039
-            storage_size: 887048
-      type: object
-      required:
-      - id
-      title: DatasetSerializer
-    DatasetStatistics:
-      properties:
-        size:
-          type: integer
-          title: Size
-          default: 0
-          example: 1000000
-        count:
-          type: integer
-          title: Count
-          default: 0
-          example: 282034
-        storage_size:
-          type: integer
-          title: Storage Size
-          default: 0
-          example: 8839043
-        index_size:
-          type: integer
-          title: Index Size
-          default: 0
-          example: 199234282
-      type: object
-      title: DatasetStatistics
-    HTTPValidationError:
-      properties:
-        code:
-          type: integer
-          title: Code
-        message:
-          type: string
-          title: Message
-      type: object
-      required:
-      - code
-      - message
-      title: ExceptionResponse
-    IndexSchema:
-      properties:
-        name:
-          type: string
-          title: Name
-          default: ''
-          example: asset_id_timestamp
-        fields:
-          items:
-            additionalProperties: true
-            type: object
-          type: array
-          title: Fields
-          example:
-          - asset_id: 1
-          - timestamp: -1
-        unique:
-          type: boolean
-          title: Unique
-          default: false
-        required:
-          type: boolean
-          title: Required
-          default: false
-        status:
-          type: string
-          title: Status
-          default: building
-          example: active
-        settings:
-          anyOf:
-          - $ref: '#/components/schemas/IndexSettings'
-          - type: 'null'
-          example:
-            expire_after_seconds: 3600
-      type: object
-      title: IndexSchema
-    IndexSerializer:
-      properties:
-        name:
-          type: string
-          title: Name
-          default: ''
-          example: asset_id_timestamp
-        fields:
-          items:
-            additionalProperties: true
-            type: object
-          type: array
-          title: Fields
-          example:
-          - asset_id: 1
-          - timestamp: -1
-        unique:
-          type: boolean
-          title: Unique
-          default: false
-        required:
-          type: boolean
-          title: Required
-          default: false
-        status:
-          type: string
-          title: Status
-          default: building
-          example: active
-        settings:
-          anyOf:
-          - $ref: '#/components/schemas/IndexSettings'
-          - type: 'null'
-          example:
-            expire_after_seconds: 3600
-        statistics:
-          $ref: '#/components/schemas/IndexStatistics'
-      type: object
-      required:
-      - statistics
-      title: IndexSerializer
-    IndexSettings:
-      properties:
-        expire_after_seconds:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Expire After Seconds
-          example: 3600
-        partial_filter_expression:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Partial Filter Expression
-          example:
-            metadata.asset_id:
-              $exists: true
-      type: object
-      title: IndexSettings
-    IndexStatistics:
-      properties:
-        size:
-          type: integer
-          title: Size
-          default: 0
-          example: 929429
-        usage:
+          title: Collection
+        measured_depth:
           type: number
-          title: Usage
-          default: 0
-          example: 112.294923
+          title: Measured Depth
+      additionalProperties: true
       type: object
-      title: IndexStatistics
+      required:
+      - measured_depth
+      title: ProduceDepthIn
+    DataCreateResult:
+      properties:
+        inserted_ids:
+          items:
+            type: string
+          type: array
+          title: Inserted Ids
+          default: []
+        failed_count:
+          type: integer
+          title: Failed Count
+          default: 0
+        messages:
+          items:
+            type: string
+          type: array
+          title: Messages
+          default: []
+      type: object
+      title: DataCreateResult
     MessageProduce:
       properties:
         app_connection_id:
@@ -2621,6 +2131,70 @@ components:
       required:
       - app_connection_id
       title: MessageProduce
+    Sorting:
+      properties:
+        sort:
+          additionalProperties: true
+          type: object
+          title: Sort
+          default: {}
+      type: object
+      title: Sorting
+    ProduceTimeIn:
+      properties:
+        timestamp:
+          type: integer
+          title: Timestamp
+        collection:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Collection
+      additionalProperties: true
+      type: object
+      required:
+      - timestamp
+      title: ProduceTimeIn
+    TimeSeriesMetadata:
+      properties:
+        company_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Company Id
+        asset_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Asset Id
+      additionalProperties: true
+      type: object
+      title: TimeSeriesMetadata
+    DataCreateWithMessageProduce:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/DataCreate'
+          type: array
+          maxItems: 1000
+          minItems: 1
+          title: Data
+        producer:
+          $ref: '#/components/schemas/MessageProduce'
+      type: object
+      required:
+      - data
+      - producer
+      title: DataCreateWithMessageProduce
+      description: Input for data creation with message producing.
+    DataDeleteManyResult:
+      properties:
+        deleted_count:
+          type: integer
+          title: Deleted Count
+          default: 0
+      type: object
+      title: DataDeleteManyResult
     MessageProducerData:
       properties:
         app_connection_id:
@@ -2663,50 +2237,44 @@ components:
           description: Deprecated. This field is not used.
       type: object
       title: MessageProducerData
-    ProduceDepthIn:
+    Body_listDataByProviderAndDataset:
       properties:
-        timestamp:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Timestamp
-        collection:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Collection
-        measured_depth:
-          type: number
-          title: Measured Depth
-      additionalProperties: true
-      type: object
-      required:
-      - measured_depth
-      title: ProduceDepthIn
-    ProduceTimeIn:
-      properties:
-        timestamp:
-          type: integer
-          title: Timestamp
-        collection:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Collection
-      additionalProperties: true
-      type: object
-      required:
-      - timestamp
-      title: ProduceTimeIn
-    Sorting:
-      properties:
-        sort:
+        query:
           additionalProperties: true
           type: object
-          title: Sort
-          default: {}
+          title: Query
+          description: Search conditions
+        sort:
+          $ref: '#/components/schemas/Sorting'
+          description: Sort conditions
+          default:
+            timestamp: 1
+        skip:
+          type: integer
+          minimum: 0.0
+          title: Skip
+          description: 'Number of records to skip (default: 0)'
+          default: 0
+        limit:
+          type: integer
+          maximum: 10000.0
+          minimum: 1.0
+          title: Limit
+          description: Maximum number of results to return
+        fields:
+          type: string
+          title: Fields
+          description: Comma separated list of fields to return
+        include_count:
+          type: boolean
+          title: Include Count
+          description: Include total count of matching documents in Total header
+          default: false
       type: object
-      title: Sorting
+      required:
+      - query
+      - limit
+      title: Body_listDataByProviderAndDataset
     SummaryAggregationInterval:
       properties:
         start:
@@ -2722,150 +2290,83 @@ components:
       - start
       - end
       title: SummaryAggregationInterval
-    SummaryAggregationOperation:
-      type: string
-      enum:
-      - median
-      - avg
-      - min
-      - max
-      title: SummaryAggregationOperation
-    SummaryAggregationPayload:
+    AuthorizationError:
+      required:
+      - code
+      - message
       properties:
-        match_field:
-          type: string
-          title: Match Field
-          description: 'Field used for interval bounds on the source collection (regular dataset only; not timeseries). Allowed:
-            timestamp, measured_depth.'
-          default: timestamp
-        operations:
-          items:
-            $ref: '#/components/schemas/SummaryAggregationOperation'
-          type: array
-          minItems: 1
-          title: Operations
-          description: Aggregation operations list.
-        intervals:
-          items:
-            $ref: '#/components/schemas/SummaryAggregationInterval'
-          type: array
-          minItems: 1
-          title: Intervals
-          description: Intervals to process.
-        asset_id:
+        code:
           type: integer
-          title: Asset Id
-          description: Restricts $match to this asset_id (same scoping as interval producers).
-        exclude_data_fields:
-          items:
-            type: string
-          type: array
-          title: Exclude Data Fields
-          description: Fields excluded from numeric aggregation in data object.
-        include_data_fields:
-          additionalProperties: true
-          type: object
-          title: Include Data Fields
-          description: Literal key-value pairs merged into the resulting summary data object.
-        publish_mode:
+          format: int32
+        message:
           type: string
-          enum:
-          - concurrent
-          - batch
-          title: Publish Mode
-          description: 'Redis publishing mode: concurrent publishes each finished interval, batch publishes once after all
-            intervals complete.'
-          default: concurrent
-      type: object
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
       required:
-      - intervals
-      - asset_id
-      title: SummaryAggregationPayload
-      description: Request body for aggregate-summary upsert (writes target collection); includes Redis publish scheduling.
-    SummaryAggregationReturnPayload:
+      - code
+      - message
       properties:
-        match_field:
-          type: string
-          title: Match Field
-          description: 'Field used for interval bounds on the source collection (regular dataset only; not timeseries). Allowed:
-            timestamp, measured_depth.'
-          default: timestamp
-        operations:
-          items:
-            $ref: '#/components/schemas/SummaryAggregationOperation'
-          type: array
-          minItems: 1
-          title: Operations
-          description: Aggregation operations list.
-        intervals:
-          items:
-            $ref: '#/components/schemas/SummaryAggregationInterval'
-          type: array
-          minItems: 1
-          title: Intervals
-          description: Intervals to process.
-        asset_id:
+        code:
           type: integer
-          title: Asset Id
-          description: Restricts $match to this asset_id (same scoping as interval producers).
-        exclude_data_fields:
-          items:
-            type: string
-          type: array
-          title: Exclude Data Fields
-          description: Fields excluded from numeric aggregation in data object.
-        include_data_fields:
-          additionalProperties: true
-          type: object
-          title: Include Data Fields
-          description: Literal key-value pairs merged into the resulting summary data object.
-      type: object
-      required:
-      - intervals
-      - asset_id
-      title: SummaryAggregationReturnPayload
-      description: Request body for aggregate-summary return (read-only); all intervals are aggregated before the response.
-    TimeSeriesMetadata:
-      properties:
-        company_id:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Company Id
-        asset_id:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Asset Id
-      additionalProperties: true
-      type: object
-      title: TimeSeriesMetadata
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
+          format: int32
+        message:
           type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    Data:
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        options:
+          type: object
+        items:
+          type: array
+      example:
+        _id: 5e3085c5cdc1ec37e5635a8c
+        provider: corva
+        dataset: operations
+        company_id: 852
+        asset_id: 19423
+        version: 1
+        timestamp: 1580251823
+        data:
+          start_timestamp: 1580195293
+          end_timestamp: 1580251823
+          shift: day & night
+          operation: '12'
+          operation_name: Tripping(Entire)
+          operation_time: 56530
+          start_depth: 15355.02
+          end_depth: 7660.01
+          depth_change: -7695.01
+          start_bit_depth: 12521.55
+          end_bit_depth: 7660.01
+          bit_depth_change: -4861.54
+          well_section: Production Curve
+          hole_size: 8.75
+          bha_id: ''
   securitySchemes:
     HTTPBearer:
       type: http
@@ -2874,8 +2375,10 @@ components:
       type: apiKey
       in: header
       name: Authorization
-tags:
-- name: data
-  description: Operations to send and receive data from Datasets
-- name: datasets
-  description: Interactions with Datasets and Indexes
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header
+x-refined-from:
+- corva-ai-data-api-openapi-original.json
+- corva-ai-platform-api-swagger-original.json

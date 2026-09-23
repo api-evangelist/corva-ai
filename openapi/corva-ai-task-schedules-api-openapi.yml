@@ -1,0 +1,639 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Task Schedules API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Task Schedules
+  description: Create and manage cron-based task schedules
+paths:
+  /v2/task_schedules:
+    get:
+      summary: List Task Schedules
+      tags:
+      - Task Schedules
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Task schedules accessible to the current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskScheduleList'
+        '400':
+          description: Invalid filter or sort parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskScheduleBadRequest'
+      description: Returns schedules accessible to the authenticated user. Results are company-scoped by authorization.
+      parameters:
+      - in: query
+        name: company_id
+        description: Filter by company ID; does not expand the caller's authorized scope
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: app_id
+        description: Filter by app ID
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: status
+        description: Filter by exact schedule status
+        schema:
+          type: string
+          enum:
+          - active
+          - paused
+          - disabled
+      - in: query
+        name: owner_type
+        description: Filter by owner type; owner_id must also be supplied
+        schema:
+          type: string
+          enum:
+          - User
+          - Company
+      - in: query
+        name: owner_id
+        description: Filter by owner ID; owner_type must also be supplied. Malformed or incomplete filters return 400; a well-formed unknown owner returns an empty list.
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: page
+        description: Page number
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of items per page
+        schema:
+          type: integer
+      - in: query
+        name: sort
+        description: Comma-separated created_at, updated_at, next_run_at, name, or status fields; prefix a field with - for descending or + for ascending
+        schema:
+          type: string
+      - in: query
+        name: order
+        description: Default direction for sort fields without a prefix
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+      operationId: getV2TaskSchedules
+      x-operation-id-source: derived
+    post:
+      summary: Create Task Schedule
+      tags:
+      - Task Schedules
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '201':
+          description: Created task schedule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskScheduleSingle'
+        '400':
+          description: Validation error, invalid cron/timezone/app/asset, app not opted in, payload too large, or owner schedule cap reached
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskScheduleBadRequest'
+      description: Creates a schedule for a task app that explicitly supports scheduling. User-session authentication is required. Regular users can create their own schedules; company administrators may create company-owned schedules or schedules for users in companies they can manage.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskScheduleCreatePayload'
+        description: Task schedule payload
+        required: true
+      operationId: postV2TaskSchedules
+      x-operation-id-source: derived
+  /v2/task_schedules/{id}:
+    get:
+      summary: Get Task Schedule
+      tags:
+      - Task Schedules
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Task schedule details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskScheduleSingle'
+      parameters:
+      - in: path
+        name: id
+        required: true
+        description: Task schedule ID
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2TaskSchedulesById
+      x-operation-id-source: derived
+    patch:
+      summary: Partially Update Task Schedule
+      tags:
+      - Task Schedules
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated task schedule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskScheduleSingle'
+        '400':
+          description: Validation error, invalid cron/timezone/asset, app not opted in, or payload too large
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskScheduleBadRequest'
+      description: Updates mutable schedule fields. Immutable ownership, company, creator, and app fields are rejected with 400.
+      parameters:
+      - in: path
+        name: id
+        required: true
+        description: Task schedule ID
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskScheduleUpdatePayload'
+        description: Mutable task schedule fields
+        required: true
+      operationId: patchV2TaskSchedulesById
+      x-operation-id-source: derived
+    put:
+      summary: Update Task Schedule
+      tags:
+      - Task Schedules
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated task schedule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskScheduleSingle'
+        '400':
+          description: Validation error, invalid cron/timezone/asset, app not opted in, or payload too large
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskScheduleBadRequest'
+      description: Uses the same partial-update semantics as PATCH. Immutable ownership, company, creator, and app fields are rejected with 400.
+      parameters:
+      - in: path
+        name: id
+        required: true
+        description: Task schedule ID
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskScheduleUpdatePayload'
+        description: Mutable task schedule fields
+        required: true
+      operationId: putV2TaskSchedulesById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete Task Schedule
+      tags:
+      - Task Schedules
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Deleted task schedule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskScheduleDeleted'
+      description: Deletes the schedule definition and any occurrence ledger rows. Existing tasks remain as history.
+      parameters:
+      - in: path
+        name: id
+        required: true
+        description: Task schedule ID
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2TaskSchedulesById
+      x-operation-id-source: derived
+components:
+  schemas:
+    TaskSchedule:
+      properties:
+        id:
+          type: string
+          description: JSON:API resource ID
+        type:
+          type: string
+          enum:
+          - task_schedule
+        attributes:
+          type: object
+          required:
+          - id
+          - name
+          - cron_expression
+          - timezone
+          - properties
+          - status
+          - owner_type
+          - owner_id
+          - company_id
+          - app_id
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+              description: Human-readable schedule name; maximum 255 characters
+            description:
+              type: string
+            cron_expression:
+              type: string
+              description: Five-field cron expression interpreted in timezone; executions must be at least 60 minutes apart by default
+            timezone:
+              type: string
+              description: IANA timezone identifier, for example America/Chicago
+            properties:
+              type: object
+              description: Free-form task configuration passed to the task app; limited by server payload-size configuration
+            status:
+              type: string
+              enum:
+              - active
+              - paused
+              - disabled
+            owner_type:
+              type: string
+              enum:
+              - User
+              - Company
+            owner_id:
+              type: integer
+              format: int64
+            company_id:
+              type: integer
+              format: int64
+            app_id:
+              type: integer
+              format: int64
+              description: Task or stream-task app invoked by this schedule
+            asset_id:
+              type:
+              - integer
+              - 'null'
+              format: int64
+              description: Optional asset context. Deleting the asset also deletes its schedules.
+            created_by_id:
+              type: integer
+              format: int64
+            next_run_at:
+              type: string
+              format: date-time
+              description: Next occurrence in UTC, calculated from cron_expression and timezone
+            last_run_at:
+              type: string
+              format: date-time
+            last_run_status:
+              type: string
+              enum:
+              - running
+              - succeeded
+              - failed
+            last_error:
+              type: string
+            daily_run_count:
+              type: integer
+              description: Per-schedule execution telemetry; aggregate owner quota is enforced from the occurrence ledger
+            total_runs:
+              type: integer
+            total_failures:
+              type: integer
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+      example:
+        id: '12345'
+        type: task_schedule
+        attributes:
+          id: 12345
+          name: Tuesday morning rig reports
+          description: Generate and email reports for rigs A, B, and C
+          cron_expression: 0 6 * * 2
+          timezone: America/Chicago
+          properties:
+            rig_ids:
+            - 101
+            - 102
+            - 103
+            report: daily_morning
+          status: active
+          owner_type: User
+          owner_id: 501
+          company_id: 42
+          app_id: 700
+          asset_id: null
+          created_by_id: 501
+          next_run_at: '2026-08-18T11:00:00.000Z'
+          last_run_at: null
+          last_run_status: null
+          last_error: null
+          daily_run_count: 0
+          total_runs: 0
+          total_failures: 0
+          created_at: '2026-08-11T12:00:00.000Z'
+          updated_at: '2026-08-11T12:00:00.000Z'
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    TaskScheduleList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskSchedule'
+    TaskScheduleCreatePayload:
+      required:
+      - task_schedule
+      properties:
+        task_schedule:
+          type: object
+          required:
+          - name
+          - cron_expression
+          - timezone
+          - app_id
+          - properties
+          properties:
+            name:
+              type: string
+              description: Required; maximum 255 characters
+            description:
+              type: string
+            cron_expression:
+              type: string
+              description: Required five-field cron expression; minimum interval is 60 minutes by default
+            timezone:
+              type: string
+              description: Required IANA timezone used to interpret cron_expression, for example America/Chicago
+            properties:
+              type: object
+              description: Required non-empty task configuration passed to the task app
+            status:
+              type: string
+              enum:
+              - active
+              - paused
+              - disabled
+              default: active
+            owner_type:
+              type: string
+              enum:
+              - User
+              - Company
+              description: Use with owner_id; omit both fields to create a schedule owned by the current user
+            owner_id:
+              type: integer
+              format: int64
+              description: Use with owner_type; company administrators may create schedules for authorized company users or companies. The schedule company is derived from its owner.
+            app_id:
+              type: integer
+              format: int64
+              description: Required task or stream-task app with settings.task_scheduling_enabled set to JSON boolean true that safely handles occurrence idempotency keys; immutable after creation
+            asset_id:
+              type:
+              - integer
+              - 'null'
+              format: int64
+              description: Optional asset context belonging to the schedule company; omit for company-wide execution
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    TaskScheduleBadRequest:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          enum:
+          - 400
+        message:
+          type: string
+    TaskScheduleDeleted:
+      required:
+      - status
+      properties:
+        status:
+          type: string
+          enum:
+          - deleted
+    TaskScheduleSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/TaskSchedule'
+    TaskScheduleUpdatePayload:
+      description: Partial update. app_id, company_id, created_by_id, owner_type, and owner_id are immutable; supplying one returns 400.
+      required:
+      - task_schedule
+      properties:
+        task_schedule:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Maximum 255 characters
+            description:
+              type: string
+            cron_expression:
+              type: string
+              description: Five-field cron expression; minimum interval is 60 minutes by default
+            timezone:
+              type: string
+              description: IANA timezone used to interpret cron_expression
+            properties:
+              type: object
+              description: Free-form task configuration; replaces the stored object
+            status:
+              type: string
+              enum:
+              - active
+              - paused
+              - disabled
+            asset_id:
+              type:
+              - integer
+              - 'null'
+              format: int64
+              description: Optional asset context belonging to the schedule company; explicitly set null to clear asset scope and make the schedule company-wide
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

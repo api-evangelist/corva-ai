@@ -1,0 +1,966 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Well Planning Dashboards API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Well Planning Dashboards
+paths:
+  /v2/well_planning_dashboards:
+    get:
+      summary: List well planning dashboards
+      tags:
+      - Well Planning Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WellPlanningDashboardV2List'
+      parameters:
+      - in: query
+        name: company_id
+        description: Filter by company ID
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: asset_id
+        description: Filter by asset ID (well)
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: type
+        description: 'Filter by type: custom_well_planning_dashboard (default) or default_well_planning_dashboard'
+        required: false
+        schema:
+          type: string
+      operationId: getV2WellPlanningDashboards
+      x-operation-id-source: derived
+    post:
+      summary: Create a custom planning dashboard for a well
+      tags:
+      - Well Planning Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created well planning dashboard
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WellPlanningDashboardV2Response'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WellPlanningDashboardV2Payload'
+        description: Well Planning Dashboard Payload
+        required: true
+      operationId: postV2WellPlanningDashboards
+      x-operation-id-source: derived
+  /v2/well_planning_dashboards/{id_or_slug}:
+    get:
+      summary: Show well planning dashboard
+      tags:
+      - Well Planning Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WellPlanningDashboardV2Response'
+      parameters:
+      - in: path
+        name: id_or_slug
+        description: Dashboard ID or slug
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: asset_id
+        description: Asset ID used for dashboard timezone/unit overrides
+        required: false
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2WellPlanningDashboardsByIdOrSlug
+      x-operation-id-source: derived
+    patch:
+      summary: Update a well planning dashboard
+      tags:
+      - Well Planning Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated well planning dashboard
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WellPlanningDashboardV2Response'
+      parameters:
+      - in: path
+        name: id_or_slug
+        description: Dashboard ID or slug
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WellPlanningDashboardV2UpdatePayload'
+        description: Well Planning Dashboard Payload
+        required: true
+      operationId: patchV2WellPlanningDashboardsByIdOrSlug
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a well planning dashboard
+      tags:
+      - Well Planning Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Well planning dashboard deleted
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+      parameters:
+      - in: path
+        name: id_or_slug
+        description: Dashboard ID or slug
+        required: true
+        schema:
+          type: string
+      operationId: deleteV2WellPlanningDashboardsByIdOrSlug
+      x-operation-id-source: derived
+  /v2/well_planning_dashboards/{well_planning_dashboard_id_or_slug}/dashboard_apps:
+    post:
+      summary: Create a dashboard app on a well planning dashboard
+      tags:
+      - Well Planning Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created dashboard app
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardApp'
+      parameters:
+      - in: path
+        name: well_planning_dashboard_id_or_slug
+        description: Well Planning Dashboard ID or slug
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WellPlanningDashboardAppV2Payload'
+        description: Dashboard App Payload
+        required: true
+      operationId: postV2WellPlanningDashboardsByWellPlanningDashboardIdOrSlugDashboardApps
+      x-operation-id-source: derived
+    put:
+      summary: Batch update dashboard apps on a well planning dashboard
+      tags:
+      - Well Planning Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated dashboard apps
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardAppList'
+      parameters:
+      - in: path
+        name: well_planning_dashboard_id_or_slug
+        description: Well Planning Dashboard ID or slug
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardAppBatchUpdatePayload'
+        description: Dashboard apps to update
+        required: true
+      operationId: putV2WellPlanningDashboardsByWellPlanningDashboardIdOrSlugDashboardApps
+      x-operation-id-source: derived
+  /v2/well_planning_dashboards/{well_planning_dashboard_id_or_slug}/dashboard_apps/bulk_create:
+    post:
+      summary: Bulk create dashboard apps on a well planning dashboard
+      tags:
+      - Well Planning Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created dashboard apps
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardAppList'
+      parameters:
+      - in: path
+        name: well_planning_dashboard_id_or_slug
+        description: Well Planning Dashboard ID or slug
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WellPlanningDashboardAppV2BulkCreatePayload'
+        description: Dashboard Apps Bulk Create Payload
+        required: true
+      operationId: postV2WellPlanningDashboardsByWellPlanningDashboardIdOrSlugDashboardAppsBulkCreate
+      x-operation-id-source: derived
+  /v2/well_planning_dashboards/{well_planning_dashboard_id_or_slug}/dashboard_apps/{id}:
+    get:
+      summary: Show dashboard app on a well planning dashboard
+      tags:
+      - Well Planning Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardApp'
+      parameters:
+      - in: path
+        name: well_planning_dashboard_id_or_slug
+        description: Well Planning Dashboard ID or slug
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: id
+        description: Dashboard App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: filter_asset_id
+        description: Data filter's Asset ID
+        required: false
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2WellPlanningDashboardsByWellPlanningDashboardIdOrSlugDashboardAppsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update dashboard app on a well planning dashboard
+      tags:
+      - Well Planning Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated dashboard app
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardApp'
+      parameters:
+      - in: path
+        name: well_planning_dashboard_id_or_slug
+        description: Well Planning Dashboard ID or slug
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: id
+        description: Dashboard App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WellPlanningDashboardAppV2Payload'
+        description: Dashboard App Payload
+        required: true
+      operationId: patchV2WellPlanningDashboardsByWellPlanningDashboardIdOrSlugDashboardAppsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete dashboard app from a well planning dashboard
+      tags:
+      - Well Planning Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Dashboard app deleted
+      parameters:
+      - in: path
+        name: well_planning_dashboard_id_or_slug
+        description: Well Planning Dashboard ID or slug
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: id
+        description: Dashboard App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2WellPlanningDashboardsByWellPlanningDashboardIdOrSlugDashboardAppsById
+      x-operation-id-source: derived
+components:
+  schemas:
+    WellPlanningDashboardV2:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            type:
+              type: string
+            order:
+              type: integer
+              format: int64
+            name:
+              type: string
+            layout:
+              type: string
+            slug:
+              type: string
+            locked:
+              type: boolean
+            icon:
+              type: string
+            settings:
+              type: object
+            segment:
+              type: array
+            show_workflows_help:
+              type: boolean
+            timezone:
+              type: string
+            unit_system:
+              type: string
+            category:
+              type: string
+        relationships:
+          type: object
+          properties:
+            well:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            apps:
+              type: object
+              properties:
+                data:
+                  type: array
+      example:
+        id: 12345
+        type: well_planning_dashboard
+        attributes:
+          id: '12345'
+          type: well_planning_dashboard
+          order: 13
+          name: Well Planning
+          layout: grid
+          slug: well-planning-13978158c5
+          locked: false
+          icon: well-planning
+          settings:
+            show_control_apps: true
+            timezones:
+              asset_id_1: America/Chicago
+            unit_systems:
+              asset_id_1: Imperial
+          segment:
+          - drilling
+          show_workflows_help: true
+          timezone: America/Chicago
+          unit_system: Imperial
+          category: wellPlanningDashboard
+        relationships:
+          well:
+            data:
+              id: '1'
+              type: well
+          company:
+            data:
+              id: '1'
+              type: company
+          apps:
+            data: []
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    WellPlanningDashboardV2UpdatePayload:
+      required:
+      - dashboard
+      properties:
+        dashboard:
+          type: object
+          properties:
+            name:
+              type: string
+            layout:
+              type: string
+            icon:
+              type: string
+            show_workflows_help:
+              type: boolean
+            settings:
+              type: object
+              properties:
+                show_control_apps:
+                  type: boolean
+                timezones:
+                  type: object
+                  properties:
+                    asset_id_1:
+                      type: string
+                unit_systems:
+                  type: object
+                  properties:
+                    asset_id_1:
+                      type: string
+                global_offset_wells:
+                  type: object
+            order:
+              type: integer
+            segment:
+              type: array
+            timezone:
+              type: string
+            unit_system:
+              type: string
+            category:
+              type: string
+      example:
+        dashboard:
+          name: Updated Well Planning
+          layout: grid
+          icon: well-planning
+          show_workflows_help: true
+          settings:
+            show_control_apps: true
+            timezones:
+              asset_id_1: America/Chicago
+            unit_systems:
+              asset_id_1: Imperial
+            global_offset_wells: {}
+          order: 13
+          segment:
+          - drilling
+          timezone: America/Chicago
+          unit_system: Imperial
+          category: wellPlanningDashboard
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    DashboardApp:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            settings:
+              type: object
+            coordinates:
+              type: object
+            name:
+              type: string
+            category:
+              type: string
+            segment:
+              type: array
+        relationships:
+          type: object
+          properties:
+            app:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            package:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: dashboard
+        attributes:
+          id: '123'
+          settings: {}
+          coodrinates:
+            x: 0
+            y: 15
+          name: Traces
+          category: Category1
+          segment:
+          - drilling
+          - completion
+        relationships:
+          app:
+            data:
+              id: '1'
+              type: app
+          package:
+            data:
+              id: '1'
+              type: package
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    DashboardAppList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardApp'
+    WellPlanningDashboardV2List:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WellPlanningDashboardV2'
+    WellPlanningDashboardV2Payload:
+      required:
+      - asset_id
+      - dashboard
+      properties:
+        asset_id:
+          type: integer
+          format: int64
+        dashboard:
+          type: object
+          properties:
+            name:
+              type: string
+            type:
+              type: string
+              description: custom_well_planning_dashboard (default) or default_well_planning_dashboard
+            layout:
+              type: string
+            icon:
+              type: string
+            show_workflows_help:
+              type: boolean
+            settings:
+              type: object
+              properties:
+                show_control_apps:
+                  type: boolean
+                timezones:
+                  type: object
+                  properties:
+                    asset_id_1:
+                      type: string
+                unit_systems:
+                  type: object
+                  properties:
+                    asset_id_1:
+                      type: string
+                global_offset_wells:
+                  type: object
+            order:
+              type: integer
+            segment:
+              type: array
+            timezone:
+              type: string
+            unit_system:
+              type: string
+            category:
+              type: string
+      example:
+        asset_id: 1
+        dashboard:
+          name: Well Planning
+          type: custom_well_planning_dashboard
+          layout: grid
+          icon: well-planning
+          show_workflows_help: true
+          settings:
+            show_control_apps: true
+            timezones:
+              asset_id_1: America/Chicago
+            unit_systems:
+              asset_id_1: Imperial
+            global_offset_wells: {}
+          order: 13
+          segment:
+          - drilling
+          timezone: America/Chicago
+          unit_system: Imperial
+          category: wellPlanningDashboard
+    WellPlanningDashboardV2Response:
+      properties:
+        data:
+          $ref: '#/components/schemas/WellPlanningDashboardV2'
+    WellPlanningDashboardAppV2BulkCreatePayload:
+      properties:
+        app_key:
+          type: string
+        name:
+          type: string
+        category:
+          type: string
+        assets:
+          type: array
+          items:
+            properties:
+              assetId:
+                type: string
+              rigId:
+                type: string
+              fracFleetId:
+                type: string
+              padId:
+                type: string
+        settings:
+          type: object
+        coordinates:
+          type: object
+      example:
+        app_key: corva.well-planning.app
+        assets:
+        - assetId: 1
+        - rigId: 2
+        - fracFleetId: 3
+          padId: 4
+        settings:
+          key: value
+        coordinates:
+          x: 1
+          y: 2
+          w: 3
+          h: 4
+    DashboardAppBatchUpdatePayload:
+      properties:
+        dashboard_apps:
+          type: array
+      example:
+        dashboard_apps:
+        - id: 123
+          settings: {}
+          coordinates:
+            x: 0
+            y: 1
+        - id: 124
+          settings: {}
+          coordinates:
+            x: 0
+            y: 3
+    WellPlanningDashboardAppV2Payload:
+      properties:
+        app_key:
+          type: string
+        name:
+          type: string
+        category:
+          type: string
+        settings:
+          type: object
+        coordinates:
+          type: object
+      example:
+        app_key: corva.well-planning.app
+        settings:
+          key: value
+        coordinates:
+          x: 1
+          y: 2
+          w: 3
+          h: 4
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

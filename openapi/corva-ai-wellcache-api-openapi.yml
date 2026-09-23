@@ -1,0 +1,405 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Well Cache API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: WellCache
+paths:
+  /v1/data/corva/well_cache:
+    get:
+      summary: List WellCache Records
+      tags:
+      - WellCache
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WellCacheList'
+      parameters:
+      - in: query
+        name: asset_id
+        description: Search by Asset ID
+        schema:
+          type: integer
+      - in: query
+        name: company_id
+        description: Search by Company ID
+        schema:
+          type: integer
+      operationId: getV1DataCorvaWellCache
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    WellCache:
+      properties:
+        asset_id:
+          type: integer
+          format: int64
+        well_id:
+          type: integer
+          format: int64
+        company_id:
+          type: integer
+          format: int64
+        timestamp:
+          type: integer
+        last_active_at:
+          type: integer
+        location:
+          type: object
+        corva#wits:
+          type: object
+        corva#data-well-sections-phases:
+          type: object
+        corva#data-well-sections:
+          type: object
+        corva#data-drillstring:
+          type: object
+        corva#data-casing:
+          type: object
+        corva#data-mud:
+          type: object
+        corva#directional-accuracy:
+          type: object
+        corva#data-npt-events:
+          type: object
+        corva#data-operation-summaries:
+          type: object
+        corva#completion-wits:
+          type: object
+        corva#wireline-wits:
+          type: object
+        corva#completion-data-stages:
+          type: object
+        corva#completion-data-actual-stages:
+          type: object
+        corva#completion-data-npt-events:
+          type: object
+        corva#completion-data-operation-summaries:
+          type: object
+        corva#completion-data-plugs:
+          type: object
+        corva#completion-metrics:
+          type: object
+        corva#drillout-wits:
+          type: object
+        corva#drillout-data-mud:
+          type: object
+        corva#drillout-data-drillstring:
+          type: object
+        block_height:
+          type: object
+        closest_survey_to_bit:
+          type: object
+        corva#predictive-alerts-stuck-pipe:
+          type: object
+        asset:
+          type: object
+        rig:
+          type: object
+        pad:
+          type: object
+        program:
+          type: object
+        company:
+          type: object
+        frac_fleet:
+          type: object
+        drillout_unit:
+          type: object
+        alert:
+          type: object
+        app_annotation:
+          type: object
+      example:
+        asset_id: 1072
+        well_id: 425
+        company_id: 12
+        timestamp: 1629177766
+        last_active_at: 1629177762
+        location:
+          type: Point
+          coordinates:
+          - 45
+          - 45
+        corva#wits:
+          timestamp: 1629177766
+          data:
+            state: Tripping In
+            hole_depth: 5800
+            bit_depth: 3400
+        corva#data-well-sections-phases:
+          data: {}
+        corva#data-well-sections:
+          data: {}
+        corva#data-drillstring:
+          timestamp: 1629174366
+          data:
+            id: 1
+            components:
+            - family: ''
+              length: 1
+              material: ''
+              stabilizer: ''
+              bit_type: ''
+            setting_timestamp: 1629177366
+        corva#data-casing:
+          timestamp: 1629137766
+          data:
+            outer_diameter: 2
+            inner_diameter: 1
+            setting_timestamp: 1629147366
+        corva#data-mud:
+          data:
+            mud_type: ''
+            mud_density: 0.22
+        corva#directional-accuracy:
+          data:
+            points: []
+            horizontal_plane:
+              distance: ''
+              ahead: ''
+              right: ''
+            minimum_distance_plane:
+              distance: ''
+              high: ''
+              right: ''
+            vertical_plane:
+              distance: ''
+              below: ''
+              right: ''
+        corva#data-npt-events:
+          data: {}
+        corva#data-operation-summaries:
+          data: {}
+        corva#completion-wits:
+          timestamp: 1629147366
+          stage_number: 3
+          data:
+            state: Out of Hole
+            wellhead_pressure: 5000.5
+            slurry_flow_rate_in: 45.2
+            total_proppant_concentration: 2.5
+            total_friction_reducer: 1.2
+            total_proppant_mass: 50000
+            total_clean_volume_in: 12000
+        corva#wireline-wits:
+          timestamp: 1629147366
+          stage_number: 3
+          data:
+            state: Out of Hole
+            wellhead_pressure: 5000.5
+            slurry_flow_rate_in: 45.2
+            total_proppant_concentration: 2.5
+            total_friction_reducer: 1.2
+            total_proppant_mass: 50000
+            total_clean_volume_in: 12000
+        corva#completion-data-stages:
+          data:
+            stage_number: 3
+        corva#completion-data-actual-stages:
+          data:
+            proppants: []
+            fluids: []
+        corva#completion-data-npt-events:
+          data:
+            type: ''
+            start_time: 1234345
+            end_time: 1234567
+        corva#completion-data-operation-summaries:
+          data:
+            date_time: 12345678
+            summary: ''
+        corva#completion-data-plugs:
+        - number: 1
+          bottom_depth: 10030
+        - number: 2
+          bottom_depth: 10092
+        corva#completion-metrics:
+          timestamp: 12345678
+          data:
+            type: day
+            year: 2021
+            day: 21
+            month: 10
+            metrics: []
+        corva#drillout-wits:
+          data:
+            entry_at: 12345678
+            bit_depth: 9029
+            hole_depth: 9030
+            state: In Slips
+        corva#drillout-data-mud:
+          data:
+            date: 1628522214
+            viscosity: {}
+            mud_density: 8.4
+            mud_type: Water-base
+            setting_timestamp: 1628523300
+        corva#drillout-data-drillstring:
+          timestamp: 1628530250
+          data:
+            id: 1
+            components:
+            - family: ''
+              length: 1
+              material: ''
+              stabilizer: ''
+              bit_type: ''
+            setting_timestamp: 1628539826
+        block_height:
+          min: 100.5
+          max: 500.2
+          current: 350.8
+        closest_survey_to_bit:
+          station:
+            measured_depth: 1000
+            inclination: 45.5
+            azimuth: 90.2
+            tvd: 995.5
+            northing: 10.5
+            easting: 20.3
+            dls: 2.5
+            vertical_section: 15.2
+        corva#predictive-alerts-stuck-pipe:
+          wellbore_health:
+            stuckpipe:
+              result: 0.150134
+        asset:
+          name: Well X
+          target_formation: ''
+          string_design: 4
+          state: completed
+          stats:
+            drilling:
+              start: 1234567
+              end: 12345678
+              total_cost: 1234
+              total_npt: 1234
+            completions:
+              start: 1234567
+              end: 12345678
+              frac_total_minutes: 1234
+              wireline_total_minutes: 1234
+              frac_minutes_last_24h: 345
+              wireline_minutes_last_24h: 567
+        rig:
+          id: 1234
+          name: Rig X
+          rig_classification: floating
+          floating_vessel_subtype: semi_submersible
+          platform_rig_type: fixed_platform
+          active_well:
+            id: 425
+            status: active
+        pad:
+          id: 1234
+          name: Pad X
+        program:
+          id: 1234
+          name: Program X
+        company:
+          id: 1234
+          name: Company X
+        frac_fleet:
+          id: 1234
+          name: Frac Fleet X
+        drillout_unit:
+          id: 123
+          name: Drillout Unit X
+        alert:
+          id: 123
+          alert_at: 12345678
+          decision_path: ''
+          alert_definition:
+            id: 123
+            level: ''
+        app_annotation:
+          id: 123
+          context:
+            app_annotation:
+              body: ''
+          created_at: 12345678
+          user:
+            id: 123
+            first_name: John
+            last_name: Doe
+            profile_photo: ''
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    WellCacheList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WellCache'
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

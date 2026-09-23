@@ -1,0 +1,313 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Blacklisted Datasets API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: BlacklistedDatasets
+paths:
+  /v2/groups/{group_id}/blacklisted_datasets:
+    get:
+      summary: List of blacklisted datasets
+      tags:
+      - BlacklistedDatasets
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlacklistedDataset'
+      parameters:
+      - in: path
+        name: group_id
+        description: BlacklistedDataset group ID
+        required: true
+        schema:
+          type: integer
+      operationId: getV2GroupsByGroupIdBlacklistedDatasets
+      x-operation-id-source: derived
+    post:
+      summary: Create BlacklistedDataset
+      tags:
+      - BlacklistedDatasets
+      parameters:
+      - in: path
+        name: group_id
+        description: BlacklistedDataset group ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlacklistedDataset'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBlacklistedDataset'
+        description: BlacklistedDataset Payload
+        required: true
+      operationId: postV2GroupsByGroupIdBlacklistedDatasets
+      x-operation-id-source: derived
+  /v2/groups/{group_id}/blacklisted_datasets/bulk_create:
+    post:
+      summary: Create many BlacklistedDatasets
+      tags:
+      - BlacklistedDatasets
+      parameters:
+      - in: path
+        name: group_id
+        description: BlacklistedDataset group ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlacklistedDataset'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkCreateBlacklistedDataset'
+        description: BlacklistedDataset Payload
+        required: true
+      operationId: postV2GroupsByGroupIdBlacklistedDatasetsBulkCreate
+      x-operation-id-source: derived
+  /v2/groups/{group_id}/blacklisted_datasets/{id}:
+    delete:
+      summary: Delete a blacklisted dataset
+      tags:
+      - BlacklistedDatasets
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: BlacklistDataset deleted
+      parameters:
+      - in: path
+        name: group_id
+        description: BlacklistedDataset group ID
+        required: true
+        schema:
+          type: integer
+      - in: path
+        name: id
+        description: BlacklistedDataset ID
+        required: true
+        schema:
+          type: integer
+      operationId: deleteV2GroupsByGroupIdBlacklistedDatasetsById
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    CreateBlacklistedDataset:
+      properties:
+        blacklisted_dataset:
+          type: object
+          properties:
+            dataset_id:
+              type: integer
+              format: int64
+      example:
+        blacklisted_dataset:
+          dataset_id: 12389
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    BulkCreateBlacklistedDataset:
+      properties:
+        blacklisted_dataset:
+          type: object
+          properties:
+            dataset_ids:
+              type: array
+              items:
+                type: integer
+      example:
+        blacklisted_dataset:
+          dataset_ids:
+          - 12389
+          - 10667
+          - 99778
+    BlacklistedDataset:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        relationships:
+          type: object
+          properties:
+            dataset:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            group:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+        included:
+          type: array
+          items:
+            properties:
+              oneOf:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  type:
+                    type: string
+                  attributes:
+                    properties:
+                      id:
+                        type: integer
+                        format: int64
+                      name:
+                        type: string
+              secondOf:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  type:
+                    type: string
+                  attributes:
+                    properties:
+                      id:
+                        type: integer
+                        format: int64
+                      name:
+                        type: string
+      example:
+        id: 14513
+        type: blacklisted_dataset
+        relationships:
+          dataset:
+            data:
+              id: 111
+              type: dataset
+          group:
+            data:
+              id: 222
+              type: group
+        included:
+        - id: '111'
+          type: dataset
+          attributes:
+            id: 111
+            name: provider_1#dataset.1
+          relationships: {}
+        - id: '222'
+          type: group
+          attributes:
+            id: 222
+            name: user
+          relationships: {}
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

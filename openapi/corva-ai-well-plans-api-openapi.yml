@@ -1,0 +1,681 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Well Plans API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Well Plans
+  description: Manage well plans
+paths:
+  /v2/well_plans:
+    get:
+      summary: List well plans
+      tags:
+      - Well Plans
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WellPlanV2List'
+      parameters:
+      - in: query
+        name: company_id
+        description: Filter by company ID
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: kind
+        description: Filter by well plan kind
+        required: false
+        schema:
+          type: string
+          enum:
+          - default
+          - template
+      - in: query
+        name: well_id
+        description: Filter by well ID
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: status
+        description: Filter by status
+        required: false
+        schema:
+          type: string
+          enum:
+          - draft
+          - review
+          - approved
+      - in: query
+        name: search
+        description: Case-insensitive search by well plan name
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: per_page
+        description: Number of items to list per page
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: page
+        description: Page number
+        required: false
+        schema:
+          type: integer
+      operationId: getV2WellPlans
+      x-operation-id-source: derived
+    post:
+      summary: Create a well plan
+      tags:
+      - Well Plans
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created well plan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WellPlanV2Response'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WellPlanV2Payload'
+        description: Well Plan Payload
+        required: true
+      operationId: postV2WellPlans
+      x-operation-id-source: derived
+  /v2/well_plans/copy:
+    post:
+      summary: Copy data from one well plan into another
+      tags:
+      - Well Plans
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Well plan copy created and enqueued for processing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WellPlanCopyV2Response'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WellPlanCopyV2Payload'
+        description: Well Plan Copy Payload
+        required: true
+      operationId: postV2WellPlansCopy
+      x-operation-id-source: derived
+  /v2/well_plans/{id}:
+    get:
+      summary: Show well plan
+      tags:
+      - Well Plans
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WellPlanV2Response'
+      parameters:
+      - in: path
+        name: id
+        description: Well Plan ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2WellPlansById
+      x-operation-id-source: derived
+    patch:
+      summary: Update well plan
+      tags:
+      - Well Plans
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated well plan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WellPlanV2Response'
+      parameters:
+      - in: path
+        name: id
+        description: Well Plan ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WellPlanV2UpdatePayload'
+        description: Well Plan Payload
+        required: true
+      operationId: patchV2WellPlansById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete well plan
+      tags:
+      - Well Plans
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Well plan deleted
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+      parameters:
+      - in: path
+        name: id
+        description: Well Plan ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2WellPlansById
+      x-operation-id-source: derived
+components:
+  schemas:
+    WellPlanV2List:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WellPlanV2'
+    WellPlanCopyV2Response:
+      properties:
+        data:
+          $ref: '#/components/schemas/WellPlanCopyV2'
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    WellPlanCopyV2Payload:
+      required:
+      - source_well_plan_id
+      - target_well_plan_id
+      properties:
+        source_well_plan_id:
+          type: integer
+          format: int64
+          description: Well plan to copy from
+        target_well_plan_id:
+          type: integer
+          format: int64
+          description: Well plan to copy into
+        copy_action:
+          type: string
+          enum:
+          - import_custom_dashboards
+          description: Copy action to perform (defaults to import_custom_dashboards)
+        settings:
+          type: object
+          description: Optional. Restrict the copy to specific dashboards
+          properties:
+            dashboard_ids:
+              type: array
+              items:
+                type: integer
+                format: int64
+      example:
+        source_well_plan_id: 12345
+        target_well_plan_id: 67890
+        copy_action: import_custom_dashboards
+        settings:
+          dashboard_ids:
+          - 10
+          - 11
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    WellPlanV2UpdatePayload:
+      required:
+      - well_plan
+      properties:
+        well_plan:
+          type: object
+          properties:
+            name:
+              type: string
+            status:
+              type: string
+              enum:
+              - draft
+              - review
+              - approved
+            kind:
+              type: string
+              enum:
+              - default
+              - template
+            company_id:
+              type: integer
+              format: int64
+            well_id:
+              type: integer
+              format: int64
+            rig_id:
+              type: integer
+              format: int64
+      example:
+        well_plan:
+          name: Updated plan
+          status: approved
+    WellPlanV2:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            status:
+              type: string
+              enum:
+              - draft
+              - review
+              - approved
+            kind:
+              type: string
+              enum:
+              - default
+              - template
+            company_id:
+              type: integer
+              format: int64
+            well_id:
+              type: integer
+              format: int64
+            rig_id:
+              type: integer
+              format: int64
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            well:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            rig:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            default_planning_dashboards:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                        format: int64
+                      type:
+                        type: string
+            custom_planning_dashboards:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                        format: int64
+                      type:
+                        type: string
+            target_well_plan_copies:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                        format: int64
+                      type:
+                        type: string
+      example:
+        id: 12345
+        type: well_plan
+        attributes:
+          id: 12345
+          name: Imported plan
+          status: draft
+          kind: default
+          company_id: 1
+          well_id: 2
+          rig_id: 3
+          created_at: '2026-06-18T08:00:00.000Z'
+          updated_at: '2026-06-18T08:00:00.000Z'
+        relationships:
+          company:
+            data:
+              id: '1'
+              type: company
+          well:
+            data:
+              id: '2'
+              type: well
+          rig:
+            data:
+              id: '3'
+              type: rig
+          default_planning_dashboards:
+            data: []
+          custom_planning_dashboards:
+            data:
+            - id: '10'
+              type: well_planning_dashboard
+          target_well_plan_copies:
+            data:
+            - id: '999'
+              type: well_plan_copy
+    WellPlanCopyV2:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            source_well_plan_id:
+              type: integer
+              format: int64
+            target_well_plan_id:
+              type: integer
+              format: int64
+            action:
+              type: string
+              enum:
+              - import_custom_dashboards
+            status:
+              type: string
+              enum:
+              - queued
+              - processing
+              - completed
+            settings:
+              type: object
+              description: Input options for the copy (e.g. a subset of dashboard IDs to import)
+            steps:
+              type: object
+              description: 'Progress tracking: completed step names and copied dashboard IDs'
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+      example:
+        id: 999
+        type: well_plan_copy
+        attributes:
+          id: 999
+          source_well_plan_id: 12345
+          target_well_plan_id: 67890
+          action: import_custom_dashboards
+          status: completed
+          settings:
+            dashboard_ids:
+            - 10
+            - 11
+          steps:
+            completed:
+            - copy_custom_dashboards
+            copied_dashboard_ids:
+            - 10
+            - 11
+          created_at: '2026-07-17T08:00:00.000Z'
+          updated_at: '2026-07-17T08:01:00.000Z'
+    WellPlanV2Payload:
+      required:
+      - well_plan
+      properties:
+        well_plan:
+          type: object
+          properties:
+            name:
+              type: string
+            status:
+              type: string
+              enum:
+              - draft
+              - review
+              - approved
+            kind:
+              type: string
+              enum:
+              - default
+              - template
+            company_id:
+              type: integer
+              format: int64
+            well_id:
+              type: integer
+              format: int64
+            rig_id:
+              type: integer
+              format: int64
+      example:
+        well_plan:
+          name: Imported plan
+          status: draft
+          kind: default
+          company_id: 1
+          well_id: 2
+          rig_id: 3
+    WellPlanV2Response:
+      properties:
+        data:
+          $ref: '#/components/schemas/WellPlanV2'
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

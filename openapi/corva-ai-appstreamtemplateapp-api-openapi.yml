@@ -1,0 +1,279 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva App Stream Template App API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: AppStreamTemplateApp
+paths:
+  /v2/app_stream_templates/{id}/add_app:
+    post:
+      summary: Add AppStreamTemplateApp to AppStreamTemplate
+      tags:
+      - AppStreamTemplateApp
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created AppStreamTemplateApp
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppStreamTemplateApp'
+      parameters:
+      - in: path
+        name: id
+        description: AppStreamTemplate ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppStreamTemplateAppPayload'
+        description: App Stream Template App Payload
+        required: true
+      operationId: postV2AppStreamTemplatesByIdAddApp
+      x-operation-id-source: derived
+  /v2/app_stream_templates/{app_stream_template_id}/update_app/{id}:
+    post:
+      summary: Update AppStreamTemplateApp
+      tags:
+      - AppStreamTemplateApp
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated AppStreamTemplateApp
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppStreamTemplateApp'
+      parameters:
+      - in: path
+        name: app_stream_template_id
+        description: AppStreamTemplate ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: AppStreamTemplateApp ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2AppStreamTemplatesByAppStreamTemplateIdUpdateAppById
+      x-operation-id-source: derived
+  /v2/app_stream_templates/{app_stream_template_id}/remove_app/{id}:
+    delete:
+      summary: Remove AppStreamTemplateApp from AppStreamTemplate
+      tags:
+      - AppStreamTemplateApp
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: AppStreamTemplateApp deleted
+      parameters:
+      - in: path
+        name: app_stream_template_id
+        description: AppStreamTemplate ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: AppStreamTemplateApp ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2AppStreamTemplatesByAppStreamTemplateIdRemoveAppById
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AppStreamTemplateAppPayload:
+      properties:
+        app_stream_template_app:
+          type: object
+          properties:
+            name:
+              type: string
+            settings:
+              type: object
+      example:
+        app_stream_template_app:
+          key: some_key
+          settings:
+            setting1: foobar
+            setting2: some_other_setting
+    AppStreamTemplateApp:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            app_stream_template_id:
+              type: integer
+              format: int64
+            app_id:
+              type: integer
+              format: int64
+            key:
+              type: string
+            settings:
+              type: object
+        relationships:
+          type: object
+          properties:
+            app_stream_template:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            app:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: app_stream_template_app
+        attributes:
+          id: 12345
+          app_stream_template_id: 299
+          app_id: 999
+          key: corva.streamx-witsml-source
+          settings:
+            wellbore_log: CORVA_ESD
+        relationships:
+          app_stream_template:
+            data:
+              id: 299
+              type: app_stream_template
+          app:
+            data:
+              id: 999
+              type: app
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

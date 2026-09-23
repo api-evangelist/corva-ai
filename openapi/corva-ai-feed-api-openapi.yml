@@ -1,0 +1,722 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Feed API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Feed
+  description: Manage Feed
+paths:
+  /v2/activities:
+    get:
+      summary: List activities
+      tags:
+      - Feed
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List activities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ActivitiesList'
+      parameters:
+      - in: query
+        name: segment
+        description: Segments could be nil, a comma-delimited list of strings, or an array
+        schema:
+          items:
+            type: string
+      - in: query
+        name: type
+        description: List of asset types
+        schema:
+          items:
+            type: string
+      - in: query
+        name: rigs
+        description: Ids of rigs to search for
+        schema:
+          items:
+            type: integer
+      - in: query
+        name: assets
+        description: Ids of assets to search for
+        schema:
+          items:
+            type: integer
+      - in: query
+        name: users
+        description: Ids of users to search for
+        schema:
+          items:
+            type: integer
+      - in: query
+        name: apps
+        description: Ids of apps to search for
+        schema:
+          items:
+            type: integer
+      - in: query
+        name: is_recommendation
+        description: Search geosteering_comments based on isRecommendation field
+        schema:
+          type: boolean
+      - in: query
+        name: start
+        description: Search by start time as a Unix timestamp
+        schema:
+          type: integer
+          format: timestamp
+      - in: query
+        name: end
+        description: Search by end time as a Unix timestamp
+        schema:
+          type: integer
+          format: timestamp
+      - in: query
+        name: page
+        description: Number of page
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of items to list per page
+        schema:
+          type: integer
+      operationId: getV2Activities
+      x-operation-id-source: derived
+    post:
+      summary: Create an activity
+      tags:
+      - Feed
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created activity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivitySingle'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivityPayload'
+        description: Activity Payload
+        required: true
+      operationId: postV2Activities
+      x-operation-id-source: derived
+  /v2/activities/{id}:
+    get:
+      summary: Show activity
+      tags:
+      - Feed
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivitySingle'
+      parameters:
+      - in: path
+        name: id
+        description: Activity ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2ActivitiesById
+      x-operation-id-source: derived
+    patch:
+      summary: Update an activity
+      tags:
+      - Feed
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated activity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivitySingle'
+      parameters:
+      - in: path
+        name: id
+        description: Activity ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivityPayload'
+        description: Activity Payload
+        required: true
+      operationId: patchV2ActivitiesById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete an activity
+      tags:
+      - Feed
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Activity deleted
+      parameters:
+      - in: path
+        name: id
+        description: Activity ID
+        required: true
+        schema:
+          type: integer
+      operationId: deleteV2ActivitiesById
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    ActivitiesList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/V2Activity'
+        included:
+          type: array
+          items:
+            properties:
+              oneOf:
+                type: object
+                properties:
+                  comment:
+                    $ref: '#/components/schemas/Comment'
+                  like:
+                    $ref: '#/components/schemas/Like'
+                  user:
+                    $ref: '#/components/schemas/UserMinimal'
+                  well:
+                    $ref: '#/components/schemas/ActivityWell'
+                  rig:
+                    $ref: '#/components/schemas/ActivityRig'
+    UserMinimal:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            first_name:
+              type: string
+            last_name:
+              type: string
+            email:
+              type: string
+            title:
+              type: string
+            role:
+              type: string
+            profile_photo:
+              type: string
+            terms_acceptance_at:
+              type: string
+              format: date-time
+            messaging_id:
+              type: string
+            company_id:
+              type: integer
+              format: int64
+            mobile:
+              type: string
+            last_sign_in_at:
+              type: string
+              format: date-time
+            current_segment:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            groups:
+              type: object
+              properties:
+                data:
+                  type: array
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            company:
+              type: object
+              properties:
+                data:
+                  type: array
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+      example:
+        id: 2499
+        type: user
+        attributes:
+          first_name: Derek
+          last_name: Smith
+          email: email7@corva.ai
+          title: Drilling Engineer
+          role: User role
+          profile_photo: aws_s3_file_path
+          terms_acceptance_at: '2020-02-04T12:48:59.593Z'
+          messaging_id: test_13684
+          company_id: 123
+          mobile: Mobile string
+          last_sign_in_at: '2020-02-04T12:48:59.593Z'
+          current_segment: drilling
+          created_at: '2020-02-04T12:48:59.593Z'
+        relationships:
+          groups:
+            data:
+            - id: 123
+              type: group
+            - id: 124
+              type: group
+          company:
+            data:
+              id: 123
+              type: company
+        included:
+        - id: 123
+          type: group
+          attributes:
+            id: 123
+            name: Group name
+        - id: 123
+          type: company
+          attributes:
+            id: 123
+            name: Company name
+    Comment:
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int64
+        body:
+          type: string
+        attachment:
+          type: object
+          properties:
+            file_name:
+              type: string
+            s3_link:
+              type: string
+        attachments:
+          type: array
+          items:
+            properties:
+              file_name:
+                type: string
+              s3_link:
+                type: string
+        created_at:
+          type: string
+          format: date-time
+        mentioned_users:
+          type: array
+          items:
+            $ref: '#/components/schemas/V1UserMinimal'
+        likes_count:
+          type: integer
+        user:
+          type: object
+          $ref: '#/components/schemas/V1UserMinimal'
+        likes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Like'
+    ActivityRig:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        active_well:
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+    ActivityPayload:
+      properties:
+        activity:
+          type: object
+          properties:
+            asset_id:
+              type: integer
+            app_id:
+              type: integer
+            context:
+              type: object
+            segment:
+              type: string
+      example:
+        activity:
+          asset_id: 123445
+          context:
+            post:
+              body: post body
+          segment: drilling
+          app_id: 11234
+    ActivityWell:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        parent_asset:
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+    V1UserMinimal:
+      properties:
+        id:
+          type: integer
+          format: int64
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        title:
+          type: string
+        role:
+          type: string
+        profile_photo:
+          type: string
+        current_segment:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+      example:
+        id: 1072
+        first_name: Derek
+        last_name: Smith
+        email: email7@corva.ai
+        title: Drilling Engineer
+        role: user
+        profile_photo: aws_s3_file_path
+        current_segment: drilling
+        created_at: '2020-02-04T12:48:59.593Z'
+    Like:
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int64
+        created_at:
+          type: string
+          format: date-time
+        user:
+          type: object
+          $ref: '#/components/schemas/V1UserMinimal'
+    ActivitySingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/V2Activity'
+        included:
+          type: array
+          items:
+            properties:
+              oneOf:
+                type: object
+                properties:
+                  comment:
+                    $ref: '#/components/schemas/Comment'
+                  like:
+                    $ref: '#/components/schemas/Like'
+                  user:
+                    $ref: '#/components/schemas/UserMinimal'
+                  well:
+                    $ref: '#/components/schemas/ActivityWell'
+                  rig:
+                    $ref: '#/components/schemas/ActivityRig'
+    V2Activity:
+      required:
+      - id
+      - body
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            type:
+              type: string
+            context:
+              type: object
+            created_at:
+              type: string
+              format: date-time
+            liked:
+              type: boolean
+            likes_count:
+              type: integer
+            rig:
+              type: object
+            well:
+              type: object
+        relationships:
+          type: object
+          properties:
+            user:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            well:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            rig:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            mentioned_users:
+              type: array
+              items:
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        format: int64
+                      type:
+                        type: string
+            comments:
+              type: array
+              items:
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        format: int64
+                      type:
+                        type: string
+            likes:
+              type: array
+              items:
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        format: int64
+                      type:
+                        type: string
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

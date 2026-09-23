@@ -1,0 +1,242 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Column Mapper Template Rules API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: ColumnMapperTemplateRules
+paths:
+  /v2/column_mapper_template_channels/{column_mapper_channel_id}/column_mapper_template_rules:
+    post:
+      summary: Create column mapper template rule
+      tags:
+      - ColumnMapperTemplateRules
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created column mapper template rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ColumnMapperTemplateRule'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ColumnMapperTemplateRulePayload'
+        description: Column mapper template rule payload
+      operationId: postV2ColumnMapperTemplateChannelsByColumnMapperChannelIdColumnMapperTemplateRules
+      x-operation-id-source: derived
+  /v2/column_mapper_template_channels/{column_mapper_channel_id}/column_mapper_template_rules/{id}:
+    patch:
+      summary: Update column mapper template rule
+      tags:
+      - ColumnMapperTemplateRules
+      parameters:
+      - in: path
+        name: column_mapper_template_channel_id
+        description: ColumnMapperTemplateChannel ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: ColumnMapperTemplateRule ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: Column mapper template rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ColumnMapperTemplateRule'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ColumnMapperTemplateRulePayload'
+        description: Column mapper template rule payload
+      operationId: patchV2ColumnMapperTemplateChannelsByColumnMapperChannelIdColumnMapperTemplateRulesById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete column mapper template rule
+      tags:
+      - ColumnMapperTemplateRules
+      parameters:
+      - in: path
+        name: column_mapper_channel_id
+        description: ColumnMapperTemplateChannel ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: ColumnMapperTemplateRule ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: ColumnMapperTemplateRule deleted
+          content:
+            application/json:
+              schema:
+                example:
+                  status: deleted
+      operationId: deleteV2ColumnMapperTemplateChannelsByColumnMapperChannelIdColumnMapperTemplateRulesById
+      x-operation-id-source: derived
+components:
+  schemas:
+    ColumnMapperTemplateRulePayload:
+      properties:
+        column_mapper_template_rule:
+          properties:
+            duration_in_minutes:
+              type: integer
+            conditions:
+              type: object
+              items:
+                properties:
+                  operator:
+                    type: string
+                  operand:
+                    type: integer
+                  logical_operator:
+                    type: string
+      example:
+        column_mapper_template_rule:
+          duration_in_minutes: 10
+          conditions:
+          - operator: OPERATOR_EQUAL
+            operand: 20
+            logical_operator: null
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    ColumnMapperTemplateRule:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            duration_in_minutes:
+              type: integer
+            conditions:
+              type: object
+              items:
+                properties:
+                  operator:
+                    type: string
+                    enum:
+                    - OPERATOR_EQUAL
+                    - OPERATOR_NOT_EQUAL
+                    - OPERATOR_LESS_THAN
+                    - OPERATOR_MORE_THAN
+                    - OPERATOR_LESS_THAN_EQUAL
+                    - OPERATOR_MORE_THAN_EQUAL
+                  operand:
+                    type: string
+                  logical_operator:
+                    type: string
+                    enum:
+                    - OPERATOR_AND
+                    - OPERATOR_OR
+                    - 'null'
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            column_mapper_template_channel_id:
+              type: integer
+              format: int64
+      example:
+        id: 111
+        type: column_mapper_template_rule
+        attributes:
+          id: 123
+          duration_in_minutes: 10
+          conditions:
+          - operator: OPERATOR_EQUAL
+            operand: 20
+            logical_operator: null
+          created_at: '2010-01-01T00:00:00.000Z'
+          updated_at: '2010-01-01T00:00:00.000Z'
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

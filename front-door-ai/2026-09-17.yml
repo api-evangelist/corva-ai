@@ -1,0 +1,29 @@
+# Front Door AI Index — corva-ai — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: corva-ai
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: www.corva.ai
+  final_host: www.corva.ai
+  ownership: own
+  owner: corva-ai
+  shares_host_with: null
+  inherited_from: null
+  verdict: scored
+  score: 9
+  host_score: 9
+  density: 15.82
+  words: 569
+  tiers:
+    agentic: 1
+    core: 8
+    model: 0
+  ambiguous: 10
+  top_terms:
+    AI: 8
+    predictive: 7
+    intelligence: 2
+    copilot: 1
+    smart: 1

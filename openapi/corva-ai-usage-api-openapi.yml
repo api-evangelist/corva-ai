@@ -1,0 +1,182 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Usage API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Usage
+paths:
+  /v2/usage:
+    get:
+      summary: Returns Usage records
+      tags:
+      - Usage
+      parameters:
+      - in: query
+        name: company_id
+        description: Company ID.
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: billable
+        description: Billable ID or identifier.
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: start_at
+        description: Smallest start_at time of returned records. UNIX timestamp or string.
+        required: false
+      - in: query
+        name: end_at
+        description: Largest end_at time of returned records. UNIX timestamp or string.
+        required: false
+      - in: query
+        name: segment
+        description: Segment of the records to return.
+        required: false
+        schema:
+          type: string
+          enum:
+          - drilling
+          - completion
+      - in: query
+        name: totals_by
+        description: Calculate totals grouped by selected value.
+        required: false
+        schema:
+          type: string
+          enum:
+          - app
+          - app_with_cost
+          - dataset
+          - dataset_with_cost
+          - daily
+          - daily_with_cost
+          - billable
+          - billable_with_cost
+          - segment
+          - segment_with_cost
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageTotal'
+      operationId: getV2Usage
+      x-operation-id-source: derived
+  /v2/usage/summaries:
+    get:
+      summary: Returns UsageSummary records
+      tags:
+      - Usage
+      parameters:
+      - in: query
+        name: company_id
+        description: Company ID.
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: billable
+        description: Billable ID or identifier.
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: start_at
+        description: Smallest start_at time of returned records. UNIX timestamp or string.
+        required: false
+      - in: query
+        name: end_at
+        description: Largest end_at time of returned records. UNIX timestamp or string.
+        required: false
+      - in: query
+        name: segment
+        description: Segment of the records to return.
+        required: false
+        schema:
+          type: string
+          enum:
+          - drilling
+          - completion
+      - in: query
+        name: totals_by
+        description: Calculate totals grouped by selected value.
+        required: false
+        schema:
+          type: string
+          enum:
+          - app
+          - dataset
+          - monthly
+          - billable
+          - segment
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageSummaryTotal'
+      operationId: getV2UsageSummaries
+      x-operation-id-source: derived
+components:
+  schemas:
+    UsageTotal:
+      properties:
+        resource_type:
+          type: string
+        resource_id:
+          type: integer
+        measurement:
+          type: decimal
+        full_lambda_name:
+          type: string
+        date:
+          type: string
+          format: date-time
+        cost:
+          type: decimal
+      example:
+        resource_type: Dataset
+        resource_id: 1
+        measurement: 15.3
+        full_lambda_name: environment_app-key
+        date: '2019-11-01'
+        cost: 16
+    UsageSummaryTotal:
+      properties:
+        resource_type:
+          type: string
+        resource_id:
+          type: integer
+        measurement:
+          type: decimal
+        full_lambda_name:
+          type: string
+        month:
+          type: string
+          format: date-time
+        cost:
+          type: decimal
+      example:
+        resource_type: Dataset
+        resource_id: 1
+        measurement: 15.3
+        full_lambda_name: environment_app-key
+        month: 2019-11
+        cost: 16
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

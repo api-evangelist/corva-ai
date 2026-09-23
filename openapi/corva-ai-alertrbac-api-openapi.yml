@@ -1,0 +1,558 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Alert RBAC API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: AlertRBAC
+paths:
+  /v2/alert_abilities:
+    get:
+      summary: List Assignable Alert Abilities
+      tags:
+      - AlertRBAC
+      description: Static, platform-defined catalog of every assignable alert ability with its resource class and a localized display name. Identical for every company; readable by any authenticated user. Used by the matrix UI to render the assignment grid.
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Ability catalog
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertAbilityCatalog'
+      parameters:
+      - in: query
+        name: locale
+        description: Display-name language; unknown/unsupported locales fall back to English
+        required: false
+        schema:
+          type: string
+      operationId: getV2AlertAbilities
+      x-operation-id-source: derived
+  /v2/companies/{company_id}/alert_roles:
+    get:
+      summary: List Alert Roles
+      tags:
+      - AlertRBAC
+      description: Company-defined alert roles. Gated by `update Company` (company admins only).
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Caller is not a company admin
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List of alert roles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertRoleList'
+      parameters:
+      - in: path
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: page
+        description: Page number
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Items per page
+        required: false
+        schema:
+          type: integer
+      operationId: getV2CompaniesByCompanyIdAlertRoles
+      x-operation-id-source: derived
+    post:
+      summary: Create Alert Role
+      tags:
+      - AlertRBAC
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Caller is not a company admin
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created alert role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertRoleSingle'
+        '400':
+          description: Validation error (e.g. blank or duplicate name)
+      parameters:
+      - in: path
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertRolePayload'
+        required: true
+      operationId: postV2CompaniesByCompanyIdAlertRoles
+      x-operation-id-source: derived
+  /v2/companies/{company_id}/alert_roles/{id}:
+    get:
+      summary: Get Alert Role
+      tags:
+      - AlertRBAC
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Caller is not a company admin
+        '404':
+          description: Role not found in this company
+        '200':
+          description: Alert role details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertRoleSingle'
+      parameters:
+      - in: path
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Alert role ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2CompaniesByCompanyIdAlertRolesById
+      x-operation-id-source: derived
+    patch:
+      summary: Update Alert Role
+      tags:
+      - AlertRBAC
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Caller is not a company admin
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated alert role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertRoleSingle'
+        '400':
+          description: Validation error
+      parameters:
+      - in: path
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Alert role ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertRolePayload'
+        required: true
+      operationId: patchV2CompaniesByCompanyIdAlertRolesById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete Alert Role
+      tags:
+      - AlertRBAC
+      description: Deletes the role. Rejected with 403 if any group membership still references it (detach members first).
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Caller is not a company admin, or the role is still assigned to members
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Deleted
+      parameters:
+      - in: path
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Alert role ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2CompaniesByCompanyIdAlertRolesById
+      x-operation-id-source: derived
+  /v2/companies/{company_id}/alert_roles/{id}/abilities:
+    put:
+      summary: Replace Alert Role Abilities
+      tags:
+      - AlertRBAC
+      description: Atomically replaces the full set of ability grants on the role. A single invalid entry rolls back the whole change and leaves the prior matrix intact. An explicit empty array clears every grant; a missing or malformed `abilities` key is rejected with 400.
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Caller is not a company admin
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Role with its updated abilities
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertRoleSingle'
+        '400':
+          description: Missing or malformed abilities payload, or an ability is not valid for its resource class; no change applied
+      parameters:
+      - in: path
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Alert role ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertRoleAbilitiesPayload'
+        required: true
+      operationId: putV2CompaniesByCompanyIdAlertRolesByIdAbilities
+      x-operation-id-source: derived
+  /v2/companies/{company_id}/alert_rbac/enable:
+    post:
+      summary: Enable Alert RBAC
+      tags:
+      - AlertRBAC
+      description: Turns on per-company alert RBAC enforcement. Rejected with 422 unless at least one alert role exists, so a company can never lock every alert action.
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Caller is not a company admin
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: RBAC enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertRbacStatus'
+        '422':
+          description: No alert role exists yet
+      parameters:
+      - in: path
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2CompaniesByCompanyIdAlertRbacEnable
+      x-operation-id-source: derived
+  /v2/companies/{company_id}/alert_rbac/disable:
+    post:
+      summary: Disable Alert RBAC
+      tags:
+      - AlertRBAC
+      description: Turns off enforcement. Always permitted (independent of RBAC state) so a company can never lock itself out.
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Caller is not a company admin
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: RBAC disabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertRbacStatus'
+      parameters:
+      - in: path
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2CompaniesByCompanyIdAlertRbacDisable
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AlertRolePayload:
+      properties:
+        alert_role:
+          type: object
+          required:
+          - name
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+    AlertAbilityCatalogItem:
+      required:
+      - resource_class
+      - ability
+      - name
+      properties:
+        resource_class:
+          type: string
+          description: Resource the ability applies to
+          enum:
+          - Alert
+        ability:
+          type: string
+          description: Assignable ability key (e.g. acknowledge, close, escalate)
+        name:
+          type: string
+          description: Localized display name for the matrix UI
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AlertRole:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          description: Always 'alert_role'
+        attributes:
+          type: object
+          required:
+          - id
+          - name
+          - company_id
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            description:
+              type: string
+            company_id:
+              type: integer
+              format: int64
+            member_count:
+              type: integer
+              description: Number of group memberships assigned this role
+            abilities:
+              type: array
+              description: The ability grants attached to this role
+              items:
+                properties:
+                  ability:
+                    type: string
+                  resource_class:
+                    type: string
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+    AlertRoleAbilitiesPayload:
+      properties:
+        abilities:
+          type: array
+          description: Full replacement set of ability grants for the role; applied atomically
+          items:
+            required:
+            - ability
+            - resource_class
+            properties:
+              ability:
+                type: string
+                description: Ability key from the catalog (GET /v2/alert_abilities)
+              resource_class:
+                type: string
+                description: Resource class for the ability
+                enum:
+                - Alert
+    AlertAbilityCatalog:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertAbilityCatalogItem'
+    AlertRoleList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertRole'
+    AlertRoleSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AlertRole'
+    AlertRbacStatus:
+      properties:
+        alert_rbac_enabled:
+          type: boolean
+          description: Whether per-company alert RBAC enforcement is on
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

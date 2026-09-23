@@ -1,0 +1,422 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Edr Providers API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: EdrProviders
+paths:
+  /v2/edr_providers:
+    get:
+      summary: Get a list of edr providers
+      tags:
+      - EdrProviders
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List of edr providers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EdrProviders'
+      parameters:
+      - in: query
+        name: search
+        description: Search by edr provider's name, username or link
+        schema:
+          type: string
+      - in: query
+        name: provider_type
+        description: Filter by provider type
+        schema:
+          type: string
+          enum:
+          - witsml
+          - generic
+      - in: query
+        name: last_connection_failed
+        description: Search by edr provider's last connection try
+        schema:
+          type: boolean
+      - in: query
+        name: per_page
+        description: Number of items to list per page
+        schema:
+          type: integer
+      - in: query
+        name: page
+        description: Number of page
+        schema:
+          type: integer
+      - in: query
+        name: sort
+        description: 'One or more fields to sort by. Prefix with a - for descending order. Ex: name,-id'
+        schema:
+          type: string
+          enum:
+          - id
+          - name
+          - link
+          - username
+          - provider_type
+          - created_by
+          - last_connection_time
+      - in: query
+        name: order
+        description: A sorting direction
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+      operationId: getV2EdrProviders
+      x-operation-id-source: derived
+    post:
+      summary: Create a edr provider
+      tags:
+      - EdrProviders
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Raw Edr Provider metadata. Required for generic providers and may include credentials.
+      operationId: postV2EdrProviders
+      x-operation-id-source: derived
+  /v2/edr_providers/{id}:
+    get:
+      summary: Get an Edr provider
+      tags:
+      - EdrProviders
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Edr provider
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EdrProvider'
+      parameters:
+      - in: path
+        name: id
+        description: Edr Provider ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2EdrProvidersById
+      x-operation-id-source: derived
+    patch:
+      summary: Update an Edr provider
+      tags:
+      - EdrProviders
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Edr provider
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EdrProvider'
+      parameters:
+      - in: path
+        name: id
+        description: Edr Provider ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: patchV2EdrProvidersById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete an Edr provider
+      tags:
+      - EdrProviders
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Edr provider deleted
+      parameters:
+      - in: path
+        name: id
+        description: Edr Provider ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2EdrProvidersById
+      x-operation-id-source: derived
+  /v2/edr_providers/{id}/test_connection:
+    post:
+      summary: Get an Edr provider
+      tags:
+      - EdrProviders
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Successful response with task_id to poll from
+          content:
+            application/json:
+              schema:
+                example:
+                  data:
+                    task_id: 1234-5678-9012
+      parameters:
+      - in: path
+        name: id
+        description: Edr Provider ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2EdrProvidersByIdTestConnection
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    EdrProviders:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EdrProvider'
+    EdrProvider:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            link:
+              type: string
+            username:
+              type: string
+            password:
+              type: string
+            provider_type:
+              type: string
+              enum:
+              - witsml
+              - generic
+            metadata:
+              type: object
+              description: Raw provider metadata. May include credentials for generic providers.
+            last_data_received_at:
+              type: string
+              format: date-time
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            relationships:
+              type: object
+              properties:
+                created_by:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          format: int64
+                        type:
+                          type: string
+                last_edited_by:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          format: int64
+                        type:
+                          type: string
+      example:
+        id: 111
+        type: edr_provider
+        attributes:
+          id: 111
+          name: Edr provider
+          link: https://app.corva.ai
+          username: Username
+          password: password
+          provider_type: witsml
+          metadata:
+            witsml_version: '1.4'
+          created_at: '2010-01-01T00:00:00.000Z'
+          updated_at: '2010-01-01T00:00:00.000Z'
+          last_data_received_at: '2010-01-01T00:00:00.000Z'
+        relationships:
+          created_by:
+            data:
+              id: '123'
+              type: user
+          last_edited_by:
+            data:
+              id: '123'
+              type: user
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

@@ -1,0 +1,761 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva App Runs API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: AppRuns
+paths:
+  /v2/apps/{app_id}/app_runs:
+    get:
+      summary: List of app runs
+      tags:
+      - AppRuns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppRunList'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: status
+        description: App run status
+        schema:
+          type: string
+      - in: query
+        name: well_id
+        description: Filter by well id
+        schema:
+          type: integer
+      - in: query
+        name: company_id
+        description: Filter by company id
+        schema:
+          type: integer
+      - in: query
+        name: app_ids
+        description: Filter by app ids
+        schema:
+          type: integer
+      - in: query
+        name: segment
+        description: Filter by segment
+        schema:
+          type: string
+          enum:
+          - drilling
+          - completion
+          - intervention
+      - in: query
+        name: page
+        description: Number of page
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of items to list per page
+        schema:
+          type: integer
+      operationId: getV2AppsByAppIdAppRuns
+      x-operation-id-source: derived
+    post:
+      summary: Create AppRun
+      tags:
+      - AppRuns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Successfully created app run
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppRunSingle'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppRunCreatePayload'
+        description: AppRun Payload
+        required: true
+      operationId: postV2AppsByAppIdAppRuns
+      x-operation-id-source: derived
+  /v2/apps/{app_id}/app_runs/{id}:
+    delete:
+      summary: Stop AppRun execution
+      tags:
+      - AppRuns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: App run execution successfully stopped
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                example:
+                  status: deleted
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: App Run ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: per_page
+        description: Number of app runs  per page
+        schema:
+          type: integer
+      - in: query
+        name: page
+        description: Page number
+        schema:
+          type: integer
+      operationId: deleteV2AppsByAppIdAppRunsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update AppRun status. Used only for api key authentication
+      tags:
+      - AppRuns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: App run execution successfully updated. Auto updates finished_at time.
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                example:
+                  status: updated
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: App Run ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                status:
+                  type: string
+                  description: Statuses can be running, completed, failed, terminating, stopped.
+              example:
+                status: completed
+        description: AppRun Payload
+        required: true
+      operationId: patchV2AppsByAppIdAppRunsById
+      x-operation-id-source: derived
+    get:
+      summary: Return App Run
+      tags:
+      - AppRuns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: App run successfully returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppRunSingle'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: App Run ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2AppsByAppIdAppRunsById
+      x-operation-id-source: derived
+  /v2/apps/{app_id}/app_runs/{id}/stop:
+    patch:
+      summary: Stop AppRun execution
+      tags:
+      - AppRuns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: App run execution successfully stopped
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                  notes:
+                    type: string
+                  completion_percentage:
+                    type: float
+                example:
+                  status: stopped
+                  notes: Some notes
+                  completion_percentage: 55.32
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: App Run ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: patchV2AppsByAppIdAppRunsByIdStop
+      x-operation-id-source: derived
+  /v2/apps/{app_id}/app_runs/duplicate_check:
+    get:
+      summary: Check duplicate app run
+      tags:
+      - AppRuns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Status can be warning or OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                example:
+                  status: warning
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: well_id
+        description: App run's well id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: app_stream_id
+        description: App run's app stream
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: app_version
+        description: App run's app version
+        required: true
+        schema:
+          type: string
+      operationId: getV2AppsByAppIdAppRunsDuplicateCheck
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AppRun:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            app_id:
+              type: integer
+              format: int64
+            well_asset_id:
+              type: integer
+              format: int64
+            status:
+              type: string
+            started_at:
+              type: string
+              format: date-time
+            finished_at:
+              type: string
+              format: date-time
+            created_at:
+              type: string
+              format: date-time
+            app_name:
+              type: string
+            app_version:
+              type: string
+            well_name:
+              type: string
+            app_stream_id:
+              type: integer
+              format: int64
+            app_stream_name:
+              type: string
+            app_stream_type:
+              type: string
+            notes:
+              type: string
+            completion_percentage:
+              type: string
+            segment:
+              type: array
+            dataset_names:
+              type: array
+              items:
+                properties:
+                  dataset_name:
+                    type: string
+            developer:
+              type: object
+              $ref: '#/components/schemas/AppRunDeveloper'
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: app_run
+        attributes:
+          id: 12345
+          app_id: 111
+          well_asset_id: 222
+          status: pending
+          started_at: '2020-01-01T08:00:00.000Z'
+          finished_at: '2020-01-01T08:00:00.000Z'
+          created_at: '2020-01-01T08:00:00.000Z'
+          app_name: World Domination
+          app_version: '1'
+          segment:
+          - drilling
+          - completion
+          - intervention
+          well_name: The well
+          app_stream_id: 123
+          app_stream_name: Waterfall
+          app_stream_type: scheduler
+          datasets:
+          - Dataset1
+          - Dataset2
+        relationships:
+          company:
+            data:
+              id: 12345
+              type: company
+    AppRunList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppRun'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+        - id: 12345
+          type: app_run
+          attributes:
+            id: 12345
+            app_id: 111
+            well_asset_id: 222
+            status: pending
+            started_at: '2020-01-01T08:00:00.000Z'
+            finished_at: '2020-01-01T08:00:00.000Z'
+            created_at: '2020-01-01T08:00:00.000Z'
+            app_name: World Domination
+            app_version: '1'
+            segment:
+            - drilling
+            - completion
+            - intervention
+            well_name: The well
+            app_stream_id: 123
+            app_stream_name: Waterfall
+            app_stream_type: scheduler
+            datasets:
+            - Dataset1
+            - Dataset2
+          relationships:
+            company:
+              data:
+                id: 12345
+                type: company
+        included:
+        - id: 12345
+          type: company
+          attributes:
+            id: 12345
+            name: Corva Drilling Inc.
+    AppRunDeveloper:
+      properties:
+        id:
+          type: integer
+          format: int64
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        title:
+          type: string
+        profile_photo:
+          type: string
+      example:
+        id: 1072
+        first_name: Derek
+        last_name: Smith
+        email: email7@corva.ai
+        title: Drilling Engineer
+        role: user
+        profile_photo: aws_s3_file_path
+    AppRunCreatePayload:
+      properties:
+        app_connection_id:
+          type: integer
+          format: int64
+        cache_behavior:
+          type: string
+          format: int64
+          enum:
+          - delete
+          - keep
+          - override
+        cache_override:
+          type: object
+        app_run:
+          type: object
+          properties:
+            well_id:
+              type: integer
+              format: int64
+            app_stream_id:
+              type: integer
+              format: int64
+            app_version:
+              type: string
+            datasets:
+              type: array
+              items:
+                properties:
+                  name:
+                    type: string
+            settings:
+              type: object
+              properties:
+                start:
+                  type: integer
+                end:
+                  type: integer
+                records_per_event:
+                  type: integer
+                interval:
+                  type: integer
+      example:
+        app_connection_id: '12345'
+        cache_behavior: delete
+        cache_override:
+          attribute: value
+        app_run:
+          well_id: '12345'
+          app_stream_id: '12345'
+          app_version: '1'
+          datasets:
+          - corva#activity-groups
+          - corva#activities
+          settings:
+            start: 0
+            end: 3600
+            records_per_event: 50
+            interval: 600
+    AppRunSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AppRun'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+          id: 12345
+          type: app_run
+          attributes:
+            id: 12345
+            app_id: 111
+            well_asset_id: 222
+            status: pending
+            started_at: '2020-01-01T08:00:00.000Z'
+            finished_at: '2020-01-01T08:00:00.000Z'
+            created_at: '2020-01-01T08:00:00.000Z'
+            app_name: World Domination
+            app_version: '1'
+            segment:
+            - drilling
+            - completion
+            - intervention
+            well_name: The well
+            app_stream_id: 123
+            app_stream_name: Waterfall
+            app_stream_type: scheduler
+            datasets:
+            - Dataset1
+            - Dataset2
+          relationships:
+            company:
+              data:
+                id: 12345
+                type: company
+        included:
+        - id: 12345
+          type: company
+          attributes:
+            id: 12345
+            name: Corva Drilling Inc.
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

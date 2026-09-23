@@ -1,0 +1,435 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Company API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Company
+paths:
+  /v2/app_companies:
+    get:
+      summary: List companies which have access to Apps
+      tags:
+      - Company
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyListStructure'
+      operationId: getV2AppCompanies
+      x-operation-id-source: derived
+  /v1/companies:
+    get:
+      summary: List of Companies
+      tags:
+      - Company
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyV1List'
+      parameters:
+      - in: query
+        name: existing_partial_reruns
+        description: Filter by existing partial reruns
+        schema:
+          type: boolean
+      - in: query
+        name: provider
+        description: Filter by provider (string or array of strings)
+        schema:
+          type: array
+          items:
+            type: string
+      - in: query
+        name: search
+        description: Search by name
+        schema:
+          type: string
+      - in: query
+        name: ids
+        description: Filter by company IDs (array or comma-separated string)
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - in: query
+        name: page
+        description: Number of page
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of items to list per page
+        schema:
+          type: integer
+      operationId: getV1Companies
+      x-operation-id-source: derived
+  /v1/company/{id}:
+    get:
+      summary: Show Company by ID
+      tags:
+      - Company
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          type: object
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+        '404':
+          type: object
+          description: Not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyV1'
+      parameters:
+      - in: path
+        name: id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV1CompanyById
+      x-operation-id-source: derived
+  /v1/company:
+    get:
+      summary: Show current user Company
+      tags:
+      - Company
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyV1'
+      operationId: getV1Company
+      x-operation-id-source: derived
+    patch:
+      summary: Update Company
+      tags:
+      - Company
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyV1'
+        '400':
+          type: object
+          description: Failure response
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                example:
+                  code: 400
+                  message: Name can't be blank
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyV1UnitSystemParam'
+        description: Company unit_system
+      operationId: patchV1Company
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    CompanyType:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            provider:
+              type: string
+      example:
+        id: 111
+        type: company
+        attributes:
+          id: 1
+          name: Company Name
+          provider: Provider name
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    CompanyV1UnitSystemParam:
+      properties:
+        name_of_metric:
+          type: string
+      example:
+        angle: value
+        system: imperial
+        density: ppg
+    CompanyListStructure:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanyType'
+    CompanyV1:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        time_zone:
+          type: string
+        language:
+          type: string
+        provider:
+          type: string
+        unit_system:
+          type: object
+        custom_unit_system:
+          type: object
+        custom_units:
+          type: object
+        dev_center_enabled:
+          type: boolean
+        competitor_analysis_enabled:
+          type: boolean
+        alert_workflow_id:
+          type: integer
+          format: int64
+          description: ID of the AlertWorkflow assigned to this company. Null means the global default workflow is used.
+        alert_rbac_enabled:
+          type: boolean
+          description: Whether alert role-based access control is enabled for this company.
+        tool_ordering_enabled:
+          type: boolean
+          description: Whether the Tool Ordering feature is enabled for this company.
+      example:
+        id: 123
+        name: Company Name
+        time_zone: America/Chicago
+        language: English
+        provider: Corva
+        unit_system:
+          system: imperial
+          density: ppg
+          length: ft
+          shortLength: in
+        custom_unit_system:
+          mass: kg
+          distance: m
+        custom_units:
+          mass:
+            metrics:
+            - kg
+            - g
+            - mg
+            default: kg
+          distance:
+            metrics:
+            - m
+            - km
+            - mile
+            default: m
+        dev_center_enabled: true
+        competitor_analysis_enabled: true
+        alert_workflow_id: 5
+        alert_rbac_enabled: false
+        tool_ordering_enabled: false
+    CompanyV1List:
+      items:
+        $ref: '#/components/schemas/CompanyV1'
+      example:
+      - id: 123
+        name: Company Name
+        time_zone: America/Chicago
+        language: English
+        provider: Corva
+        unit_system:
+          system: imperial
+          density: ppg
+          length: ft
+          shortLength: in
+        custom_unit_system:
+          mass: kg
+          distance: m
+        custom_units:
+          mass:
+            metrics:
+            - kg
+            - g
+            - mg
+            default: kg
+          distance:
+            metrics:
+            - m
+            - km
+            - mile
+            default: m
+        dev_center_enabled: true
+        competitor_analysis_enabled: true
+        alert_workflow_id: 5
+        alert_rbac_enabled: false
+        tool_ordering_enabled: false
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

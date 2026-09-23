@@ -1,0 +1,1212 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Dashboard App Annotations API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: DashboardAppAnnotations
+  description: Manage annotations to applications on user dashboards
+paths:
+  /v2/dashboard_app_annotations/{app_annotation_id}/comments/:
+    get:
+      summary: List comments for app annotation
+      tags:
+      - DashboardAppAnnotations
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+      parameters:
+      - in: path
+        name: app_annotation_id
+        description: App Annotation ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: per_page
+        description: Number of items to list per page
+        schema:
+          type: integer
+      - in: query
+        name: page
+        description: Number of page
+        schema:
+          type: integer
+      - in: query
+        name: offset
+        description: Offset for pagination
+        schema:
+          type: integer
+      operationId: getV2DashboardAppAnnotationsByAppAnnotationIdComments
+      x-operation-id-source: derived
+    post:
+      summary: Create a comment for app annotation
+      tags:
+      - DashboardAppAnnotations
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created app annotation comment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentPayload'
+        description: Comment Payload
+        required: true
+      operationId: postV2DashboardAppAnnotationsByAppAnnotationIdComments
+      x-operation-id-source: derived
+  /v2/dashboard_app_annotations/{app_annotation_id}/comments/{id}:
+    get:
+      summary: Show comment for app annotation
+      tags:
+      - DashboardAppAnnotations
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+      parameters:
+      - in: path
+        name: app_annotation_id
+        description: App Annotation ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Comment ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2DashboardAppAnnotationsByAppAnnotationIdCommentsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update an app annotation comment
+      tags:
+      - DashboardAppAnnotations
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated app annotation comment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+      parameters:
+      - in: path
+        name: app_annotation_id
+        description: App Annotation ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Comment ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentPayload'
+        description: Comment Payload
+        required: true
+      operationId: patchV2DashboardAppAnnotationsByAppAnnotationIdCommentsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete an app annotation comment
+      tags:
+      - DashboardAppAnnotations
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: App Annotation comment deleted
+      parameters:
+      - in: path
+        name: app_annotation_id
+        description: App Annotation ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Comment ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2DashboardAppAnnotationsByAppAnnotationIdCommentsById
+      x-operation-id-source: derived
+  /v2/dashboard_app_annotations/{app_annotation_id}/comments/{comment_id}/likes:
+    get:
+      summary: List likes for app annotation's comment
+      tags:
+      - DashboardAppAnnotations
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Like'
+      parameters:
+      - in: path
+        name: app_annotation_id
+        description: App Annotation ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: comment_id
+        description: Comment ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2DashboardAppAnnotationsByAppAnnotationIdCommentsByCommentIdLikes
+      x-operation-id-source: derived
+  /v2/dashboard_app_annotations/{app_annotation_id}/comments/{comment_id}/likes/toggle:
+    post:
+      summary: Toggle a like for app annotation's comment
+      tags:
+      - DashboardAppAnnotations
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created/deleted alert app annotation
+      parameters:
+      - in: path
+        name: app_annotation_id
+        description: App Annotation ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: comment_id
+        description: Comment ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2DashboardAppAnnotationsByAppAnnotationIdCommentsByCommentIdLikesToggle
+      x-operation-id-source: derived
+  /v2/dashboard_app_annotations/{app_annotation_id}/likes:
+    get:
+      summary: List likes for app annotation
+      tags:
+      - DashboardAppAnnotations
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Like'
+      parameters:
+      - in: path
+        name: app_annotation_id
+        description: App Annotation ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2DashboardAppAnnotationsByAppAnnotationIdLikes
+      x-operation-id-source: derived
+  /v2/dashboard_app_annotations/{app_annotation_id}/likes/toggle:
+    post:
+      summary: Toggle a like for app annotation
+      tags:
+      - DashboardAppAnnotations
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created/deleted app annotation like
+      parameters:
+      - in: path
+        name: app_annotation_id
+        description: App Annotation ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2DashboardAppAnnotationsByAppAnnotationIdLikesToggle
+      x-operation-id-source: derived
+  /v2/dashboard_app_annotations:
+    get:
+      summary: List annotations for app-asset combination
+      tags:
+      - DashboardAppAnnotations
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardAppAnnotationList'
+      parameters:
+      - in: query
+        name: active
+        description: Set to true to return active annotations, false - to return not active annotations
+        schema:
+          type: boolean
+      - in: query
+        name: asset_id
+        description: Asset ID
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: app_id
+        description: App ID
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: user_id
+        description: Filter by user ID
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: user_email
+        description: Filter by user email
+        schema:
+          type: string
+      operationId: getV2DashboardAppAnnotations
+      x-operation-id-source: derived
+    post:
+      summary: Create an app annotation
+      tags:
+      - DashboardAppAnnotations
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created app annotation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardAppAnnotationSingle'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardAppAnnotationPayload'
+        description: Annotation Payload
+        required: true
+      operationId: postV2DashboardAppAnnotations
+      x-operation-id-source: derived
+  /v2/dashboard_app_annotations/{id}:
+    get:
+      summary: Show app annotation
+      tags:
+      - DashboardAppAnnotations
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardAppAnnotationSingle'
+      parameters:
+      - in: path
+        name: id
+        description: DashboardAppAnnotation ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2DashboardAppAnnotationsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update an app annotation
+      tags:
+      - DashboardAppAnnotations
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated app annotation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardAppAnnotationSingle'
+      parameters:
+      - in: path
+        name: id
+        description: DashboardAppAnnotation ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardAppAnnotationUpdatePayload'
+        description: Annotation Payload
+        required: true
+      operationId: patchV2DashboardAppAnnotationsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete an app annotation
+      tags:
+      - DashboardAppAnnotations
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: App annotation deleted
+      parameters:
+      - in: path
+        name: id
+        description: DashboardAppAnnotation ID
+        required: true
+        schema:
+          type: integer
+      operationId: deleteV2DashboardAppAnnotationsById
+      x-operation-id-source: derived
+  /v2/dashboard_app_annotations/{id}/close:
+    get:
+      summary: Closes app annotation for curent user, returns new last annotation for user and…
+      tags:
+      - DashboardAppAnnotations
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardAppAnnotationSingle'
+      parameters:
+      - in: path
+        name: id
+        description: DashboardAppAnnotation ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2DashboardAppAnnotationsByIdClose
+      x-operation-id-source: derived
+  /v2/dashboard_app_annotations/last_annotations:
+    get:
+      summary: Returns last app annotations for current user and dashboard or dashboard-asset…
+      tags:
+      - DashboardAppAnnotations
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardAppWithLastAnnotationList'
+      parameters:
+      - in: query
+        name: dashboard_id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: asset_id
+        description: Asset ID
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: parent_asset_id
+        description: Parent Asset ID
+        required: false
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2DashboardAppAnnotationsLastAnnotations
+      x-operation-id-source: derived
+components:
+  schemas:
+    DashboardAppWithLastAnnotation:
+      properties:
+        id:
+          type: integer
+          format: int64
+        last_annotation:
+          type: object
+          $ref: '#/components/schemas/DashboardAppAnnotation'
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    DashboardAppAnnotationList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardAppAnnotation'
+        included:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserMinimal'
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    CommentPayload:
+      properties:
+        comment:
+          type: object
+          properties:
+            body:
+              type: string
+            attachment:
+              type: object
+              properties:
+                file_name:
+                  type: string
+                s3_link:
+                  type: string
+            attachments:
+              type: array
+              items:
+                properties:
+                  file_name:
+                    type: string
+                  s3_link:
+                    type: string
+      example:
+        comment:
+          body: Hey @[user:57689|Derek]
+          attachments:
+          - file_name: report.pdf
+            s3_link: some_s3_link
+    UserMinimal:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            first_name:
+              type: string
+            last_name:
+              type: string
+            email:
+              type: string
+            title:
+              type: string
+            role:
+              type: string
+            profile_photo:
+              type: string
+            terms_acceptance_at:
+              type: string
+              format: date-time
+            messaging_id:
+              type: string
+            company_id:
+              type: integer
+              format: int64
+            mobile:
+              type: string
+            last_sign_in_at:
+              type: string
+              format: date-time
+            current_segment:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            groups:
+              type: object
+              properties:
+                data:
+                  type: array
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            company:
+              type: object
+              properties:
+                data:
+                  type: array
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+      example:
+        id: 2499
+        type: user
+        attributes:
+          first_name: Derek
+          last_name: Smith
+          email: email7@corva.ai
+          title: Drilling Engineer
+          role: User role
+          profile_photo: aws_s3_file_path
+          terms_acceptance_at: '2020-02-04T12:48:59.593Z'
+          messaging_id: test_13684
+          company_id: 123
+          mobile: Mobile string
+          last_sign_in_at: '2020-02-04T12:48:59.593Z'
+          current_segment: drilling
+          created_at: '2020-02-04T12:48:59.593Z'
+        relationships:
+          groups:
+            data:
+            - id: 123
+              type: group
+            - id: 124
+              type: group
+          company:
+            data:
+              id: 123
+              type: company
+        included:
+        - id: 123
+          type: group
+          attributes:
+            id: 123
+            name: Group name
+        - id: 123
+          type: company
+          attributes:
+            id: 123
+            name: Company name
+    Comment:
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int64
+        body:
+          type: string
+        attachment:
+          type: object
+          properties:
+            file_name:
+              type: string
+            s3_link:
+              type: string
+        attachments:
+          type: array
+          items:
+            properties:
+              file_name:
+                type: string
+              s3_link:
+                type: string
+        created_at:
+          type: string
+          format: date-time
+        mentioned_users:
+          type: array
+          items:
+            $ref: '#/components/schemas/V1UserMinimal'
+        likes_count:
+          type: integer
+        user:
+          type: object
+          $ref: '#/components/schemas/V1UserMinimal'
+        likes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Like'
+    DashboardAppAnnotationUpdatePayload:
+      properties:
+        app_annotation:
+          type: object
+          properties:
+            body:
+              type: text
+            active_until:
+              type: string
+              format: date-time
+            attachment:
+              type: object
+      example:
+        app_annotation:
+          body: My App Annotation
+          active_until: Wed, 29 Jan 2020 19:11:00 +0000
+          attachment:
+            file_name: report.pdf
+            s3_link: some_s3_link
+    DashboardAppAnnotation:
+      required:
+      - id
+      - body
+      - asset_id
+      - app_id
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            body:
+              type: text
+            active_until:
+              type: string
+              format: date-time
+            comments_count:
+              type: integer
+            asset_id:
+              type: integer
+              format: int64
+            app_id:
+              type: integer
+              format: int64
+            attachment:
+              type: object
+            company_id:
+              type: integer
+              format: int64
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            user:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            mentioned_users:
+              type: array
+              items:
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        format: int64
+                      type:
+                        type: string
+            comment_users:
+              type: array
+              items:
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        format: int64
+                      type:
+                        type: string
+      example:
+        id: 42
+        type: app_annotation
+        attributes:
+          body: My new dashboard app annotation
+          active_until: '2020-01-31T15:57:48.539Z'
+          comments_count: 4
+          asset_id: 12345
+          app_id: 12345
+          created_at: '2020-01-31T15:57:48.539Z'
+          updated_at: '2020-01-31T15:57:48.539Z'
+          attachment:
+            file_name: report.pdf
+            s3_link: some_s3_link
+        relationships:
+          user:
+            data:
+              id: 2499
+              type: user
+          mentioned_users:
+          - data:
+              id: 2499
+              type: user
+          comment_users:
+          - data:
+              id: 2499
+              type: user
+    DashboardAppAnnotationPayload:
+      properties:
+        app_annotation:
+          type: object
+          properties:
+            body:
+              type: text
+            active_until:
+              type: string
+              format: date-time
+            asset_id:
+              type: integer
+              format: int64
+            app_id:
+              type: integer
+              format: int64
+            settings:
+              type: object
+            attachment:
+              type: object
+      example:
+        app_annotation:
+          body: My App Annotation
+          active_until: Wed, 29 Jan 2020 19:11:00 +0000
+          asset_id: 12344
+          app_id: 12344
+          settings:
+            assetId: 12344
+          attachment:
+            file_name: report.pdf
+            s3_link: some_s3_link
+    DashboardAppWithLastAnnotationList:
+      type: array
+      items:
+        $ref: '#/components/schemas/DashboardAppWithLastAnnotation'
+    V1UserMinimal:
+      properties:
+        id:
+          type: integer
+          format: int64
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        title:
+          type: string
+        role:
+          type: string
+        profile_photo:
+          type: string
+        current_segment:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+      example:
+        id: 1072
+        first_name: Derek
+        last_name: Smith
+        email: email7@corva.ai
+        title: Drilling Engineer
+        role: user
+        profile_photo: aws_s3_file_path
+        current_segment: drilling
+        created_at: '2020-02-04T12:48:59.593Z'
+    DashboardAppAnnotationSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/DashboardAppAnnotation'
+        included:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserMinimal'
+    Like:
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int64
+        created_at:
+          type: string
+          format: date-time
+        user:
+          type: object
+          $ref: '#/components/schemas/V1UserMinimal'
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

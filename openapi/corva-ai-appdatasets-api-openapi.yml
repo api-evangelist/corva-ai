@@ -1,0 +1,338 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva App Datasets API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: AppDatasets
+  description: Manage App Datasets
+paths:
+  /v2/apps/{app_id}/app_datasets:
+    get:
+      summary: List app_datasets for app
+      tags:
+      - AppDatasets
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppDatasetList'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: dataset_operation
+        description: Filtering by dataset operation. Can be read or write.
+        schema:
+          type: string
+      operationId: getV2AppsByAppIdAppDatasets
+      x-operation-id-source: derived
+    post:
+      summary: Create an AppDataset
+      tags:
+      - AppDatasets
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created AppDataset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppDataset'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppDatasetPayload'
+        description: AppDataset Payload
+        required: true
+      operationId: postV2AppsByAppIdAppDatasets
+      x-operation-id-source: derived
+  /v2/apps/{app_id}/app_datasets/{app_dataset_id}:
+    delete:
+      summary: Delete an AppDataset
+      tags:
+      - AppDatasets
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: AppDataset deleted
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: AppDataset ID
+        required: true
+        schema:
+          type: integer
+      operationId: deleteV2AppsByAppIdAppDatasetsByAppDatasetId
+      x-operation-id-source: derived
+  /v2/apps/{app_id}/app_datasets/mark_followable:
+    patch:
+      summary: Mark an AppDataset as followable
+      tags:
+      - AppDatasets
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: AppDataset marked as followable
+          content:
+            application/json:
+              schema:
+                properties:
+                  updated:
+                    type: string
+                example:
+                  updated: true
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: dataset_id
+        description: Dataset ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: patchV2AppsByAppIdAppDatasetsMarkFollowable
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AppDatasetPayload:
+      properties:
+        app_dataset:
+          type: object
+          properties:
+            dataset_id:
+              type: integer
+              format: int64
+            operations:
+              type: array
+              items:
+                type: string
+      example:
+        app_dataset:
+          dataset_id: 12345
+          operations:
+          - read
+          - write
+    AppDataset:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            operations:
+              type: array
+            dataset_name:
+              type: string
+            dataset_provider:
+              type: string
+            data_type:
+              type: string
+            merge_strategy:
+              type: string
+        relationships:
+          type: object
+          properties:
+            app:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            dataset:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: app_dataset
+        attributes:
+          id: 12345
+          operations:
+          - read
+          - write
+          dataset_name: corva#dataset.1
+          dataset_provider: corva
+          data_type: time
+        relationships:
+          app:
+            data:
+              id: 12345
+              type: app
+          dataset:
+            data:
+              id: 12345
+              type: dataset
+    AppDatasetList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppDataset'
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

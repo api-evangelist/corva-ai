@@ -1,0 +1,312 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva App Logs API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: AppLogs
+paths:
+  /v2/apps/{app_id}/app_logs:
+    get:
+      summary: List log streams for app
+      tags:
+      - AppLogs
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppLogStreamList'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: next_token
+        description: The token for the next set of items to return
+        schema:
+          type: string
+      operationId: getV2AppsByAppIdAppLogs
+      x-operation-id-source: derived
+  /v2/apps/{app_id}/app_logs/events/{log_stream}:
+    get:
+      summary: List events for log stream
+      tags:
+      - AppLogs
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppLogStreamEventList'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: log_stream
+        description: Log stream name
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: start_time
+        description: The start of the time range, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: end_time
+        description: The end of the time range, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: next_token
+        description: The token for the next set of items to return
+        schema:
+          type: string
+      operationId: getV2AppsByAppIdAppLogsEventsByLogStream
+      x-operation-id-source: derived
+  /v2/apps/{app_id}/app_logs/search:
+    get:
+      summary: Search log events
+      tags:
+      - AppLogs
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppLogFilterEventList'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: log_stream
+        description: Log stream name
+        schema:
+          type: string
+      - in: query
+        name: asset_id
+        description: Asset ID by which logs will be filtered. F.e. ASSET=48238
+        schema:
+          type: string
+      - in: query
+        name: filter
+        description: Filter pattern
+        schema:
+          type: string
+      - in: query
+        name: start_time
+        description: The start of the time range, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: end_time
+        description: The end of the time range, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: next_token
+        description: The token for the next set of items to return
+        schema:
+          type: string
+      operationId: getV2AppsByAppIdAppLogsSearch
+      x-operation-id-source: derived
+components:
+  schemas:
+    AppLogStreamEventList:
+      properties:
+        data:
+          type: object
+          properties:
+            next_forward_token:
+              type: string
+            next_backward_token:
+              type: string
+            events:
+              type: array
+              items:
+                $ref: '#/components/schemas/AppLogStreamEvent'
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AppLogStreamEvent:
+      properties:
+        message:
+          type: string
+        timestamp:
+          type: integer
+          format: int64
+        ingestion_time:
+          type: integer
+          format: int64
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AppLogFilterEventList:
+      properties:
+        data:
+          type: object
+          properties:
+            next_token:
+              type: string
+            events:
+              type: array
+              items:
+                $ref: '#/components/schemas/AppLogFilterEvent'
+    AppLogStreamList:
+      properties:
+        data:
+          type: object
+          properties:
+            next_token:
+              type: string
+            log_streams:
+              type: array
+              items:
+                $ref: '#/components/schemas/AppLogStream'
+    AppLogStream:
+      properties:
+        log_stream_name:
+          type: string
+        first_event_timestamp:
+          type: integer
+          format: int64
+        last_event_timestamp:
+          type: integer
+          format: int64
+    AppLogFilterEvent:
+      properties:
+        log_stream_name:
+          type: string
+        message:
+          type: string
+        timestamp:
+          type: integer
+          format: int64
+        ingestion_time:
+          type: integer
+          format: int64
+        event_id:
+          type: string
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

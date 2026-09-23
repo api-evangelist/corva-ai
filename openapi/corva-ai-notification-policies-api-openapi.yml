@@ -1,0 +1,438 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Notification Policies API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Notification Policies
+paths:
+  /v2/notification_policies:
+    get:
+      summary: List Notification Policies
+      tags:
+      - Notification Policies
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List of notification policies accessible to the current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPolicyList'
+      parameters:
+      - in: query
+        name: page
+        description: Page number
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Items per page
+        required: false
+        schema:
+          type: integer
+      operationId: getV2NotificationPolicies
+      x-operation-id-source: derived
+    post:
+      summary: Create Notification Policy
+      tags:
+      - Notification Policies
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: A scope row references a record the user cannot read
+        '404':
+          description: A scope row references a record that does not exist
+        '200':
+          description: Created notification policy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPolicySingle'
+        '400':
+          description: Validation error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationPolicyPayload'
+        required: true
+      operationId: postV2NotificationPolicies
+      x-operation-id-source: derived
+  /v2/notification_policies/{id}:
+    get:
+      summary: Get Notification Policy
+      tags:
+      - Notification Policies
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Notification policy details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPolicySingle'
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2NotificationPoliciesById
+      x-operation-id-source: derived
+    patch:
+      summary: Update Notification Policy
+      tags:
+      - Notification Policies
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: A scope row references a record the user cannot read
+        '404':
+          description: A scope row references a record that does not exist
+        '200':
+          description: Updated notification policy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPolicySingle'
+        '400':
+          description: Validation error
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationPolicyPayload'
+        required: true
+      operationId: patchV2NotificationPoliciesById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete Notification Policy
+      tags:
+      - Notification Policies
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Deleted
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2NotificationPoliciesById
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotificationPolicyScopeInput:
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Present when updating an existing scope row
+        scope_type:
+          type: string
+          enum:
+          - User
+          - Company
+          - Pad
+          - Rig
+          - FracFleet
+          - InterventionUnit
+          - Well
+          - AlertGroup
+          - AlertDefinition
+        scope_id:
+          type: integer
+          format: int64
+        _destroy:
+          type: boolean
+          description: Set true to remove this scope row
+    NotificationPolicySingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/NotificationPolicy'
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    NotificationPolicyFilterInput:
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Present when updating an existing filter row
+        key:
+          type: string
+        values:
+          type: array
+          items:
+            type: string
+        _destroy:
+          type: boolean
+          description: Set true to remove this filter row
+    NotificationPolicyThresholdInput:
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Present when updating an existing threshold row
+        kind:
+          type: string
+          enum:
+          - occurrences
+          - duration
+        value:
+          type: integer
+        _destroy:
+          type: boolean
+          description: Set true to remove this threshold row
+    NotificationPolicy:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          type: object
+          required:
+          - id
+          - context
+          - scope
+          - enabled
+          properties:
+            id:
+              type: integer
+              format: int64
+            user_id:
+              type: integer
+              format: int64
+              description: Owning user; NULL for system policies such as the universal default
+            context:
+              type: string
+              enum:
+              - alerts
+            scope:
+              type: string
+              enum:
+              - default
+              - company
+              - user
+              - pad
+              - rig
+              - frac_fleet
+              - intervention_unit
+              - well
+              - alert_group
+              - alert_definition
+              - alert_group_and_pad
+              - alert_group_and_rig
+              - alert_group_and_frac_fleet
+              - alert_group_and_intervention_unit
+              - alert_group_and_well
+              - alert_definition_and_pad
+              - alert_definition_and_rig
+              - alert_definition_and_frac_fleet
+              - alert_definition_and_intervention_unit
+              - alert_definition_and_well
+            enabled:
+              type: boolean
+            snoozed_until:
+              type: string
+              format: date-time
+              description: When set to a future time the policy is snoozed
+            invalidated_at:
+              type: string
+              format: date-time
+              description: Set when a scope target was deleted; NULL while active
+            invalidation_reason:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+    NotificationPolicyList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationPolicy'
+    NotificationPolicyPayload:
+      required:
+      - notification_policy
+      properties:
+        notification_policy:
+          type: object
+          required:
+          - context
+          - scope
+          properties:
+            context:
+              type: string
+              enum:
+              - alerts
+            scope:
+              type: string
+              enum:
+              - default
+              - company
+              - user
+              - pad
+              - rig
+              - frac_fleet
+              - intervention_unit
+              - well
+              - alert_group
+              - alert_definition
+              - alert_group_and_pad
+              - alert_group_and_rig
+              - alert_group_and_frac_fleet
+              - alert_group_and_intervention_unit
+              - alert_group_and_well
+              - alert_definition_and_pad
+              - alert_definition_and_rig
+              - alert_definition_and_frac_fleet
+              - alert_definition_and_intervention_unit
+              - alert_definition_and_well
+            enabled:
+              type: boolean
+            snoozed_until:
+              type: string
+              format: date-time
+            notification_type_ids:
+              type: array
+              items:
+                type: integer
+                format: int64
+            notification_policy_scopes_attributes:
+              type: array
+              items:
+                $ref: '#/components/schemas/NotificationPolicyScopeInput'
+            notification_policy_filters_attributes:
+              type: array
+              items:
+                $ref: '#/components/schemas/NotificationPolicyFilterInput'
+            notification_policy_thresholds_attributes:
+              type: array
+              items:
+                $ref: '#/components/schemas/NotificationPolicyThresholdInput'
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

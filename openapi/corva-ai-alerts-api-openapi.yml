@@ -1,0 +1,4388 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Alerts API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Alerts
+  description: Manage Alerts
+paths:
+  /v2/alerts/{alert_id}/activities:
+    get:
+      summary: List Alert Activities
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Alert not found
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        type:
+                          type: string
+                        attributes:
+                          $ref: '#/components/schemas/AlertActivity'
+        '400':
+          description: Invalid activity filter
+      parameters:
+      - in: path
+        name: alert_id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: order
+        description: 'Sort order by created_at (started_at is an alias): desc (default) or asc'
+        schema:
+          type: string
+          enum:
+          - desc
+          - asc
+      - in: query
+        name: activity
+        description: Filter by activity type
+        schema:
+          type: string
+          enum:
+          - status_change
+          - classification
+          - level_change
+          - escalation
+          - renotified
+          - rearmed
+      - in: query
+        name: user_id
+        description: Filter by user ID
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: page
+        description: Page number
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Items per page, default 25, max 100
+        schema:
+          type: integer
+      operationId: getV2AlertsByAlertIdActivities
+      x-operation-id-source: derived
+  /v1/alerts/{alert_id}/comments/:
+    get:
+      summary: List comments for alert
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+      parameters:
+      - in: path
+        name: alert_id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV1AlertsByAlertIdComments
+      x-operation-id-source: derived
+    post:
+      summary: Create a comment for alert
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created alert comment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentPayload'
+        description: Comment Payload
+        required: true
+      operationId: postV1AlertsByAlertIdComments
+      x-operation-id-source: derived
+  /v1/alerts/{alert_id}/comments/{id}:
+    get:
+      summary: Show comment for alert
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+      parameters:
+      - in: path
+        name: alert_id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Comment ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV1AlertsByAlertIdCommentsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update an alert comment
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated alert comment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+      parameters:
+      - in: path
+        name: alert_id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Comment ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentPayload'
+        description: Comment Payload
+        required: true
+      operationId: patchV1AlertsByAlertIdCommentsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete an alert comment
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Alert comment deleted
+      parameters:
+      - in: path
+        name: alert_id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Comment ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV1AlertsByAlertIdCommentsById
+      x-operation-id-source: derived
+  /v1/alerts/{alert_id}/comments/{comment_id}/likes:
+    get:
+      summary: List likes for alert's comment
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Like'
+      parameters:
+      - in: path
+        name: alert_id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: comment_id
+        description: Comment ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV1AlertsByAlertIdCommentsByCommentIdLikes
+      x-operation-id-source: derived
+  /v1/alerts/{alert_id}/comments/{comment_id}/likes/toggle:
+    post:
+      summary: Toggle a like for alert's comment
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created/deleted alert like
+      parameters:
+      - in: path
+        name: alert_id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: comment_id
+        description: Comment ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV1AlertsByAlertIdCommentsByCommentIdLikesToggle
+      x-operation-id-source: derived
+  /v2/alerts/{alert_id}/comments:
+    get:
+      summary: List Alert Comments
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Alert or corresponding activity not found
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CommentV2'
+      parameters:
+      - in: path
+        name: alert_id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2AlertsByAlertIdComments
+      x-operation-id-source: derived
+    post:
+      summary: Create Alert Comment
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Alert or corresponding activity not found
+        '200':
+          description: Created alert comment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CommentV2'
+        '400':
+          description: Missing comment payload
+        '422':
+          description: Validation error
+      parameters:
+      - in: path
+        name: alert_id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentPayload'
+        description: Comment Payload
+        required: true
+      operationId: postV2AlertsByAlertIdComments
+      x-operation-id-source: derived
+  /v1/alerts/{alert_id}/likes:
+    get:
+      summary: List likes for alert
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Like'
+      parameters:
+      - in: path
+        name: alert_id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV1AlertsByAlertIdLikes
+      x-operation-id-source: derived
+  /v1/alerts/{alert_id}/likes/toggle:
+    post:
+      summary: Toggle a like for alert
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created/deleted alert like
+      parameters:
+      - in: path
+        name: alert_id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV1AlertsByAlertIdLikesToggle
+      x-operation-id-source: derived
+  /v1/alerts/definitions:
+    get:
+      summary: List Alert Definitions
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AlertDefinition'
+      parameters:
+      - in: query
+        name: segment
+        description: Segments could be nil, a comma-delimited list of strings, or an array
+        schema:
+          items:
+            type: string
+            enum:
+            - drilling
+            - completion
+            - intervention
+      - in: query
+        name: template_type
+        description: 'Filter by template type: standard or preset'
+        schema:
+          type: string
+      - in: query
+        name: topic
+        description: Filter by topic
+        schema:
+          type: string
+      operationId: getV1AlertsDefinitions
+      x-operation-id-source: derived
+  /v1/alerts/definitions/context:
+    get:
+      summary: Gather Alert Definition Context
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContextResponse'
+      parameters:
+      - in: query
+        name: asset_id
+        description: Asset to gather context from
+      - in: query
+        name: identifier
+        description: Alert definition identifier to check against
+      operationId: getV1AlertsDefinitionsContext
+      x-operation-id-source: derived
+  /v1/alerts/definitions/trigger:
+    post:
+      summary: Trigger Alert
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TriggerResponse'
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Timestamp to trigger the alert at. Defaults to the current time.
+      operationId: postV1AlertsDefinitionsTrigger
+      x-operation-id-source: derived
+  /v1/alerts/definitions/close:
+    post:
+      summary: Close Open Alerts
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                status: OK
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Timestamp to close the alert at. Defaults to the current time.
+      operationId: postV1AlertsDefinitionsClose
+      x-operation-id-source: derived
+  /v1/alerts/definitions/{alert_definition_id}/check:
+    post:
+      summary: Check Alert Definition in point of time
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                status: OK
+                $ref: '#/components/schemas/CheckResponse'
+      parameters:
+      - in: path
+        name: alert_definition_id
+        description: Alert definition to check
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Timestamp
+      operationId: postV1AlertsDefinitionsByAlertDefinitionIdCheck
+      x-operation-id-source: derived
+  /v1/alerts/definitions/templates/{template_type}:
+    get:
+      summary: List Alert Definition Templates
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: array
+          description: Successful response - returns templates or their overrides
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AlertDefinition'
+        '400':
+          description: Invalid template_type or scope parameter
+      parameters:
+      - in: path
+        name: template_type
+        required: true
+        description: 'Template type: standard or preset'
+        schema:
+          type: string
+      - in: query
+        name: scope
+        required: false
+        description: Library shelf to list. "corva" (default) lists Corva-owned templates, swapping in the caller's copy where one exists. "company" lists templates owned by the current company. "user" lists the current user's personal templates.
+        schema:
+          type: string
+          enum:
+          - corva
+          - company
+          - user
+      operationId: getV1AlertsDefinitionsTemplatesByTemplateType
+      x-operation-id-source: derived
+  /v1/alerts/definitions/{id}/save_as_template:
+    post:
+      summary: Save Alert Definition as Library Template
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Caller is not allowed to create templates on the target shelf
+        '404':
+          description: Alert definition not found
+        '200':
+          description: The created template
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertDefinition'
+        '400':
+          description: Invalid template_type or scope parameter
+      parameters:
+      - in: path
+        name: id
+        required: true
+        description: Source alert definition id
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: template_type
+        required: true
+        description: 'Template type: standard or preset'
+        schema:
+          type: string
+      - in: query
+        name: scope
+        required: false
+        description: Target library shelf. "company" (default) saves a company-owned template, "user" saves a personal template for the current user, "corva" saves to the Corva library (Corva principals only). The source definition is unaffected.
+        schema:
+          type: string
+          enum:
+          - corva
+          - company
+          - user
+      operationId: postV1AlertsDefinitionsByIdSaveAsTemplate
+      x-operation-id-source: derived
+  /v1/alerts/definitions/{alert_definition_id}/enable:
+    post:
+      summary: Enable Alert Definition Template
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: User is not authorized to update the given alert group
+        '404':
+          description: Alert definition not found, belongs to another company, or alert group not found
+        '200':
+          type: array
+          description: Successful response - returns enabled alerts (new copy or existing overrides)
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AlertDefinition'
+        '400':
+          description: Enabled alert is not valid for the given alert group
+      parameters:
+      - in: path
+        name: alert_definition_id
+        required: true
+        description: Template alert definition ID to enable
+        schema:
+          type: integer
+      - in: query
+        name: alert_group_id
+        required: false
+        description: Optional alert group to associate the enabled alert with
+        schema:
+          type: integer
+      operationId: postV1AlertsDefinitionsByAlertDefinitionIdEnable
+      x-operation-id-source: derived
+  /v1/alerts/definitions/{alert_definition_id}/disable:
+    post:
+      summary: Disable Alert Definition Template
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Alert definition not found or belongs to another company
+        '200':
+          type: object
+          description: Successful response - returns disabled alert override
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertDefinition'
+        '400':
+          description: No enabled alert definition found for this template
+      parameters:
+      - in: path
+        name: alert_definition_id
+        required: true
+        description: Template alert definition ID to disable
+        schema:
+          type: integer
+      operationId: postV1AlertsDefinitionsByAlertDefinitionIdDisable
+      x-operation-id-source: derived
+  /v2/alerts/metrics:
+    get:
+      summary: Alert Occurrence Metrics
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_occurrences:
+                    type: integer
+                    description: Occurrence rows in the window
+                  levels:
+                    type: object
+                    description: Per-fire level => occurrence count; sums to total_occurrences. Occurrences with no level anywhere are keyed UNKNOWN
+                  alert_definitions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        alert_definition_id:
+                          type: integer
+                          format: int64
+                        alert_definition_name:
+                          type: string
+                        count:
+                          type: integer
+                          description: Occurrence rows in the window for this definition
+        '400':
+          description: Invalid timestamp, range, or top
+      parameters:
+      - in: query
+        name: last_alert_start
+        description: Occurrence window lower bound (ms); defaults to 7 days ago
+        schema:
+          type: integer
+      - in: query
+        name: last_alert_end
+        description: Occurrence window upper bound (ms); defaults to now
+        schema:
+          type: integer
+      - in: query
+        name: top
+        description: Number of top alert definitions to return; defaults to 10, max 50
+        schema:
+          type: integer
+      - in: query
+        name: levels
+        description: Filter by per-fire level; comma-separated
+        schema:
+          type: string
+      - in: query
+        name: alert_definition_id
+        description: Filter by Alert Definition ID; comma-separated
+        schema:
+          type: string
+      - in: query
+        name: name
+        description: Filter by Alert Definition name
+        schema:
+          type: string
+      - in: query
+        name: assets
+        description: Filter by asset IDs; comma-separated
+        schema:
+          type: string
+      - in: query
+        name: rigs
+        description: Filter by rig (parent asset) IDs; comma-separated
+        schema:
+          type: string
+      - in: query
+        name: interventions
+        description: Filter by intervention unit IDs; comma-separated
+        schema:
+          type: string
+      - in: query
+        name: segment
+        description: Filter by segment; comma-separated
+        schema:
+          type: string
+      - in: query
+        name: status
+        description: Filter by Alert status; comma-separated
+        schema:
+          type: string
+      - in: query
+        name: subscription
+        description: Restrict to the caller's subscriptions
+        schema:
+          type: boolean
+      operationId: getV2AlertsMetrics
+      x-operation-id-source: derived
+  /v2/alerts/notifications/types:
+    get:
+      summary: List Alert Notification Types
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Notification types available for alert subscriptions, ordered by name; the internal broadcast type is excluded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertNotificationTypeV2List'
+      operationId: getV2AlertsNotificationsTypes
+      x-operation-id-source: derived
+  /v2/alerts/{alert_id}/occurrences:
+    get:
+      summary: List Alert Occurrences
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Alert not found
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        type:
+                          type: string
+                        attributes:
+                          $ref: '#/components/schemas/AlertOccurrence'
+      parameters:
+      - in: path
+        name: alert_id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: sort
+        description: 'Field to sort by: start_at (default) or severity'
+        schema:
+          type: string
+          enum:
+          - start_at
+          - severity
+      - in: query
+        name: order
+        description: 'Sort direction: asc (default) or desc'
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - in: query
+        name: page
+        description: Page number (enables pagination)
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Items per page, max 1000 (enables pagination)
+        schema:
+          type: integer
+      operationId: getV2AlertsByAlertIdOccurrences
+      x-operation-id-source: derived
+  /v2/alerts/{alert_id}/occurrences/{id}/classify:
+    post:
+      summary: Classify an Alert Occurrence
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Alert or occurrence not found
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+                      attributes:
+                        $ref: '#/components/schemas/AlertOccurrence'
+        '400':
+          description: Missing payload or invalid classification
+      description: Classifying the latest occurrence also classifies the alert; older occurrences are recorded on the occurrence only.
+      parameters:
+      - in: path
+        name: alert_id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Alert Occurrence ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertOccurrenceClassificationPayload'
+        description: Classification payload; classified_by/classified_at are set to the current user and time
+        required: true
+      operationId: postV2AlertsByAlertIdOccurrencesByIdClassify
+      x-operation-id-source: derived
+  /v2/alerts/occurrences/series:
+    get:
+      summary: Alert Occurrence Time-Series
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  interval:
+                    type: string
+                    enum:
+                    - hour
+                    - day
+                    - month
+                  timezone:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        bucket:
+                          type: string
+                          description: Local wall-clock bucket label
+                        groups:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              alert_definition_id:
+                                type: integer
+                                format: int64
+                              alert_definition_name:
+                                type: string
+                              level:
+                                type: string
+                              count:
+                                type: integer
+                                description: Occurrence rows in the bucket for this definition/level
+        '400':
+          description: Invalid timezone, timestamp, range, or interval
+      parameters:
+      - in: query
+        name: last_alert_start
+        description: Occurrence window lower bound (ms); defaults to 7 days ago
+        schema:
+          type: integer
+      - in: query
+        name: last_alert_end
+        description: Occurrence window upper bound (ms); defaults to now
+        schema:
+          type: integer
+      - in: query
+        name: timezone
+        description: IANA timezone for bucketing; defaults to UTC
+        schema:
+          type: string
+      - in: query
+        name: interval
+        description: Bucket size; auto-selected from the range if omitted
+        schema:
+          type: string
+          enum:
+          - hour
+          - day
+          - month
+      - in: query
+        name: levels
+        description: Filter by per-fire level; comma-separated
+        schema:
+          type: string
+      - in: query
+        name: alert_definition_id
+        description: Filter by Alert Definition ID; comma-separated
+        schema:
+          type: string
+      - in: query
+        name: name
+        description: Filter by Alert Definition name
+        schema:
+          type: string
+      - in: query
+        name: assets
+        description: Filter by asset IDs; comma-separated
+        schema:
+          type: string
+      - in: query
+        name: rigs
+        description: Filter by rig (parent asset) IDs; comma-separated
+        schema:
+          type: string
+      - in: query
+        name: interventions
+        description: Filter by intervention unit IDs; comma-separated
+        schema:
+          type: string
+      - in: query
+        name: segment
+        description: Filter by segment; comma-separated
+        schema:
+          type: string
+      - in: query
+        name: status
+        description: Filter by Alert status; comma-separated
+        schema:
+          type: string
+      - in: query
+        name: subscription
+        description: Restrict to the caller's subscriptions
+        schema:
+          type: boolean
+      operationId: getV2AlertsOccurrencesSeries
+      x-operation-id-source: derived
+  /v1/alerts:
+    get:
+      summary: List Alerts
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Alert'
+      parameters:
+      - in: query
+        name: start
+        description: Timestamp to start alert at
+        schema:
+          type: integer
+      - in: query
+        name: end
+        description: Timestamp to end alert at
+        schema:
+          type: integer
+      - in: query
+        name: last_alert_start
+        description: Timestamp (ms) lower bound for last_alert_at
+        schema:
+          type: integer
+      - in: query
+        name: last_alert_end
+        description: Timestamp (ms) upper bound for last_alert_at
+        schema:
+          type: integer
+      - in: query
+        name: page
+        description: Number of page
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of items to list per page
+        schema:
+          type: integer
+      - in: query
+        name: created_after
+        description: Timestamp for created after
+        schema:
+          type: integer
+      - in: query
+        name: alert_definition_id
+        description: Filter by Alert Definition ID
+        schema:
+          type: integer
+      - in: query
+        name: status
+        description: Filter by Alert status. Supports comma-separated values for multiple statuses (e.g. open,acknowledged)
+        schema:
+          type: string
+      - in: query
+        name: name
+        description: Alert Definition name
+        schema:
+          type: string
+      - in: query
+        name: alert_classification
+        description: Alert Classification, one of [unclassified, true_positive, false_positive, informational, threshold_reached]
+        schema:
+          type: string
+      - in: query
+        name: acknowledged
+        description: Acknowledge the alert, true or false
+        schema:
+          $ref: '#/components/schemas/AlertAcknowledgementPayload'
+      - in: query
+        name: subscription
+        description: Alert subscription, true or false
+        schema:
+          type: boolean
+      - in: query
+        name: segment
+        description: Segments could be nil, a comma-delimited list of strings, or an array
+        schema:
+          items:
+            type: string
+      - in: query
+        name: assets
+        description: Assets could be a string or a comma-delimited list of strings
+        schema:
+          items:
+            type: string
+      - in: query
+        name: levels
+        description: 'Filter by alert level: a single value or a comma-separated list'
+        schema:
+          items:
+            type: string
+      - in: query
+        name: level
+        description: Alias for levels
+        schema:
+          items:
+            type: string
+      - in: query
+        name: sort
+        description: Column to sort by, one of [alert_at, last_alert_at, created_at, status, status_changed_at, level, occurrences, acknowledged, validated, alert_classification, name]. Unrecognized values fall back to the default sort (alert_at descending).
+        required: false
+        schema:
+          type: string
+          enum:
+          - alert_at
+          - last_alert_at
+          - created_at
+          - status
+          - status_changed_at
+          - level
+          - occurrences
+          - acknowledged
+          - validated
+          - alert_classification
+          - name
+      - in: query
+        name: order
+        description: Sort direction, asc or desc. Applies only when sort is provided and defaults to asc; without sort, results are returned alert_at descending.
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - in: query
+        name: serializer
+        description: Select serializer to be used with the returned records
+        required: false
+        schema:
+          type: string
+          enum:
+          - minimal
+      operationId: getV1Alerts
+      x-operation-id-source: derived
+  /v1/alerts/{id}:
+    get:
+      summary: Get Alert
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Alert not found
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+      parameters:
+      - in: path
+        name: id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV1AlertsById
+      x-operation-id-source: derived
+  /v1/alerts/{alert_id}/acknowledge:
+    post:
+      summary: Add acknowledgement to alert
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Alert with updated acknowledgement
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+      parameters:
+      - in: path
+        name: alert_id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertAcknowledgementPayload'
+        description: Acknowledge the alert, true or false
+        required: true
+      operationId: postV1AlertsByAlertIdAcknowledge
+      x-operation-id-source: derived
+  /v1/alerts/acknowledge:
+    post:
+      summary: Bulk acknowledge multiple alerts
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: array
+          description: List of alerts with updated acknowledgement
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Alert'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertBulkAcknowledgementPayload'
+        description: Acknowledge the alerts, true or false
+        required: true
+      operationId: postV1AlertsAcknowledge
+      x-operation-id-source: derived
+  /v1/alerts/{alert_id}/classify:
+    post:
+      summary: Add alert_classification to alert
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Alert with updated alert_classification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+      parameters:
+      - in: path
+        name: alert_id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertClassificationPayload'
+        description: Alert Classification, one of [unclassified, true_positive, false_positive, informational, threshold_reached]
+        required: true
+      operationId: postV1AlertsByAlertIdClassify
+      x-operation-id-source: derived
+  /v1/alerts/{alert_id}/transition:
+    post:
+      summary: Transition alert status
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Unauthorized
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Alert with updated status and new activity entry
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+        '400':
+          description: Invalid request (e.g. missing or blank status)
+      parameters:
+      - in: path
+        name: alert_id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertTransitionPayload'
+        description: Target status and optional notes
+        required: true
+      operationId: postV1AlertsByAlertIdTransition
+      x-operation-id-source: derived
+  /v1/alerts/{alert_id}/escalate:
+    post:
+      summary: Escalate alert to specific users
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Alert with new active escalation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+        '422':
+          description: Invalid request (empty user_ids, users outside company, or alert in terminal state)
+      parameters:
+      - in: path
+        name: alert_id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertEscalatePayload'
+        description: Escalation payload
+        required: true
+      operationId: postV1AlertsByAlertIdEscalate
+      x-operation-id-source: derived
+  /v1/alerts/{alert_id}/deescalate:
+    post:
+      summary: Close active escalation on alert
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Only the escalated user or an admin can de-escalate
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Alert with escalation closed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+        '422':
+          description: Alert is not escalated
+      parameters:
+      - in: path
+        name: alert_id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV1AlertsByAlertIdDeescalate
+      x-operation-id-source: derived
+  /v1/alerts/totals:
+    get:
+      summary: Alerts Counts
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertTotals'
+      parameters:
+      - in: query
+        name: start
+        description: Timestamp to start alert at
+        schema:
+          type: integer
+      - in: query
+        name: end
+        description: Timestamp to end alert at
+        schema:
+          type: integer
+      - in: query
+        name: last_alert_start
+        description: Timestamp (ms) lower bound for last_alert_at
+        schema:
+          type: integer
+      - in: query
+        name: last_alert_end
+        description: Timestamp (ms) upper bound for last_alert_at
+        schema:
+          type: integer
+      - in: query
+        name: created_after
+        description: Timestamp for created after
+        schema:
+          type: integer
+      - in: query
+        name: top_alerts_count
+        description: Number of Total Alerts, default is 5
+        schema:
+          type: integer
+      - in: query
+        name: alert_definition_id
+        description: Filter by Alert Definition ID
+        schema:
+          type: string
+      - in: query
+        name: name
+        description: Alert Definition name
+        schema:
+          type: string
+      - in: query
+        name: alert_classification
+        description: Alert Classification, one of [unclassified, true_positive, false_positive, informational, threshold_reached]
+        schema:
+          type: string
+      - in: query
+        name: acknowledged
+        description: Acknowledge the alert, true or false
+        schema:
+          $ref: '#/components/schemas/AlertAcknowledgementPayload'
+      - in: query
+        name: subscription
+        description: Alert subscription, true or false
+        schema:
+          type: boolean
+      - in: query
+        name: segment
+        description: Segments could be nil, a comma-delimited list of strings, or an array
+        schema:
+          items:
+            type: string
+      - in: query
+        name: assets
+        description: Assets could be a string or a comma-delimited list of strings
+        schema:
+          items:
+            type: string
+      - in: query
+        name: levels
+        description: 'Filter by alert level: a single value or a comma-separated list'
+        schema:
+          items:
+            type: string
+      - in: query
+        name: level
+        description: Alias for levels
+        schema:
+          items:
+            type: string
+      operationId: getV1AlertsTotals
+      x-operation-id-source: derived
+  /v1/alerts/details:
+    get:
+      summary: Alerts Details for given period of time
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        alert_definition_id:
+                          type: integer
+                        alert_definition_name:
+                          type: string
+                        active:
+                          type: boolean
+                        segment:
+                          type: string
+                        subscription:
+                          type: boolean
+                        alert_id:
+                          type: integer
+                        level:
+                          type: string
+                        alert_at:
+                          type: string
+                          format: date-time
+                        asset_name:
+                          type: string
+                        parent_asset_id:
+                          type: integer
+                        parent_asset_name:
+                          type: string
+                        frac_fleet_id:
+                          type: integer
+                        frac_fleet_name:
+                          type: string
+                        intervention_unit_id:
+                          type: integer
+                        intervention_unit_name:
+                          type: string
+                        topic:
+                          type: string
+                        risk_value:
+                          type: number
+                        occurrences:
+                          type: integer
+                          description: Times the alert fired
+                        status:
+                          type: string
+                          description: Current workflow status
+                example:
+                  data:
+                  - id: '111'
+                    type: alert_details
+                    attributes:
+                      alert_definition_id: 111
+                      alert_definition_name: Info Alert
+                      active: true
+                      segments: drilling
+                      subscription: false
+                      alert_id: 123
+                      level: INFO
+                      alert_at: '2023-01-01T12:00:00Z'
+                      asset_name: Asset name
+                      parent_asset_id: 123
+                      parent_asset_name: Well Parent 1
+                      frac_fleet_id: 123
+                      frac_fleet_name: Frac Fleet 1
+                      intervention_unit_id: 42
+                      intervention_unit_name: Intervention unit name
+                      topic: predictive
+                      risk_value: 0.85
+                      occurrences: 1
+                      status: open
+                  - id: '222'
+                    type: alert_details
+                    attributes:
+                      alert_definition_id: 222
+                      alert_definition_name: Warning Alert
+                      active: true
+                      segments: drilling
+                      subscription: true
+                      alert_id: 124
+                      level: WARNING
+                      alert_at: '2023-01-01T11:30:00Z'
+                      asset_name: Asset name
+                      parent_asset_id: 125
+                      parent_asset_name: Well Parent 2
+                      frac_fleet_id: 135
+                      frac_fleet_name: Frac Fleet 2
+                      intervention_unit_id: 42
+                      intervention_unit_name: Intervention unit name
+                      topic: null
+                      risk_value: null
+                      occurrences: 3
+                      status: closed
+      parameters:
+      - in: query
+        name: start
+        description: Timestamp to start alert at
+        schema:
+          type: integer
+      - in: query
+        name: end
+        description: Timestamp to end alert at
+        schema:
+          type: integer
+      - in: query
+        name: last_alert_start
+        description: Timestamp (ms) lower bound for last_alert_at
+        schema:
+          type: integer
+      - in: query
+        name: last_alert_end
+        description: Timestamp (ms) upper bound for last_alert_at
+        schema:
+          type: integer
+      - in: query
+        name: page
+        description: Number of page
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of items to list per page
+        schema:
+          type: integer
+      - in: query
+        name: created_after
+        description: Timestamp for created after
+        schema:
+          type: integer
+      - in: query
+        name: top_alerts_count
+        description: Number of Total Alerts, default is 5
+        schema:
+          type: integer
+      - in: query
+        name: alert_definition_id
+        description: Filter by Alert Definition ID
+        schema:
+          type: string
+      - in: query
+        name: name
+        description: Alert Definition name
+        schema:
+          type: string
+      - in: query
+        name: alert_classification
+        description: Alert Classification, one of [unclassified, true_positive, false_positive, informational, threshold_reached]
+        schema:
+          type: string
+      - in: query
+        name: acknowledged
+        description: Acknowledge the alert, true or false
+        schema:
+          $ref: '#/components/schemas/AlertAcknowledgementPayload'
+      - in: query
+        name: subscription
+        description: Alert subscription, true or false
+        schema:
+          type: boolean
+      - in: query
+        name: segment
+        description: Segments could be nil, a comma-delimited list of strings, or an array
+        schema:
+          items:
+            type: string
+      - in: query
+        name: assets
+        description: Assets could be a string or a comma-delimited list of strings
+        schema:
+          items:
+            type: string
+      - in: query
+        name: levels
+        description: 'Filter by alert level: a single value or a comma-separated list'
+        schema:
+          items:
+            type: string
+      - in: query
+        name: level
+        description: Alias for levels
+        schema:
+          items:
+            type: string
+      - in: query
+        name: sort
+        description: Column to sort by, one of [alert_at, last_alert_at, created_at, status, status_changed_at, level, occurrences, acknowledged, validated, alert_classification, name]. Unrecognized values fall back to the default sort (alert_at descending).
+        required: false
+        schema:
+          type: string
+          enum:
+          - alert_at
+          - last_alert_at
+          - created_at
+          - status
+          - status_changed_at
+          - level
+          - occurrences
+          - acknowledged
+          - validated
+          - alert_classification
+          - name
+      - in: query
+        name: order
+        description: Sort direction, asc or desc. Applies only when sort is provided and defaults to asc; without sort, results are returned alert_at descending.
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      operationId: getV1AlertsDetails
+      x-operation-id-source: derived
+  /v2/alerts:
+    get:
+      summary: List Alerts (V2)
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List of alerts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertV2List'
+      parameters:
+      - in: query
+        name: start
+        description: Timestamp (ms) lower bound for alert_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: end
+        description: Timestamp (ms) upper bound for alert_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: last_alert_start
+        description: Timestamp (ms) lower bound for last_alert_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: last_alert_end
+        description: Timestamp (ms) upper bound for last_alert_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: updated_at_start
+        description: Timestamp (ms) lower bound for updated_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: updated_at_end
+        description: Timestamp (ms) upper bound for updated_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: created_after
+        description: Timestamp (ms) lower bound for created_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: alert_definition_id
+        description: 'Filter by Alert Definition ID: a single id or a comma-separated list of ids'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: name
+        description: 'Filter by Alert Definition name: a single value or a comma-separated list, matched case-insensitively as substrings'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: status
+        description: 'Filter by Alert status: a single value or a comma-separated list (e.g. open,acknowledged)'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: alert_classification
+        description: Filter by classification, one of [unclassified, true_positive, false_positive, informational, threshold_reached]
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: acknowledged
+        description: 'Filter by acknowledged flag: true or false; an empty value matches alerts where acknowledged is null'
+        required: false
+        allowEmptyValue: true
+        schema:
+          type: string
+      - in: query
+        name: validation
+        description: 'Validation filter: validated or unvalidated (users with the validate ability), valid or invalid otherwise'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: subscription
+        description: When true, users with the validate ability see only alerts for their own subscriptions (always the case for other users)
+        required: false
+        schema:
+          type: boolean
+      - in: query
+        name: segment
+        description: 'Filter by segment: a single key, a comma-separated list, or an array'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: levels
+        description: 'Filter by alert level: a single value or a comma-separated list'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: level
+        description: Alias for levels
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: rigs
+        description: 'Filter by rig: a comma-separated list of rig asset ids matching the well parent'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: assets
+        description: 'Filter by asset: a comma-separated list or an array of asset ids, matching the alert asset, its parent or active child'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: interventions
+        description: 'Filter by intervention unit: a comma-separated list of intervention unit ids'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: sort
+        description: Column to sort by, one of [alert_at, last_alert_at, created_at, status, status_changed_at, level, occurrences, acknowledged, validated, alert_classification, name]. Unrecognized values fall back to the default sort (alert_at descending).
+        required: false
+        schema:
+          type: string
+          enum:
+          - alert_at
+          - last_alert_at
+          - created_at
+          - status
+          - status_changed_at
+          - level
+          - occurrences
+          - acknowledged
+          - validated
+          - alert_classification
+          - name
+      - in: query
+        name: order
+        description: Sort direction, asc or desc. Applies only when sort is provided and defaults to asc; without sort, results are returned alert_at descending.
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - in: query
+        name: fields
+        description: Sparse fieldset, e.g. fields=alert.status,alert.alert_at. Absent param returns all fields.
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: page
+        description: Page number
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Items per page
+        required: false
+        schema:
+          type: integer
+      operationId: getV2Alerts
+      x-operation-id-source: derived
+  /v2/alerts/{id}/acknowledge:
+    post:
+      summary: Acknowledge Alert (V2)
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: The updated alert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertV2Single'
+      description: Sets or clears the acknowledged flag on an alert. When acknowledging, the alert status also transitions to acknowledged if the company's alert workflow allows that transition from the current status.
+      parameters:
+      - in: path
+        name: id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                alert:
+                  type: object
+                  required:
+                  - acknowledged
+                  properties:
+                    acknowledged:
+                      type: boolean
+        required: true
+      operationId: postV2AlertsByIdAcknowledge
+      x-operation-id-source: derived
+  /v2/alerts/{id}:
+    get:
+      summary: Get Alert (V2)
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Not authorized to read the alert
+        '404':
+          description: Alert not found
+        '200':
+          description: Alert details. Unlike GET /v1/alerts/{id}, the payload does not embed the comments/likes feed; use GET /v2/alerts/{id}/comments for comment bodies and GET /v2/alerts/{id}/activities for the alert feed. The active escalation, when open, is embedded as `active_escalation`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertV2Single'
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: fields
+        description: Sparse fieldset, e.g. fields=alert.status,alert.alert_at. Absent param returns all fields.
+        required: false
+        schema:
+          type: string
+      operationId: getV2AlertsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete Alert (V2)
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Not allowed to delete the alert
+        '404':
+          description: Alert not found
+        '200':
+          description: Deleted
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2AlertsById
+      x-operation-id-source: derived
+  /v2/alerts/{id}/classify:
+    post:
+      summary: Classify Alert (V2)
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Unauthorized
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Alert with updated classification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertV2'
+        '400':
+          description: Invalid or missing classification payload
+      parameters:
+      - in: path
+        name: id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertClassificationPayloadV2'
+        description: Classification payload; classified_by/classified_at are set to the current user and time
+        required: true
+      operationId: postV2AlertsByIdClassify
+      x-operation-id-source: derived
+  /v2/alerts/{alert_id}/deescalate:
+    post:
+      summary: Close active escalation on alert (V2)
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Only the escalated user or an admin can de-escalate
+        '404':
+          description: Alert not found
+        '200':
+          description: Alert with escalation closed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertV2'
+        '422':
+          description: Alert is not escalated
+      parameters:
+      - in: path
+        name: alert_id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2AlertsByAlertIdDeescalate
+      x-operation-id-source: derived
+  /v2/alerts/{id}/transition:
+    post:
+      summary: Transition Alert status (V2)
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Alert is escalated to another user, or the user lacks the ability required for the target status
+        '404':
+          description: Alert not found
+        '200':
+          description: The alert after the transition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertV2Single'
+        '400':
+          description: Invalid or missing status
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                alert:
+                  type: object
+                  required:
+                  - status
+                  properties:
+                    status:
+                      type: string
+                      description: Target status. Terminal targets are resolved, closed, invalid; an alert already in a terminal status may only transition to open — other targets leave the status unchanged but acknowledge the alert.
+                    notes:
+                      type: string
+                      description: Notes attached to the status_change activity
+        required: true
+      operationId: postV2AlertsByIdTransition
+      x-operation-id-source: derived
+  /v2/alerts/{id}/check:
+    post:
+      summary: Check Alert notification rules (V2)
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Check result; rule failures (including an unknown alert ID) return notify false with the reason, not an error status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertCheckResultV2'
+      parameters:
+      - in: path
+        name: id
+        description: Alert ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: start
+        description: Timestamp (s) lower bound for alert_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: end
+        description: Timestamp (s) upper bound for alert_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: created_after
+        description: Timestamp (s) lower bound for created_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: name
+        description: Alert Definition name filter, matched case-insensitively as a substring
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: levels
+        description: 'Alert level filter: a single value or a comma-separated list'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: level
+        description: Alias for levels
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: rigs
+        description: 'Rig filter: a comma-separated list of rig asset ids matching the alert asset parent'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: assets
+        description: 'Asset filter: a comma-separated list of asset ids matching the alert asset'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: validation
+        description: 'Validation filter: validated or unvalidated (users with the validate ability), valid or invalid otherwise'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: subscription
+        description: When true, users with the validate ability are also required to have a subscription (always the case for other users)
+        required: false
+        schema:
+          type: boolean
+      operationId: postV2AlertsByIdCheck
+      x-operation-id-source: derived
+  /v2/alerts/{id}/escalate:
+    post:
+      summary: Escalate Alert (V2)
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: The user lacks the escalate ability on the alert group
+        '404':
+          description: Alert not found
+        '200':
+          description: Escalated alert with active_escalation details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertV2Single'
+        '422':
+          description: No users given, users outside the alert company, or alert in a terminal status
+      description: Escalates the alert to the given company users, replacing any open escalation. Notifies the escalated users and records an escalation activity.
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                escalation:
+                  type: object
+                  required:
+                  - user_ids
+                  properties:
+                    user_ids:
+                      type: array
+                      description: Ids of users in the alert company to escalate to
+                      items:
+                        type: integer
+                        format: int64
+                    notes:
+                      type: string
+                      description: Optional notes stored on the escalation and its activity
+        required: true
+      operationId: postV2AlertsByIdEscalate
+      x-operation-id-source: derived
+  /v2/alerts/totals:
+    get:
+      summary: Alert Totals (V2)
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Alert totals grouped by alert level
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertTotalsV2'
+      parameters:
+      - in: query
+        name: top_alerts_count
+        description: Number of top alerts to return, default is 5
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: start
+        description: Timestamp (ms) lower bound for alert_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: end
+        description: Timestamp (ms) upper bound for alert_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: last_alert_start
+        description: Timestamp (ms) lower bound for last_alert_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: last_alert_end
+        description: Timestamp (ms) upper bound for last_alert_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: updated_at_start
+        description: Timestamp (ms) lower bound for updated_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: updated_at_end
+        description: Timestamp (ms) upper bound for updated_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: created_after
+        description: Timestamp (ms) lower bound for created_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: alert_definition_id
+        description: 'Filter by Alert Definition ID: a single id or a comma-separated list of ids'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: name
+        description: 'Filter by Alert Definition name: a single value or a comma-separated list, matched case-insensitively as substrings'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: status
+        description: 'Filter by Alert status: a single value or a comma-separated list (e.g. open,acknowledged)'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: alert_classification
+        description: Filter by classification, one of [unclassified, true_positive, false_positive, informational, threshold_reached]
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: acknowledged
+        description: 'Filter by acknowledged flag: true or false; an empty value matches alerts where acknowledged is null'
+        required: false
+        allowEmptyValue: true
+        schema:
+          type: string
+      - in: query
+        name: validation
+        description: 'Validation filter: validated or unvalidated (users with the validate ability), valid or invalid otherwise'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: subscription
+        description: When true, users with the validate ability see only alerts for their own subscriptions (always the case for other users)
+        required: false
+        schema:
+          type: boolean
+      - in: query
+        name: segment
+        description: 'Filter by segment: a single key, a comma-separated list, or an array'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: levels
+        description: 'Filter by alert level: a single value or a comma-separated list'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: level
+        description: Alias for levels
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: rigs
+        description: 'Filter by rig: a comma-separated list of rig asset ids matching the well parent'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: assets
+        description: 'Filter by asset: a comma-separated list or an array of asset ids, matching the alert asset, its parent or active child'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: interventions
+        description: 'Filter by intervention unit: a comma-separated list of intervention unit ids'
+        required: false
+        schema:
+          type: string
+      operationId: getV2AlertsTotals
+      x-operation-id-source: derived
+  /v2/alerts/details:
+    get:
+      summary: List Alert Details (V2)
+      tags:
+      - Alerts
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List of alert details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertDetailsV2List'
+      description: Returns a flattened detail row per alert, aggregating definition, asset hierarchy, frac fleet and intervention unit data. Accepts the same filters as the alerts list.
+      parameters:
+      - in: query
+        name: start
+        description: Timestamp (ms) lower bound for alert_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: end
+        description: Timestamp (ms) upper bound for alert_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: last_alert_start
+        description: Timestamp (ms) lower bound for last_alert_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: last_alert_end
+        description: Timestamp (ms) upper bound for last_alert_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: updated_at_start
+        description: Timestamp (ms) lower bound for updated_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: updated_at_end
+        description: Timestamp (ms) upper bound for updated_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: created_after
+        description: Timestamp (ms) lower bound for created_at
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: alert_definition_id
+        description: 'Filter by Alert Definition ID: a single id or a comma-separated list of ids'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: name
+        description: 'Filter by Alert Definition name: a single value or a comma-separated list, matched case-insensitively as substrings'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: status
+        description: 'Filter by Alert status: a single value or a comma-separated list (e.g. open,acknowledged)'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: alert_classification
+        description: Filter by classification, one of [unclassified, true_positive, false_positive, informational, threshold_reached]
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: acknowledged
+        description: 'Filter by acknowledged flag: true or false; an empty value matches alerts where acknowledged is null'
+        required: false
+        allowEmptyValue: true
+        schema:
+          type: string
+      - in: query
+        name: validation
+        description: 'Validation filter: validated or unvalidated (users with the validate ability), valid or invalid otherwise'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: subscription
+        description: When true, users with the validate ability see only alerts for their own subscriptions (always the case for other users)
+        required: false
+        schema:
+          type: boolean
+      - in: query
+        name: segment
+        description: 'Filter by segment: a single key, a comma-separated list, or an array'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: levels
+        description: 'Filter by alert level: a single value or a comma-separated list'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: level
+        description: Alias for levels
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: rigs
+        description: 'Filter by rig: a comma-separated list of rig asset ids matching the well parent'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: assets
+        description: 'Filter by asset: a comma-separated list or an array of asset ids, matching the alert asset, its parent or active child'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: interventions
+        description: 'Filter by intervention unit: a comma-separated list of intervention unit ids'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: sort
+        description: Column to sort by, one of [alert_at, last_alert_at, created_at, status, status_changed_at, level, occurrences, acknowledged, validated, alert_classification, name]. Unrecognized values fall back to the default sort (alert_at descending).
+        required: false
+        schema:
+          type: string
+          enum:
+          - alert_at
+          - last_alert_at
+          - created_at
+          - status
+          - status_changed_at
+          - level
+          - occurrences
+          - acknowledged
+          - validated
+          - alert_classification
+          - name
+      - in: query
+        name: order
+        description: Sort direction, asc or desc. Applies only when sort is provided and defaults to asc; without sort, results are returned alert_at descending.
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - in: query
+        name: fields
+        description: Sparse fieldset, e.g. fields=alert_details.level,alert_details.asset_name. Absent param returns all fields.
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: page
+        description: Page number
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Items per page
+        required: false
+        schema:
+          type: integer
+      operationId: getV2AlertsDetails
+      x-operation-id-source: derived
+components:
+  schemas:
+    AlertV2Single:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AlertV2'
+    AlertEscalationUserV2:
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Present when the user record still exists
+        email:
+          type: string
+        first_name:
+          type: string
+          description: Present when the user record still exists
+        last_name:
+          type: string
+          description: Present when the user record still exists
+        profile_photo:
+          type: string
+          description: Present when the user record still exists
+        removed:
+          type: boolean
+          description: True when the user has been removed; only email is then available
+    AlertTotalsV2:
+      properties:
+        total:
+          type: integer
+          description: Total number of alerts matching the filters
+        top_alerts:
+          type: array
+          description: Alert definitions with the most alerts, ordered by count descending
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: Alert definition id, the value accepted by the alert_definition_id filter
+              name:
+                type: string
+              level:
+                type: string
+              count:
+                type: integer
+        level_counts:
+          type: object
+          description: Alert counts keyed by alert level
+        level_percentages:
+          type: object
+          description: Percentage of the total keyed by alert level, rounded to 2 decimals
+    AlertEscalatePayload:
+      properties:
+        escalation:
+          type: object
+          properties:
+            user_ids:
+              type: array
+              description: IDs of users to escalate to (must be in same company)
+              items:
+                type: integer
+            notes:
+              type: string
+      example:
+        escalation:
+          user_ids:
+          - 42
+          - 99
+          notes: Needs immediate attention.
+    AlertNotificationTypeV2List:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertNotificationTypeV2'
+    V1UserMinimal:
+      properties:
+        id:
+          type: integer
+          format: int64
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        title:
+          type: string
+        role:
+          type: string
+        profile_photo:
+          type: string
+        current_segment:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+      example:
+        id: 1072
+        first_name: Derek
+        last_name: Smith
+        email: email7@corva.ai
+        title: Drilling Engineer
+        role: user
+        profile_photo: aws_s3_file_path
+        current_segment: drilling
+        created_at: '2020-02-04T12:48:59.593Z'
+    AlertOccurrence:
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int64
+        alert_id:
+          type: integer
+          format: int64
+        asset_id:
+          type: integer
+          format: int64
+        start_at:
+          type: string
+          format: date-time
+        finish_at:
+          type: string
+          format: date-time
+        severity:
+          type: string
+          enum:
+          - critical
+          - warning
+          - info
+          description: Occurrence severity level
+        decision_path:
+          type: string
+          description: DEPRECATED baked narrative; use decision_path_template + decision_path_units
+        decision_path_template:
+          type: string
+          description: Decision path with {token} placeholders for each numeric value/threshold
+        decision_path_units:
+          type: object
+          description: Map of token => { value, unit_type }; value is the raw magnitude, client formats after converting
+        trigger_data_at:
+          type: string
+          format: date-time
+          description: Timestamp of the trigger dataset record this occurrence fired on
+        trigger_dataset:
+          type: string
+          description: Dataset that record came from
+        data:
+          type: object
+          description: Arbitrary occurrence data payload
+        alert_classification:
+          type: string
+          enum:
+          - unclassified
+          - true_positive
+          - false_positive
+          - informational
+          - threshold_reached
+          description: Classification of this fire
+        classified_at:
+          type: string
+          format: date-time
+        classified_by:
+          description: User who classified this occurrence, null otherwise
+          $ref: '#/components/schemas/AlertUserV2'
+        rearmed_at:
+          type: string
+          format: date-time
+          description: When this episode ended; null while it is open
+        rearm_streak:
+          type: integer
+          description: Consecutive non-matching checks counted against the definition's rearm_after_checks
+        acknowledged_at:
+          type: string
+          format: date-time
+          description: When this episode was acknowledged
+        acknowledged_by:
+          description: User who acknowledged this occurrence, null otherwise
+          $ref: '#/components/schemas/AlertUserV2'
+        closed_at:
+          type: string
+          format: date-time
+          description: When the alert was closed during this episode
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    AlertV2List:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertV2'
+    AlertAcknowledgementPayload:
+      properties:
+        alert:
+          type: object
+          properties:
+            acknowledged:
+              type: boolean
+      example:
+        alert:
+          acknowledged: true
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AlertV2:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          type: object
+          required:
+          - id
+          - status
+          properties:
+            id:
+              type: integer
+              format: int64
+            company_id:
+              type: integer
+              format: int64
+            alert_definition_id:
+              type: integer
+              format: int64
+            asset_id:
+              type: integer
+              format: int64
+            status:
+              type: string
+            status_changed_at:
+              type: string
+              format: date-time
+            decision_path:
+              type: string
+              description: DEPRECATED baked narrative; use decision_path_template + decision_path_units
+            decision_path_template:
+              type: string
+              description: Decision path with {token} placeholders for each numeric value/threshold
+            decision_path_units:
+              type: object
+              description: Map of token => { value, unit_type }; value is the raw magnitude, client formats after converting
+            data:
+              type: object
+            latest_data:
+              type: object
+            alert_at:
+              type: string
+              format: date-time
+            last_alert_at:
+              type: string
+              format: date-time
+            closed_at:
+              type: string
+              format: date-time
+            occurrences:
+              type: integer
+            comments_amount:
+              type: integer
+            likes_count:
+              type: integer
+            segment:
+              type: array
+              items:
+                type: string
+                enum:
+                - drilling
+                - completion
+                - intervention
+            level:
+              type: string
+            stage_numbers:
+              type: array
+              description: Completion stage numbers when present in alert data
+              items:
+                type: integer
+            validated:
+              type: boolean
+            validated_at:
+              type: string
+              format: date-time
+            validated_by:
+              description: User who validated the alert, null otherwise
+              $ref: '#/components/schemas/AlertUserV2'
+            acknowledged:
+              type: boolean
+            acknowledged_at:
+              type: string
+              format: date-time
+            acknowledged_by:
+              description: User who acknowledged the alert, null otherwise
+              $ref: '#/components/schemas/AlertUserV2'
+            alert_classification:
+              type: string
+              enum:
+              - unclassified
+              - true_positive
+              - false_positive
+              - informational
+              - threshold_reached
+            classified_at:
+              type: string
+              format: date-time
+            classified_by:
+              description: User who classified the alert, null otherwise
+              $ref: '#/components/schemas/AlertUserV2'
+            comment_authors:
+              type: array
+              description: Distinct comment authors, most recently commented first, capped at 3. Present on the index only; comments_amount still reports the full count
+              items:
+                $ref: '#/components/schemas/AlertUserV2'
+            alert_definition:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                name:
+                  type: string
+                description:
+                  type: string
+                level:
+                  type: string
+                type:
+                  type: string
+                  enum:
+                  - personal
+                  - company
+                active:
+                  type: boolean
+                requires_validation:
+                  type: boolean
+                segment:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - drilling
+                    - completion
+                    - intervention
+                topic:
+                  type: string
+                alert_group_id:
+                  type: integer
+                  format: int64
+                dashboard_id:
+                  type: integer
+                  format: int64
+            asset:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                name:
+                  type: string
+                type:
+                  type: string
+                parent_asset:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    name:
+                      type: string
+                frac_fleet:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    name:
+                      type: string
+                pad:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    name:
+                      type: string
+                intervention_unit:
+                  type: object
+                  description: Intervention unit linked to the alert, null ids otherwise
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    name:
+                      type: string
+            active_escalation:
+              type: object
+              description: Open escalation on GET /v2/alerts/{id} and POST /v2/alerts/{id}/escalate, null when no escalation is open. The property itself is omitted on responses that do not include alert details (GET /v2/alerts, GET /v2/alerts/details) and when excluded by a sparse fieldset.
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                alert_id:
+                  type: integer
+                  format: int64
+                source:
+                  type: string
+                notes:
+                  type: string
+                closed_at:
+                  type: string
+                  format: date-time
+                created_at:
+                  type: string
+                  format: date-time
+                escalated_by:
+                  description: User who escalated the alert
+                  $ref: '#/components/schemas/AlertEscalationUserV2'
+                escalated_to:
+                  type: array
+                  description: Users the alert is escalated to
+                  items:
+                    $ref: '#/components/schemas/AlertEscalationUserV2'
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+    AlertUserV2:
+      properties:
+        id:
+          type: integer
+          format: int64
+        email:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        profile_photo:
+          type: string
+    Comment:
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int64
+        body:
+          type: string
+        attachment:
+          type: object
+          properties:
+            file_name:
+              type: string
+            s3_link:
+              type: string
+        attachments:
+          type: array
+          items:
+            properties:
+              file_name:
+                type: string
+              s3_link:
+                type: string
+        created_at:
+          type: string
+          format: date-time
+        mentioned_users:
+          type: array
+          items:
+            $ref: '#/components/schemas/V1UserMinimal'
+        likes_count:
+          type: integer
+        user:
+          type: object
+          $ref: '#/components/schemas/V1UserMinimal'
+        likes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Like'
+    AlertOccurrenceClassificationPayload:
+      properties:
+        alert_occurrence:
+          type: object
+          required:
+          - alert_classification
+          properties:
+            alert_classification:
+              type: string
+              enum:
+              - unclassified
+              - true_positive
+              - false_positive
+              - informational
+              - threshold_reached
+      example:
+        alert_occurrence:
+          alert_classification: true_positive
+    AlertCheckResultV2:
+      properties:
+        notify:
+          type: boolean
+          description: Whether the alert passes every notification rule for the current user
+        message:
+          type: string
+          description: '''Subscribed'' when notify is true, the first failed rule otherwise'
+        subscription:
+          type: boolean
+          description: Whether the user has a subscription to the alert definition
+        types:
+          type: array
+          description: Notification type identifiers of the subscription (plus list), empty without a subscription
+          items:
+            type: string
+    AlertTransitionPayload:
+      properties:
+        alert:
+          type: object
+          properties:
+            status:
+              type: string
+              description: Target status
+            notes:
+              type: string
+              description: Optional notes describing the reason for the transition
+      example:
+        alert:
+          status: closed
+          notes: Investigated and resolved.
+    AlertEscalation:
+      required:
+      - id
+      - alert_id
+      properties:
+        id:
+          type: integer
+          format: int64
+        alert_id:
+          type: integer
+          format: int64
+        source:
+          type: string
+          enum:
+          - manual
+          - automatic
+          description: How the escalation was triggered
+        notes:
+          type: string
+        closed_at:
+          type: string
+          format: date-time
+          description: Null when escalation is active
+        created_at:
+          type: string
+          format: date-time
+        escalated_by:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+              description: Present when user exists
+            first_name:
+              type: string
+              description: Present when user exists
+            last_name:
+              type: string
+              description: Present when user exists
+            profile_photo:
+              type: string
+              description: Present when user exists
+            email:
+              type: string
+            removed:
+              type: boolean
+              description: True when user has been removed
+        escalated_to:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int64
+                description: Present when user exists
+              first_name:
+                type: string
+                description: Present when user exists
+              last_name:
+                type: string
+                description: Present when user exists
+              profile_photo:
+                type: string
+                description: Present when user exists
+              email:
+                type: string
+              removed:
+                type: boolean
+                description: True when user has been removed
+    TriggerResponse:
+      properties:
+        status:
+          type: string
+        alerts:
+          type: array
+          items:
+            type: object
+      example:
+        status: OK
+        alerts:
+        - id: 1
+          alert_definition_id: 1
+          asset_id: 1
+          data:
+            start: '2010-01-01T00:00:00.000Z'
+            finish: '2010-01-02T00:00:00.00Z'
+            anything: other data can go here
+          created_at: '2010-01-01T00:00:00.000Z'
+          updated_at: '2010-01-01T00:00:00.000Z'
+          alert_at: '2010-01-01T00:00:00.000Z'
+          decision_path: Custom decision path
+          status: open
+          occurrences: 1
+          last_alert_at: '2010-01-01T00:00:00.000Z'
+          closed_at: null
+          company_id: 1
+          validated: false
+          validated_at: null
+          validated_by_id: null
+          comments_amount: 0
+          likes_count: 0
+          report: null
+    AlertDetailsV2:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            alert_id:
+              type: integer
+              format: int64
+            alert_at:
+              type: string
+              format: date-time
+            alert_definition_id:
+              type: integer
+              format: int64
+            alert_definition_name:
+              type: string
+            active:
+              type: boolean
+            segment:
+              type: string
+              enum:
+              - drilling
+              - completion
+              - intervention
+              description: First segment key of the Alert Definition
+            subscription:
+              type: boolean
+              description: True when the current user has a desktop subscription with subscribed assets for the Alert Definition
+            level:
+              type: string
+            asset_name:
+              type: string
+            parent_asset_id:
+              type: integer
+              format: int64
+            parent_asset_name:
+              type: string
+            frac_fleet_id:
+              type: integer
+              format: int64
+            frac_fleet_name:
+              type: string
+            intervention_unit_id:
+              type: integer
+              format: int64
+            intervention_unit_name:
+              type: string
+            topic:
+              type: string
+            risk_value:
+              type: number
+              description: Minimum risk value found in the alert data, null otherwise
+    Alert:
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int64
+        company_id:
+          type: integer
+          format: int64
+        alert_definition:
+          type: object
+        asset:
+          type: object
+        status:
+          type: string
+          format: int64
+        status_changed_at:
+          type: string
+          format: date-time
+        decision_path:
+          type: string
+          description: DEPRECATED baked narrative; use decision_path_template + decision_path_units
+        decision_path_template:
+          type: string
+          description: Decision path with {token} placeholders for each numeric value/threshold
+        decision_path_units:
+          type: object
+          description: Map of token => { value, unit_type }; value is the raw magnitude, client formats after converting
+        data:
+          type: object
+        alert_at:
+          type: string
+          format: date-time
+        last_alert_at:
+          type: string
+          format: date-time
+        closed_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        occurrences:
+          type: integer
+        validated:
+          type: boolean
+        validated_at:
+          type: string
+          format: date-time
+        validated_by:
+          type: object
+        acknowledged:
+          type: boolean
+        acknowledged_at:
+          type: string
+          format: date-time
+        acknowledged_by:
+          type: object
+        alert_classification:
+          type: string
+        classified_at:
+          type: string
+          format: date-time
+        classified_by:
+          type: object
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+        likes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Like'
+        comments_amount:
+          type: integer
+        likes_count:
+          type: integer
+        active_escalation:
+          description: Active escalation if one exists, null otherwise
+          $ref: '#/components/schemas/AlertEscalation'
+    AlertClassificationPayload:
+      properties:
+        alert:
+          type: object
+          properties:
+            alert_classification:
+              type: string
+      example:
+        alert:
+          alert_classification: true_positive
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    CommentV2:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            body:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            feed_activity_id:
+              type: integer
+              format: int64
+            likes_count:
+              type: integer
+            attachment:
+              type: object
+              properties:
+                file_name:
+                  type: string
+                s3_link:
+                  type: string
+                signed_url:
+                  type: string
+            attachments:
+              type: array
+              items:
+                properties:
+                  file_name:
+                    type: string
+                  s3_link:
+                    type: string
+                  signed_url:
+                    type: string
+        relationships:
+          type: object
+          properties:
+            user:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+            likes:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+    AlertNotificationTypeV2:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          type: object
+          required:
+          - id
+          - identifier
+          - name
+          properties:
+            id:
+              type: integer
+              format: int64
+            identifier:
+              type: string
+            name:
+              type: string
+    AlertClassificationPayloadV2:
+      properties:
+        alert:
+          type: object
+          required:
+          - alert_classification
+          properties:
+            alert_classification:
+              type: string
+              enum:
+              - unclassified
+              - true_positive
+              - false_positive
+              - informational
+              - threshold_reached
+      example:
+        alert:
+          alert_classification: true_positive
+    CheckResponse:
+      properties:
+        matched:
+          type: boolean
+        data:
+          type: object
+      example:
+        matched: 'true'
+        data:
+          start: '2010-01-01T00:00:00.000Z'
+          finish: '2010-01-02T00:00:00.00Z'
+          threshold: other data can go here
+          '%filter[:id]%-%{filter[:sample_function]}%-dataset': other data can go here
+          '%filter[:id]%-%{filter[:sample_function]}%-match': other data can go here
+          '%filter[:id]%-%{filter[:sample_function]}%-value': other data can go here
+    AlertBulkAcknowledgementPayload:
+      properties:
+        alert:
+          type: object
+          properties:
+            ids:
+              type: array
+              items:
+                type: integer
+            acknowledged:
+              type: boolean
+      example:
+        alert:
+          ids:
+          - 1
+          - 2
+          - 3
+          acknowledged: true
+    Like:
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int64
+        created_at:
+          type: string
+          format: date-time
+        user:
+          type: object
+          $ref: '#/components/schemas/V1UserMinimal'
+    AlertActivity:
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int64
+        alert_id:
+          type: integer
+          format: int64
+        activity:
+          type: string
+          enum:
+          - status_change
+          - classification
+          - level_change
+          - escalation
+          - renotified
+          - rearmed
+        detail:
+          type: string
+          enum:
+          - open
+          - acknowledged
+          - closed
+          - invalid
+          - unclassified
+          - true_positive
+          - false_positive
+          - informational
+          - threshold_reached
+        notes:
+          type: string
+        started_at:
+          type: string
+          format: date-time
+        ended_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        user:
+          type: object
+          description: User who created the activity
+          properties:
+            id:
+              type: integer
+              format: int64
+            first_name:
+              type: string
+              description: Present when user exists
+            last_name:
+              type: string
+              description: Present when user exists
+            profile_photo:
+              type: string
+              description: Present when user exists
+            email:
+              type: string
+            removed:
+              type: boolean
+              description: True when user has been removed
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AlertDetailsV2List:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertDetailsV2'
+    CommentPayload:
+      properties:
+        comment:
+          type: object
+          properties:
+            body:
+              type: string
+            attachment:
+              type: object
+              properties:
+                file_name:
+                  type: string
+                s3_link:
+                  type: string
+            attachments:
+              type: array
+              items:
+                properties:
+                  file_name:
+                    type: string
+                  s3_link:
+                    type: string
+      example:
+        comment:
+          body: Hey @[user:57689|Derek]
+          attachments:
+          - file_name: report.pdf
+            s3_link: some_s3_link
+    AlertDefinition:
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int64
+        active:
+          type: boolean
+        version:
+          type: integer
+          format: int64
+        name:
+          type: string
+        identifier:
+          type: string
+        description:
+          type: string
+        level:
+          type: string
+        filter_logic:
+          type: string
+          description: 'Filter logic: AND, OR, or INTERSECT. INTERSECT finds rows matching all filter conditions before applying sample functions.'
+        check_type:
+          type: string
+        period:
+          type: integer
+          format: int64
+        interval:
+          type: integer
+          format: int64
+        recurrence:
+          type: string
+          enum:
+          - continuous
+          - periodic
+          - episodic
+          - once
+          - once-per-asset
+          description: episodic notifies once per episode, then on renotification_interval, until rearm_after_checks non-matching checks re-arm it; time checks only
+        rearm_after_checks:
+          type: integer
+          description: Consecutive non-matching evaluations that re-arm an episodic definition; null means one
+        type:
+          type: integer
+          format: int64
+        requires_validation:
+          type: boolean
+        dashboard_id:
+          type: integer
+          format: int64
+        workflow_id:
+          type: integer
+          format: int64
+        template_id:
+          type: integer
+          format: int64
+        template_type:
+          type: string
+          description: 'Template type: standard, preset, or null'
+        topic:
+          type: string
+          description: Topic for categorizing alert definitions (lowercase alphanumeric with hyphens and underscores only)
+        segment:
+          type: array
+          items:
+            type: string
+            enum:
+            - drilling
+            - completion
+            - intervention
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        user:
+          type: object
+          $ref: '#/components/schemas/V1UserMinimal'
+        subscription:
+          type: object
+          properties:
+            assets:
+              type: array
+              items:
+                type: object
+            alert_notification_types:
+              type: array
+              items:
+                type: object
+    ContextResponse:
+      properties:
+        response:
+          type: object
+      example:
+        context:
+          time_zone: America/Chicago
+          language: en
+          unit_system:
+            yp: hsf
+            oil: bbl
+            area: ft2
+            mass: lb
+            force: klbf
+            speed: ft/h
+            length: ft
+            system: imperial
+            torque: ft-klbf
+            volume: gal
+            density: ppg
+            pressure: psi
+            shortLength: in
+            temperature: F
+            massPerLength: lb-ft
+            volumeFlowRate: gal/min
+          provider: provider-name
+          type: Asset::Well
+          name: My Well
+          last_active_at: '2000-01-01T00:00:00.000Z'
+          status: active
+          area: Permian
+          lon_lat:
+            latitude: 0.0
+            longitude: 0.0
+          well_end: 0
+          total_cost: 0
+          total_time: 0
+          well_start: 0
+          total_depth: 0
+          timezone: America/Chicago
+          top_hole: {}
+          bottom_hole: {}
+          last_mongo_refresh: '2000-01-01T00:00:00.000Z'
+          spud_at: null
+          first_active_at: null
+          witsml_data_frequency: null
+    AlertTotals:
+      properties:
+        total:
+          type: integer
+          description: Total number of alerts matching the filters
+        top_alerts:
+          type: array
+          description: Alert definitions with the most alerts, ordered by count descending
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: Alert definition id, the value accepted by the alert_definition_id filter
+              name:
+                type: string
+              level:
+                type: string
+              count:
+                type: integer
+        level_counts:
+          type: object
+          description: Alert counts keyed by alert definition level
+        level_percentages:
+          type: object
+          description: Percentage of the total keyed by alert definition level, rounded to 2 decimals
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

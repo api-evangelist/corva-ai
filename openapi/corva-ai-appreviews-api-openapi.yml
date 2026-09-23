@@ -1,0 +1,269 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva App Reviews API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: AppReviews
+  description: Manage AppsReviews
+paths:
+  /v2/app_reviews:
+    get:
+      summary: List accesible App Reviews
+      tags:
+      - AppReviews
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppReviewList'
+      parameters:
+      - in: query
+        name: status
+        description: Filter by status
+        schema:
+          items:
+            type: string
+      - in: query
+        name: app_ids
+        description: Filter by App Ids
+        schema:
+          items:
+            type: integer
+      operationId: getV2AppReviews
+      x-operation-id-source: derived
+  /v2/app_reviews/{id}/approve:
+    post:
+      summary: Approve App Review
+      tags:
+      - AppReviews
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppReview'
+      parameters:
+      - in: path
+        name: id
+        description: App Review ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2AppReviewsByIdApprove
+      x-operation-id-source: derived
+  /v2/app_reviews/{id}/decline:
+    post:
+      summary: Approve App Review
+      tags:
+      - AppReviews
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppReview'
+      parameters:
+      - in: path
+        name: id
+        description: App Review ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2AppReviewsByIdDecline
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AppReviewList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppReview'
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AppReview:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            reviewed_at:
+              type: string
+              format: date-time
+            status:
+              type: string
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            app:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            user:
+              type: array
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: app_review
+        attributes:
+          id: 12345
+          status: requested
+          reviewed_at: '2020-01-01T08:00:00.000Z'
+        relationships:
+          company:
+            data:
+              id: 299
+              type: company
+          reviwed_by:
+            data:
+              id: 475
+              type: user
+          app:
+            data:
+              id: 999
+              type: app
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

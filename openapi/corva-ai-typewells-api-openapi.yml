@@ -1,0 +1,407 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Type Wells API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: TypeWells
+paths:
+  /v2/wells/{well_id}/type_wells:
+    get:
+      summary: Get typewells from a primary well
+      tags:
+      - TypeWells
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: List of typewells
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Well'
+      parameters:
+      - in: path
+        name: well_id
+        description: Well ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2WellsByWellIdTypeWells
+      x-operation-id-source: derived
+    post:
+      summary: Add new typewell well to a primary well
+      tags:
+      - TypeWells
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Type well
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TypeWell'
+      parameters:
+      - in: path
+        name: well_id
+        description: Well ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Offset Well ID
+        required: true
+      operationId: postV2WellsByWellIdTypeWells
+      x-operation-id-source: derived
+  /v2/wells/{well_id}/type_wells/{id}:
+    delete:
+      summary: Remove typewell well from a primary well
+      tags:
+      - TypeWells
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: TypeWell deleted
+      parameters:
+      - in: path
+        name: well_id
+        description: Well ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: TypeWell ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2WellsByWellIdTypeWellsById
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    TypeWell:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            subject_well_id:
+              type: integer
+              format: int64
+            offset_well_id:
+              type: integer
+              format: int64
+            subject_well_asset_id:
+              type: integer
+              format: int64
+            offset_well_asset_id:
+              type: integer
+              format: int64
+      example:
+        id: 555
+        type: type_well
+        attributes:
+          id: 555
+          subject_well_id: 123
+          offset_well_id: 456
+          subject_well_asset_id: 7527348
+          offset_well_asset_id: 12347575
+    Well:
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int64
+        attributes:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+            identifier:
+              type: string
+            status:
+              type: string
+            state:
+              type: string
+            visibility:
+              type: string
+            area:
+              type: string
+            custom_properties:
+              type: object
+            settings:
+              type: object
+            stats:
+              type: object
+            last_active_at:
+              type: datetime
+              format: timestamp
+            last_drilling_at:
+              type: datetime
+              format: timestamp
+            qc_by:
+              type: integer
+            qc_at:
+              type: integer
+              format: timestamp
+            rig_classification:
+              type: string
+              enum:
+              - land
+              - platform
+              - floating
+            floating_vessel_subtype:
+              type: string
+              enum:
+              - semi_submersible
+              - drill_ship
+            platform_rig_type:
+              type: string
+              enum:
+              - fixed_platform
+              - jackup_rig
+            rerun:
+              type: boolean
+            rig_changed_at:
+              type: datetime
+              format: timestamp
+              description: Datetime when the rig was last changed.
+            customer_well_id:
+              type: string
+            air_gap:
+              type: float
+            ground_elevation:
+              type: float
+            water_depth:
+              type: float
+            wellbore_name:
+              type: string
+            alternative_names:
+              type: array
+            alternative_wellbore_names:
+              type: array
+            ready_for_archive:
+              type: object
+              properties:
+                ready_for_archive:
+                  type: boolean
+                ready_to_arhive_errors:
+                  type: array
+                  items:
+                    type: string
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+            program:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+            pad:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+            rig:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+            drillout_unit:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+      example:
+        id: 1184
+        type: well
+        attributes:
+          name: My Well
+          status: active
+          state: drilling
+          rig_changed_at: '2026-06-20T20:01:35.000Z'
+          customer_well_id: customer-id-909488abtx
+          rerun: false
+          alternative_names:
+          - Name
+          - New
+          alternative_wellbore_names:
+          - Wellbore Name
+          - New Wellbore
+          ready_for_archive:
+            ready_for_archive: false
+            ready_to_arhive_errors:
+            - Well status is not in complete, idle
+            - Well was updated recently
+        relationships:
+          company:
+            data:
+              id: 823
+              type: company
+          program:
+            data:
+              id: 23
+              type: program
+          pad:
+            data:
+              id: 3909
+              type: rig
+          rig:
+            data:
+              id: 6621
+              type: rig
+          drillout_unit:
+            data:
+              id: 923
+              type: drillout_unit
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

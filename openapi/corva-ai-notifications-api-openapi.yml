@@ -1,0 +1,588 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Notifications API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Notifications
+  description: Manage Notifications
+paths:
+  /v1/notifications:
+    get:
+      summary: List notifications for current user
+      tags:
+      - Notifications
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+      parameters:
+      - in: query
+        name: start
+        description: Search by start time as a Unix timestamp
+        schema:
+          type: integer
+          format: timestamp
+      - in: query
+        name: end
+        description: Search by end time as a Unix timestamp
+        schema:
+          type: integer
+          format: timestamp
+      - in: query
+        name: trigger_type
+        description: Filter by one or more trigger types
+        schema:
+          type: array
+      - in: query
+        name: notification_type
+        description: 'Filter by one or more notification types: banner, desktop, sms, mobile, and email'
+        schema:
+          type: array
+      - in: query
+        name: level
+        description: 'Filter by one or more notification levels: info, warning, and critical'
+        schema:
+          type: array
+      - in: query
+        name: acknowledged
+        description: Filter by whether the notification has been acknowledged
+        schema:
+          type: boolean
+      - in: query
+        name: sort
+        description: Field to sort by
+        schema:
+          type: string
+          enum:
+          - created_at
+      - in: query
+        name: order
+        description: A sorting direction
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+      operationId: getV1Notifications
+      x-operation-id-source: derived
+  /v1/notifications/acknowledge:
+    post:
+      summary: Acknowledge multiple notifications
+      tags:
+      - Notifications
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: Ok
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Notification IDs
+        required: true
+      operationId: postV1NotificationsAcknowledge
+      x-operation-id-source: derived
+  /v1/notifications/acknowledge_all:
+    post:
+      summary: Acknowledge all notifications for current user
+      tags:
+      - Notifications
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: Ok
+      operationId: postV1NotificationsAcknowledgeAll
+      x-operation-id-source: derived
+  /v1/notifications/{id}/acknowledge:
+    post:
+      summary: List notifications for current user
+      tags:
+      - Notifications
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: Ok
+      parameters:
+      - in: path
+        name: id
+        description: Notification ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV1NotificationsByIdAcknowledge
+      x-operation-id-source: derived
+  /v1/notifications/{id}:
+    get:
+      summary: Show notification
+      tags:
+      - Notifications
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+      parameters:
+      - in: path
+        name: id
+        description: Notification ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV1NotificationsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update notification
+      tags:
+      - Notifications
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+      parameters:
+      - in: path
+        name: id
+        description: Notification ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationPayload'
+        description: Notification Payload
+        required: true
+      operationId: patchV1NotificationsById
+      x-operation-id-source: derived
+  /v1/notifications/count/unread:
+    get:
+      summary: Get the unread notification count for the current user
+      tags:
+      - Notifications
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Unread notifications count
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnreadCount'
+      parameters:
+      - in: query
+        name: trigger_type
+        description: Filter by trigger type
+        schema:
+          type: array
+      operationId: getV1NotificationsCountUnread
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    Notification:
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int64
+        user_id:
+          type: integer
+          format: int64
+        trigger_id:
+          type: integer
+          format: int64
+        trigger_type:
+          type: string
+        message:
+          type: string
+        level:
+          type: string
+        acknowledged:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        status:
+          type: string
+        trigger:
+          type: object
+          properties:
+            oneOf:
+              type: object
+              properties:
+                comment:
+                  $ref: '#/components/schemas/Comment'
+                activity_post:
+                  $ref: '#/components/schemas/ActivityPost'
+    UnreadCount:
+      properties:
+        count:
+          type: integer
+          format: int64
+      example:
+        count: 12345
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    ActivityPost:
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int64
+        context:
+          type: object
+          properties:
+            post:
+              type: object
+              properties:
+                body:
+                  type: string
+        type:
+          type: string
+        segment:
+          type: array
+          items:
+            type: string
+        created_at:
+          type: string
+          format: date-time
+        liked:
+          type: boolean
+        likes_count:
+          type: integer
+          format: int32
+        rig:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            active_well:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                name:
+                  type: string
+        mentioned_users:
+          type: array
+          items:
+            $ref: '#/components/schemas/V1UserMinimal'
+        user:
+          type: object
+          $ref: '#/components/schemas/V1UserMinimal'
+        likes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Like'
+    Comment:
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int64
+        body:
+          type: string
+        attachment:
+          type: object
+          properties:
+            file_name:
+              type: string
+            s3_link:
+              type: string
+        attachments:
+          type: array
+          items:
+            properties:
+              file_name:
+                type: string
+              s3_link:
+                type: string
+        created_at:
+          type: string
+          format: date-time
+        mentioned_users:
+          type: array
+          items:
+            $ref: '#/components/schemas/V1UserMinimal'
+        likes_count:
+          type: integer
+        user:
+          type: object
+          $ref: '#/components/schemas/V1UserMinimal'
+        likes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Like'
+    NotificationPayload:
+      properties:
+        notification:
+          type: object
+          properties:
+            message:
+              type: string
+      example:
+        notification:
+          message: Updated notification message
+    V1UserMinimal:
+      properties:
+        id:
+          type: integer
+          format: int64
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        title:
+          type: string
+        role:
+          type: string
+        profile_photo:
+          type: string
+        current_segment:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+      example:
+        id: 1072
+        first_name: Derek
+        last_name: Smith
+        email: email7@corva.ai
+        title: Drilling Engineer
+        role: user
+        profile_photo: aws_s3_file_path
+        current_segment: drilling
+        created_at: '2020-02-04T12:48:59.593Z'
+    Like:
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int64
+        created_at:
+          type: string
+          format: date-time
+        user:
+          type: object
+          $ref: '#/components/schemas/V1UserMinimal'
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

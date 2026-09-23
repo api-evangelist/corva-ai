@@ -1,0 +1,231 @@
+openapi: 3.2.0
+info:
+  title: Corva Data Legacy Data API
+  version: 0.1.0
+tags:
+- name: legacy-data
+paths:
+  /api/legacy/v1/data:
+    get:
+      tags:
+      - legacy-data
+      summary: Index Without Provider
+      operationId: index_without_provider_api_legacy_v1_data_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Index Without Provider Api Legacy V1 Data Get
+      security:
+      - HTTPBearer: []
+      - APIKeyHeader: []
+  /api/legacy/v1/data/{provider}:
+    get:
+      tags:
+      - legacy-data
+      summary: Index Without Dataset
+      operationId: index_without_dataset_api_legacy_v1_data__provider__get
+      security:
+      - HTTPBearer: []
+      - APIKeyHeader: []
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Provider
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Index Without Dataset Api Legacy V1 Data  Provider  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/legacy/v1/data/{provider}/{dataset}:
+    get:
+      tags:
+      - legacy-data
+      summary: Index
+      operationId: index_api_legacy_v1_data__provider___dataset__get
+      security:
+      - HTTPBearer: []
+      - APIKeyHeader: []
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Provider
+      - name: dataset
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dataset
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Index Api Legacy V1 Data  Provider   Dataset  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/legacy/v1/data/{provider}/{dataset}/{id}:
+    get:
+      tags:
+      - legacy-data
+      summary: Show
+      operationId: show_api_legacy_v1_data__provider___dataset___id__get
+      security:
+      - HTTPBearer: []
+      - APIKeyHeader: []
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Provider
+      - name: dataset
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dataset
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Show Api Legacy V1 Data  Provider   Dataset   Id  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    patch:
+      tags:
+      - legacy-data
+      summary: Patch
+      operationId: patch_api_legacy_v1_data__provider___dataset___id__patch
+      security:
+      - HTTPBearer: []
+      - APIKeyHeader: []
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Provider
+      - name: dataset
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dataset
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Patch Api Legacy V1 Data  Provider   Dataset   Id  Patch
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - legacy-data
+      summary: Put
+      operationId: put_api_legacy_v1_data__provider___dataset___id__put
+      security:
+      - HTTPBearer: []
+      - APIKeyHeader: []
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Provider
+      - name: dataset
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dataset
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Put Api Legacy V1 Data  Provider   Dataset   Id  Put
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        code:
+          type: integer
+          title: Code
+        message:
+          type: string
+          title: Message
+      type: object
+      required:
+      - code
+      - message
+      title: ExceptionResponse
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+    APIKeyHeader:
+      type: apiKey
+      in: header
+      name: Authorization

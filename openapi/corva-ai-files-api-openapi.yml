@@ -1,0 +1,484 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Files API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Files
+  description: Manage file uploads and downloads
+paths:
+  /v1/file:
+    post:
+      summary: Upload a file as form data
+      tags:
+      - Files
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/File'
+        '400':
+          description: Invalid file
+          content:
+            application/json:
+              schema:
+                example:
+                  code: 400
+                  message: 'Unsupported file type: .exe'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: A file to upload
+                  format: binary
+                s3_key:
+                  type: string
+                  description: AWS S3 file identifier
+              required:
+              - file
+              - s3_key
+      operationId: postV1File
+      x-operation-id-source: derived
+    put:
+      summary: Update a file by S3 key
+      tags:
+      - Files
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/File'
+        '400':
+          description: Invalid file
+          content:
+            application/json:
+              schema:
+                example:
+                  code: 400
+                  message: 'Unsupported file type: .exe'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: A file to upload
+                  format: binary
+                s3_key:
+                  type: string
+                  description: AWS S3 file identifier
+              required:
+              - file
+              - s3_key
+      operationId: putV1File
+      x-operation-id-source: derived
+  /v1/file/sign:
+    get:
+      summary: Returns a signed URL
+      tags:
+      - Files
+      parameters:
+      - in: query
+        name: file_name
+        description: A file name
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: asset_id
+        description: Asset ID
+        required: false
+        schema:
+          type: int64
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignedFile'
+      operationId: getV1FileSign
+      x-operation-id-source: derived
+  /v1/file/preview:
+    get:
+      summary: Redirects user to the file via a generated download link
+      tags:
+      - Files
+      parameters:
+      - in: query
+        name: file_name
+        description: A file name
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: internal
+        description: When 'true', generates signed URL using internal storage endpoint (for same-network access). Otherwise uses external storage.
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      responses:
+        '302':
+          description: Redirect to direct S3 link
+      operationId: getV1FilePreview
+      x-operation-id-source: derived
+  /v1/file/download:
+    get:
+      summary: Downloads a file
+      tags:
+      - Files
+      parameters:
+      - in: query
+        name: file_name
+        description: A file name
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: internal
+        description: When 'true', generates signed URL using internal storage endpoint (for same-network access). Otherwise uses external storage.
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      responses:
+        '200':
+          description: Fetchs a file from S3 link and gets it downloded
+      operationId: getV1FileDownload
+      x-operation-id-source: derived
+  /v1/file/download_link:
+    get:
+      summary: Returns a URL where the file can be downloaded
+      tags:
+      - Files
+      parameters:
+      - in: query
+        name: file_name
+        description: A file name
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: response_content_disposition
+        description: Desired content disposition
+        required: false
+        schema:
+          type: string
+          enum:
+          - inline
+          - attachment
+      - in: query
+        name: response_content_type
+        description: Desired content type
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: internal
+        description: When 'true', generates signed URL using internal storage endpoint (for same-network access). Otherwise uses external storage.
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      responses:
+        '200':
+          description: Returns the download URL
+      operationId: getV1FileDownloadLink
+      x-operation-id-source: derived
+  /v1/file/delete:
+    delete:
+      summary: Deletes a file
+      tags:
+      - Files
+      parameters:
+      - in: query
+        name: file_name
+        description: A file name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: File deleted
+      operationId: deleteV1FileDelete
+      x-operation-id-source: derived
+  /v2/files:
+    delete:
+      summary: Deletes a file
+      tags:
+      - Files
+      parameters:
+      - in: query
+        name: id
+        description: Folder or File _id
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: file_name
+        description: A file name
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: segment
+        description: Segment for collection
+        required: false
+        schema:
+          type: string
+          enum:
+          - drilling
+          - completion
+          - intervention
+      responses:
+        '200':
+          type: object
+          description: File deleted
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                example:
+                  status: Deleted
+        '400':
+          type: object
+          description: Failure response
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                example:
+                  code: 400
+                  message: Missing id or file_name param
+        '404':
+          type: object
+          description: Not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                example:
+                  code: 404
+                  message: File not found
+      operationId: deleteV2Files
+      x-operation-id-source: derived
+  /v2/files/url:
+    get:
+      summary: Get signed URL for a file
+      tags:
+      - Files
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                example:
+                  code: 403
+                  message: Forbidden
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                example:
+                  code: 404
+                  message: File not found
+        '200':
+          type: object
+          description: File url
+          content:
+            application/json:
+              schema:
+                properties:
+                  url:
+                    type: string
+                example:
+                  url: https://s3.amazonaws.com/report_34534534.pdf?X-Amz-Expires=900&X-Amz-Date=20170413T143454Z
+        '400':
+          type: object
+          description: Failure response
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                example:
+                  code: 400
+                  message: Missing id or file_name param
+      parameters:
+      - in: query
+        name: id
+        description: ID of the file
+        schema:
+          type: string
+      - in: query
+        name: file_name
+        description: Name of the file
+        schema:
+          type: string
+      operationId: getV2FilesUrl
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    SignedFile:
+      properties:
+        signed_url:
+          type: string
+        file_name:
+          type: string
+        display_name:
+          type: string
+        bucket:
+          type: string
+      example:
+        signed_url: https://s3.amazonaws.com/corva-files/mycompany/1578593498/report.pdf?X-Amz-Expires=900&X-Amz-Date=20200109T181138Z&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=REDACTED_AWS_ACCESS_KEY_ID/20200109/us-east-1/s3/aws4_request&X-Amz-SignedHeaders=content-type%3Bhost%3Bx-amz-acl&X-Amz-Signature=5d0c4bc61fce17b937c3ac59730f1db12aced8bb53df0d82842707bf8783afaf
+        file_name: mycompany/1578593498/report.pdf
+        display_name: report.pdf
+        bucket: corva-files
+    File:
+      properties:
+        key:
+          type: string
+        last_modified:
+          type: string
+          format: date-time
+        content_length:
+          type: integer
+          format: int64
+      example:
+        key: provider_5/recent_historical.csv
+        last_modified: Thu, 09 Jan 2020 18:11:37 +0000
+        content_length: 7723
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

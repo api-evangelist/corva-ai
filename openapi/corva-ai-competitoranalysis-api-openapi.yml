@@ -1,0 +1,315 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Competitor Analysis API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: CompetitorAnalysis
+paths:
+  /v1/competitor_analysis/statistics:
+    get:
+      summary: Get Competitor Analysis statistics
+      tags:
+      - CompetitorAnalysis
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompetitorStatsData'
+      parameters:
+      - in: query
+        name: asset_id
+        description: Asset ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: radius
+        description: Filter by radius
+        required: true
+        schema:
+          type: float
+      - in: query
+        name: keys
+        description: Metric keys
+        required: true
+        schema:
+          items:
+            type: string
+      - in: query
+        name: type
+        description: Metrics type
+        required: true
+        schema:
+          type: float
+          enum:
+          - asset
+          - well_section
+          - bha
+      - in: query
+        name: rig_release
+        description: Filter by rig release
+        required: false
+        schema:
+          type: string
+          enum:
+          - last_month
+          - last_3_months
+          - last_6_months
+          - last_9_months
+          - last_year
+      - in: query
+        name: target_formations
+        description: Target Formations
+        schema:
+          items:
+            type: string
+      - in: query
+        name: string_designs
+        description: String Designs
+        schema:
+          items:
+            type: string
+      - in: query
+        name: wells_number
+        description: Number of wells to return stats for (500 max)
+        required: false
+        schema:
+          type: integer
+      operationId: getV1CompetitorAnalysisStatistics
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    CompetitorStatsData:
+      properties:
+        data:
+          type: object
+          properties:
+            own_company:
+              type: object
+              properties:
+                metric_1_key:
+                  type: object
+                  properties:
+                    min:
+                      type: float
+                      format: int64
+                    max:
+                      type: float
+                      format: int64
+                    median:
+                      type: float
+                      format: int64
+                    q1:
+                      type: float
+                      format: int64
+                    q3:
+                      type: float
+                      format: int64
+                metric_2_key:
+                  type: object
+                  properties:
+                    min:
+                      type: float
+                      format: int64
+                    max:
+                      type: float
+                      format: int64
+                    median:
+                      type: float
+                      format: int64
+                    q1:
+                      type: float
+                      format: int64
+                    q3:
+                      type: float
+                      format: int64
+                metric_3_key:
+                  type: object
+                  properties:
+                    min:
+                      type: float
+                      format: int64
+                    max:
+                      type: float
+                      format: int64
+                    median:
+                      type: float
+                      format: int64
+                    q1:
+                      type: float
+                      format: int64
+                    q3:
+                      type: float
+                      format: int64
+            other_companies:
+              type: object
+              properties:
+                metric_1_key:
+                  type: object
+                  properties:
+                    min:
+                      type: float
+                      format: int64
+                    max:
+                      type: float
+                      format: int64
+                    median:
+                      type: float
+                      format: int64
+                    q1:
+                      type: float
+                      format: int64
+                    q3:
+                      type: float
+                      format: int64
+                metric_2_key:
+                  type: object
+                  properties:
+                    min:
+                      type: float
+                      format: int64
+                    max:
+                      type: float
+                      format: int64
+                    median:
+                      type: float
+                      format: int64
+                    q1:
+                      type: float
+                      format: int64
+                    q3:
+                      type: float
+                      format: int64
+                metric_3_key:
+                  type: object
+                  properties:
+                    min:
+                      type: float
+                      format: int64
+                    max:
+                      type: float
+                      format: int64
+                    median:
+                      type: float
+                      format: int64
+                    q1:
+                      type: float
+                      format: int64
+                    q3:
+                      type: float
+                      format: int64
+        more_wells_available:
+          type: boolean
+      example:
+        data:
+          own_company:
+            bottom_to_slips_average:
+              min: 89.47059
+              max: 89.47059
+              median: 89.47059
+              q1: 89.47059
+              q3: 89.47059
+            drilling_connection_average:
+              min: 132.50789
+              max: 146.54971
+              median: 139.5288
+              q1: 139.5288
+              q3: 143.039255
+            weight_to_weight_average:
+              min: 239.8053
+              max: 514.47059
+              median: 377.137945
+              q1: 377.137945
+              q3: 445.8042675
+          other_companies:
+            bottom_to_slips_average:
+              min: 89.47059
+              max: 89.47059
+              median: 89.47059
+              q1: 89.47059
+              q3: 89.47059
+            drilling_connection_average:
+              min: 132.50789
+              max: 146.54971
+              median: 139.5288
+              q1: 139.5288
+              q3: 143.039255
+            weight_to_weight_average:
+              min: 239.8053
+              max: 514.47059
+              median: 377.137945
+              q1: 377.137945
+              q3: 445.8042675
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

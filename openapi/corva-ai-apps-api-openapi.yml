@@ -1,0 +1,2875 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Apps API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Apps
+  description: Manage Apps
+paths:
+  /v2/apps:
+    get:
+      summary: List accessible apps
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppList'
+      parameters:
+      - in: query
+        name: provider
+        description: Company Provider name
+        schema:
+          items:
+            type: string
+      - in: query
+        name: company_id
+        description: Company ID
+        schema:
+          items:
+            type: integer
+      - in: query
+        name: type
+        description: App type filter
+        schema:
+          items:
+            type: string
+      - in: query
+        name: segment
+        description: App segment filter
+        schema:
+          items:
+            type: string
+      - in: query
+        name: app_category_id
+        description: AppCategory filter
+        schema:
+          items:
+            type: integer
+      - in: query
+        name: category
+        description: App category filter
+        schema:
+          items:
+            type: string
+      - in: query
+        name: label
+        description: App label
+        schema:
+          items:
+            type: string
+      - in: query
+        name: owner
+        description: Search by the user ID of the owner of the app
+        schema:
+          items:
+            type: integer
+      - in: query
+        name: installed
+        description: App installed filter
+        schema:
+          type: boolean
+      - in: query
+        name: search
+        description: Search app by name/description/summary/app_key
+        schema:
+          type: string
+      - in: query
+        name: sort
+        description: 'One or more fields to sort by. Prefix with a - for descending order. Ex: name,-updated_at'
+        schema:
+          type: string
+          enum:
+          - name
+          - app_type
+          - category
+          - created_at
+          - updated_at
+      - in: query
+        name: order
+        description: A sorting direction
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+      - in: query
+        name: visibility
+        description: Filter by visibility
+        schema:
+          type: string
+          enum:
+          - public
+          - company
+          - developer
+          - private
+      - in: query
+        name: marketing_level
+        description: Filter by marketing level
+        schema:
+          type: string
+          enum:
+          - normal
+          - featured
+          - promoted
+      - in: query
+        name: followable
+        description: Filter by followable flag
+        schema:
+          type: boolean
+      - in: query
+        name: app_key
+        description: Filter by app key
+        schema:
+          type: string
+      - in: query
+        name: platform
+        description: Filter by platform
+        schema:
+          type: string
+      - in: query
+        name: subscribed
+        description: Filter by subscribed/unsubscribed
+        schema:
+          type: boolean
+      - in: query
+        name: rig_fleet_id
+        description: Filter by subscribed Rig
+        schema:
+          type: integer
+      - in: query
+        name: frac_fleet_id
+        description: Filter by subscribed Frac Fleet
+        schema:
+          type: integer
+      - in: query
+        name: drillout_unit_id
+        description: Filter by subscribed Drillout Unit
+        schema:
+          type: integer
+      - in: query
+        name: page
+        description: Number of page
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of items to list per page
+        schema:
+          type: integer
+      - in: query
+        name: not_requested
+        description: Filter by non-requested apps
+        schema:
+          type: boolean
+      - in: query
+        name: not_purchased
+        description: Filter by non-purchased apps
+        schema:
+          type: boolean
+      - in: query
+        name: log_type
+        description: Filter by log type. Can be "time", "depth" or "all"
+        schema:
+          type: string
+      - in: query
+        name: full_lambda_name
+        description: Find by full_lambda_name
+        schema:
+          type: string
+      - in: query
+        name: followable_scheduler_type
+        description: Filter by BE app scheduler type allowed to follow. Can be used only when followable - true.
+        schema:
+          type: string
+      - in: query
+        name: show_depends_apps
+        description: Show 2-tier depends_on_apps data
+        schema:
+          type: boolean
+      - in: query
+        name: can_update
+        description: Filter Apps by ability to update
+        schema:
+          type: boolean
+      - in: query
+        name: exclude_categories
+        description: Array of app categories to exclude apps from request f.e. settings
+        schema:
+          type: array
+          items:
+            type: string
+      - in: query
+        name: app_ids
+        description: Filter apps by ID
+        schema:
+          type: array
+          items:
+            type: integer
+      - in: query
+        name: exclude_ids
+        description: Filter out apps by ID
+        schema:
+          type: array
+          items:
+            type: integer
+      - in: query
+        name: exclude_app_keys
+        description: Array of app keys to exclude apps from request
+        schema:
+          type: array
+          items:
+            type: string
+      - in: query
+        name: dataset_id
+        description: Filter by Dataset ID
+        schema:
+          type: integer
+      - in: query
+        name: author_id
+        description: Filter by Author
+        schema:
+          type: integer
+      - in: query
+        name: temporary
+        description: Filter permanent/temporary
+        schema:
+          type: boolean
+          enum:
+          - 'true'
+          - 'false'
+      operationId: getV2Apps
+      x-operation-id-source: derived
+    post:
+      summary: Create an app
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created app
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/App'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAppPayload'
+        description: App Payload
+        required: true
+      operationId: postV2Apps
+      x-operation-id-source: derived
+  /v2/apps/{id}:
+    get:
+      summary: Show app
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/App'
+      parameters:
+      - in: path
+        name: id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2AppsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update an App
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated App
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/App'
+      parameters:
+      - in: path
+        name: id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAppPayload'
+        description: App Payload
+        required: true
+      operationId: patchV2AppsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete an App
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: App deleted
+      parameters:
+      - in: path
+        name: id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+      operationId: deleteV2AppsById
+      x-operation-id-source: derived
+  /v2/apps/{id}/install:
+    post:
+      summary: Install an app for your company
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Installation'
+      parameters:
+      - in: path
+        name: id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2AppsByIdInstall
+      x-operation-id-source: derived
+  /v2/apps/{app_id}/packages:
+    get:
+      summary: See all packages for an app
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageList'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2AppsByAppIdPackages
+      x-operation-id-source: derived
+  /v2/apps/{app_key}/packages:
+    get:
+      summary: See all packages for an app
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageList'
+      parameters:
+      - in: path
+        name: app_key
+        description: App Key
+        required: true
+        schema:
+          type: string
+      operationId: getV2AppsByAppKeyPackages
+      x-operation-id-source: derived
+  /v2/apps/{app_id}/packages/upload:
+    post:
+      summary: Upload a new package for an app
+      description: Upload a ZIP file for the Dev Center Packager to build and deploy
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Package'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                package:
+                  type: string
+                  description: Package ZIP file (field name must be package)
+                  format: binary
+                github_username:
+                  type: string
+                  description: Github username (optional)
+                prebuilt:
+                  type: boolean
+                  description: If true, indicates the uploaded zip is already built
+                source:
+                  type: string
+                  description: Request source (e.g. 'ui')
+              required:
+              - package
+      operationId: postV2AppsByAppIdPackagesUpload
+      x-operation-id-source: derived
+  /v2/apps/{app_id}/packages/{id}/download:
+    get:
+      summary: Download the latest package for an app
+      description: Download a ZIP file with the latest app code
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '302':
+          description: Fetches a file from S3 link and gets it downloaded
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Package ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2AppsByAppIdPackagesByIdDownload
+      x-operation-id-source: derived
+  /v2/apps/{app_id}/packages/{id}:
+    get:
+      summary: Show a specific packages for an app
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Package'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Package ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2AppsByAppIdPackagesById
+      x-operation-id-source: derived
+    patch:
+      summary: Update a package
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Package'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Package ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePackagePayload'
+        description: Package Payload
+        required: true
+      operationId: patchV2AppsByAppIdPackagesById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a package
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Package Deleted
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Package ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2AppsByAppIdPackagesById
+      x-operation-id-source: derived
+  /v2/apps/{app_key}/packages/upload:
+    post:
+      summary: Upload a new package for an app
+      description: Upload a ZIP file for the Dev Center Packager to build and deploy
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Package'
+      parameters:
+      - in: path
+        name: app_key
+        description: App Key
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                package:
+                  type: string
+                  description: Package ZIP file (field name must be package)
+                  format: binary
+                github_username:
+                  type: string
+                  description: Github username (optional)
+                prebuilt:
+                  type: boolean
+                  description: If true, indicates the uploaded zip is already built
+                source:
+                  type: string
+                  description: Request source (e.g. 'ui')
+              required:
+              - package
+      operationId: postV2AppsByAppKeyPackagesUpload
+      x-operation-id-source: derived
+  /v2/apps/app_categories:
+    get:
+      summary: List app categories
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppCategoryList'
+      parameters:
+      - in: query
+        name: category
+        description: Category of the AppCategories to fetch
+        required: false
+        schema:
+          type: string
+          enum:
+          - wellhub
+          - dev-center
+          - usage_analytics
+      - in: query
+        name: segment
+        description: Filter by segment
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: return_as_nested_tree
+        description: Returns AppCategories and Apps in a nested array
+        required: false
+        schema:
+          type: boolean
+      operationId: getV2AppsAppCategories
+      x-operation-id-source: derived
+  /v2/apps/categories:
+    get:
+      summary: List categories from look up table
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppCategoryLookUpList'
+      operationId: getV2AppsCategories
+      x-operation-id-source: derived
+  /v2/apps/featured:
+    get:
+      summary: List featured & promoted apps
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppList'
+      parameters:
+      - in: query
+        name: segment
+        description: Filter by segment
+        schema:
+          type: string
+      - in: query
+        name: marketing_level
+        description: Filter by marketing level
+        schema:
+          type: string
+          enum:
+          - featured
+          - promoted
+      operationId: getV2AppsFeatured
+      x-operation-id-source: derived
+  /v2/apps/types:
+    get:
+      summary: List app types
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppTypeList'
+      operationId: getV2AppsTypes
+      x-operation-id-source: derived
+  /v2/apps/{app_id}/secrets:
+    post:
+      summary: Create a secret parameter for an app
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                example:
+                  status: Created
+        '422':
+          type: object
+          description: Failure response
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                example:
+                  code: 422
+                  message: Parameter cannot include spaces
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppSecretParameterPayload'
+        description: Payload
+        required: true
+      operationId: postV2AppsByAppIdSecrets
+      x-operation-id-source: derived
+    put:
+      summary: Update secret parameter for an app
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                example:
+                  status: Updated
+        '422':
+          type: object
+          description: Failure response
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                example:
+                  code: 422
+                  message: Parameter 'MY_PRECIOUS_SECRET' does not exist
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppSecretParameterPayload'
+        description: Payload
+        required: true
+      operationId: putV2AppsByAppIdSecrets
+      x-operation-id-source: derived
+    delete:
+      summary: Delete secret parameter for an app
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                example:
+                  status: Deleted
+        '422':
+          type: object
+          description: Failure response
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                example:
+                  code: 422
+                  message: Key 'MY_PRECIOUS_SECRET' does not exist
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: key
+        description: Parameter name
+        required: true
+        schema:
+          type: string
+      operationId: deleteV2AppsByAppIdSecrets
+      x-operation-id-source: derived
+  /v2/apps/{app_id}/app_help_contents:
+    get:
+      summary: List AppHelpContents
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppHelpContentList'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: search
+        description: Search by title, description
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: status
+        description: Filter by status
+        required: false
+        schema:
+          type: string
+          enum:
+          - draft
+          - published
+      operationId: getV2AppsByAppIdAppHelpContents
+      x-operation-id-source: derived
+    post:
+      summary: Create an AppHelpContent
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created AppHelpContent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppHelpContent'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppHelpContentPayload'
+        description: AppHelpContent Payload
+        required: true
+      operationId: postV2AppsByAppIdAppHelpContents
+      x-operation-id-source: derived
+  /v2/apps/{app_id}/app_help_contents/{id}:
+    get:
+      summary: Show AppHelpContent
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppHelpContent'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: AppHelpContent ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2AppsByAppIdAppHelpContentsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update an AppHelpContent
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated AppHelpContent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppHelpContent'
+      parameters:
+      - in: path
+        name: id
+        description: AppHelpContent ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppHelpContentPayload'
+        description: AppHelpContent Payload
+        required: true
+      operationId: patchV2AppsByAppIdAppHelpContentsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete an AppHelpContent
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: AppHelpContent deleted
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: AppHelpContent ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2AppsByAppIdAppHelpContentsById
+      x-operation-id-source: derived
+  /v2/apps/{app_id}/app_help_contents/signed_url:
+    get:
+      summary: Get signed_url for AppHelpContent
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                example:
+                  code: 403
+                  message: Forbidden
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                example:
+                  code: 404
+                  message: App was not found
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                properties:
+                  signed_url:
+                    type: string
+                  file_name:
+                    type: string
+                  display_name:
+                    type: string
+                  bucket:
+                    type: string
+                  cdn_url:
+                    type: string
+                example:
+                  signed_url: https://s3.amazonaws.com/cdn.corva.ai/provider_9/1649168990/foobar.jpg?X-Amz-Expires=900
+                  file_name: provider/video.mp4
+                  display_name: video.mp4
+                  bucket: cdn.bucket
+                  cdn_url: https://qwerty.cloudfront.net
+        '400':
+          type: object
+          description: Failure response
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                example:
+                  code: 400
+                  message: Missing file_name param
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: file_name
+        description: AppHelpContent file_name of attachment
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: prefix
+        description: AppHelpContent prefix of attachment
+        required: false
+        schema:
+          type: string
+      operationId: getV2AppsByAppIdAppHelpContentsSignedUrl
+      x-operation-id-source: derived
+  /v2/apps/{app_id}/app_error_alerts:
+    post:
+      summary: Create an AppErrorAlert
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created AppErrorAlert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppErrorAlert'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppErrorAlertPayload'
+        description: AppErrorAlert Payload
+        required: true
+      operationId: postV2AppsByAppIdAppErrorAlerts
+      x-operation-id-source: derived
+    get:
+      summary: Show AppErrorAlert
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppErrorAlert'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2AppsByAppIdAppErrorAlerts
+      x-operation-id-source: derived
+    patch:
+      summary: Update an AppErrorAlert
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated AppErrorAlert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppErrorAlert'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppErrorAlertPayload'
+        description: AppErrorAlert Payload
+        required: true
+      operationId: patchV2AppsByAppIdAppErrorAlerts
+      x-operation-id-source: derived
+    delete:
+      summary: Delete an AppErrorAlert
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: AppErrorAlert deleted
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2AppsByAppIdAppErrorAlerts
+      x-operation-id-source: derived
+  /v2/apps/{app_id}/app_error_alerts/subscribe:
+    post:
+      summary: Subscribe a user to AppErrorAlert
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: AppErrorAlert with users data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppErrorAlert'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Notification types for user
+      operationId: postV2AppsByAppIdAppErrorAlertsSubscribe
+      x-operation-id-source: derived
+  /v2/apps/{app_id}/app_error_alerts/unsubscribe:
+    post:
+      summary: Unsubscribe a user from AppErrorAlert
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: AppErrorAlert with users data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppErrorAlert'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2AppsByAppIdAppErrorAlertsUnsubscribe
+      x-operation-id-source: derived
+  /v2/app_companies:
+    get:
+      summary: List companies which have access to Apps
+      tags:
+      - Apps
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyListStructure'
+      operationId: getV2AppCompanies
+      x-operation-id-source: derived
+components:
+  schemas:
+    AppHelpContentPayload:
+      properties:
+        app_help_content:
+          type: object
+          properties:
+            title:
+              type: string
+            description:
+              type: text
+            position:
+              type: integer
+            status:
+              type: string
+              enum:
+              - draft
+              - published
+            visibility:
+              type: string
+              enum:
+              - public
+              - company
+            app_id:
+              type: integer
+            author_id:
+              type: integer
+            attachment_metadata:
+              type: array
+              items:
+                properties:
+                  file_name:
+                    type: string
+                  type:
+                    type: string
+            article_content:
+              type: text
+      example:
+        app_help_content:
+          title: Help Title
+          description: Help description
+          position: 1
+          status: draft
+          visibility: public
+          app_id: 1
+          author_id: 2
+          attachment_metadata:
+          - file_name: example.mp4
+            type: video
+          article_content: Article text
+    AppCategoryLookUp:
+      properties:
+        identifier:
+          type: string
+        description:
+          type: string
+    AppErrorAlertPayload:
+      properties:
+        app_error_alert:
+          type: object
+          properties:
+            errors_number:
+              type: integer
+            period:
+              type: string
+              enum:
+              - minute
+              - hour
+              - day
+              - week
+              - month
+            notification_types:
+              type: array
+      example:
+        app_error_alert:
+          errors_number: 50
+          period: week
+          notification_types:
+          - mobile
+          - desktop
+    PackageList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Package'
+    AppHelpContentList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppHelpContent'
+    UpdateAppPayload:
+      properties:
+        app:
+          type: object
+          properties:
+            app_key:
+              type: string
+            app_type:
+              type: string
+            scheduler_type:
+              type: integer
+            package_type:
+              type: string
+            name:
+              type: string
+            website:
+              type: string
+            description:
+              type: string
+            summary:
+              type: string
+            version:
+              type: string
+            category:
+              type: string
+            manager:
+              type: string
+            visibility:
+              type: string
+            marketing_level:
+              type: string
+            segment:
+              type: array
+            source_type:
+              type: array
+            pricing:
+              type: object
+            settings:
+              type: object
+            dependent_app_ids:
+              type: array
+            depends_on_app_ids:
+              type: array
+            icon:
+              type: string
+              format: binary
+            temporary:
+              type: boolean
+            delete_at:
+              type: string
+              format: date-time
+      example:
+        app:
+          id: 12345
+          app_key: custom_key_23
+          name: CustomApp1
+          app_type: custom
+          scheduler_type: 1
+          package_type: archive
+          visibility: public
+          segment:
+          - drilling
+          - completion
+          - intervention
+          source_type:
+          - frac
+          - wireline
+          category: analytics app
+          description: CustomApp1 description
+          summary: CustomApp1 summary
+          website: http://example.com
+          version: 13.4.4
+          manager: FracFleet
+          temporary: false
+          delete_at: '2020-01-01T00:00:00.000Z'
+          pricing:
+            tier1: '12300'
+            tier2: '900003'
+          settings:
+            setting1: foobar
+            setting2: some_s3_link
+          icon: icon.png
+          dependent_app_ids:
+          - 12345
+          - 12346
+          - 12347
+          depends_on_app_ids:
+          - 12345
+          - 12346
+          - 12347
+    CompanyListStructure:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanyType'
+    AppSecretParameterPayload:
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+      example:
+        key: MY_PRECIOUS_SECRET
+        value: some value
+    AppHelpContent:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            title:
+              type: string
+            description:
+              type: text
+            position:
+              type: integer
+            status:
+              type: string
+              enum:
+              - draft
+              - published
+            visibility:
+              type: string
+              enum:
+              - public
+              - company
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            attachment_metadata:
+              type: array
+              items:
+                properties:
+                  file_name:
+                    type: string
+                  type:
+                    type: string
+                  uploaded_at:
+                    type: string
+                    format: date-time
+            article_content:
+              type: text
+        relationships:
+          type: object
+          properties:
+            app:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            author:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 123
+        type: app_help_content
+        attributes:
+          id: '123'
+          title: Help Title
+          description: Help description
+          position: 1
+          status: published
+          visibility: public
+          created_at: '2020-01-01T08:00:00.000Z'
+          updated_at: '2020-01-01T13:00:00.000Z'
+          attachment_metadata:
+          - file_name: example.mp4
+            type: video
+            uploaded_at: '2020-01-01T13:00:00.000Z'
+          article_content: Article text
+        relationships:
+          app:
+            id: '1'
+            type: app
+          author:
+            id: '2'
+            type: user
+    AppErrorAlert:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            errors_number:
+              type: integer
+            period:
+              type: string
+            notification_types:
+              type: array
+            created_by:
+              type: string
+            users:
+              type: array
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+      example:
+        id: 111
+        type: AppErrorAlert
+        attributes:
+          id: 1
+          errors_number: 10
+          period: week
+          notification_types:
+          - mobile
+          - desktop
+          created_by: user@email.com
+          users:
+          - id: 111
+            first_name: John
+            last_name: Doe
+            email: example@email.com
+            profile_photo: photo
+          created_at: '2010-01-01T00:00:00.000Z'
+          updated_at: '2010-01-01T00:00:00.000Z'
+    UpdatePackagePayload:
+      properties:
+        package:
+          type: object
+          properties:
+            status:
+              type: string
+            build:
+              type: string
+            label:
+              type: string
+            notes:
+              type: string
+            notes_type:
+              type: string
+      example:
+        package:
+          status: ready
+          build: my-app-0.0.10
+          label: beta
+          notes: Release notes for the package
+          notes_type: slate
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AppCategory:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+            identifier:
+              type: string
+            description:
+              type: string
+            category:
+              type: string
+            parent_category_id:
+              type: integer
+            position:
+              type: integer
+            segment:
+              type: array
+      example:
+        id: 12345
+        type: app_category
+        attributes:
+          id: 12345
+          name: Category 1
+          identifier: scheduler
+          description: App category desc
+          category: ui_apps
+          parent_category_id: 11111
+          position: 3
+          segment:
+          - drilling
+          - completions
+    CompanyType:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            provider:
+              type: string
+      example:
+        id: 111
+        type: company
+        attributes:
+          id: 1
+          name: Company Name
+          provider: Provider name
+    AppCategoryLookUpList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppCategoryLookUp'
+    Package:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            build:
+              type: string
+            label:
+              type: string
+            manifest:
+              type: object
+            package_json:
+              type: object
+            package_code_version:
+              type: string
+            notes:
+              type: string
+            notes_type:
+              type: string
+            status:
+              type: string
+            url:
+              type: string
+            version:
+              type: integer
+            review_status:
+              type: string
+            ui_settings:
+              type: object
+            package_review_id:
+              type: integer
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            app:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: app
+        attributes:
+          id: 12345
+          build: my-test-app-0.0.8
+          label: beta
+          manifest:
+            version: 1
+            settings: {}
+          package_json:
+            name: test-app
+            version: 0.0.8
+          ui_settings:
+            application:
+              initial_size:
+                w: 1
+                h: 1
+          package_code_version: 0.0.8
+          notes: Release notes for the package
+          notes_type: slate
+          status: published
+          url: https://package.corva.ai/corva/app/my_test_app/8/app.js
+          version: 8
+          review_status: pending
+          package_review_id: 92568
+          created_at: '2020-01-01T00:00:00.000Z'
+          updated_at: '2020-01-01T00:00:00.000Z'
+        relationships:
+          app:
+            data:
+              id: 299
+              type: app
+    AppCategoryList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppCategory'
+    AppList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/App'
+    Installation:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            app:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: installation
+        relationships:
+          app:
+            data:
+              id: 299
+              type: app
+          company:
+            data:
+              id: 999
+              type: company
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AppType:
+      properties:
+        identifier:
+          type: string
+        name:
+          type: string
+        group:
+          type: string
+        doc_intro:
+          type: string
+        doc_description:
+          type: string
+        doc_content:
+          type: string
+      example:
+        id: 12345
+        type: app_type
+        attributes:
+          id: 12345
+          identifier: scheduler
+          name: Polling App Scheduler
+          group: backend
+          doc_intro: '[{''type'':''paragraph'',''children'':[{''text'':''These are the Backend apps...''}]}]'
+          doc_description: '[{''type'':''paragraph'',''children'':[{''text'':''These are the Backend apps...''}]}]'
+          doc_content: '[{''type'':''paragraph'',''children'':[{''text'':''These are the Backend apps...''}]}]'
+    AppTypeList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppType'
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    App:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            app_key:
+              type: string
+            name:
+              type: string
+            app_type:
+              type: string
+            visibility:
+              type: string
+            marketing_level:
+              type: string
+            segment:
+              type: array
+            source_type:
+              type: array
+            category:
+              type: string
+            task_name:
+              type: string
+            description:
+              type: string
+            summary:
+              type: string
+            featured:
+              type: boolean
+            website:
+              type: string
+            settings:
+              type: object
+            ui_settings:
+              type: object
+            icon:
+              type: object
+            position:
+              type: integer
+            subscribed:
+              type: boolean
+            package_type:
+              type: string
+            author_id:
+              type: integer
+              format: int64
+            author_first_name:
+              type: string
+            author_last_name:
+              type: string
+            author_email:
+              type: string
+            requested:
+              type: boolean
+            platform:
+              type: string
+            is_multirig:
+              type: boolean
+            is_help_center_active:
+              type: boolean
+            tracking_enabled:
+              type: boolean
+            log_type:
+              type: string
+            full_lambda_name:
+              type: string
+            app_packages_limit:
+              type: integer
+            temporary:
+              type: boolean
+            delete_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            datasets:
+              type: array
+              items:
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        format: int64
+                      type:
+                        type: string
+            packages:
+              type: array
+              items:
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        format: int64
+                      type:
+                        type: string
+            app_help_contents:
+              type: array
+              items:
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        format: int64
+                      type:
+                        type: string
+            app_media:
+              type: array
+              items:
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        format: int64
+                      type:
+                        type: string
+            dependent_apps:
+              type: array
+              items:
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        format: int64
+                      type:
+                        type: string
+            depends_on_apps:
+              type: array
+              items:
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        format: int64
+                      type:
+                        type: string
+            app_category:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            owners:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: app
+        attributes:
+          id: 12345
+          app_key: custom_key_23
+          name: CustomApp1
+          app_type: custom
+          visibility: public
+          marketing_level: featured
+          segment:
+          - drilling
+          - completion
+          - intervention
+          source_type:
+          - frac
+          - wireline
+          category: analytics app
+          task_name: task.custom
+          description: CustomApp1 description
+          summary: CustomApp1 summary
+          featured: 'true'
+          website: http://example.com
+          package_type: archive
+          platform: dev_center
+          is_multirig: false
+          ui_settings:
+            initial_size:
+              w: 4
+              h: 10
+          settings:
+            setting1: foobar
+            setting2: some_s3_link
+          position: 1
+          subscribed: true
+          requested: false
+          author_id: 999
+          author_first_name: Derek
+          author_last_name: Last
+          author_email: dereklast@example.com
+          is_help_center_active: true
+          tracking_enabled: true
+          log_type: depth
+          full_lambda_name: environment_custom_key_23
+          app_packages_limit: 20
+          temporary: false
+          delete_at: '2020-01-01T00:00:00.000Z'
+        relationships:
+          company:
+            data:
+              id: 299
+              type: company
+          datasets:
+          - data:
+              id: 999
+              type: dataset
+          packages:
+          - data:
+              id: 123
+              type: package
+          app_help_contents:
+          - data:
+              id: 123
+              type: app_help_content
+          app_media:
+          - data:
+              id: 123
+              type: app_media
+          dependent_apps:
+          - data:
+              id: 123
+              type: app
+          depends_on_apps:
+          - data:
+              id: 123
+              type: app
+          owners:
+            data:
+            - id: 123
+              type: user
+    CreateAppPayload:
+      properties:
+        app:
+          type: object
+          properties:
+            app_key:
+              type: string
+            app_type:
+              type: string
+            scheduler_type:
+              type: integer
+            package_type:
+              type: string
+            name:
+              type: string
+            website:
+              type: string
+            description:
+              type: string
+            summary:
+              type: string
+            version:
+              type: string
+            category:
+              type: string
+            manager:
+              type: string
+            visibility:
+              type: string
+            marketing_level:
+              type: string
+            log_type:
+              type: string
+            segment:
+              type: array
+            source_type:
+              type: array
+            pricing:
+              type: object
+            settings:
+              type: object
+            icon:
+              type: string
+              format: binary
+            dependent_app_ids:
+              type: array
+            depends_on_app_ids:
+              type: array
+            temporary:
+              type: boolean
+            delete_at:
+              type: string
+              format: date-time
+            dataset_attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                data_type:
+                  type: string
+                schema:
+                  type: object
+                description:
+                  type: string
+      example:
+        app:
+          id: 12345
+          app_key: custom_key_23
+          name: CustomApp1
+          app_type: custom
+          scheduler_type: 1
+          package_type: archive
+          visibility: public
+          segment:
+          - drilling
+          - completion
+          - intervention
+          source_type:
+          - frac
+          - wireline
+          category: analytics app
+          description: CustomApp1 description
+          summary: CustomApp1 summary
+          website: http://example.com
+          version: 13.4.4
+          manager: FracFleet
+          log_type: time
+          pricing:
+            tier1: '12300'
+            tier2: '900003'
+          settings:
+            setting1: foobar
+            setting2: some_s3_link
+          icon: icon.png
+          dependent_app_ids:
+          - 12345
+          - 12346
+          - 12347
+          depends_on_app_ids:
+          - 12345
+          - 12346
+          - 12347
+          temporary: false
+          delete_at: '2020-01-01T00:00:00.000Z'
+          dataset_attributes:
+            name: corva#app.dataset
+            data_type: time
+            schema:
+              fields:
+              - field1
+              - field2
+            description: Dataset test description
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

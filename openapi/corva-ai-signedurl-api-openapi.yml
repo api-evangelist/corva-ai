@@ -1,0 +1,134 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Signed URL API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: SignedUrl
+paths:
+  /v2/signed_url:
+    get:
+      summary: Get signed_url from S3
+      tags:
+      - SignedUrl
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                example:
+                  code: 403
+                  message: Forbidden
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                properties:
+                  signed_url:
+                    type: string
+                  file_name:
+                    type: string
+                  display_name:
+                    type: string
+                  bucket:
+                    type: string
+                  cdn_url:
+                    type: string
+                example:
+                  signed_url: https://s3.amazonaws.com/cdn.corva.ai/provider_9/1649168990/foobar.jpg?X-Amz-Expires=900
+                  file_name: provider/video.mp4
+                  display_name: video.mp4
+                  bucket: cdn.bucket
+                  cdn_url: https://qwerty.cloudfront.net
+        '400':
+          type: object
+          description: Failure response
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                example:
+                  code: 400
+                  message: Missing file_name param
+      parameters:
+      - in: query
+        name: file_name
+        description: file_name of attachment
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: folder
+        description: Folder for files
+        required: true
+        schema:
+          type: string
+          enum:
+          - app_store_articles
+          - app_help_contents
+          - workflows
+      operationId: getV2SignedUrl
+      x-operation-id-source: derived
+components:
+  schemas:
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

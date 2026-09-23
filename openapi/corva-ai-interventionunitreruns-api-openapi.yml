@@ -1,0 +1,340 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Intervention Unit Reruns API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: InterventionUnitReruns
+paths:
+  /v2/intervention_unit_reruns:
+    get:
+      summary: Get a list of Intervention Unit Reruns
+      tags:
+      - InterventionUnitReruns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List of Intervention Unit Reruns
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/InterventionUnitRerun'
+      parameters:
+      - in: query
+        name: intervention_unit_id
+        description: Filter by intervention_unit_id
+        schema:
+          type: integer
+      - in: query
+        name: intervention_unit_event_id
+        description: Filter by intervention_unit_event_id
+        schema:
+          type: integer
+      - in: query
+        name: app_stream_id
+        description: Filter by app_stream_id
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of intervention unit reruns per page
+        schema:
+          type: integer
+      - in: query
+        name: page
+        description: Number of page
+        schema:
+          type: integer
+      - in: query
+        name: sort
+        description: 'One or more fields to sort by. Prefix with a - for descending order. Ex: created_at,intervention_unit'
+        schema:
+          type: string
+          enum:
+          - created_at
+          - intervention_unit
+          - app_stream
+          default: -created_at
+      - in: query
+        name: order
+        description: A sorting direction
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+      operationId: getV2InterventionUnitReruns
+      x-operation-id-source: derived
+    post:
+      summary: Create an Intervention Unit Rerun
+      tags:
+      - InterventionUnitReruns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created Intervention Unit Rerun
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InterventionUnitRerun'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: 'Validation failed: Name can''t be blank'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInterventionUnitRerunPayload'
+        description: Intervention Unit Rerun Payload
+        required: true
+      operationId: postV2InterventionUnitReruns
+      x-operation-id-source: derived
+  /v2/intervention_unit_reruns/{id}:
+    get:
+      summary: Get Intervention Unit Rerun by ID
+      tags:
+      - InterventionUnitReruns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Intervention Unit Rerun
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InterventionUnitRerun'
+      parameters:
+      - in: path
+        name: id
+        description: Intervention Unit Rerun ID
+        schema:
+          type: integer
+          format: int64
+        required: true
+      operationId: getV2InterventionUnitRerunsById
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    CreateInterventionUnitRerunPayload:
+      properties:
+        app_stream_id:
+          type: integer
+          required: true
+        new_app_stream_status:
+          type: string
+          required: true
+        intervention_unit_rerun:
+          type: object
+          properties:
+            name:
+              type: string
+      example:
+        intervention_unit_event_id: 123
+        app_stream_id: 456
+        new_app_stream_status: active
+        intervention_unit_rerun:
+          name: My Rerun
+    InterventionUnitRerun:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+            created_by:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            relationships:
+              type: object
+              properties:
+                intervention_unit:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          format: int64
+                        type:
+                          type: string
+                intervention_unit_event:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          format: int64
+                        type:
+                          type: string
+                app_stream:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          format: int64
+                        type:
+                          type: string
+                well:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          format: int64
+                        type:
+                          type: string
+      example:
+        id: 111
+        type: intervention_unit_rerun
+        attributes:
+          name: Rerun Test
+          created_by: user@corva.ai
+          created_at: '2010-01-01T00:00:00.000Z'
+          updated_at: '2010-01-01T00:00:00.000Z'
+        relationships:
+          intervention_unit:
+            data:
+              id: '333'
+              type: intervention_unit
+          intervention_unit_event:
+            data:
+              id: '444'
+              type: intervention_unit_event
+          app_stream:
+            data:
+              id: '555'
+              type: app_stream
+          well:
+            data:
+              id: '222'
+              type: well
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

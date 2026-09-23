@@ -1,0 +1,434 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Project Files API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: ProjectFiles
+paths:
+  /v2/project_folders/{project_folder_id}/project_files:
+    get:
+      summary: List ProjectFile
+      tags:
+      - ProjectFiles
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectFileList'
+      parameters:
+      - in: path
+        name: project_folder_id
+        description: ProjectFolder ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: page
+        description: Number of page
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of items to list per page
+        schema:
+          type: integer
+      - in: query
+        name: sort
+        description: 'One or more fields to sort by. Prefix with a - for descending order. Ex: name,-updated_at'
+        schema:
+          type: string
+          enum:
+          - name
+          - created_at
+          - updated_at
+          default: name
+      - in: query
+        name: order
+        description: A sorting direction
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+      operationId: getV2ProjectFoldersByProjectFolderIdProjectFiles
+      x-operation-id-source: derived
+    post:
+      summary: Create a ProjectFile
+      tags:
+      - ProjectFiles
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created ProjectFile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectFileObject'
+      parameters:
+      - in: path
+        name: project_folder_id
+        description: ProjectFolder ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectFilePayload'
+        description: ProjectFile Payload
+        required: true
+      operationId: postV2ProjectFoldersByProjectFolderIdProjectFiles
+      x-operation-id-source: derived
+  /v2/project_folders/{project_folder_id}/project_files/{id}:
+    get:
+      summary: Show ProjectFile
+      tags:
+      - ProjectFiles
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectFileObject'
+      parameters:
+      - in: path
+        name: project_folder_id
+        description: ProjectFolder ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: ProjectFile ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2ProjectFoldersByProjectFolderIdProjectFilesById
+      x-operation-id-source: derived
+    patch:
+      summary: Update a ProjectFile
+      tags:
+      - ProjectFiles
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated ProjectFile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectFileObject'
+      parameters:
+      - in: path
+        name: project_folder_id
+        description: ProjectFolder ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: ProjectFile ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectFilePayload'
+        description: ProjectFile Payload
+        required: true
+      operationId: patchV2ProjectFoldersByProjectFolderIdProjectFilesById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a ProjectFile
+      tags:
+      - ProjectFiles
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: ProjectFile deleted
+      parameters:
+      - in: path
+        name: project_folder_id
+        description: ProjectFolder ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: ProjectFile ID
+        required: true
+        schema:
+          type: integer
+      operationId: deleteV2ProjectFoldersByProjectFolderIdProjectFilesById
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    ProjectFilePayload:
+      properties:
+        project_file:
+          type: object
+          properties:
+            name:
+              type: string
+            project_folder_id:
+              type: integer
+            file:
+              type: string
+      example:
+        project_file:
+          name: File name
+          project_folder_id: 111
+          file: 'Content of the file
+
+            Next line'
+    ProjectFileObject:
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                name:
+                  type: string
+                path:
+                  type: string
+                project_folder_id:
+                  type: integer
+                  format: int64
+                created_at:
+                  type: string
+                  format: date-time
+                updated:
+                  type: string
+                  format: date-time
+                signed_url:
+                  type: string
+            relationships:
+              type: object
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+          id: 12345
+          type: project_file
+          attributes:
+            id: 12345
+            name: File Name
+            path: Folder Name/File Name
+            project_folder_id: 12346
+            created_at: '2022-11-11T09:11:52.326Z'
+            updated_at: '2022-11-11T09:11:52.326Z'
+            signed_url: https://fe-projects.s3.amazonaws.com/Folder%201/File%201?X-Amz-Expires=900&X-Amz-Date=20240206T105358Z&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=REDACTED_AWS_ACCESS_KEY_ID%2F20240206%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-SignedHeaders=host&X-Amz-Signature=f3da284edec0619ddd315a57d9a28343be1baf7a868cbb77afba2e47beb34d03
+          relationships:
+            project_folder:
+              data:
+                id: 348
+                type: project_folder
+        included:
+        - id: 348
+          type: project_folder
+          attributes:
+            id: 348
+            name: Folder Name
+            created_at: '2022-11-11T09:11:52.326Z'
+            updated_at: '2022-11-11T09:11:52.326Z'
+    ProjectFileList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectFileObject'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+        - id: 12345
+          type: project_file
+          attributes:
+            id: 12345
+            name: File Name
+            path: Folder Name/File Name
+            project_folder_id: 12346
+            signed_url: https://fe-projects.s3.amazonaws.com/Folder%201/File%201?X-Amz-Expires=900&X-Amz-Date=20240206T105358Z&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=REDACTED_AWS_ACCESS_KEY_ID%2F20240206%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-SignedHeaders=host&X-Amz-Signature=f3da284edec0619ddd315a57d9a28343be1baf7a868cbb77afba2e47beb34d03
+            created_at: '2022-11-11T09:11:52.326Z'
+            updated_at: '2022-11-11T09:11:52.326Z'
+          relationships: {}
+        included: []
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

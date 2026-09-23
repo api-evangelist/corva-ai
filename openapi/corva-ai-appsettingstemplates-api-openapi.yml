@@ -1,0 +1,673 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva App Settings Templates API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: AppSettingsTemplates
+paths:
+  /v2/apps/{app_key}/app_settings_templates:
+    get:
+      summary: List accesible app settings templates
+      tags:
+      - AppSettingsTemplates
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppSettingsTemplateList'
+      parameters:
+      - in: path
+        name: id
+        description: App Key
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: name
+        description: Filter by App Settings Template name
+        schema:
+          type: string
+      - in: query
+        name: per_page
+        description: Number of app runs  per page
+        schema:
+          type: integer
+      - in: query
+        name: page
+        description: Page number
+        schema:
+          type: integer
+      - in: query
+        name: ownership
+        description: 'Filter app setting templates, by current_user or shared. Possible values: "own", "shared".'
+        schema:
+          type: string
+      - in: query
+        name: published
+        description: Filter app by published app settings template
+        schema:
+          type: string
+      - in: query
+        name: exact_name
+        description: Filter by App Settings Template by exact name
+        schema:
+          type: string
+      operationId: getV2AppsByAppKeyAppSettingsTemplates
+      x-operation-id-source: derived
+    post:
+      summary: Create an app settings template
+      tags:
+      - AppSettingsTemplates
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created app
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppSettingsTemplate'
+      parameters:
+      - in: path
+        name: id
+        description: App Key
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppSettingsTemplatePayload'
+        description: App Settings Template Payload
+        required: true
+      operationId: postV2AppsByAppKeyAppSettingsTemplates
+      x-operation-id-source: derived
+  /v2/apps/{app_key}/app_settings_templates/{id}:
+    get:
+      summary: Show app
+      tags:
+      - AppSettingsTemplates
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppSettingsTemplate'
+      parameters:
+      - in: path
+        name: app_key
+        description: App Key
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: id
+        description: AppSettingsTemplate ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2AppsByAppKeyAppSettingsTemplatesById
+      x-operation-id-source: derived
+    patch:
+      summary: Update an AppSettingsTemplate
+      tags:
+      - AppSettingsTemplates
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated AppSettingsTemplate
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppSettingsTemplate'
+      parameters:
+      - in: path
+        name: app_key
+        description: App Key
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: id
+        description: AppSettingsTemplate ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppSettingsTemplatePayload'
+        description: App Settings Template Payload
+        required: true
+      operationId: patchV2AppsByAppKeyAppSettingsTemplatesById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete an AppSettingsTemplate
+      tags:
+      - AppSettingsTemplates
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: AppSettingsTemplate deleted
+      parameters:
+      - in: path
+        name: app_key
+        description: App Key
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: id
+        description: AppSettingsTemplate ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2AppsByAppKeyAppSettingsTemplatesById
+      x-operation-id-source: derived
+  /v2/apps/{app_key}/app_settings_templates/{id}/share:
+    post:
+      summary: Share an AppSettingsTemplate
+      tags:
+      - AppSettingsTemplates
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created AppSettingsTemplateShares
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppSettingsTemplateShareList'
+      parameters:
+      - in: path
+        name: app_key
+        description: App Key
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: id
+        description: AppSettingsTemplate ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: user_id
+        description: User IDs
+        schema:
+          items:
+            type: integer
+      operationId: postV2AppsByAppKeyAppSettingsTemplatesByIdShare
+      x-operation-id-source: derived
+  /v2/apps/{app_key}/app_settings_templates/{id}/unshare:
+    post:
+      summary: Unshare an AppSettingsTemplate
+      tags:
+      - AppSettingsTemplates
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Unshared AppSettingsTemplate
+          content:
+            application/json:
+              schema:
+                status: string
+                example:
+                  status: unshared
+      parameters:
+      - in: path
+        name: app_key
+        description: App Key
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: id
+        description: AppSettingsTemplate ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: user_id
+        description: User IDs
+        schema:
+          items:
+            type: integer
+      operationId: postV2AppsByAppKeyAppSettingsTemplatesByIdUnshare
+      x-operation-id-source: derived
+  /v2/apps/{app_key}/app_settings_templates/{id}/copy:
+    post:
+      summary: Copy user's own or shared AppSettingsTemplate
+      tags:
+      - AppSettingsTemplates
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created AppSettingsTemplateShares
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppSettingsTemplate'
+      parameters:
+      - in: path
+        name: app_key
+        description: App Key
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: id
+        description: AppSettingsTemplate ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2AppsByAppKeyAppSettingsTemplatesByIdCopy
+      x-operation-id-source: derived
+  /v2/apps/{app_key}/app_settings_templates/{id}/publish:
+    post:
+      summary: Publish a AppSettingsTemplate as a company template.
+      tags:
+      - AppSettingsTemplates
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: New Published AppSettingsTemplateShares
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppSettingsTemplate'
+      parameters:
+      - in: path
+        name: app_key
+        description: App Key
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: id
+        description: AppSettingsTemplate ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublishAppSettingsTemplatePayload'
+        description: Publish App Settings Template Payload
+        required: true
+      operationId: postV2AppsByAppKeyAppSettingsTemplatesByIdPublish
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AppSettingsTemplateList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppSettingsTemplate'
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    PublishAppSettingsTemplatePayload:
+      properties:
+        data:
+          type: object
+          properties:
+            name:
+              type: string
+            metadata:
+              type: object
+            asset_id:
+              type: integer
+            asset_type:
+              type: string
+      example:
+        app_settings_template:
+          name: CustomTemplate1
+          metadata:
+            key1: value1
+            key2: value2
+          asset_id: 1
+          asset_type: Rig
+    AppSettingsTemplateShareList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppSettingsTemplateShare'
+    AppSettingsTemplateShare:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+        relationships:
+          type: object
+          properties:
+            app_settings_template:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            user:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: app_settings_template_share
+        attributes:
+          id: 12345
+        relationships:
+          app_settings_template:
+            data:
+              id: 299
+              type: app_settings_template
+          user:
+            data:
+              id: 999
+              type: user
+    AppSettingsTemplatePayload:
+      properties:
+        app_settings_template:
+          type: object
+          properties:
+            name:
+              type: string
+            settings:
+              type: object
+            metadata:
+              type: object
+      example:
+        app_settings_template:
+          name: CustomTemplate1
+          settings:
+            setting1: foobar
+            setting2: some_s3_link
+          metadata:
+            key1: value1
+            key2: value2
+    AppSettingsTemplate:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            app_id:
+              type: integer
+              format: int64
+            company_id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            settings:
+              type: object
+            metadata:
+              type: object
+            shared:
+              type: boolean
+            shared_with:
+              type: array
+      example:
+        id: 12345
+        type: app_settings_template
+        attributes:
+          id: 12345
+          app_id: 12345
+          company_id: 12345
+          name: CustomTemplate1
+          settings:
+            setting1: foobar
+            setting2: some_s3_link
+          metadata:
+            key1: value1
+            key2: value2
+          shared: false
+          shared_with:
+          - 123
+          asset_id: 1
+          asset_type: Rig
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

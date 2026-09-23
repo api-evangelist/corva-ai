@@ -1,0 +1,1221 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Data Export App API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Data Export App
+paths:
+  /v2/data_export_app:
+    get:
+      summary: Get enriched well export data
+      tags:
+      - Data Export App
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExportWellList'
+      parameters:
+      - in: query
+        name: page
+        description: Page number for pagination
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of items per page
+        schema:
+          type: integer
+      - in: query
+        name: visibility
+        description: Filter by Well visibility
+        schema:
+          type: string
+      - in: query
+        name: company_ids
+        description: Filter by company IDs
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+      - in: query
+        name: well_ids
+        description: Filter by Well IDs
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+      - in: query
+        name: asset_ids
+        description: Filter by Asset IDs
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+      - in: query
+        name: keys
+        description: Optional list of metric keys to return under `metrics`
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - in: query
+        name: drillstring_keys
+        description: Optional list of drillstrings keys to return under `drillstrings`
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - in: query
+        name: data_type
+        description: Optional filter by data.type
+        schema:
+          type: string
+          enum:
+          - asset
+          - bha
+          - well_section
+          - rig
+          - completion
+      - in: query
+        name: sort_field
+        description: Field to sort by (e.g. `county`, `rig_type`, `bit_depth`, etc.)
+        schema:
+          type: string
+      - in: query
+        name: sort_direction
+        description: Sort direction
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - in: query
+        name: filters[].field
+        description: Field name to filter by (e.g. `county`, `bit_depth`)
+        schema:
+          type: string
+      - in: query
+        name: filters[].condition
+        description: Condition for filtering
+        schema:
+          type: string
+          enum:
+          - is_equal
+          - is_not_equal
+          - text_contains
+          - text_does_not_contain
+          - text_is_exactly
+      - in: query
+        name: filters[].value
+        description: Value to compare against
+        schema:
+          type: string
+      operationId: getV2DataExportApp
+      x-operation-id-source: derived
+  /v2/data_export_app/list:
+    post:
+      summary: Get enriched well export data
+      tags:
+      - Data Export App
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExportWellList'
+      parameters:
+      - in: query
+        name: page
+        description: Page number for pagination
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of items per page
+        schema:
+          type: integer
+      - in: query
+        name: visibility
+        description: Filter by Well visibility
+        schema:
+          type: string
+      - in: query
+        name: company_ids
+        description: Filter by company IDs
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+      - in: query
+        name: well_ids
+        description: Filter by Well IDs
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+      - in: query
+        name: asset_ids
+        description: Filter by Asset IDs
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+      - in: query
+        name: keys
+        description: Optional list of metric keys to return under `metrics`
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - in: query
+        name: drillstring_keys
+        description: Optional list of drillstrings keys to return under `drillstrings`
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - in: query
+        name: data_type
+        description: Optional filter by data.type
+        schema:
+          type: string
+          enum:
+          - asset
+          - bha
+          - well_section
+          - rig
+          - completion
+      - in: query
+        name: sort_field
+        description: Field to sort by (e.g. `county`, `rig_type`, `bit_depth`, etc.)
+        schema:
+          type: string
+      - in: query
+        name: sort_direction
+        description: Sort direction
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - in: query
+        name: filters[].field
+        description: Field name to filter by (e.g. `county`, `bit_depth`)
+        schema:
+          type: string
+      - in: query
+        name: filters[].condition
+        description: Condition for filtering
+        schema:
+          type: string
+          enum:
+          - is_equal
+          - is_not_equal
+          - text_contains
+          - text_does_not_contain
+          - text_is_exactly
+      - in: query
+        name: filters[].value
+        description: Value to compare against
+        schema:
+          type: string
+      operationId: postV2DataExportAppList
+      x-operation-id-source: derived
+  /v2/data_export_app/column_fields:
+    get:
+      summary: Get column fields for a column in export index endpoint
+      tags:
+      - Data Export App
+      parameters:
+      - in: query
+        name: page
+        description: Page number for pagination
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of items per page
+        schema:
+          type: integer
+      - in: query
+        name: company_ids
+        description: Filter by company IDs
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+      - in: query
+        name: well_ids
+        description: Filter by Well IDs
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+      - in: query
+        name: asset_ids
+        description: Filter by Asset IDs
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+      - in: query
+        name: filters[].field
+        description: Field name to filter by (e.g. `county`, `bit_depth`)
+        schema:
+          type: string
+      - in: query
+        name: filters[].condition
+        description: Condition for filtering
+        schema:
+          type: string
+          enum:
+          - is_equal
+          - is_not_equal
+          - text_contains
+          - text_does_not_contain
+          - text_is_exactly
+      - in: query
+        name: filters[].value
+        description: Value to compare against
+        schema:
+          type: string
+      - in: query
+        name: lookup_field
+        description: A lookup field to lookup column fields in the app. Currently supported three main groups well, bha, metrics. Main groups are names before first dot. Lookup fields example F.e. well.name, bha.pdm.maker, metrics.hour.bit_depth.formation_id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExportColumnFields'
+      operationId: getV2DataExportAppColumnFields
+      x-operation-id-source: derived
+  /v2/data_export_app/column_fields_list:
+    post:
+      summary: Get column fields for a column in export index endpoint
+      tags:
+      - Data Export App
+      parameters:
+      - in: query
+        name: page
+        description: Page number for pagination
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of items per page
+        schema:
+          type: integer
+      - in: query
+        name: company_ids
+        description: Filter by company IDs
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+      - in: query
+        name: well_ids
+        description: Filter by Well IDs
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+      - in: query
+        name: asset_ids
+        description: Filter by Asset IDs
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+      - in: query
+        name: filters[].field
+        description: Field name to filter by (e.g. `county`, `bit_depth`)
+        schema:
+          type: string
+      - in: query
+        name: filters[].condition
+        description: Condition for filtering
+        schema:
+          type: string
+          enum:
+          - is_equal
+          - is_not_equal
+          - text_contains
+          - text_does_not_contain
+          - text_is_exactly
+      - in: query
+        name: filters[].value
+        description: Value to compare against
+        schema:
+          type: string
+      - in: query
+        name: lookup_field
+        description: A lookup field to lookup column fields in the app. Currently supported three main groups well, bha, metrics. Main groups are names before first dot. Lookup fields example F.e. well.name, bha.pdm.maker, metrics.hour.bit_depth.formation_id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExportColumnFields'
+      operationId: postV2DataExportAppColumnFieldsList
+      x-operation-id-source: derived
+  /v2/data_export_app/flat:
+    post:
+      summary: Get flat JSON:API-like response for global sorting
+      tags:
+      - Data Export App
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Forbidden - user has no access to requested wells/companies
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Successful response with flat items and metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExportFlatResponse'
+      description: 'Returns a flat array of items (BHA, well_section, well, mud) with global sorting support.
+
+
+        **Key differences from /list endpoint:**
+
+        - **Flat structure**: Items in `data` array, wells deduplicated in `included`
+
+        - **Global sorting**: Array order IS the sort order - no need for sorted_metric_order indices
+
+        - **Clear counts**: `total_count` (static) vs `filtered_count` (dynamic with filters)
+
+        - **Optimized for large datasets**: Batched MongoDB queries for 7000+ wells
+
+
+        **Response structure:**
+
+        ```json
+
+        {
+
+        "data": [{ "id": "bha_123_456_2", "type": "bha", "attributes": {...}, "relationships": {...} }],
+
+        "included": [{ "id": 123, "type": "well", "attributes": {...} }],
+
+        "meta": { "total_count": 150, "filtered_count": 45, "has_more": true, "page": 1, "per_page": 80 }
+
+        }
+
+        ```'
+      parameters:
+      - in: query
+        name: page
+        description: 'Page number for pagination (default: 1)'
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: 'Items per page (default: 80)'
+        schema:
+          type: integer
+      - in: query
+        name: company_ids
+        description: Filter by company IDs
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+      - in: query
+        name: well_ids
+        description: Filter by Well IDs
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+      - in: query
+        name: asset_ids
+        description: Filter by Asset IDs
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+      - in: query
+        name: data_type
+        description: Data type to return (determines item grouping)
+        schema:
+          type: string
+          enum:
+          - asset
+          - bha
+          - well_section
+          - rig
+          - mud
+      - in: query
+        name: keys
+        description: Metric keys to include in attributes (filter_keys)
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - in: query
+        name: sort_field
+        description: Field to sort by globally (e.g., bit_depth, start_depth, name)
+        schema:
+          type: string
+      - in: query
+        name: sort_direction
+        description: 'Sort direction (default: asc)'
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - in: query
+        name: filters[].field
+        description: Field name to filter by
+        schema:
+          type: string
+      - in: query
+        name: filters[].condition
+        description: Filter condition
+        schema:
+          type: string
+          enum:
+          - is_equal
+          - is_not_equal
+          - greater_than
+          - less_than
+          - text_contains
+          - text_does_not_contain
+      - in: query
+        name: filters[].value
+        description: Value to compare against
+        schema:
+          type: string
+      operationId: postV2DataExportAppFlat
+      x-operation-id-source: derived
+  /v2/data_export_app/activity_code_mappings:
+    get:
+      summary: Get activity code type mappings for a company
+      tags:
+      - Data Export App
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Forbidden - user has no access to wells in this company
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Successful response with mappings(or empty array if none exist)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityCodeMappingsList'
+        '400':
+          description: Bad request - company_id is required
+      parameters:
+      - in: query
+        name: company_id
+        required: true
+        description: Company ID to fetch activity code mappings for
+        schema:
+          type: integer
+      operationId: getV2DataExportAppActivityCodeMappings
+      x-operation-id-source: derived
+  /v2/data_export_app/metrics_definitions:
+    get:
+      summary: Get dynamic metric definitions for a company
+      tags:
+      - Data Export App
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Forbidden - user has no access to wells in this company
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Successful response with definitions(or empty array if none exist)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsDefinitionsList'
+        '400':
+          description: Bad request - company_id is required
+        '503':
+          description: Service unavailable - upstream MongoDB error
+      description: 'Returns per-company dynamic metric metadata from the `corva#metrics.definitions`
+
+        MongoDB collection. The FE uses this to render custom metrics (name, category,
+
+        unit, ILT icon/color) without hardcoding them per company.
+
+
+        Notes:
+
+        - One entry per segment; only the **latest** document per segment is returned.
+
+        - Backend-internal fields (`rules`, `restrict`, `description`) are stripped.
+
+        - `usage_rules` is included as-is when present; FE matches wells by program name.
+
+        - Metric **values** flow through the existing `/v2/data_export_app/flat` endpoint —
+
+        no separate fetch is required.'
+      parameters:
+      - in: query
+        name: company_id
+        required: true
+        description: Company ID to fetch metric definitions for
+        schema:
+          type: integer
+      operationId: getV2DataExportAppMetricsDefinitions
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    MetricsDefinitionsList:
+      properties:
+        data:
+          type: array
+          description: One entry per segment (latest document per segment)
+          items:
+            $ref: '#/components/schemas/MetricsDefinitionsSegment'
+      example:
+        data:
+        - segment: drilling
+          timestamp: 1764005687
+          metrics_groups:
+          - status: active
+            metrics_definitions:
+              pu_bha_diamondback:
+                name: PU BHA
+                unit: hr
+                fe_data:
+                  category_name: Flat Time Metrics
+                  category_id: FLAT_TIME_METRICS
+                  main_app_unit: hr
+                  ilt_data:
+                    category_id: flat_time_group
+                    unit_type: time
+                    icon: TimelogIcon
+                    color: '#FF93BA'
+                    from_unit: s
+                    to_unit: h
+                    deviation_calc_type: negative_time_good
+                visibility: visible
+                status: active
+    DataExportFlatResponse:
+      properties:
+        data:
+          type: array
+          description: Flat array of items - array order IS sort order
+          items:
+            $ref: '#/components/schemas/DataExportFlatItem'
+        included:
+          type: array
+          description: Deduplicated well data referenced by items
+          items:
+            $ref: '#/components/schemas/DataExportIncludedWell'
+        meta:
+          type: object
+          $ref: '#/components/schemas/DataExportFlatMeta'
+      example:
+        data:
+        - id: bha_123_456_2
+          type: bha
+          attributes:
+            bha_id: 2
+            bit_depth: 12345
+            hole_size: 8.5
+          relationships:
+            well:
+              id: 123
+        - id: bha_124_457_1
+          type: bha
+          attributes:
+            bha_id: 1
+            bit_depth: 8500
+            hole_size: 12.25
+          relationships:
+            well:
+              id: 124
+        included:
+        - id: 123
+          type: well
+          attributes:
+            name: Well A
+            asset_id: 456
+            status: active
+        - id: 124
+          type: well
+          attributes:
+            name: Well B
+            asset_id: 457
+            status: drilling
+        meta:
+          total_count: 150
+          filtered_count: 45
+          has_more: true
+          page: 1
+          per_page: 80
+    ActivityCodeMappingsList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivityCodeMapping'
+      example:
+        data:
+        - activity_code_type: Phase
+          mapped_activity_code_type: SUB_CODE_1
+        - activity_code_type: Code 1
+          mapped_activity_code_type: SUB_CODE_2
+        - activity_code_type: Code 2
+          mapped_activity_code_type: SUB_CODE_3
+        - activity_code_type: NPT
+          mapped_activity_code_type: SUB_CODE_5
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    DataExportWellList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataExportWell'
+        total_count:
+          type: integer
+        current_total:
+          type: integer
+      example:
+        data:
+        - well_id: 123
+          well_name: Test Well
+          company_id: 1
+          asset_id: 456
+          pad_id: 1
+          status: active
+          rig_name: Rig A
+          pad_name: Pad A
+          program_id: 43451
+          program_name: Program A
+          rig_type: Land
+          target_formation: Spraberry
+          string_design: '3'
+          county: Lee
+          basin: Delaware
+          area: Midland
+          latitude: 31.456
+          longitude: -103.123
+          api_number: '1234567890'
+          rig_up: 03/13/2025 05:02
+          rig_release: 05/12/2025 05:02
+          spud: 03/15/2025 05:02
+          last_active: '2023-12-01T10:00:00Z'
+          metrics:
+            well_section:
+            - mud_type: Oil-based
+              well_section: Surface
+              start_depth: 1763
+              end_depth: 5751
+            asset:
+            - casing_count: 3
+            bha:
+            - bha_id: 2
+              bit_depth: 12345
+              well_sections:
+              - Surface
+              hole_size: 8.5
+          drillstrings:
+            start_depth: 1000
+            end_depth: 2000
+            bit_tfa: 1.16
+          completion_stage:
+          - average_proppant_concentration: 1.049
+          completion_pad:
+          - fracture_gradient: 0.65
+            hydraulic_power: 1054000
+        total_count: 10
+        current_total: 5
+    MetricsDefinitionsGroup:
+      properties:
+        status:
+          type: string
+          description: Group status (active/inactive)
+        usage_rules:
+          type: array
+          description: Optional rules for matching wells (e.g., by program name). Absent when the group applies unconditionally.
+          items:
+            type: object
+        metrics_definitions:
+          type: object
+          description: Map of metric key to its definition
+          $ref: '#/components/schemas/MetricDefinition'
+      example:
+        status: active
+        usage_rules:
+        - type: assetProgramName
+          matched_values:
+          - Permian
+          - Permian MRO
+        metrics_definitions:
+          nu_nd_bops_flowline_timelog_cop_permian:
+            name: NU/ND BOPs & Flowline Time
+            unit: s
+            fe_data:
+              category_name: Flat Time Metrics
+              category_id: FLAT_TIME_METRICS
+              main_app_unit: hr
+            visibility: visible
+            status: active
+    DataExportFlatItem:
+      properties:
+        id:
+          type: string
+          description: Unique identifier(e.g., bha_123_456_1)
+        type:
+          type: string
+          enum:
+          - bha
+          - well_section
+          - well
+          - mud
+          description: Item type
+        attributes:
+          type: object
+          description: Item-specific attributes(metrics, drillstring data, etc.)
+        relationships:
+          type: object
+          properties:
+            well:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: Well ID reference
+      example:
+        id: bha_123_456_2
+        type: bha
+        attributes:
+          bha_id: 2
+          bit_depth: 12345
+          hole_size: 8.5
+          well_sections:
+          - Surface
+          start_depth: 1000
+          end_depth: 2000
+        relationships:
+          well:
+            id: 123
+    DataExportFlatMeta:
+      properties:
+        total_count:
+          type: integer
+          description: Total items before filters (static across pages)
+        filtered_count:
+          type: integer
+          description: Items after filters applied (dynamic)
+        has_more:
+          type: boolean
+          description: Whether more pages exist
+        page:
+          type: integer
+          description: Current page number
+        per_page:
+          type: integer
+          description: Items per page
+      example:
+        total_count: 150
+        filtered_count: 45
+        has_more: true
+        page: 1
+        per_page: 80
+    MetricsDefinitionsSegment:
+      properties:
+        segment:
+          type: string
+          description: Domain segment (e.g., "drilling", "completion")
+        timestamp:
+          type: integer
+          description: Unix timestamp of the source document
+        metrics_groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetricsDefinitionsGroup'
+      example:
+        segment: drilling
+        timestamp: 1764005687
+        metrics_groups:
+        - status: active
+          metrics_definitions:
+            pu_bha_diamondback:
+              name: PU BHA
+              unit: hr
+              fe_data:
+                category_name: Flat Time Metrics
+                category_id: FLAT_TIME_METRICS
+                main_app_unit: hr
+              visibility: visible
+              status: active
+    DataExportWell:
+      properties:
+        well_id:
+          type: integer
+        well_name:
+          type: string
+        company_id:
+          type: integer
+        asset_id:
+          type: integer
+        pad_id:
+          type: integer
+        status:
+          type: string
+        rig_name:
+          type: string
+        pad_name:
+          type: string
+        program_id:
+          type: integer
+        program_name:
+          type: string
+        rig_type:
+          type: string
+        target_formation:
+          type: string
+        string_design:
+          type: string
+        county:
+          type: string
+        basin:
+          type: string
+        area:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+        api_number:
+          type: string
+        rig_up:
+          type: string
+        rig_release:
+          type: string
+        spud:
+          type: string
+        last_active:
+          type: string
+          format: date-time
+        metrics:
+          type: object
+        drillstrings:
+          type: object
+        completion_stage:
+          type: object
+        completion_pad:
+          type: object
+      example:
+        well_id: 123
+        well_name: Test Well
+        company_id: 1
+        asset_id: 456
+        pad_id: 1
+        status: active
+        rig_name: Rig A
+        pad_name: Pad A
+        program_id: 43451
+        program_name: Program A
+        rig_type: Land
+        target_formation: Spraberry
+        string_design: '3'
+        county: Lee
+        basin: Delaware
+        area: Midland
+        latitude: 31.456
+        longitude: -103.123
+        api_number: '1234567890'
+        rig_up: 03/13/2025 20:00
+        rig_release: 05/12/2025 05:02
+        spud: 03/15/2025 05:02
+        last_active: '2023-12-01T10:00:00Z'
+        metrics:
+          well_section:
+          - mud_type: Oil-based
+            well_section: Surface
+          asset:
+          - casing_count: 3
+          bha:
+          - bha_id: 2
+            bit_depth: 12345
+            well_sections:
+            - Surface
+            hole_size: 8.5
+        drillstrings:
+          start_depth: 1000
+          end_depth: 2000
+          bit_tfa: 1.16
+        completion_stage:
+        - average_proppant_concentration: 1.049
+        completion_pad:
+        - fracture_gradient: 0.65
+          hydraulic_power: 1054000
+    MetricDefinition:
+      properties:
+        name:
+          type: string
+          description: Human-readable metric label
+        unit:
+          type: string
+          description: Source unit as stored in corva#metrics (e.g., "s", "hr")
+        fe_data:
+          type: object
+          description: 'FE rendering config: category, display unit, ILT settings'
+        visibility:
+          type: string
+          enum:
+          - visible
+          - hidden
+        status:
+          type: string
+          enum:
+          - active
+          - inactive
+      example:
+        name: NU/ND BOPs & Flowline Time
+        unit: s
+        fe_data:
+          category_name: Flat Time Metrics
+          category_id: FLAT_TIME_METRICS
+          main_app_unit: hr
+          ilt_data:
+            category_id: flat_time_group
+            unit_type: time
+            icon: TimelogIcon
+            color: '#FF93BA'
+            from_unit: s
+            to_unit: h
+            deviation_calc_type: negative_time_good
+        visibility: visible
+        status: active
+    ActivityCodeMapping:
+      properties:
+        activity_code_type:
+          type: string
+          description: Custom display name for the activity code
+        mapped_activity_code_type:
+          type: string
+          description: Internal Corva code(SUB_CODE_1, SUB_CODE_2, etc.)
+      example:
+        activity_code_type: Phase
+        mapped_activity_code_type: SUB_CODE_1
+    DataExportIncludedWell:
+      properties:
+        id:
+          type: integer
+          description: Well ID
+        type:
+          type: string
+          enum:
+          - well
+          description: Always "well"
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+            asset_id:
+              type: integer
+            company_id:
+              type: integer
+            status:
+              type: string
+            rig_name:
+              type: string
+            pad_name:
+              type: string
+            program_name:
+              type: string
+            area:
+              type: string
+            county:
+              type: string
+            basin:
+              type: string
+            latitude:
+              type: number
+            longitude:
+              type: number
+      example:
+        id: 123
+        type: well
+        attributes:
+          name: Test Well
+          asset_id: 456
+          company_id: 1
+          status: active
+          rig_name: Rig A
+          pad_name: Pad A
+          program_name: Program A
+          area: Midland
+          county: Lee
+          basin: Delaware
+          latitude: 31.456
+          longitude: -103.123
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

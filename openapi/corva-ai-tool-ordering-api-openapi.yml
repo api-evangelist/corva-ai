@@ -1,0 +1,2200 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Tool Ordering API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Tool Ordering
+  description: Customer tool order create/edit/submit and the specification definition registry
+paths:
+  /v2/tool_ordering/orders:
+    get:
+      summary: List Tool Orders
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Tool Ordering is disabled for the current company (code 'feature_disabled')
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List of tool orders for the current company, newest first
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolOrderList'
+      parameters:
+      - in: query
+        name: status
+        description: Filter by exact status
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: active
+        description: '''true'' excludes received_on_rig/cancelled/rejected orders; ''false'' returns only those'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: page
+        description: Page number
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Items per page
+        required: false
+        schema:
+          type: integer
+      operationId: getV2ToolOrderingOrders
+      x-operation-id-source: derived
+    post:
+      summary: Create Tool Order
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Tool Ordering is disabled for the current company (code 'feature_disabled')
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '201':
+          description: Created draft order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolOrderSingle'
+        '400':
+          description: 'Validation error: invalid asset/vendor, missing components, or bad quantity'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ToolOrderPayload'
+        required: true
+      operationId: postV2ToolOrderingOrders
+      x-operation-id-source: derived
+  /v2/tool_ordering/orders/{id}:
+    get:
+      summary: Get Tool Order
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Tool Ordering is disabled for the current company (code 'feature_disabled')
+        '404':
+          description: Tool order not found
+        '200':
+          description: Tool order details, including components
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolOrderSingle'
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2ToolOrderingOrdersById
+      x-operation-id-source: derived
+    patch:
+      summary: Update Draft Tool Order
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolOrderSingle'
+        '409':
+          description: Order is no longer a draft
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ToolOrderPayload'
+        required: true
+      operationId: patchV2ToolOrderingOrdersById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete Draft Tool Order
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Deleted
+        '409':
+          description: Order is no longer a draft
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2ToolOrderingOrdersById
+      x-operation-id-source: derived
+  /v2/tool_ordering/orders/{id}/submit:
+    post:
+      summary: Submit Tool Order
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Order moved to awaiting_acknowledgement; every component submitted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolOrderSingle'
+        '400':
+          description: 'Validation error: inactive vendor, vendor with no eligible notification recipient, an unselectable recipient_user_id, invalid specs, or a tool family over its max quantity'
+        '409':
+          description: Order is not a draft
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                tool_order:
+                  type: object
+                  properties:
+                    recipient_user_ids:
+                      type: array
+                      items:
+                        type: integer
+                        format: int64
+                      description: Subset of eligible vendor notification recipients to email; omit/empty to notify all of them
+      operationId: postV2ToolOrderingOrdersByIdSubmit
+      x-operation-id-source: derived
+  /v2/tool_ordering/orders/{id}/acknowledge:
+    post:
+      summary: Acknowledge Tool Order (vendor action)
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Vendor access required (code 'not_authorized')
+        '404':
+          description: Order not found, draft, or not visible to this vendor
+        '200':
+          description: Order acknowledged; idempotent if already acknowledged
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolOrderSingle'
+        '409':
+          description: Order is not awaiting acknowledgement
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2ToolOrderingOrdersByIdAcknowledge
+      x-operation-id-source: derived
+  /v2/tool_ordering/orders/{id}/cancel:
+    post:
+      summary: Cancel Tool Order
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Not authorized (neither vendor access nor internal update access)
+        '404':
+          description: Order not found or not visible
+        '200':
+          description: Order and its cancellable components cancelled; allowed for the vendor (same-customer active membership) or an internal user with update access
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolOrderSingle'
+        '400':
+          description: reason is missing, not a string, or too long
+        '409':
+          description: Order has not been submitted, is already terminal, or a component has shipped
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                reason:
+                  type: string
+        required: true
+      operationId: postV2ToolOrderingOrdersByIdCancel
+      x-operation-id-source: derived
+  /v2/tool_ordering/orders/{order_id}/components/{id}/transition:
+    post:
+      summary: Transition Order Component Status (vendor action)
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Vendor access required (code 'not_authorized')
+        '404':
+          description: Order or component not found or not visible to this vendor
+        '200':
+          description: Component transitioned; order status re-derived
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolOrderSingle'
+        '400':
+          description: Unsupported target status, or the transition is not legal from the current status
+        '409':
+          description: Order is not acknowledged, or is no longer active
+      parameters:
+      - in: path
+        name: order_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                to:
+                  type: string
+                  enum:
+                  - in_progress
+                  - ready_to_ship
+                  - shipped
+        required: true
+      operationId: postV2ToolOrderingOrdersByOrderIdComponentsByIdTransition
+      x-operation-id-source: derived
+  /v2/tool_ordering/orders/{order_id}/components/{id}/final_specs:
+    patch:
+      summary: Update Order Component Final Specs (vendor action)
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Vendor access required (code 'not_authorized')
+        '404':
+          description: Order or component not found or not visible to this vendor
+        '200':
+          description: Component final specs and/or serial number updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolOrderSingle'
+        '400':
+          description: final_specs is not an object, or the payload is too large
+        '409':
+          description: Order is read only, or the component is not active
+      parameters:
+      - in: path
+        name: order_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                final_specs:
+                  type: object
+                  description: Omit to leave untouched; {} clears it
+                serial_number:
+                  type: string
+                  description: Omit to leave untouched; null clears it
+        required: true
+      operationId: patchV2ToolOrderingOrdersByOrderIdComponentsByIdFinalSpecs
+      x-operation-id-source: derived
+  /v2/tool_ordering/orders/{order_id}/components/receive:
+    post:
+      summary: Receive Shipped Order Components On Rig (internal action)
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Internal update permission required, or Tool Ordering is disabled
+        '404':
+          description: Order is not internally accessible, or a component does not belong to it
+        '200':
+          description: Components received; order status re-derived once
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolOrderSingle'
+        '400':
+          description: component_ids is missing, empty, or contains an invalid ID
+        '409':
+          description: Order is not acknowledged/active, or a component is not shipped
+      parameters:
+      - in: path
+        name: order_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - component_ids
+              properties:
+                component_ids:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: integer
+                    format: int64
+        required: true
+      operationId: postV2ToolOrderingOrdersByOrderIdComponentsReceive
+      x-operation-id-source: derived
+  /v2/tool_ordering/orders/{order_id}/proposals:
+    get:
+      summary: List Component Change Proposals
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Tool Ordering is disabled or a named user is required
+        '404':
+          description: Order not found or not visible to the user
+        '200':
+          description: Proposals visible to the internal or vendor user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangeProposalList'
+        '400':
+          description: Invalid status filter
+      parameters:
+      - in: path
+        name: order_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: status
+        required: false
+        schema:
+          type: string
+          enum:
+          - pending
+          - approved
+          - rejected
+          - all
+          default: pending
+      operationId: getV2ToolOrderingOrdersByOrderIdProposals
+      x-operation-id-source: derived
+    post:
+      summary: Submit Component Change Proposal (vendor action)
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Vendor access required (code 'not_authorized')
+        '404':
+          description: Order or component not found or not visible to this vendor
+        '201':
+          description: Created pending proposal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangeProposalSingle'
+        '400':
+          description: Invalid fields/specifications, no actual change, payload too large, or reason is invalid
+        '409':
+          description: Order/component is inactive, baseline is stale, or a pending proposal already exists
+      parameters:
+      - in: path
+        name: order_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - component_id
+              - proposed_changes
+              - reason
+              properties:
+                component_id:
+                  type: integer
+                  format: int64
+                proposed_changes:
+                  type: object
+                reason:
+                  type: string
+        required: true
+      operationId: postV2ToolOrderingOrdersByOrderIdProposals
+      x-operation-id-source: derived
+  /v2/tool_ordering/orders/{order_id}/proposals/{id}/approve:
+    post:
+      summary: Approve Component Change Proposal
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Internal update permission required
+        '404':
+          description: Order or proposal not found in the authorized scope
+        '200':
+          description: Approved proposal and resulting order status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangeProposalDecisionSingle'
+        '400':
+          description: Invalid decision comment or resulting specifications
+        '409':
+          description: Stale proposal, inactive order/component, or proposal was already rejected
+      parameters:
+      - in: path
+        name: order_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                decision_comment:
+                  type: string
+                  description: Optional, maximum 2,000 characters
+      operationId: postV2ToolOrderingOrdersByOrderIdProposalsByIdApprove
+      x-operation-id-source: derived
+  /v2/tool_ordering/orders/{order_id}/proposals/{id}/reject:
+    post:
+      summary: Reject Component Change Proposal
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Internal update permission required
+        '404':
+          description: Order or proposal not found in the authorized scope
+        '200':
+          description: Rejected proposal and resulting order status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangeProposalDecisionSingle'
+        '400':
+          description: Decision comment is missing or invalid
+        '409':
+          description: Inactive order/component, or proposal was already approved
+      parameters:
+      - in: path
+        name: order_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - decision_comment
+              properties:
+                decision_comment:
+                  type: string
+                  description: Required, maximum 2,000 characters
+        required: true
+      operationId: postV2ToolOrderingOrdersByOrderIdProposalsByIdReject
+      x-operation-id-source: derived
+  /v2/tool_ordering/orders/{order_id}/proposals/approve_all:
+    post:
+      summary: Approve Selected Component Change Proposals Atomically
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Internal update permission required
+        '404':
+          description: Order or any requested proposal not found in the authorized scope
+        '200':
+          description: Requested proposals and resulting order status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangeProposalDecisionList'
+        '400':
+          description: proposal_ids or decision comment is invalid
+        '409':
+          description: Any proposal is stale, inactive, or was already rejected; no proposals are changed
+      parameters:
+      - in: path
+        name: order_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - proposal_ids
+              properties:
+                proposal_ids:
+                  type: array
+                  items:
+                    type: integer
+                    format: int64
+                decision_comment:
+                  type: string
+                  description: Optional, maximum 2,000 characters
+        required: true
+      operationId: postV2ToolOrderingOrdersByOrderIdProposalsApproveAll
+      x-operation-id-source: derived
+  /v2/tool_ordering/orders/{order_id}/proposals/reject_all:
+    post:
+      summary: Reject Selected Component Change Proposals Atomically
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Internal update permission required
+        '404':
+          description: Order or any requested proposal not found in the authorized scope
+        '200':
+          description: Requested proposals and resulting order status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangeProposalDecisionList'
+        '400':
+          description: proposal_ids or decision comment is invalid
+        '409':
+          description: Any proposal is inactive or was already approved; no proposals are changed
+      parameters:
+      - in: path
+        name: order_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - proposal_ids
+              - decision_comment
+              properties:
+                proposal_ids:
+                  type: array
+                  items:
+                    type: integer
+                    format: int64
+                decision_comment:
+                  type: string
+                  description: Required, maximum 2,000 characters
+        required: true
+      operationId: postV2ToolOrderingOrdersByOrderIdProposalsRejectAll
+      x-operation-id-source: derived
+  /v2/tool_ordering/orders/{order_id}/attachments:
+    get:
+      summary: List Order Attachments
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Tool Ordering is disabled or a named user is required
+        '404':
+          description: Order not found or not visible to the user
+        '200':
+          description: Attachments visible to the internal or vendor user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderAttachmentList'
+      parameters:
+      - in: path
+        name: order_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: component_id
+        required: false
+        description: Only attachments of this component
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2ToolOrderingOrdersByOrderIdAttachments
+      x-operation-id-source: derived
+    post:
+      summary: Register Uploaded Order Attachment
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Vendor action rights or internal update permission required
+        '404':
+          description: Order or component not found in the authorized scope
+        '201':
+          description: Attachment registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderAttachmentSingle'
+        '400':
+          description: s3_key is foreign/unuploaded, the file is too large, or file_name is invalid
+        '409':
+          description: Order is inactive or the s3_key is already registered
+      parameters:
+      - in: path
+        name: order_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - s3_key
+              - file_name
+              properties:
+                s3_key:
+                  type: string
+                  description: Value returned by the signed_url endpoint
+                file_name:
+                  type: string
+                component_id:
+                  type: integer
+                  format: int64
+                  description: Attach to one component of the order (submitted orders only, draft components are replaced wholesale on edit); omit for order-level
+        required: true
+      operationId: postV2ToolOrderingOrdersByOrderIdAttachments
+      x-operation-id-source: derived
+  /v2/tool_ordering/orders/{order_id}/attachments/signed_url:
+    post:
+      summary: Presign Order Attachment Upload
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Vendor action rights or internal update permission required
+        '404':
+          description: Order not found in the authorized scope
+        '200':
+          description: Presigned PUT URL; upload the file body there, then register it
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderAttachmentPresign'
+        '400':
+          description: file_name is missing/unsupported, or content_type does not match the extension
+        '409':
+          description: Order is inactive
+      parameters:
+      - in: path
+        name: order_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - file_name
+              - content_type
+              properties:
+                file_name:
+                  type: string
+                  description: 'Allowed extensions: .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .csv, .txt, .png, .jpg, .jpeg, .heic'
+                content_type:
+                  type: string
+                  description: Must match the file_name extension
+        required: true
+      operationId: postV2ToolOrderingOrdersByOrderIdAttachmentsSignedUrl
+      x-operation-id-source: derived
+  /v2/tool_ordering/orders/{order_id}/attachments/{id}:
+    delete:
+      summary: Delete Order Attachment
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Only the uploader or an internal user with update permission can delete
+        '404':
+          description: Order or attachment not found in the authorized scope
+        '200':
+          description: Attachment removed from the order and the file store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderAttachmentDeleted'
+        '409':
+          description: Order is inactive
+      parameters:
+      - in: path
+        name: order_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2ToolOrderingOrdersByOrderIdAttachmentsById
+      x-operation-id-source: derived
+  /v2/tool_ordering/specifications:
+    get:
+      summary: Get Tool Specification Definition
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Tool Ordering is disabled for the current company (code 'feature_disabled')
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Specification field definitions for the given tool family
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolOrderingSpecification'
+        '400':
+          description: tool_family query param is required
+      parameters:
+      - in: query
+        name: tool_family
+        required: true
+        description: Tool family key, e.g. mud_motor; unknown families fall back to the generic definition
+        schema:
+          type: string
+      operationId: getV2ToolOrderingSpecifications
+      x-operation-id-source: derived
+  /v2/tool_ordering/vendors:
+    get:
+      summary: List Vendors
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Tool Ordering is disabled for the current company (code 'feature_disabled')
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Vendors for the current company, with contacts inlined; active vendors only unless include_inactive=true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorList'
+      parameters:
+      - in: query
+        name: page
+        description: Page number
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Items per page
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: include_inactive
+        required: false
+        description: 'Also return deactivated vendors (active: false); default lists active vendors only'
+        schema:
+          type: boolean
+      operationId: getV2ToolOrderingVendors
+      x-operation-id-source: derived
+    post:
+      summary: Create Vendor
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Not authorized to create vendors, member_user_ids given without manage permission on vendors, or Tool Ordering is disabled for the current company (code 'feature_disabled')
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '201':
+          description: Created vendor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorSingle'
+        '400':
+          description: 'Validation error: blank or duplicate name, or member_user_ids outside the company'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VendorPayload'
+        required: true
+      operationId: postV2ToolOrderingVendors
+      x-operation-id-source: derived
+  /v2/tool_ordering/vendors/{id}:
+    patch:
+      summary: Update Vendor
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Not authorized to update this vendor, member_user_ids given without manage permission on it, or Tool Ordering is disabled for the current company (code 'feature_disabled')
+        '404':
+          description: Vendor not found, or belongs to another company
+        '200':
+          description: Updated vendor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorSingle'
+        '400':
+          description: 'Validation error: blank or duplicate name, or member_user_ids outside the company'
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VendorPayload'
+        required: true
+      operationId: patchV2ToolOrderingVendorsById
+      x-operation-id-source: derived
+  /v2/tool_ordering/vendors/{vendor_id}/memberships:
+    get:
+      summary: List Vendor Memberships
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Not authorized to read this vendor, or Tool Ordering is disabled for the current company (code 'feature_disabled')
+        '404':
+          description: Vendor not found, or belongs to another company
+        '200':
+          description: Memberships for the vendor, with member user name/email inlined
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorMembershipList'
+      parameters:
+      - in: path
+        name: vendor_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2ToolOrderingVendorsByVendorIdMemberships
+      x-operation-id-source: derived
+    post:
+      summary: Add Vendor Membership
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Not authorized to manage this vendor, or Tool Ordering is disabled for the current company (code 'feature_disabled')
+        '404':
+          description: Vendor not found, or belongs to another company
+        '201':
+          description: Created membership; the vendor_tool_order permission group is appended to the user's groups (additively, without touching other groups)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorMembershipSingle'
+        '200':
+          description: 'The user already had a membership: returned as-is, re-activated (and the group restored) if it had been deactivated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorMembershipSingle'
+        '400':
+          description: user_id is missing or belongs to another company (code 'validation_failed')
+      parameters:
+      - in: path
+        name: vendor_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VendorMembershipCreatePayload'
+        required: true
+      operationId: postV2ToolOrderingVendorsByVendorIdMemberships
+      x-operation-id-source: derived
+  /v2/tool_ordering/vendors/{vendor_id}/memberships/{id}:
+    patch:
+      summary: Update Vendor Membership
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Not authorized to manage this vendor, or Tool Ordering is disabled for the current company (code 'feature_disabled')
+        '404':
+          description: Vendor or membership not found
+        '200':
+          description: 'Updated membership; active: false revokes access immediately (deactivate, not delete)'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorMembershipSingle'
+      parameters:
+      - in: path
+        name: vendor_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VendorMembershipUpdatePayload'
+        required: true
+      operationId: patchV2ToolOrderingVendorsByVendorIdMembershipsById
+      x-operation-id-source: derived
+  /v2/tool_ordering/vendor_contacts:
+    post:
+      summary: Add Vendor Contact
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Not authorized on the resolved vendor, or Tool Ordering is disabled for the current company (code 'feature_disabled')
+        '404':
+          description: vendor_id not found, or belongs to another company
+        '201':
+          description: Created contact; vendor_name may have created a new vendor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorContactCreated'
+        '400':
+          description: 'Validation error: missing vendor_id/vendor_name, invalid email, or duplicate email on the vendor'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VendorContactPayload'
+        required: true
+      operationId: postV2ToolOrderingVendorContacts
+      x-operation-id-source: derived
+  /v2/tool_ordering/vendor_contacts/{id}:
+    delete:
+      summary: Remove Vendor Contact
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Not authorized on the contact's vendor, or Tool Ordering is disabled for the current company (code 'feature_disabled')
+        '404':
+          description: Contact not found, or its vendor belongs to another company
+        '200':
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeletedStatus'
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2ToolOrderingVendorContactsById
+      x-operation-id-source: derived
+  /v2/tool_ordering/vendor_directory:
+    get:
+      summary: List Vendor Directory
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Not authorized to read vendors, or Tool Ordering is disabled for the current company (code 'feature_disabled')
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Distinct-by-email people across the company vendors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorDirectoryList'
+      operationId: getV2ToolOrderingVendorDirectory
+      x-operation-id-source: derived
+  /v2/tool_ordering/distribution_contacts:
+    get:
+      summary: List Company Distribution Contacts
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Internal tool-order update permission required, or Tool Ordering is disabled
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Company-level CC recipients for tool order emails, sorted by name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistributionContactList'
+      operationId: getV2ToolOrderingDistributionContacts
+      x-operation-id-source: derived
+    post:
+      summary: Add Company Distribution Contact
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Internal tool-order update permission required, or Tool Ordering is disabled
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '201':
+          description: Contact added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistributionContactSingle'
+        '400':
+          description: Name or email is missing/invalid, email is a duplicate, or the email domain has no users in the company
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                distribution_contact:
+                  type: object
+                  required:
+                  - name
+                  - email
+                  properties:
+                    name:
+                      type: string
+                    email:
+                      type: string
+                      description: Domain must match an existing user of the company; shared mailboxes on that domain are allowed
+        required: true
+      operationId: postV2ToolOrderingDistributionContacts
+      x-operation-id-source: derived
+  /v2/tool_ordering/distribution_contacts/{id}:
+    delete:
+      summary: Remove Company Distribution Contact
+      tags:
+      - Tool Ordering
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Internal tool-order update permission required, or Tool Ordering is disabled
+        '404':
+          description: Contact not found in the current company
+        '200':
+          description: Contact removed
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        format: int64
+                      status:
+                        type: string
+                        enum:
+                        - deleted
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2ToolOrderingDistributionContactsById
+      x-operation-id-source: derived
+components:
+  schemas:
+    DistributionContact:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        email:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    VendorDirectoryList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/VendorDirectoryEntry'
+    ChangeProposalComponent:
+      properties:
+        id:
+          type: integer
+          format: int64
+        position:
+          type: integer
+        tool_family:
+          type: string
+        tool_type:
+          type: string
+        status:
+          type: string
+          enum:
+          - draft
+          - submitted
+          - in_progress
+          - ready_to_ship
+          - shipped
+          - received_on_rig
+          - cancelled
+          - rejected
+        requested_specs:
+          type: object
+        accepted_specs:
+          type: object
+        effective_specs:
+          type: object
+        rejected_at:
+          type: string
+          format: date-time
+    VendorSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/Vendor'
+    ToolOrderList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ToolOrder'
+    OrderAttachmentSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/OrderAttachment'
+    VendorContact:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+    VendorDirectoryEntry:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        vendor_name:
+          type: string
+        vendor_id:
+          type: integer
+          format: int64
+    ChangeProposalSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/ChangeProposal'
+    OrderAttachmentDeleted:
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            status:
+              type: string
+              enum:
+              - deleted
+    ChangeProposalList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChangeProposal'
+    VendorMembership:
+      properties:
+        id:
+          type: integer
+          format: int64
+        user_id:
+          type: integer
+          format: int64
+        user_name:
+          type: string
+        user_email:
+          type: string
+        active:
+          type: boolean
+        receives_notifications:
+          type: boolean
+        deactivated_at:
+          type: string
+          format: date-time
+    ToolOrderingSpecification:
+      properties:
+        tool_family:
+          type: string
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/ToolOrderingSpecificationField'
+        constraints:
+          type: object
+          properties:
+            max_quantity:
+              type: integer
+    ToolOrderPayload:
+      properties:
+        tool_order:
+          type: object
+          properties:
+            asset_id:
+              type: integer
+              format: int64
+              description: Create only; the well this order is for
+            vendor_id:
+              type: integer
+              format: int64
+            well_name:
+              type: string
+              description: Defaults to the asset name when omitted on create
+            rig_name:
+              type: string
+              description: Defaults to the asset's parent rig name when omitted on create
+            operator_name:
+              type: string
+              description: Defaults to the company name when omitted on create
+            well_api:
+              type: string
+            county:
+              type: string
+            state:
+              type: string
+            hole_size:
+              type: string
+            preferred_trucking:
+              type: string
+            inspection_requirements:
+              type: string
+            order_notes:
+              type: string
+            requested_delivery_date:
+              type: string
+              format: date
+            components:
+              type: array
+              description: On update, replaces all components wholesale; omit the key to leave existing components untouched
+              items:
+                properties:
+                  tool_family:
+                    type: string
+                  tool_type:
+                    type: string
+                  quantity:
+                    type: integer
+                    description: Expands into that many component rows; defaults to 1
+                  requested_specs:
+                    type: object
+                    description: Free-form per tool_family; see GET /v2/tool_ordering/specifications
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    ToolOrder:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          type: object
+          required:
+          - id
+          - reference_number
+          - status
+          - company_id
+          - vendor_id
+          - asset_id
+          - requester_id
+          properties:
+            id:
+              type: integer
+              format: int64
+            reference_number:
+              type: string
+              description: Format <VENDOR_ACRONYM><year>-<3-digit seq>, e.g. GM2026-007; orders created before the vendor acronym rollout keep the legacy TO-<year>-<4-digit seq> form. Unique per company
+            status:
+              type: string
+              enum:
+              - draft
+              - awaiting_acknowledgement
+              - acknowledged
+              - in_progress
+              - ready_to_ship
+              - partially_shipped
+              - shipped
+              - received_on_rig
+              - cancelled
+              - rejected
+            company_id:
+              type: integer
+              format: int64
+            vendor_id:
+              type: integer
+              format: int64
+            asset_id:
+              type: integer
+              format: int64
+              description: The well this order is for
+            requester_id:
+              type: integer
+              format: int64
+            well_name:
+              type: string
+            rig_name:
+              type: string
+            operator_name:
+              type: string
+            well_api:
+              type: string
+            county:
+              type: string
+            state:
+              type: string
+            hole_size:
+              type: string
+            preferred_trucking:
+              type: string
+            inspection_requirements:
+              type: string
+            order_notes:
+              type: string
+            requested_delivery_date:
+              type: string
+              format: date
+            recipient_user_ids:
+              type: array
+              items:
+                type: integer
+                format: int64
+              description: Vendor membership user ids selected as new-order email recipients at submission; empty means all eligible recipients
+            submitted_at:
+              type: string
+              format: date-time
+            cancellation_reason:
+              type: string
+              description: Reason supplied when the order was cancelled
+            cancelled_at:
+              type: string
+              format: date-time
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            vendor_name:
+              type: string
+            components:
+              type: array
+              items:
+                $ref: '#/components/schemas/ToolOrderComponent'
+    ChangeProposalDecisionSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/ChangeProposal'
+        order_status:
+          type: string
+          enum:
+          - draft
+          - awaiting_acknowledgement
+          - acknowledged
+          - in_progress
+          - ready_to_ship
+          - partially_shipped
+          - shipped
+          - received_on_rig
+          - cancelled
+          - rejected
+    ChangeProposal:
+      properties:
+        id:
+          type: integer
+          format: int64
+        tool_order_component_id:
+          type: integer
+          format: int64
+        status:
+          type: string
+          enum:
+          - pending
+          - approved
+          - rejected
+        proposed_changes:
+          type: object
+          description: Server-normalized field diffs in { from, to } form
+        reason:
+          type: string
+        proposer:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+        decider:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+        decision_comment:
+          type: string
+        component:
+          type: object
+          $ref: '#/components/schemas/ChangeProposalComponent'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        decided_at:
+          type: string
+          format: date-time
+    VendorMembershipList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/VendorMembership'
+    VendorPayload:
+      properties:
+        vendor:
+          type: object
+          properties:
+            name:
+              type: string
+            acronym:
+              type: string
+              description: Optional; derived from the name when omitted. Uppercased on write, must be unique per company
+            active:
+              type: boolean
+              description: 'false deactivates the vendor: hidden from the default list and rejected for new orders and contacts, while memberships and order history stay. true reactivates. The name stays reserved, so reactivate instead of recreating'
+            phones:
+              type: array
+              items:
+                type: string
+            supported_tool_families:
+              type: array
+              items:
+                type: string
+            member_user_ids:
+              type: array
+              description: 'Optional. When present, the vendor members are synced to exactly these company user ids: new ones are granted vendor access (membership + vendor_tool_order group), missing ones are deactivated. Requires manage permission on the vendor (company admin) and a named user'
+              items:
+                type: integer
+                format: int64
+    DeletedStatus:
+      properties:
+        status:
+          type: string
+          enum:
+          - deleted
+    VendorContactPayload:
+      properties:
+        vendor_contact:
+          type: object
+          required:
+          - name
+          - email
+          properties:
+            vendor_id:
+              type: integer
+              format: int64
+              description: Existing vendor to attach the contact to
+            vendor_name:
+              type: string
+              description: Find-or-create a vendor by name (case-insensitive) when vendor_id is omitted
+            name:
+              type: string
+            email:
+              type: string
+            phone:
+              type: string
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    VendorContactCreated:
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            email:
+              type: string
+            phone:
+              type: string
+            vendor_id:
+              type: integer
+              format: int64
+    ToolOrderingSpecificationField:
+      properties:
+        name:
+          type: string
+        label:
+          type: string
+        type:
+          type: string
+          enum:
+          - text
+          - enum
+        required:
+          type: boolean
+        enum:
+          type: array
+          items:
+            type: string
+    ToolOrderSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/ToolOrder'
+    ChangeProposalDecisionList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChangeProposal'
+        order_status:
+          type: string
+          enum:
+          - draft
+          - awaiting_acknowledgement
+          - acknowledged
+          - in_progress
+          - ready_to_ship
+          - partially_shipped
+          - shipped
+          - received_on_rig
+          - cancelled
+          - rejected
+    DistributionContactSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/DistributionContact'
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    VendorMembershipSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/VendorMembership'
+    OrderAttachmentList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderAttachment'
+    DistributionContactList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DistributionContact'
+    ToolOrderComponent:
+      properties:
+        id:
+          type: integer
+          format: int64
+        position:
+          type: integer
+        tool_family:
+          type: string
+        tool_type:
+          type: string
+        status:
+          type: string
+          enum:
+          - draft
+          - submitted
+          - in_progress
+          - ready_to_ship
+          - shipped
+          - received_on_rig
+          - cancelled
+          - rejected
+        requested_specs:
+          type: object
+          description: Free-form per tool_family; see GET /v2/tool_ordering/specifications
+        accepted_specs:
+          type: object
+          description: Latest approved specification snapshot, or null
+        effective_specs:
+          type: object
+          description: accepted_specs when present; otherwise requested_specs
+        final_specs:
+          type: object
+          description: As-built specifications supplied by the vendor
+        rejected_at:
+          type: string
+          format: date-time
+        received_at:
+          type: string
+          format: date-time
+        received_by:
+          type: object
+          description: Internal user who recorded receipt; null until received. Vendor payloads contain id and name only.
+          properties:
+            id:
+              type: integer
+              format: int64
+            email:
+              type: string
+            first_name:
+              type: string
+            last_name:
+              type: string
+        inventory_sync_state:
+          type: string
+          enum:
+          - not_started
+          - pending
+          - synced
+          - failed
+    OrderAttachment:
+      properties:
+        id:
+          type: integer
+          format: int64
+        tool_order_component_id:
+          type: integer
+          format: int64
+          description: Null for order-level attachments
+        file_name:
+          type: string
+        content_type:
+          type: string
+        size_bytes:
+          type: integer
+          format: int64
+        uploaded_by:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+        download_url:
+          type: string
+          description: Presigned URL, valid for 15 minutes
+        created_at:
+          type: string
+          format: date-time
+    OrderAttachmentPresign:
+      properties:
+        data:
+          type: object
+          properties:
+            signed_url:
+              type: string
+              description: PUT the file body here within 15 minutes, sending required_headers verbatim
+            s3_key:
+              type: string
+              description: Pass back to POST /attachments after the upload
+            required_headers:
+              type: object
+              description: Headers the PUT request must include exactly (they are part of the URL signature); currently only Content-Type
+    Vendor:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          type: object
+          required:
+          - id
+          - name
+          - active
+          - company_id
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            acronym:
+              type: string
+              description: Uppercase 2-6 alphanumerics, unique per company, used as the order reference prefix. Derived from the name when omitted on create
+            active:
+              type: boolean
+            company_id:
+              type: integer
+              format: int64
+            linked_company_id:
+              type: integer
+              format: int64
+            phones:
+              type: array
+              items:
+                type: string
+            supported_tool_families:
+              type: array
+              items:
+                type: string
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            contacts:
+              type: array
+              items:
+                $ref: '#/components/schemas/VendorContact'
+            members:
+              type: array
+              description: Vendor memberships (active and deactivated) with the member user inlined
+              items:
+                $ref: '#/components/schemas/VendorMembership'
+    VendorMembershipCreatePayload:
+      properties:
+        vendor_membership:
+          type: object
+          required:
+          - user_id
+          properties:
+            user_id:
+              type: integer
+              format: int64
+              description: Must belong to the vendor customer company
+    VendorMembershipUpdatePayload:
+      properties:
+        vendor_membership:
+          type: object
+          properties:
+            active:
+              type: boolean
+              description: false deactivates (revokes access immediately), true reactivates
+            receives_notifications:
+              type: boolean
+    VendorList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Vendor'
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

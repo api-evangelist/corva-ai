@@ -1,0 +1,365 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Partial Well Rerun App Progresses API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: PartialWellRerunAppProgresses
+paths:
+  /v2/partial_reruns/{partial_rerun_id}/app_progresses/{id}:
+    get:
+      summary: Show Partial Rerun App Progress
+      tags:
+      - PartialWellRerunAppProgresses
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Partial Well Rerun App Progress
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartialWellRerunAppProgress'
+      parameters:
+      - in: path
+        name: partial_rerun_id
+        description: Partial Well Rerun ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: App Progress ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2PartialRerunsByPartialRerunIdAppProgressesById
+      x-operation-id-source: derived
+    patch:
+      summary: Update Partial Rerun App Progress
+      tags:
+      - PartialWellRerunAppProgresses
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Well Rerun App Progress
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartialWellRerunAppProgress'
+      parameters:
+      - in: path
+        name: partial_rerun_id
+        description: Partial Well Rerun ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: App Progress ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePartialWellRerunAppProgressPayload'
+        description: PartialWellRerunAppProgress Payload
+        required: true
+      operationId: patchV2PartialRerunsByPartialRerunIdAppProgressesById
+      x-operation-id-source: derived
+  /v2/partial_reruns/{partial_rerun_id}/app_progresses/{id}/restart:
+    patch:
+      summary: Restart Partial Rerun App Progress
+      tags:
+      - PartialWellRerunAppProgresses
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Restarted Well Rerun App Progress
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartialWellRerunAppProgress'
+      parameters:
+      - in: path
+        name: partial_rerun_id
+        description: Partial Well Rerun ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: App Progress ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: patchV2PartialRerunsByPartialRerunIdAppProgressesByIdRestart
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    UpdatePartialWellRerunAppProgressPayload:
+      properties:
+        app_progress:
+          type: object
+          properties:
+            status:
+              type: integer
+            completed_app_connection:
+              type: integer
+            fail_reason:
+              type: string
+            dataset_progresses:
+              type: array
+              properties:
+                dataset_id:
+                  type: integer
+                processed_timestamp:
+                  type: integer
+                completed:
+                  type: boolean
+            app_connection_progresses:
+              type: array
+              properties:
+                dataset_id:
+                  type: integer
+                completed:
+                  type: boolean
+      example:
+        app_progress:
+          status: completed
+          completed_app_connection: 123
+          fail_reason: Failed
+          dataset_progresses:
+          - dataset_id: 345
+            processed_timestamp: 55560
+            completed: false
+          app_connection_progresses:
+          - app_connection_id: 345
+            completed: false
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    PartialWellRerunDatasetProgress:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            dataset_id:
+              type: integer
+              format: int64
+            processed_timestamp:
+              type: integer
+            completed:
+              type: boolean
+            dataset_name:
+              type: string
+      example:
+        id: 123
+        type: partial_well_rerun_dataset_progress
+        attributes:
+          id: 100
+          dataset_id: 786
+          processed_timestamp: 58457475
+          completed: false
+          dataset_name: New dataset
+    PartialWellRerunAppProgress:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            app_id:
+              type: integer
+              format: int64
+            app_key:
+              type: string
+            app_name:
+              type: string
+            status:
+              type: string
+            fail_reason:
+              type: string
+            rerun_status:
+              type: string
+            rerun_completion_rate:
+              type: float
+            partial_well_rerun_id:
+              type: integer
+              format: int64
+        relationships:
+          type: object
+          properties:
+            dataset_progresses:
+              type: array
+              items:
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        format: string
+                      type:
+                        type: string
+            app_connection_progresses:
+              type: array
+              items:
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        format: string
+                      type:
+                        type: string
+        included:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartialWellRerunDatasetProgress'
+      example:
+        data:
+          id: '123'
+          type: partial_well_rerun_app_progress
+          attributes:
+            app_id: 124
+            app_key: corva.enrichment-wrapper
+            status: merging
+            fail_reason: null
+          relationships:
+            dataset_progresses:
+              data:
+              - id: '5'
+                type: partial_well_rerun_dataset_progress
+            app_connection_progresses:
+              data:
+              - id: '6'
+                type: partial_well_rerun_app_connection_progress
+        included:
+        - id: '5'
+          type: partial_well_rerun_dataset_progress
+          attributes:
+            dataset_id: 132
+            processed_timestamp: 1543847760
+            completed: false
+            dataset_name: corva#wits
+        - id: '6'
+          type: partial_well_rerun_app_connection_progress
+          attributes:
+            app_connection_id: 444
+            rerun_app_connection_id: 555
+            completed: false
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

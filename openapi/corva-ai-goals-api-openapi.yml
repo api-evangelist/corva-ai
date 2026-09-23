@@ -1,0 +1,361 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Goals API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Goals
+paths:
+  /v2/goals:
+    get:
+      summary: List Company Goals if no filters applied
+      tags:
+      - Goals
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Goal'
+      parameters:
+      - in: query
+        name: owner_id
+        description: Filter by owner ID
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: owner_type
+        description: Filter owner type
+        schema:
+          type: string
+          enum:
+          - Program
+          - Well
+          - Company
+          - Rig
+          - InterventionUnit
+          - InterventionUnitEvent
+      - in: query
+        name: goal_type
+        description: Filter by goal type
+        schema:
+          type: string
+          enum:
+          - company
+          - program
+          - well
+          - rig
+          - well_section
+          - casing
+          - intervention_unit
+          - intervention_unit_event
+      - in: query
+        name: name
+        description: Filter by name. Available only when goal_type is casing or well_section
+        schema:
+          type: string
+      - in: query
+        name: company_id
+        description: Filter by company_id
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: include_wells
+        description: Filter goals by Well owner_type. Include well association in response
+        schema:
+          type: boolean
+      operationId: getV2Goals
+      x-operation-id-source: derived
+    post:
+      summary: Create a Goal
+      tags:
+      - Goals
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created Goal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Goal'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoalCreatePayload'
+        description: Goal Payload
+        required: true
+      operationId: postV2Goals
+      x-operation-id-source: derived
+  /v2/goals/{id}:
+    patch:
+      summary: Update a Goal
+      tags:
+      - Goals
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Goal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Goal'
+      parameters:
+      - in: path
+        name: id
+        description: Goal ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoalUpdatePayload'
+        description: Goal Payload
+        required: true
+      operationId: patchV2GoalsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a Goal
+      tags:
+      - Goals
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Deleted Goal
+          content:
+            application/json:
+              schema:
+                example:
+                  status: deleted
+      parameters:
+      - in: path
+        name: id
+        description: Goal ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2GoalsById
+      x-operation-id-source: derived
+components:
+  schemas:
+    Goal:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            goal_type:
+              type: string
+            data:
+              type: object
+      example:
+        id: 123
+        type: goal
+        attributes:
+          id: 123
+          name: Casing Name
+          goal_type: casing
+          data:
+            rotary_distance_drilled: '555'
+            laterial_distance_drilled: '1251'
+            rotary_drilling_time: '4594'
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    GoalCreatePayload:
+      properties:
+        goal:
+          type: object
+          properties:
+            goal_type:
+              type: string
+              enum:
+              - company
+              - program
+              - well
+              - rig
+              - well_section
+              - casing
+              - intervention_unit
+              - intervention_unit_event
+            owner_type:
+              type: string
+              enum:
+              - Program
+              - Well
+              - Company
+              - Rig
+              - InterventionUnit
+              - InterventionUnitEvent
+              - null
+            owner_id:
+              type: integer
+              format: int64
+            company_id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            data:
+              type: object
+      example:
+        goal:
+          goal_type: well_section
+          owner_type: Well
+          owner_id: 123
+          company_id: 11
+          name: Well Section name
+          data:
+            rotary_distance_drilled: '555'
+            laterial_distance_drilled: '1251'
+            rotary_drilling_time: '4594'
+    GoalUpdatePayload:
+      properties:
+        goal:
+          type: object
+          properties:
+            name:
+              type: string
+            data:
+              type: object
+      example:
+        goal:
+          name: Casing 14in
+          data:
+            rotary_distance_drilled: '555'
+            laterial_distance_drilled: '1251'
+            rotary_drilling_time: '4594'
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

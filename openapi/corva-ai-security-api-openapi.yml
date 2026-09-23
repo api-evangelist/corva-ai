@@ -1,0 +1,2808 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Security API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Security
+  description: Manage security policies, permissions, and groups
+paths:
+  /v2/companies/{company_id}/authentication_schemas:
+    get:
+      summary: List authentication schemas usable by the company
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Missing or invalid authentication
+        '403':
+          description: Cross-tenant or insufficient permissions
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Authentication schemas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationSchemaV2List'
+      parameters:
+      - in: path
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2CompaniesByCompanyIdAuthenticationSchemas
+      x-operation-id-source: derived
+  /v2/companies/{company_id}/authentication_schemas/{id}:
+    get:
+      summary: Show an authentication schema
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Missing or invalid authentication
+        '403':
+          description: Cross-tenant or insufficient permissions
+        '404':
+          description: Not visible from this company
+        '200':
+          description: Authentication schema
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationSchemaV2Single'
+      parameters:
+      - in: path
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Authentication Schema ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2CompaniesByCompanyIdAuthenticationSchemasById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete an authentication schema
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Missing or invalid authentication
+        '403':
+          description: Cross-tenant or insufficient permissions
+        '404':
+          description: Not visible from this company
+        '200':
+          description: Deleted
+        '422':
+          description: Refused — global schemas cannot be deleted from a company-scoped URL
+      parameters:
+      - in: path
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Authentication Schema ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2CompaniesByCompanyIdAuthenticationSchemasById
+      x-operation-id-source: derived
+  /v2/companies/{company_id}/company_domains:
+    get:
+      summary: List company domains
+      description: Returns every CompanyDomain row for the given company. Cross-tenant queries (admin of company A reading company B) return 403.
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Missing or invalid authentication
+        '403':
+          description: Cross-tenant or insufficient permissions
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Company domains
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyDomainV2List'
+      parameters:
+      - in: path
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2CompaniesByCompanyIdCompanyDomains
+      x-operation-id-source: derived
+    post:
+      summary: Create a company domain
+      description: Restricted to company admins.
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Missing or invalid authentication
+        '403':
+          description: Cross-tenant or insufficient permissions
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created company domain
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyDomainV2Single'
+        '400':
+          description: Validation error (e.g. domain already claimed exclusively)
+      parameters:
+      - in: path
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyDomainV2Payload'
+        required: true
+      operationId: postV2CompaniesByCompanyIdCompanyDomains
+      x-operation-id-source: derived
+  /v2/companies/{company_id}/company_domains/{id}:
+    get:
+      summary: Show a company domain
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Missing or invalid authentication
+        '403':
+          description: Cross-tenant or insufficient permissions
+        '404':
+          description: Not found
+        '200':
+          description: Company domain
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyDomainV2Single'
+      parameters:
+      - in: path
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Company Domain ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2CompaniesByCompanyIdCompanyDomainsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update a company domain
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Missing or invalid authentication
+        '403':
+          description: Cross-tenant or insufficient permissions
+        '404':
+          description: Not found
+        '200':
+          description: Updated company domain
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyDomainV2Single'
+        '400':
+          description: Validation error
+      parameters:
+      - in: path
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Company Domain ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyDomainV2Payload'
+        required: true
+      operationId: patchV2CompaniesByCompanyIdCompanyDomainsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a company domain
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Missing or invalid authentication
+        '403':
+          description: Cross-tenant or insufficient permissions
+        '404':
+          description: Not found
+        '200':
+          description: Deleted
+      parameters:
+      - in: path
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Company Domain ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2CompaniesByCompanyIdCompanyDomainsById
+      x-operation-id-source: derived
+  /v2/groups:
+    get:
+      summary: List Groups
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupList'
+      parameters:
+      - in: query
+        name: users_search
+        description: Search by users
+        schema:
+          type: string
+      - in: query
+        name: search
+        description: Search by Group
+        schema:
+          type: string
+      operationId: getV2Groups
+      x-operation-id-source: derived
+    post:
+      summary: Create a Group
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created Group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupCreatePayload'
+        description: Group Payload
+        required: true
+      operationId: postV2Groups
+      x-operation-id-source: derived
+  /v2/groups/{id}:
+    get:
+      summary: Show Group
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+      parameters:
+      - in: path
+        name: id
+        description: Group ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: users_search
+        description: Search by users inside a Group
+        schema:
+          type: string
+      operationId: getV2GroupsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update a Group
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+      parameters:
+      - in: path
+        name: id
+        description: Group ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupUpdatePayload'
+        description: Group Payload
+        required: true
+      operationId: patchV2GroupsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a Group
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Group deleted
+      parameters:
+      - in: path
+        name: id
+        description: Group ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2GroupsById
+      x-operation-id-source: derived
+  /v2/groups/{id}/users:
+    get:
+      summary: Show Users for a given Group
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupUser'
+      parameters:
+      - in: path
+        name: id
+        description: Group ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: per_page
+        description: Number of items to list per page
+        schema:
+          type: integer
+      - in: query
+        name: page
+        description: Current page of items
+        schema:
+          type: integer
+      - in: query
+        name: sort
+        description: A field to sort by
+        schema:
+          type: string
+          enum:
+          - first_name
+          - created_at
+          - updated_at
+          default: first_name
+      - in: query
+        name: order
+        description: A sorting direction
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+      - in: query
+        name: search
+        description: Search by first_name, last_name, email
+        schema:
+          type: string
+      operationId: getV2GroupsByIdUsers
+      x-operation-id-source: derived
+  /v2/users/{user_id}/groups:
+    get:
+      summary: List Groups for User
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Current Groups
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupConnectionList'
+      operationId: getV2UsersByUserIdGroups
+      x-operation-id-source: derived
+    post:
+      summary: Add Group to User
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Current Groups
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupConnectionList'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupsUsersPayload'
+        description: Group ID
+      operationId: postV2UsersByUserIdGroups
+      x-operation-id-source: derived
+  /v2/users/{user_id}/groups/{id}:
+    delete:
+      summary: Remove a Group from User
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Group Removed
+      parameters:
+      - in: path
+        name: id
+        description: Group ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2UsersByUserIdGroupsById
+      x-operation-id-source: derived
+  /v2/groups/{group_id}/assign_users:
+    post:
+      summary: Assign users to group
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+      parameters:
+      - in: path
+        name: group_id
+        description: Group ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: List of User ID
+        required: true
+      operationId: postV2GroupsByGroupIdAssignUsers
+      x-operation-id-source: derived
+  /v2/groups/copy_users:
+    post:
+      summary: Copy users from one group to another
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Id of a Group to copy users to
+        required: true
+      operationId: postV2GroupsCopyUsers
+      x-operation-id-source: derived
+  /v2/security_policies:
+    get:
+      summary: List Security Policies
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecurityPolicyList'
+      operationId: getV2SecurityPolicies
+      x-operation-id-source: derived
+  /v2/security_policies/{id}:
+    get:
+      summary: Show Security Policy
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecurityPolicy'
+      parameters:
+      - in: path
+        name: id
+        description: Security Policy ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2SecurityPoliciesById
+      x-operation-id-source: derived
+  /v2/companies/{company_id}/security_policies:
+    get:
+      summary: List Company Security Policies
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanySecurityPolicyList'
+      parameters:
+      - in: path
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2CompaniesByCompanyIdSecurityPolicies
+      x-operation-id-source: derived
+    post:
+      summary: Create a Company Security Policy
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created Company Security Policy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanySecurityPolicy'
+      parameters:
+      - in: path
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanySecurityPolicyCreatePayload'
+        description: Company Security Policy Payload
+        required: true
+      operationId: postV2CompaniesByCompanyIdSecurityPolicies
+      x-operation-id-source: derived
+  /v2/companies/{company_id}/security_policies/{id}:
+    get:
+      summary: Show Company Security Policy
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanySecurityPolicy'
+      parameters:
+      - in: path
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Company Security Policy ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2CompaniesByCompanyIdSecurityPoliciesById
+      x-operation-id-source: derived
+    patch:
+      summary: Update a Company Security Policy
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Company Security Policy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanySecurityPolicy'
+      parameters:
+      - in: path
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Company Security Policy ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanySecurityPolicyUpdatePayload'
+        description: Company Security Policy Payload
+        required: true
+      operationId: patchV2CompaniesByCompanyIdSecurityPoliciesById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a Company Security Policy
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Company Security Policy deleted
+      parameters:
+      - in: path
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Company Security Policy ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2CompaniesByCompanyIdSecurityPoliciesById
+      x-operation-id-source: derived
+  /v2/companies/{company_id}/authentication_schema_contexts:
+    get:
+      summary: List authentication-schema contexts touching a company
+      description: Returns every `AuthenticationSchemaContext` row that resolves to the given company — rows where `context = Company(company_id)`, rows where `context` is one of the company's CompanyDomains, and rows where `context` is one of the company's Users. Sorted Company → CompanyDomain → User; per-type counts in `meta.counts`.
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Missing or invalid authentication
+        '403':
+          description: Caller cannot read the requested company
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Authentication-schema contexts grouped by type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationSchemaContextV2List'
+      parameters:
+      - in: path
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2CompaniesByCompanyIdAuthenticationSchemaContexts
+      x-operation-id-source: derived
+  /v2/users/{user_id}/permissions:
+    get:
+      summary: List Permissions
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionList'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: category
+        description: Filter permissions by category
+        schema:
+          type: string
+      operationId: getV2UsersByUserIdPermissions
+      x-operation-id-source: derived
+    post:
+      summary: Create a Permission
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created Permission
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionPayload'
+        description: Permission Payload
+        required: true
+      operationId: postV2UsersByUserIdPermissions
+      x-operation-id-source: derived
+  /v2/users/{user_id}/permissions/{id}:
+    get:
+      summary: Show Permission
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+      parameters:
+      - in: path
+        name: id
+        description: Permission ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2UsersByUserIdPermissionsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update a Permission
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Permission
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+      parameters:
+      - in: path
+        name: id
+        description: Permission ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionPayload'
+        description: Permission Payload
+        required: true
+      operationId: patchV2UsersByUserIdPermissionsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a Permission
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Permission deleted
+      parameters:
+      - in: path
+        name: id
+        description: Permission ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2UsersByUserIdPermissionsById
+      x-operation-id-source: derived
+  /v2/users/{user_id}/permissions/bulk_create:
+    post:
+      summary: Create Multiple Permissions with list of abilities
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionList'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkPermissionPayload'
+        description: Permission Payload
+        required: true
+      operationId: postV2UsersByUserIdPermissionsBulkCreate
+      x-operation-id-source: derived
+  /v2/groups/{user_id}/permissions/bulk_destroy:
+    delete:
+      summary: Delete Multiple Permissions
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Permissions deleted
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: ids
+        required: true
+        description: List of permission IDs to delete
+        schema:
+          items:
+            type: integer
+      operationId: deleteV2GroupsByUserIdPermissionsBulkDestroy
+      x-operation-id-source: derived
+  /v2/groups/{group_id}/permissions:
+    get:
+      summary: List Permissions
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionList'
+      parameters:
+      - in: path
+        name: group_id
+        description: Group ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: category
+        description: Filter permissions by category
+        schema:
+          type: string
+      operationId: getV2GroupsByGroupIdPermissions
+      x-operation-id-source: derived
+    post:
+      summary: Create a Permission
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created Permission
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+      parameters:
+      - in: path
+        name: group_id
+        description: Group ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionPayload'
+        description: Permission Payload
+        required: true
+      operationId: postV2GroupsByGroupIdPermissions
+      x-operation-id-source: derived
+  /v2/groups/{group_id}/permissions/{id}:
+    get:
+      summary: Show Permission
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionOnGroup'
+      parameters:
+      - in: path
+        name: id
+        description: Permission ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: group_id
+        description: Group ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2GroupsByGroupIdPermissionsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update a Permission
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Permission
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionOnGroup'
+      parameters:
+      - in: path
+        name: id
+        description: Permission ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: group_id
+        description: Group ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionPayload'
+        description: Permission Payload
+        required: true
+      operationId: patchV2GroupsByGroupIdPermissionsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a Permission
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Permission deleted
+      parameters:
+      - in: path
+        name: id
+        description: Permission ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: group_id
+        description: Group ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2GroupsByGroupIdPermissionsById
+      x-operation-id-source: derived
+  /v2/groups/{group_id}/permissions/grouped:
+    get:
+      summary: List Grouped Permissions
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionGroupList'
+      parameters:
+      - in: path
+        name: group_id
+        description: Group ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: category
+        description: Filter permissions by category
+        schema:
+          type: string
+      - in: query
+        name: category
+        description: Filter permissions by category
+        schema:
+          type: string
+      - in: query
+        name: page
+        description: Number of page
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of items to list per page
+        schema:
+          type: integer
+      operationId: getV2GroupsByGroupIdPermissionsGrouped
+      x-operation-id-source: derived
+  /v2/users/{user_id}/permissions/grouped:
+    get:
+      summary: List Grouped Permissions
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionGroupList'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: category
+        description: Filter permissions by category
+        schema:
+          type: string
+      - in: query
+        name: category
+        description: Filter permissions by category
+        schema:
+          type: string
+      - in: query
+        name: page
+        description: Number of page
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of items to list per page
+        schema:
+          type: integer
+      operationId: getV2UsersByUserIdPermissionsGrouped
+      x-operation-id-source: derived
+  /v2/groups/{group_id}/permissions/bulk_create:
+    post:
+      summary: Create Multiple Permissions with list of abilities
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionList'
+      parameters:
+      - in: path
+        name: group_id
+        description: Group ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkPermissionPayload'
+        description: Permission Payload
+        required: true
+      operationId: postV2GroupsByGroupIdPermissionsBulkCreate
+      x-operation-id-source: derived
+  /v2/groups/{group_id}/permissions/bulk_destroy:
+    delete:
+      summary: Delete Multiple Permissions
+      tags:
+      - Security
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Permissions deleted
+      parameters:
+      - in: path
+        name: group_id
+        description: Group ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: ids
+        required: true
+        description: List of permission IDs to delete
+        schema:
+          items:
+            type: integer
+      operationId: deleteV2GroupsByGroupIdPermissionsBulkDestroy
+      x-operation-id-source: derived
+components:
+  schemas:
+    CompanyDomainV2List:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanyDomainV2'
+    CompanySecurityPolicyCreatePayload:
+      properties:
+        company_security_policy:
+          type: object
+          properties:
+            security_policy_id:
+              type: integer
+            group_id:
+              type: boolean
+              required: false
+            schema:
+              type: json
+            enabled:
+              type: boolean
+              required: false
+      example:
+        company_security_policy:
+          security_policy_id: 12
+          group_id: 44
+          schema:
+            hello: world
+          enabled: true
+    Permission:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            ability:
+              type: string
+            resource_class:
+              type: string
+            resource_id:
+              type: integer
+              format: int64
+            resource_name:
+              type: string
+            conditions:
+              type: json
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            owner:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: permission
+        attributes:
+          id: '12345'
+          ability: read
+          resource_class: User
+          resource_id: 123
+          resource_name: Johny
+          conditions: null
+          created_at: '2020-01-01T08:00:00.000Z'
+          updated_at: '2020-01-01T13:00:00.000Z'
+        relationships:
+          company:
+            id: '1'
+            type: company
+          owner:
+            id: '123'
+            type: user
+    GroupConnectionList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupConnection'
+    PermissionOnGroup:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            ability:
+              type: string
+            resource_class:
+              type: string
+            resource_id:
+              type: integer
+              format: int64
+            conditions:
+              type: json
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            owner:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: permission
+        attributes:
+          id: '12345'
+          ability: read
+          resource_class: User
+          resource_id: 123
+          conditions: null
+          created_at: '2020-01-01T08:00:00.000Z'
+          updated_at: '2020-01-01T13:00:00.000Z'
+        relationships:
+          company:
+            id: '1'
+            type: company
+          owner:
+            id: '123'
+            type: group
+    GroupUser:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            first_name:
+              type: string
+            last_name:
+              type: string
+            email:
+              type: string
+            title:
+              type: string
+            role:
+              type: string
+            profile_photo:
+              type: string
+            company_id:
+              type: integer
+              format: int64
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: user
+        attributes:
+          id: '12345'
+          first_name: John
+          last_name: Doe
+          email: example@email.com
+          title: Title
+          role: user
+          profile_photo: aws_path
+          company_id: 111
+          created_at: '2020-01-01T08:00:00.000Z'
+          updated_at: '2020-01-01T13:00:00.000Z'
+        relationships:
+          company:
+            id: '1'
+            type: company
+    GroupList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+    AuthenticationSchemaV2List:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticationSchemaV2'
+    PermissionList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PermissionInList'
+    CompanyDomainV2Single:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/CompanyDomainV2'
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    PermissionGroupList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PermissionGroup'
+    GroupConnection:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: group
+        attributes:
+          id: '12345'
+          name: Group 1
+        relationships: {}
+    Group:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            restricted_by_ip:
+              type: boolean
+            has_blacklisted_datasets:
+              type: boolean
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: group
+        attributes:
+          id: '12345'
+          name: Group 1
+          restricted_by_ip: true
+          has_blacklisted_datasets: true
+          created_at: '2020-01-01T08:00:00.000Z'
+          updated_at: '2020-01-01T13:00:00.000Z'
+        relationships:
+          company:
+            id: '1'
+            type: company
+    GroupsUsersPayload:
+      properties:
+        group_id:
+          type: integer
+      example:
+        group_id: 12345
+    AuthenticationSchemaV2Single:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AuthenticationSchemaV2'
+    CompanySecurityPolicy:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            enabled:
+              type: boolean
+            schema:
+              type: json
+            status:
+              type: string
+              description: Human-readable one-line summary of the policy, derived server-side by `Security::PolicyStatusFormatter`. Always "Off" when `enabled` is false. Returns "Misconfigured — please re-save" if the schema fails to format (missing or wrongly-typed required field, or a row still holding the SecurityPolicy field metadata). A `password-expiration-schedule` whose `start_date` is still in the future reports "Scheduled to start …". Otherwise an identifier-specific string such as "MFA required — email + SMS", "Sessions expire after 8 hours", or "Strong — 16+ chars, requires upper, lower, digit, symbol".
+              example: MFA required — email + SMS
+            last_checked_at:
+              type: string
+              format: date-time
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            security_policy:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            group:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: company_security_policy
+        attributes:
+          id: 11
+          enabled: true
+          schema:
+            modes:
+            - email
+            - sms
+            required: true
+          status: MFA required — email + sms
+          last_checked_at: '2020-01-01T08:00:00.000Z'
+          created_at: '2022-01-01T08:00:00.000Z'
+          updated_at: '2023-01-01T08:00:00.000Z'
+        relationships:
+          company:
+            data:
+              id: 999
+              type: company
+          security_policy:
+            data:
+              id: 4
+              type: security_policy
+          group:
+            data:
+              id: 90
+              type: group
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AuthenticationSchemaContextV2:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          example: authentication_schema_context
+        attributes:
+          type: object
+          properties:
+            context_type:
+              type: string
+              enum:
+              - Company
+              - CompanyDomain
+              - User
+              description: Polymorphic context discriminator. `Company` rows apply company-wide, `CompanyDomain` rows match users whose email domain is on that domain, `User` rows are per-user overrides.
+            context_id:
+              type: integer
+              format: int64
+              description: ID of the referenced Company, CompanyDomain, or User row.
+            context_label:
+              type: string
+              description: Human-readable identifier for the context (Company.name / CompanyDomain.domain / User.email). Returns `"(unknown)"` if the underlying row was deleted out from under the context.
+            provisioner:
+              type: string
+              description: Where group membership originates. `internal` = Corva-managed; `client` = derived from the IdP via the SSO broker.
+            created_at:
+              type: string
+              format: date-time
+            schema:
+              type: object
+              description: Inlined `AuthenticationSchema` details + per-caller ownership flags. Returned inline (not via a JSON:API relationship) so the FE has the ownership context without a follow-up `?include=` request.
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                title:
+                  type: string
+                  example: Google Workspace
+                provider:
+                  type: string
+                  example: google
+                connection:
+                  type: string
+                  example: acme-google-workspace
+                owner_company_id:
+                  type:
+                  - integer
+                  - 'null'
+                  format: int64
+                  description: Owning company id, or null for global / shared schemas.
+                is_global:
+                  type: boolean
+                  description: True when `owner_company_id` is null.
+                is_owned_by_current_company:
+                  type: boolean
+                  description: True when the schema is owned by the company being queried.
+    CompanyDomainV2Payload:
+      properties:
+        company_domain:
+          type: object
+          required:
+          - domain
+          properties:
+            domain:
+              type: string
+              example: acme.example
+            exclusive:
+              type: boolean
+              example: false
+    AuthenticationSchemaContextV2List:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticationSchemaContextV2'
+        meta:
+          type: object
+          properties:
+            counts:
+              type: object
+              description: Per-context-type counts across the returned set.
+              properties:
+                company:
+                  type: integer
+                  format: int64
+                company_domain:
+                  type: integer
+                  format: int64
+                user:
+                  type: integer
+                  format: int64
+    CompanySecurityPolicyList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanySecurityPolicy'
+    SecurityPolicy:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            identifier:
+              type: string
+            run_mode:
+              type: string
+            description:
+              type: string
+            frequency:
+              type: integer
+              format: int64
+            schema:
+              type: json
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+      example:
+        id: 4
+        type: security_policy
+        attributes:
+          id: '4'
+          name: MFA
+          identifier: identity-verification
+          description: Multi-Factor Authentication
+          frequency: 0
+          schema: {}
+          run_mode: event
+          created_at: '2020-01-01T08:00:00.000Z'
+          updated_at: '2020-01-01T13:00:00.000Z'
+    CompanyDomainV2:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          example: company_domain
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            domain:
+              type: string
+              description: Email domain (e.g. `acme.example`) that the SSO wizard auto-routes through this company's configured IdP.
+              example: acme.example
+            exclusive:
+              type: boolean
+              description: 'When true, the domain may not be claimed by any other company. Validation refuses an `exclusive: true` claim if any other company already has the same domain (regardless of their exclusive flag).'
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+    AuthenticationSchemaV2:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          example: authentication_schema
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            title:
+              type: string
+            provider:
+              type: string
+              example: samlp
+            connection:
+              type: string
+            owner_company_id:
+              type: integer
+              format: int64
+            authentication_platform_id:
+              type: integer
+              format: int64
+            options:
+              type: object
+            is_global:
+              type: boolean
+            is_owned_by_current_company:
+              type: boolean
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+    GroupUpdatePayload:
+      properties:
+        group:
+          type: object
+          properties:
+            name:
+              type: string
+            company_id:
+              type: integer
+            restricted_by_ip:
+              type: boolean
+      example:
+        group:
+          name: Group 1
+          company_id: 1
+          restricted_by_ip: true
+    PermissionPayload:
+      properties:
+        permission:
+          type: object
+          properties:
+            ability:
+              type: string
+            resource_class:
+              type: string
+            resource_id:
+              type: integer
+            company_id:
+              type: integer
+      example:
+        permission:
+          ability: read
+          resource_class: User
+          resource_id: 123
+          company_id: 1
+    CompanySecurityPolicyUpdatePayload:
+      properties:
+        company_security_policy:
+          type: object
+          properties:
+            group_id:
+              type: boolean
+              required: false
+            schema:
+              type: json
+            enabled:
+              type: boolean
+              required: false
+      example:
+        company_security_policy:
+          group_id: 44
+          schema:
+            hello: world
+          enabled: true
+    GroupCreatePayload:
+      properties:
+        group:
+          type: object
+          properties:
+            name:
+              type: string
+            company_id:
+              type: integer
+            restricted_by_ip:
+              type: boolean
+            copy_from_id:
+              type: integer
+      example:
+        group:
+          name: Group 1
+          company_id: 1
+          restricted_by_ip: true
+          copy_from_id: 567
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    PermissionGroup:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            resource_class:
+              type: string
+            resource_name:
+              type: string
+            friendly_name:
+              type: string
+            key:
+              type: string
+            resource_id:
+              type: integer
+              format: int64
+        relationships:
+          type: object
+          properties:
+            permissions:
+              type: array
+              items:
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        format: int64
+                      type:
+                        type: string
+            owner:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: permission_group
+        attributes:
+          id: 12345
+          resource_class: User
+          resource_name: User
+          friendly_name: User
+          key: all-users
+          resource_id: 123
+        relationships:
+          permissions:
+          - data:
+              id: 999
+              type: permission
+          owner:
+            id: '123'
+            type: user
+    SecurityPolicyList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecurityPolicy'
+    PermissionInList:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            ability:
+              type: string
+            resource_class:
+              type: string
+            resource_id:
+              type: integer
+              format: int64
+            conditions:
+              type: json
+        relationships:
+          type: object
+      example:
+        id: 12345
+        type: permission
+        attributes:
+          id: '12345'
+          ability: read
+          resource_class: User
+          resource_id: 123
+          conditions: null
+        relationships: {}
+    BulkPermissionPayload:
+      properties:
+        permission:
+          type: object
+          properties:
+            abilities:
+              type: array
+            resource_class:
+              type: string
+            key:
+              type: string
+            resource_id:
+              type: integer
+            company_id:
+              type: integer
+      example:
+        permission:
+          abilities:
+          - read
+          - update
+          - create
+          - destroy
+          resource_class: User
+          key: all-company-users
+          resource_id: 123
+          company_id: 1
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

@@ -1,0 +1,381 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Picklists API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Picklists
+  description: Manage picklists, which are lists of options (usually key/value pairs)
+paths:
+  /v2/picklists:
+    get:
+      summary: List picklists
+      tags:
+      - Picklists
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List all picklists visible by the current role
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Picklist'
+      operationId: getV2Picklists
+      x-operation-id-source: derived
+    post:
+      summary: Create a picklist
+      tags:
+      - Picklists
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created picklist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Picklist'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PicklistPayload'
+        description: Picklist Payload
+        required: true
+      operationId: postV2Picklists
+      x-operation-id-source: derived
+  /v2/picklists/{name}:
+    get:
+      summary: Show a single picklist
+      tags:
+      - Picklists
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Show the picklist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Picklist'
+      parameters:
+      - in: path
+        name: name
+        description: Picklist name identifier
+        schema:
+          type: string
+        required: true
+      operationId: getV2PicklistsByName
+      x-operation-id-source: derived
+    patch:
+      summary: Update picklist
+      tags:
+      - Picklists
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated picklist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Picklist'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PicklistUpdatePayload'
+        description: Picklist Payload
+        required: true
+      operationId: patchV2PicklistsByName
+      x-operation-id-source: derived
+  /v2/picklists/{name}/items:
+    post:
+      summary: Create a picklist item
+      tags:
+      - Picklists
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created picklist item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PicklistItem'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PicklistItemPayload'
+        description: PicklistItem Payload
+        required: true
+      operationId: postV2PicklistsByNameItems
+      x-operation-id-source: derived
+  /v2/picklists/{name}/items/{id}:
+    delete:
+      summary: Delete a picklist item
+      tags:
+      - Picklists
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Item deleted
+      parameters:
+      - in: path
+        name: id
+        description: Picklist ID
+        schema:
+          type: integer
+        required: true
+      operationId: deleteV2PicklistsByNameItemsById
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    PicklistPayload:
+      properties:
+        name:
+          type: string
+        require_admin:
+          type: boolean
+        company_id:
+          type: integer
+          format: int64
+        options:
+          type: object
+      example:
+        name: new_picklist
+        require_admin: true
+        company_id: 1
+        options:
+          some: option
+    Picklist:
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        options:
+          type: object
+        items:
+          type: array
+      example:
+        id: 24
+        name: my_picklist
+        options:
+          name: A single option
+          value: The optional value
+        items:
+        - nested: data
+          more: additional data
+    PicklistUpdatePayload:
+      properties:
+        name:
+          type: string
+        require_admin:
+          type: boolean
+        options:
+          type: object
+      example:
+        name: new_picklist
+        require_admin: true
+        options:
+          some: option
+    PicklistItem:
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: integer
+          format: int64
+        picklist_id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        order:
+          type: integer
+        secure:
+          type: object
+        metadata:
+          type: object
+      example:
+        id: 24
+        name: My Picklist Item
+        order: 1
+        metadata:
+          some: option
+        secure: {}
+        picklist_id: 1
+    PicklistItemPayload:
+      properties:
+        name:
+          type: string
+        order:
+          type: integer
+          format: int64
+        secure:
+          type: object
+        metadata:
+          type: object
+      example:
+        name: New Picklist Item
+        order: 1
+        secure: {}
+        metadata:
+          some: option
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

@@ -1,0 +1,539 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva API Key API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: API Key
+paths:
+  /v2/subscriptions_token:
+    post:
+      summary: Create a subscriptions service token
+      tags:
+      - API Key
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                properties:
+                  token:
+                    type: string
+                  token_type:
+                    type: string
+                    enum:
+                    - Bearer
+                  expires_in:
+                    type: integer
+                    enum:
+                    - 900
+                example:
+                  token: eyJhbGciOiJIUzI1NiJ9...
+                  token_type: Bearer
+                  expires_in: 900
+        '400':
+          description: Request body is not allowed
+      description: Creates a 15-minute subscriptions service token for an API key with subscriptions:read permission. The JWT collections claim contains sorted provider#collection names from explicit Dataset/read_from permissions; an empty array grants no dataset subscriptions.
+      operationId: postV2SubscriptionsToken
+      x-operation-id-source: derived
+  /v2/api_keys_management:
+    get:
+      summary: List accessible API keys
+      tags:
+      - API Key
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKeyList'
+      parameters:
+      - in: query
+        name: company_id
+        description: Filter by company_id
+        schema:
+          type: integer
+      - in: query
+        name: owner_type
+        description: Filter by owner_type
+        schema:
+          type: string
+          enum:
+          - Any
+          - App
+      - in: query
+        name: status
+        description: Filter by status
+        schema:
+          type: string
+          enum:
+          - requested
+          - active
+          - inactive
+      - in: query
+        name: name
+        description: Search by name
+        schema:
+          type: string
+      operationId: getV2ApiKeysManagement
+      x-operation-id-source: derived
+    post:
+      summary: Create an API key
+      tags:
+      - API Key
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiKeyPayload'
+        description: API Key Payload
+        required: true
+      operationId: postV2ApiKeysManagement
+      x-operation-id-source: derived
+  /v2/api_keys_management/{id}:
+    get:
+      summary: Show API key
+      tags:
+      - API Key
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
+      parameters:
+      - in: path
+        name: id
+        description: API key ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2ApiKeysManagementById
+      x-operation-id-source: derived
+    patch:
+      summary: Update an API key
+      tags:
+      - API Key
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
+      parameters:
+      - in: path
+        name: id
+        description: API key ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiKeyPayload'
+        description: API Key Payload
+        required: true
+      operationId: patchV2ApiKeysManagementById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete an API key
+      tags:
+      - API Key
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: API key deleted
+      parameters:
+      - in: path
+        name: id
+        description: API key ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2ApiKeysManagementById
+      x-operation-id-source: derived
+  /v2/api_keys_management/{id}/activate:
+    post:
+      summary: Approve and Activate an API key
+      tags:
+      - API Key
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Activated API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
+      parameters:
+      - in: path
+        name: id
+        description: API key ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2ApiKeysManagementByIdActivate
+      x-operation-id-source: derived
+  /v2/api_keys_management/{id}/deactivate:
+    post:
+      summary: Deactivate an API key
+      tags:
+      - API Key
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Deactivated API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
+      parameters:
+      - in: path
+        name: id
+        description: API key ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2ApiKeysManagementByIdDeactivate
+      x-operation-id-source: derived
+components:
+  schemas:
+    ApiKeyPayload:
+      properties:
+        api_key:
+          type: object
+          properties:
+            key:
+              type: string
+            permissions:
+              type: string
+            owner_id:
+              type: integer
+              format: int64
+            owner_type:
+              type: string
+            requested_by_id:
+              type: integer
+              format: int64
+            approved_by_id:
+              type: integer
+              format: int64
+            company_id:
+              type: integer
+              format: int64
+      example:
+        api_key:
+          name: ApiKey Name
+          status: active
+          key: some-auto-generated-key
+          permissions: read
+          owner_id: 12345
+          owner_type: App
+          requested_by_id: 123
+          approved_by_id: 456
+          company_id: 456
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    ApiKey:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            permissions:
+              type: string
+            status:
+              type: string
+            owner_id:
+              type: integer
+              format: int64
+            owner_type:
+              type: string
+            requested_at:
+              type: string
+              format: date-time
+            approved_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            requested_by:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            approved_by:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: api_key
+        attributes:
+          id: '12345'
+          name: ApiKey Name or key alias
+          permissions: read
+          status: active
+          owner_id: 10000
+          owner_type: App
+          requested_at: '2020-01-01T08:00:00.000Z'
+          approved_at: '2020-01-01T13:00:00.000Z'
+        relationships:
+          company:
+            id: '1'
+            type: company
+          requested_by:
+            id: '123'
+            type: user
+          approved_by:
+            id: '456'
+            type: user
+    ApiKeyList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiKey'
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

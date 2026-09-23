@@ -1,0 +1,331 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva App Schedule API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: AppSchedule
+paths:
+  /v1/app_schedules:
+    post:
+      summary: Create App schedule
+      tags:
+      - AppSchedule
+      responses:
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppSchedule'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAppSchedulePayload'
+        description: App Schedule payload
+        required: true
+      operationId: postV1AppSchedules
+      x-operation-id-source: derived
+  /v1/app_schedules/bulk_update_status:
+    post:
+      summary: Bulk update status for list of App Schedule
+      tags:
+      - AppSchedule
+      responses:
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                example:
+                  status: OK
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: App Schedule status
+        required: true
+      operationId: postV1AppSchedulesBulkUpdateStatus
+      x-operation-id-source: derived
+  /v1/app_schedules/{id}:
+    get:
+      summary: Retrieve App schedules
+      tags:
+      - AppSchedule
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppSchedule'
+      parameters:
+      - in: path
+        name: id
+        description: App schedule ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV1AppSchedulesById
+      x-operation-id-source: derived
+    patch:
+      summary: Update app schedule
+      tags:
+      - AppSchedule
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppSchedule'
+      parameters:
+      - in: path
+        name: id
+        description: App Schedule ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAppSchedulePayload'
+        description: App Schedule payload
+        required: true
+      operationId: patchV1AppSchedulesById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete app schedule
+      tags:
+      - AppSchedule
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                example:
+                  status: deleted
+      parameters:
+      - in: path
+        name: id
+        description: App Schedule ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV1AppSchedulesById
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    UpdateAppSchedulePayload:
+      properties:
+        app_schedule:
+          type: object
+          items:
+            properties:
+              status:
+                type: string
+              information:
+                type: string
+              start_at:
+                type: string
+                format: date-time
+              settings:
+                type: object
+      example:
+        app_schedule:
+          status: completed
+          information: Random
+          start_at: '2020-01-01T08:00:00.000Z'
+          settings: {}
+    CreateAppSchedulePayload:
+      properties:
+        app_schedule:
+          type: object
+          items:
+            properties:
+              app_connection_id:
+                type: integer
+                format: int64
+              status:
+                type: string
+              information:
+                type: string
+              start_at:
+                type: string
+                format: date-time
+              settings:
+                type: object
+      example:
+        app_schedule:
+          app_connection_id: 9595
+          status: completed
+          information: Random
+          start_at: '2020-01-01T08:00:00.000Z'
+          settings: {}
+    AppSchedule:
+      properties:
+        id:
+          type: integer
+          format: int64
+        app_connection_id:
+          type: integer
+          format: int64
+        status:
+          type: string
+        information:
+          type: string
+        interval:
+          type: integer
+        start_at:
+          type: string
+          format: date-time
+        end_at:
+          type: string
+          format: date-time
+        queued_at:
+          type: string
+          format: date-time
+        started_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+        settings:
+          type: object
+      example:
+        id: 12345
+        type: app_type
+        attributes:
+          id: 12345
+          app_connection_id: 9595
+          status: completed
+          information: Random
+          interval: 500
+          start_at: '2020-01-01T08:00:00.000Z'
+          end_at: '2020-01-01T08:00:00.000Z'
+          queued_at: '2020-01-01T08:00:00.000Z'
+          started_at: '2020-01-01T08:00:00.000Z'
+          completed_at: '2020-01-01T08:00:00.000Z'
+          settings: {}
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

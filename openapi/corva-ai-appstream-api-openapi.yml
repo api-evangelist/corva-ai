@@ -1,0 +1,1415 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva App Stream API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: AppStream
+paths:
+  /v1/app_streams:
+    get:
+      summary: List AppStreams
+      tags:
+      - AppStream
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppStreamList'
+      parameters:
+      - in: query
+        name: company_id
+        description: Filter by company_id
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: asset_id
+        description: Filter by asset_id
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: segment
+        description: Filter by segment
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: status
+        description: Filter by status
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: type
+        description: Filter by type
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: log_type
+        description: Filter by streams' log_type. Can be time or depth
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: source_type
+        description: Filter by source_type
+        required: false
+        schema:
+          type: string
+          enum:
+          - drilling
+          - drillout
+          - frac
+          - pumpdown
+          - wireline
+          - lithology
+      - in: query
+        name: data_received_at
+        description: Filter by data_received_at
+        required: false
+        schema:
+          type: string
+          enum:
+          - all
+          - month
+          - week
+          - day
+      - in: query
+        name: last_active_at
+        description: Filter by last_active_at
+        required: false
+        schema:
+          type: string
+          enum:
+          - all
+          - month
+          - week
+          - day
+      - in: query
+        name: search
+        description: Search by name
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: started_by
+        description: Filter by started_by user column
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: app_id
+        description: Filter by app_id
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: updated_at_gt
+        description: Filter streams where updated_at greater than provided unix timestamp
+        required: false
+        schema:
+          type: integer
+          format: timestamp
+      operationId: getV1AppStreams
+      x-operation-id-source: derived
+    post:
+      summary: Create AppStream
+      tags:
+      - AppStream
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created AppStream
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppStreamItem'
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Attach intervention unit event to an app stream
+      operationId: postV1AppStreams
+      x-operation-id-source: derived
+  /v2/app_streams:
+    get:
+      summary: List AppStreams
+      tags:
+      - AppStream
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V2AppStreamList'
+      parameters:
+      - in: query
+        name: fields
+        description: Respond with only the given list of fields, like app_stream.log_type. See example response for fields.
+        schema:
+          items:
+            type: string
+      - in: query
+        name: company_id
+        description: Filter by company_id
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: asset_id
+        description: Filter by asset_id
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: segment
+        description: Filter by segment
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: status
+        description: Filter by status
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: type
+        description: Filter by type
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: log_type
+        description: Filter by streams' log_type. Can be time or depth
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: source_type
+        description: Filter by source_type
+        required: false
+        schema:
+          type: string
+          enum:
+          - drilling
+          - drillout
+          - frac
+          - pumpdown
+          - wireline
+          - lithology
+      - in: query
+        name: data_received_at
+        description: Filter by data_received_at
+        required: false
+        schema:
+          type: string
+          enum:
+          - all
+          - month
+          - week
+          - day
+      - in: query
+        name: last_active_at
+        description: Filter by last_active_at
+        required: false
+        schema:
+          type: string
+          enum:
+          - all
+          - month
+          - week
+          - day
+      - in: query
+        name: search
+        description: Search by name
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: app_id
+        description: Filter by app_id
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: consumer_strategy
+        description: Filter by consumer_strategy
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: updated_at_gt
+        description: Filter streams where updated_at greater than provided unix timestamp
+        required: false
+        schema:
+          type: integer
+          format: timestamp
+      operationId: getV2AppStreams
+      x-operation-id-source: derived
+  /v2/app_streams/idle_worker_stats:
+    get:
+      summary: Get AppStream Auto Idle Job Stats
+      tags:
+      - AppStream
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                idled_app_streams_per_day: integer
+                idled_app_streams_per_month: integer
+                example:
+                  idled_app_streams_per_day: 10
+                  idled_app_streams_per_month: 100
+      operationId: getV2AppStreamsIdleWorkerStats
+      x-operation-id-source: derived
+  /v2/app_streams/{id}:
+    get:
+      summary: Show AppStream
+      tags:
+      - AppStream
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V2AppStreamItem'
+      parameters:
+      - in: query
+        name: fields
+        description: Respond with only the given list of fields, like app_stream.log_type. See example response for fields.
+        schema:
+          items:
+            type: string
+      - in: path
+        name: id
+        description: AppStream ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2AppStreamsById
+      x-operation-id-source: derived
+  /v1/app_streams/{id}:
+    get:
+      summary: Show AppStream
+      tags:
+      - AppStream
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppStreamItem'
+      parameters:
+      - in: path
+        name: id
+        description: AppStream ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV1AppStreamsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update AppStream
+      tags:
+      - AppStream
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated AppStream
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppStreamItem'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/AppConnectionUpdateItemPayload'
+        description: App connections parameters
+      operationId: patchV1AppStreamsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete AppStream
+      tags:
+      - AppStream
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: AppStream deleted
+      parameters:
+      - in: path
+        name: id
+        description: AppStream ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV1AppStreamsById
+      x-operation-id-source: derived
+  /v1/app_streams/{id}/clone:
+    post:
+      summary: Clone AppStream
+      tags:
+      - AppStream
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Cloned AppStream
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppStreamItem'
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: AppStream asset_id
+        required: true
+      operationId: postV1AppStreamsByIdClone
+      x-operation-id-source: derived
+  /v1/app_streams/{id}/create_backfill_stream:
+    post:
+      summary: Create Backfill App Stream for App Stream
+      tags:
+      - AppStream
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created Backfill AppStream
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppStreamItem'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppConnectionSettingsBackfillPayload'
+        description: Override AppConnection settings
+      operationId: postV1AppStreamsByIdCreateBackfillStream
+      x-operation-id-source: derived
+  /v1/app_streams/{id}/force_resume:
+    post:
+      summary: Force resuming consumers for stream
+      tags:
+      - AppStream
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: AppStream force resumed consumers
+        '412':
+          description: App Stream is not a drilling time stream
+          content:
+            application/json:
+              schema:
+                message: string
+                example:
+                  message: App Stream is not a drilling time stream
+      parameters:
+      - in: path
+        name: id
+        description: AppStream ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV1AppStreamsByIdForceResume
+      x-operation-id-source: derived
+  /v1/app_streams/{id}/reset_data_schedules:
+    post:
+      summary: Reset data_time scheduled app cursors and schedules for a purge/rerun window
+      tags:
+      - AppStream
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Data schedules were reset
+          content:
+            application/json:
+              schema:
+                properties:
+                  app_stream_id:
+                    type: integer
+                    format: int64
+                  connections:
+                    type: array
+                    items:
+                      properties:
+                        app_connection_id:
+                          type: integer
+                          format: int64
+                        app_key:
+                          type: string
+                        scheduler_type:
+                          type: string
+                        deleted_schedules_count:
+                          type: integer
+                        cursor_reset:
+                          type: boolean
+        '400':
+          description: Invalid or missing window parameters
+          content:
+            application/json:
+              schema:
+                message: string
+                example:
+                  message: start_timestamp must be less than end_timestamp
+      parameters:
+      - in: path
+        name: id
+        description: AppStream ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                type: string
+              example:
+                app_keys:
+                - corva.frac_schedule_adherence
+        description: Optional filter to specific follower app keys; defaults to all data_time scheduled connections
+      operationId: postV1AppStreamsByIdResetDataSchedules
+      x-operation-id-source: derived
+  /v1/app_streams/batch_update:
+    patch:
+      summary: Batch Update AppStreams. Limited to 10 app streams
+      tags:
+      - AppStream
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: No permissions to update app streams
+          content:
+            application/json:
+              schema:
+                message: string
+                example:
+                  message: Not able to update not accessible app streams. 1, 2, 3 app stream ids are not accessible
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: App streams were updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppStreamBatchUpdatePayload'
+        description: App Stream Payload
+        required: true
+      operationId: patchV1AppStreamsBatchUpdate
+      x-operation-id-source: derived
+  /v1/app_streams/batch_destroy:
+    delete:
+      summary: Batch Deletion of AppStreams. Limited to 10 app streams
+      tags:
+      - AppStream
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: No permissions to delete app streams
+          content:
+            application/json:
+              schema:
+                message: string
+                example:
+                  message: Not able to update not accessible app streams. 1, 2, 3 app stream ids are not accessible
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: App streams were deleted
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                type: integer
+              example:
+                app_stream_ids:
+                - 12
+                - 34
+                - 56
+        description: AppStream Ids
+        required: true
+      operationId: deleteV1AppStreamsBatchDestroy
+      x-operation-id-source: derived
+  /v1/app_streams/{id}/update_edr_provider_connection_status:
+    patch:
+      summary: Update edr provider connection time
+      tags:
+      - AppStream
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Edr provider connection updated
+        '412':
+          description: connection_failed parameter missing
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: If connection is failed or not
+        required: true
+      operationId: patchV1AppStreamsByIdUpdateEdrProviderConnectionStatus
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AppStreamItem:
+      properties:
+        id:
+          type: integer
+          format: int64
+        company_id:
+          type: integer
+          format: int64
+        asset_id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        configuration:
+          type: object
+        status:
+          type: string
+        visibility:
+          type: string
+        segment:
+          type: string
+        source_type:
+          type: string
+        log_type:
+          type: string
+        log_identifier:
+          type: string
+        log_display_name:
+          type: string
+        merging_rerun_as_source:
+          type: boolean
+        merging_rerun_as_target:
+          type: boolean
+        running_rerun_as_source:
+          type: boolean
+        running_rerun_as_target:
+          type: boolean
+        draft:
+          type: boolean
+        settings:
+          type: object
+        started_by:
+          type: string
+        last_active_at:
+          type: string
+          format: date-time
+        data_received_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        app_connections:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppConnectionItem'
+        company:
+          type: object
+        asset:
+          type: object
+        edr_provider:
+          type: object
+        streamx_edr_providers:
+          type: array
+          description: Resolved StreamX EDR providers from settings.streamx_edr_provider_ids. Contains only existing providers.
+          items:
+            properties:
+              id:
+                type: integer
+                format: int64
+              name:
+                type: string
+              provider_type:
+                type: string
+              url:
+                type: string
+              username:
+                type: string
+      example:
+        id: 123
+        company_id: 11
+        asset_id: 20
+        name: Rig HP 800 App Stream
+        configuration: {}
+        status: idle
+        visibility: visible
+        segment: drilling
+        source_type: drilling
+        log_type: time
+        log_identifier: time
+        merging_rerun_as_source: false
+        merging_rerun_as_target: true
+        running_rerun_as_source: false
+        running_rerun_as_target: false
+        draft: false
+        settings: {}
+        started_by: user@email.com
+        last_active_at: '2020-01-01T08:00:00.000Z'
+        data_received_at: '2020-01-01T08:00:00.000Z'
+        created_at: '2020-01-01T08:00:00.000Z'
+        updated_at: '2020-01-01T08:00:00.000Z'
+        app_connections:
+        - id: 123
+          app_id: 10
+          setting: {}
+          status: idle
+          scheduler_type: no_scheduler
+          created_at: '2020-01-01T08:00:00.000Z'
+          updated_at: '2020-01-01T08:00:00.000Z'
+          next_schedule_check_at: '2020-01-01T08:00:00.000Z'
+          app: {}
+          company: {}
+        company: {}
+        asset: {}
+        edr_provider:
+          name: Edr Provider
+          provider_type: witsml
+          url: https://corva.ai
+          username: username
+        streamx_edr_providers:
+        - id: 91
+          name: Edr Provider
+          provider_type: witsml
+          url: https://corva.ai
+          username: username
+    AppConnectionItem:
+      properties:
+        id:
+          type: integer
+          format: int64
+        app_id:
+          type: integer
+          format: int64
+        settings:
+          type: object
+        status:
+          type: string
+        scheduler_type:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        next_schedule_check_at:
+          type: string
+          format: date-time
+        package_version:
+          type: string
+        code_version:
+          type: string
+        notes:
+          type: string
+        app:
+          type: object
+        company:
+          type: object
+      example:
+        id: 123
+        app_id: 10
+        settings: {}
+        status: idle
+        scheduler_type: no_scheduler
+        created_at: '2020-01-01T08:00:00.000Z'
+        updated_at: '2020-01-01T08:00:00.000Z'
+        next_schedule_check_at: '2020-01-01T08:00:00.000Z'
+        package_version: 1.0.0
+        code_version: '3'
+        notes: Notes
+        app: {}
+        company: {}
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AppConnectionUpdateItemPayload:
+      properties:
+        id:
+          type: integer
+          format: int64
+        settings:
+          type: object
+        status:
+          type: string
+    AppStreamList:
+      items:
+        $ref: '#/components/schemas/AppStreamItem'
+    AppStreamBatchUpdatePayload:
+      properties:
+        app_stream:
+          type: object
+          properties:
+            status:
+              type: string
+      example:
+        app_stream:
+          status: active
+    AppConnectionSettingsBackfillPayload:
+      properties:
+        app_key1:
+          type: object
+        app_key2:
+          type: object
+      example:
+        corva.source-app:
+          setting1: foobar
+          setting2: some_s3_link
+        corva.data_quality:
+          start: 1696846892
+          end: 1696847513
+    V2AppStreamList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/V2AppStreamIndex'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+        - id: 12345
+          type: app_stream
+          attributes:
+            id: 12345
+            name: App Stream 6
+            visibility: public
+            segment: drilling
+            company_id: '1234'
+            asset_id: '12345'
+            configuration: {}
+            status: idle
+            source_type: drilling
+            log_type: time
+            log_identifier: time
+            settings: {}
+            streamx_edr_providers: []
+            last_active_at: '2020-01-01T08:00:00.000Z'
+            data_received_at: '2020-01-01T08:00:00.000Z'
+            created_at: '2022-11-11T09:11:52.326Z'
+            updated_at: '2022-11-11T09:11:52.326Z'
+          relationships:
+            company:
+              data:
+                id: 12345
+                type: company
+            app_connections:
+              data:
+              - id: 12456
+                type: app_connection
+              - id: 345
+                type: app_connection
+        included:
+        - id: 12345
+          type: company
+          attributes:
+            id: 12345
+            name: Corva
+        - id: 345
+          type: app_connection
+          attributes:
+            id: 348
+            app_id: 1234
+            status: active
+    V2AppStreamIndex:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            company_id:
+              type: integer
+              format: int64
+            asset_id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            configuration:
+              type: object
+            status:
+              type: string
+            visibility:
+              type: string
+            segment:
+              type: string
+            source_type:
+              type: string
+            log_type:
+              type: string
+            log_identifier:
+              type: string
+            log_display_name:
+              type: string
+            settings:
+              type: object
+            streamx_edr_providers:
+              type: array
+              items:
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                  name:
+                    type: string
+                  provider_type:
+                    type: string
+                  url:
+                    type: string
+                  username:
+                    type: string
+            last_active_at:
+              type: string
+              format: date-time
+            data_received_at:
+              type: string
+              format: date-time
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+            app_connections:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                      type:
+                        type: string
+      example:
+        id: 12345
+        type: app_stream
+        attributes:
+          id: 12345
+          name: App Stream 6
+          visibility: public
+          segment: drilling
+          company_id: '1234'
+          asset_id: '12345'
+          configuration: {}
+          status: idle
+          source_type: drilling
+          log_type: time
+          log_identifier: time
+          settings: {}
+          streamx_edr_providers: []
+          last_active_at: '2020-01-01T08:00:00.000Z'
+          data_received_at: '2020-01-01T08:00:00.000Z'
+          created_at: '2022-11-11T09:11:52.326Z'
+          updated_at: '2022-11-11T09:11:52.326Z'
+        relationships:
+          company:
+            data:
+              id: 12345
+              type: company
+          app_connections:
+            data:
+            - id: 12456
+              type: app_connection
+            - id: 345
+              type: app_connection
+    V2AppStreamItem:
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                company_id:
+                  type: integer
+                  format: int64
+                asset_id:
+                  type: integer
+                  format: int64
+                name:
+                  type: string
+                configuration:
+                  type: object
+                status:
+                  type: string
+                visibility:
+                  type: string
+                segment:
+                  type: string
+                source_type:
+                  type: string
+                log_type:
+                  type: string
+                log_identifier:
+                  type: string
+                log_display_name:
+                  type: string
+                settings:
+                  type: object
+                streamx_edr_providers:
+                  type: array
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                        format: int64
+                      name:
+                        type: string
+                      provider_type:
+                        type: string
+                      url:
+                        type: string
+                      username:
+                        type: string
+                last_active_at:
+                  type: string
+                  format: date-time
+                data_received_at:
+                  type: string
+                  format: date-time
+                created_at:
+                  type: string
+                  format: date-time
+                updated_at:
+                  type: string
+                  format: date-time
+            relationships:
+              type: object
+              properties:
+                company:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        type:
+                          type: string
+                app_connections:
+                  type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        properties:
+                          id:
+                            type: integer
+                          type:
+                            type: string
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+              relationships:
+                type: object
+      example:
+        data:
+          id: 12345
+          type: app_stream
+          attributes:
+            id: 12345
+            name: App Stream 6
+            visibility: public
+            segment: drilling
+            company_id: '1234'
+            asset_id: '12345'
+            configuration: {}
+            status: idle
+            source_type: drilling
+            log_type: time
+            log_identifier: time
+            settings: {}
+            streamx_edr_providers: []
+            last_active_at: '2020-01-01T08:00:00.000Z'
+            data_received_at: '2020-01-01T08:00:00.000Z'
+            created_at: '2022-11-11T09:11:52.326Z'
+            updated_at: '2022-11-11T09:11:52.326Z'
+          relationships:
+            company:
+              data:
+                id: 12345
+                type: company
+            app_connections:
+              data:
+              - id: 12456
+                type: app_connection
+              - id: 345
+                type: app_connection
+          included:
+          - id: 12345
+            type: company
+            attributes:
+              id: 12345
+              name: Corva
+          - id: 345
+            type: app_connection
+            attributes:
+              id: 348
+              app_id: 1234
+              status: active
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

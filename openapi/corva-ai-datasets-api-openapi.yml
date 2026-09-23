@@ -1,0 +1,972 @@
+openapi: 3.2.0
+info:
+  title: Corva Ai Datasets API
+  version: '1.0'
+  description: 'Operations tagged datasets across 2 of this provider''s published API definitions: corva-ai-data-api-openapi-original.json, corva-ai-platform-api-swagger-original.json. Each path carries the servers of the definition it was published in.'
+tags:
+- name: Datasets
+  description: Interactions with Datasets and Indexes
+paths:
+  /api/v1/dataset/:
+    get:
+      tags:
+      - Datasets
+      summary: Get All Datasets
+      operationId: index_api_v1_dataset__get
+      security:
+      - HTTPBearer: []
+      - APIKeyHeader: []
+      parameters:
+      - name: search
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Search by dataset name
+          default: ''
+          title: Search
+        description: Search by dataset name
+      - name: plottable
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Filter by plottable datasets
+          title: Plottable
+        description: Filter by plottable datasets
+      - name: temporary
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Filter by temporary datasets
+          title: Temporary
+        description: Filter by temporary datasets
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DatasetSerializer'
+                title: Response Index Api V1 Dataset  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/dataset/company/:
+    get:
+      tags:
+      - Datasets
+      summary: Get Datasets By Company
+      operationId: by_company_api_v1_dataset_company__get
+      security:
+      - HTTPBearer: []
+      - APIKeyHeader: []
+      parameters:
+      - name: plottable
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Filter by plottable datasets
+          title: Plottable
+        description: Filter by plottable datasets
+      - name: type
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/DataType'
+          - type: 'null'
+          description: 'Filter by dataset type: time, depth, reference'
+          title: Type
+        description: 'Filter by dataset type: time, depth, reference'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyDatasetSerializer'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/dataset/{provider}/{name}/:
+    get:
+      tags:
+      - Datasets
+      summary: Get Dataset
+      operationId: fetch_api_v1_dataset__provider___name___get
+      security:
+      - HTTPBearer: []
+      - APIKeyHeader: []
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Provider
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetSerializer'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Datasets
+      summary: Create Dataset
+      operationId: create_api_v1_dataset__provider___name___post
+      security:
+      - HTTPBearer: []
+      - APIKeyHeader: []
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Provider
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetSchema'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetSerializer'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    patch:
+      tags:
+      - Datasets
+      summary: Update Dataset
+      operationId: update_api_v1_dataset__provider___name___patch
+      security:
+      - HTTPBearer: []
+      - APIKeyHeader: []
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Provider
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetSchema'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetSerializer'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Datasets
+      summary: Delete Dataset
+      operationId: delete_api_v1_dataset__provider___name___delete
+      security:
+      - HTTPBearer: []
+      - APIKeyHeader: []
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Provider
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Delete Api V1 Dataset  Provider   Name   Delete
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/dataset/{provider}/{dataset}/index/{index}/:
+    get:
+      tags:
+      - Datasets
+      summary: Get Index
+      operationId: fetch_index_api_v1_dataset__provider___dataset__index__index___get
+      security:
+      - HTTPBearer: []
+      - APIKeyHeader: []
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Provider
+      - name: dataset
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dataset
+      - name: index
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Index
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndexSerializer'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Datasets
+      summary: Delete Index
+      operationId: delete_index_api_v1_dataset__provider___dataset__index__index___delete
+      security:
+      - HTTPBearer: []
+      - APIKeyHeader: []
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Provider
+      - name: dataset
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dataset
+      - name: index
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Index
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Delete Index Api V1 Dataset  Provider   Dataset  Index  Index   Delete
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/dataset/{provider}/{dataset}/index/:
+    post:
+      tags:
+      - Datasets
+      summary: Create Index
+      operationId: create_index_api_v1_dataset__provider___dataset__index__post
+      security:
+      - HTTPBearer: []
+      - APIKeyHeader: []
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Provider
+      - name: dataset
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dataset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndexSchema'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndexSerializer'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/dataset/{provider}/{dataset}/index/{name}/check/:
+    post:
+      tags:
+      - Datasets
+      summary: Check Index
+      operationId: check_index_api_v1_dataset__provider___dataset__index__name__check__post
+      security:
+      - HTTPBearer: []
+      - APIKeyHeader: []
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Provider
+      - name: dataset
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dataset
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndexSerializer'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/dataset/{provider}/{dataset}/index/{name}/{action}/:
+    post:
+      tags:
+      - Datasets
+      summary: Perform Index Action
+      operationId: perform_index_action_api_v1_dataset__provider___dataset__index__name___action___post
+      security:
+      - HTTPBearer: []
+      - APIKeyHeader: []
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Provider
+      - name: dataset
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dataset
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      - name: action
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Action
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndexSerializer'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v2/datasets/filtered_by_apps:
+    get:
+      summary: List app_datasets for specific app ids with dependencies
+      tags:
+      - Datasets
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dataset'
+      parameters:
+      - in: path
+        name: app_ids
+        description: Array of app ids
+        required: true
+        schema:
+          type: array
+          items:
+            id: integer
+      security:
+      - api_key: []
+      operationId: getV2DatasetsFilteredByApps
+      x-operation-id-source: derived
+components:
+  schemas:
+    IndexSchema:
+      properties:
+        name:
+          type: string
+          title: Name
+          default: ''
+          example: asset_id_timestamp
+        fields:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Fields
+          example:
+          - asset_id: 1
+          - timestamp: -1
+        unique:
+          type: boolean
+          title: Unique
+          default: false
+        required:
+          type: boolean
+          title: Required
+          default: false
+        status:
+          type: string
+          title: Status
+          default: building
+          example: active
+        settings:
+          anyOf:
+          - $ref: '#/components/schemas/IndexSettings'
+          - type: 'null'
+          example:
+            expire_after_seconds: 3600
+      type: object
+      title: IndexSchema
+    DatasetSchema:
+      properties:
+        company_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Company Id
+          example: 123
+        provider:
+          type: string
+          title: Provider
+          default: ''
+          example: corva
+        name:
+          type: string
+          title: Name
+          default: ''
+          example: corva#wits
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+          example: Save WITS data
+        schema:
+          additionalProperties: true
+          type: object
+          title: Schema
+          default: {}
+          example: {}
+        data_type:
+          $ref: '#/components/schemas/DataType'
+          default: time
+          example: time
+        settings:
+          additionalProperties: true
+          type: object
+          title: Settings
+          default: {}
+          example: {}
+        permission_workflow:
+          additionalProperties: true
+          type: object
+          title: Permission Workflow
+          default:
+            read: request
+            write: request
+            delete: request
+          example:
+            delete: request
+            read: request
+            write: request
+        plottable:
+          type: boolean
+          title: Plottable
+          default: false
+        temporary:
+          type: boolean
+          title: Temporary
+          default: false
+      type: object
+      title: DatasetSchema
+    CompanyDatasetSerializer:
+      additionalProperties:
+        items:
+          $ref: '#/components/schemas/CompanyDatasetItemSerializer'
+        type: array
+      type: object
+      title: CompanyDatasetSerializer
+      example:
+        Big Data Energy:
+        - id: 74
+          name: depth-check
+          provider: big-data-energy
+          type: depth
+        Corva:
+        - id: 44
+          name: activities
+          provider: corva
+          type: time
+        - id: 95
+          name: activities.summary-2tours
+          provider: corva
+          type: time
+    DataType:
+      type: string
+      enum:
+      - time
+      - depth
+      - reference
+      - timeseries
+      title: DataType
+    HTTPValidationError:
+      properties:
+        code:
+          type: integer
+          title: Code
+        message:
+          type: string
+          title: Message
+      type: object
+      required:
+      - code
+      - message
+      title: ExceptionResponse
+    IndexSerializer:
+      properties:
+        name:
+          type: string
+          title: Name
+          default: ''
+          example: asset_id_timestamp
+        fields:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Fields
+          example:
+          - asset_id: 1
+          - timestamp: -1
+        unique:
+          type: boolean
+          title: Unique
+          default: false
+        required:
+          type: boolean
+          title: Required
+          default: false
+        status:
+          type: string
+          title: Status
+          default: building
+          example: active
+        settings:
+          anyOf:
+          - $ref: '#/components/schemas/IndexSettings'
+          - type: 'null'
+          example:
+            expire_after_seconds: 3600
+        statistics:
+          $ref: '#/components/schemas/IndexStatistics'
+      type: object
+      required:
+      - statistics
+      title: IndexSerializer
+    DatasetStatistics:
+      properties:
+        size:
+          type: integer
+          title: Size
+          default: 0
+          example: 1000000
+        count:
+          type: integer
+          title: Count
+          default: 0
+          example: 282034
+        storage_size:
+          type: integer
+          title: Storage Size
+          default: 0
+          example: 8839043
+        index_size:
+          type: integer
+          title: Index Size
+          default: 0
+          example: 199234282
+      type: object
+      title: DatasetStatistics
+    CompanyDatasetItemSerializer:
+      properties:
+        id:
+          type: integer
+          title: Id
+        provider:
+          type: string
+          title: Provider
+        name:
+          type: string
+          title: Name
+        type:
+          type: string
+          title: Type
+      type: object
+      required:
+      - id
+      - provider
+      - name
+      - type
+      title: CompanyDatasetItemSerializer
+    IndexSettings:
+      properties:
+        expire_after_seconds:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Expire After Seconds
+          example: 3600
+        partial_filter_expression:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Partial Filter Expression
+          example:
+            metadata.asset_id:
+              $exists: true
+      type: object
+      title: IndexSettings
+    IndexStatistics:
+      properties:
+        size:
+          type: integer
+          title: Size
+          default: 0
+          example: 929429
+        usage:
+          type: number
+          title: Usage
+          default: 0
+          example: 112.294923
+      type: object
+      title: IndexStatistics
+    DatasetSerializer:
+      properties:
+        company_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Company Id
+          example: 123
+        provider:
+          type: string
+          title: Provider
+          default: ''
+          example: corva
+        name:
+          type: string
+          title: Name
+          default: ''
+          example: corva#wits
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+          example: Save WITS data
+        schema:
+          additionalProperties: true
+          type: object
+          title: Schema
+          default: {}
+          example: {}
+        data_type:
+          $ref: '#/components/schemas/DataType'
+          default: time
+          example: time
+        settings:
+          additionalProperties: true
+          type: object
+          title: Settings
+          default: {}
+          example: {}
+        permission_workflow:
+          additionalProperties: true
+          type: object
+          title: Permission Workflow
+          default:
+            read: request
+            write: request
+            delete: request
+          example:
+            delete: request
+            read: request
+            write: request
+        plottable:
+          type: boolean
+          title: Plottable
+          default: false
+        temporary:
+          type: boolean
+          title: Temporary
+          default: false
+        id:
+          type: integer
+          title: Id
+          example: 15
+        friendly_name:
+          type: string
+          title: Friendly Name
+          default: ''
+          example: wits
+        indexes:
+          items:
+            $ref: '#/components/schemas/IndexSerializer'
+          type: array
+          title: Indexes
+          default: []
+          examples:
+          - - fields:
+              - _id: 1
+              name: _id_
+              statistics:
+                size: 165238
+                usage: 12.2995
+              status: active
+            - fields:
+              - asset_id: 1
+              - timestamp: -1
+              name: asset_id_timestamp
+              statistics:
+                size: 292310
+                usage: 923.18823
+              status: active
+              unique: true
+        statistics:
+          $ref: '#/components/schemas/DatasetStatistics'
+          example:
+            count: 282034
+            index_size: 154991
+            size: 1042039
+            storage_size: 887048
+      type: object
+      required:
+      - id
+      title: DatasetSerializer
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    Dataset:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            description:
+              type: string
+            data_type:
+              type: string
+            schema:
+              type: object
+            permission_workflow:
+              type: object
+            plottable:
+              type: boolean
+            merge_strategy:
+              type: string
+            indexes:
+              type: object
+            temporary:
+              type: boolean
+            permissions:
+              type: array
+              items:
+                permission:
+                  type: string
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+    APIKeyHeader:
+      type: apiKey
+      in: header
+      name: Authorization
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header
+x-refined-from:
+- corva-ai-data-api-openapi-original.json
+- corva-ai-platform-api-swagger-original.json

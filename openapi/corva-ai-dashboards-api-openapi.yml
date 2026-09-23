@@ -1,0 +1,2796 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Dashboards API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Dashboards
+  description: Manage your dashboards, which contain one or more visualization apps
+paths:
+  /v2/users/{user_id}/dashboards/{dashboard_id}/dashboard_apps:
+    post:
+      summary: Create a dashboard app with app name and category
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created dashboard app
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardApp'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: dashboard_id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: filter_asset_id
+        description: Data filter's Asset ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Coordinates for the new dashboard app
+        required: true
+      operationId: postV2UsersByUserIdDashboardsByDashboardIdDashboardApps
+      x-operation-id-source: derived
+  /v1/users/{user_id}/dashboards/{dashboard_id}/dashboard_apps/bulk_create:
+    post:
+      summary: Bulk create dashboard_apps for different asset_ids
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created dashboard apps
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkCreatedDashboardApps'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: dashboard_id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                package:
+                  type: string
+                some_other_setting:
+                  type: string
+              example:
+                settings:
+                  package: BETA
+                  some_other_setting: Some value
+        description: Settings
+        required: true
+      operationId: postV1UsersByUserIdDashboardsByDashboardIdDashboardAppsBulkCreate
+      x-operation-id-source: derived
+  /v2/users/{user_id}/dashboards/{dashboard_id}/dashboard_apps/batch_update:
+    put:
+      summary: Update all dashboard apps in a dashboard
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created dashboard app
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardApp'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: dashboard_id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardAppBatchUpdatePayload'
+        description: Dashboard apps to update
+        required: true
+      operationId: putV2UsersByUserIdDashboardsByDashboardIdDashboardAppsBatchUpdate
+      x-operation-id-source: derived
+  /v2/users/{user_id}/dashboards/{dashboard_id}/dashboard_apps/{id}:
+    get:
+      summary: Show dashboard app
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardApp'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: dashboard_id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Dashboard App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: filter_asset_id
+        description: Data filter's Asset ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2UsersByUserIdDashboardsByDashboardIdDashboardAppsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update a dashboard app
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated dashboard app
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardV2'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: dashboard_id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Dashboard App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: filter_asset_id
+        description: Data filter's Asset ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Coordinates for the new dashboard app
+        required: true
+      operationId: patchV2UsersByUserIdDashboardsByDashboardIdDashboardAppsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a dashboard app
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Dashboard app deleted
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: dashboard_id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Dashboard App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2UsersByUserIdDashboardsByDashboardIdDashboardAppsById
+      x-operation-id-source: derived
+  /v2/users/{user_id}/dashboard_folders:
+    get:
+      summary: List dashboard folders
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardFolderList'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2UsersByUserIdDashboardFolders
+      x-operation-id-source: derived
+    post:
+      summary: Create a dashboard folder
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created dashboard folder
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardFolder'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardFolderPayload'
+        description: Dashboard Folder Payload
+        required: true
+      operationId: postV2UsersByUserIdDashboardFolders
+      x-operation-id-source: derived
+  /v2/users/{user_id}/dashboard_folders/{id}:
+    patch:
+      summary: Update a dashboard folder
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated dashboard
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardFolder'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Dashboard Folder ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardFolderPayload'
+        description: Dashboard Folder Payload
+        required: true
+      operationId: patchV2UsersByUserIdDashboardFoldersById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a dashboard folder
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Dashboard folder deleted
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Dashboard Folder ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2UsersByUserIdDashboardFoldersById
+      x-operation-id-source: derived
+  /v2/users/{user_id}/dashboard_folders/{dashboard_folder_id}/dashboard_shares:
+    get:
+      summary: List dashboard shares in a dashboard folder for a user
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: array
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DashboardFolderDashboardShare'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: dashboard_folder_id
+        description: Dashboard Folder ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2UsersByUserIdDashboardFoldersByDashboardFolderIdDashboardShares
+      x-operation-id-source: derived
+    post:
+      summary: Add a dashboard share to a dashboard folder
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Added record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardFolderDashboardShare'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardFolderDashboardSharePayload'
+        description: Payload
+        required: true
+      operationId: postV2UsersByUserIdDashboardFoldersByDashboardFolderIdDashboardShares
+      x-operation-id-source: derived
+  /v2/users/{user_id}/dashboard_folders/{dashboard_folder_id}/dashboard_shares/{id}:
+    patch:
+      summary: Update a dashboard share in a dashboard folder
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardFolderDashboardShare'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: dashboard_folder_id
+        description: Dashboard Folder ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: DashboardFolderDashboardShare ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardFolderDashboardShareUpdatePayload'
+        description: Payload
+        required: true
+      operationId: patchV2UsersByUserIdDashboardFoldersByDashboardFolderIdDashboardSharesById
+      x-operation-id-source: derived
+    delete:
+      summary: Remove a dashboard share from a dashboard folder
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Record deleted
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: dashboard_folder_id
+        description: Dashboard Folder ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: DashboardFolderDashboardShare ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2UsersByUserIdDashboardFoldersByDashboardFolderIdDashboardSharesById
+      x-operation-id-source: derived
+  /v2/dashboard_folder_shares:
+    get:
+      summary: List dashboard folder shares
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardFolderShareList'
+      parameters:
+      - in: query
+        name: viewed
+        description: Filter by viewed
+        required: false
+        schema:
+          type: boolean
+      - in: owner_id
+        name: viewed
+        description: Filter by Owner ID
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - in: dashboard_folder_id
+        name: viewed
+        description: Filter by DashboardFolder ID
+        required: false
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2DashboardFolderShares
+      x-operation-id-source: derived
+    post:
+      summary: Create a dashboard folder share
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created Dashboard Folder Share
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardFolderShare'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardFolderShareCreatePayload'
+        description: Dashboard Folder Share Payload
+        required: true
+      operationId: postV2DashboardFolderShares
+      x-operation-id-source: derived
+  /v2/dashboard_folder_shares/{id}:
+    patch:
+      summary: Update a dashboard folder share
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated dashboard folder share
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardFolderShare'
+      parameters:
+      - in: path
+        name: id
+        description: Dashboard Folder Share ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardFolderShareUpdatePayload'
+        description: Dashboard Folder Share Payload
+        required: true
+      operationId: patchV2DashboardFolderSharesById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a dashboard folder share
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Dashboard folder deleted
+      parameters:
+      - in: path
+        name: id
+        description: Dashboard Folder Share ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2DashboardFolderSharesById
+      x-operation-id-source: derived
+  /v2/dashboard_folder_shares/{id}/use:
+    post:
+      summary: Use dashboard folder share for user
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Copied dashboard folder
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardFolderShare'
+      parameters:
+      - in: path
+        name: id
+        description: Dashboard Folder Share ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardFolderShareUpdatePayload'
+        description: Dashboard Folder Share Payload
+        required: true
+      operationId: postV2DashboardFolderSharesByIdUse
+      x-operation-id-source: derived
+  /v1/users/{user_id}/dashboards:
+    get:
+      summary: List dashboards for user
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: array
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dashboard'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV1UsersByUserIdDashboards
+      x-operation-id-source: derived
+  /v1/users/{user_id}/dashboards/{id}:
+    get:
+      summary: Get dashboard by ID
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV1UsersByUserIdDashboardsById
+      x-operation-id-source: derived
+  /v2/users/{user_id}/dashboards:
+    get:
+      summary: List dashboards
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardV2List'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2UsersByUserIdDashboards
+      x-operation-id-source: derived
+    post:
+      summary: Create a dashboard
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created dashboard
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardV2'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardV2Payload'
+        description: Dashboard Payload
+        required: true
+      operationId: postV2UsersByUserIdDashboards
+      x-operation-id-source: derived
+  /v2/users/{user_id}/dashboards/{id}:
+    get:
+      summary: Show dashboard
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardV2'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: filter_asset_id
+        description: Data filter's Asset ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2UsersByUserIdDashboardsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update a dashboard
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated dashboard
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardV2'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardV2Payload'
+        description: Dashboard Payload
+        required: true
+      operationId: patchV2UsersByUserIdDashboardsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a dashboard
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Dashboard deleted
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2UsersByUserIdDashboardsById
+      x-operation-id-source: derived
+  /v2/users/{user_id}/dashboards/{id}/clone:
+    post:
+      summary: Clone a dashboard
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Cloned dashboard
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardV2'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardV2Payload'
+        description: Dashboard Payload
+        required: true
+      operationId: postV2UsersByUserIdDashboardsByIdClone
+      x-operation-id-source: derived
+  /v2/dashboards/templates:
+    get:
+      summary: Get template dashboards
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Template dashboards
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardV2List'
+      operationId: getV2DashboardsTemplates
+      x-operation-id-source: derived
+  /v2/users/{user_id}/dashboards/{id}/use_template:
+    post:
+      summary: Set dashboard apps and layout from a template dashboard
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Modified dashboard
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardV2'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        required: true
+      operationId: postV2UsersByUserIdDashboardsByIdUseTemplate
+      x-operation-id-source: derived
+  /v2/dashboards:
+    get:
+      summary: List all dashboards
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardMinimumV2List'
+      parameters:
+      - in: query
+        name: visibility
+        description: Filter Dashboards by visibility
+        schema:
+          type: string
+          enum:
+          - visible
+          - hidden
+      - in: query
+        name: type
+        description: Filter Dashboards by type
+        schema:
+          type: string
+          enum:
+          - asset_dashboard
+          - dashboard
+          - alert_dashboard
+      - in: query
+        name: viewed
+        description: Filter Dashboards by viewed
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      - in: query
+        name: segment
+        description: Filter Dashboards by segment
+        schema:
+          type: string
+          enum:
+          - drilling
+          - completion
+          - intervention
+      - in: query
+        name: layout
+        description: Filter Dashboards by layout
+        schema:
+          type: string
+      - in: query
+        name: category
+        description: Filter Dashboards by category
+        schema:
+          type: string
+      - in: query
+        name: exclude_shared
+        description: Filter Shared Dashboards
+        schema:
+          type: boolean
+      - in: query
+        name: can_update
+        description: Filter Dashboards by ability to update
+        schema:
+          type: boolean
+      - in: query
+        name: sort
+        description: Sort dashboards by order field
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      operationId: getV2Dashboards
+      x-operation-id-source: derived
+  /v2/dashboards/{id}/available_timezones:
+    get:
+      summary: List timezones for dashboard
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardTimezones'
+      parameters:
+      - in: path
+        name: id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2DashboardsByIdAvailableTimezones
+      x-operation-id-source: derived
+  /v2/users/{user_id}/dashboards/{dashboard_id}/data_filters:
+    get:
+      summary: Get data filters for dashboard
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataFilterList'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: dashboard_id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2UsersByUserIdDashboardsByDashboardIdDataFilters
+      x-operation-id-source: derived
+    post:
+      summary: Create a data filter
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataFilter'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: dashboard_id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataFilterPayload'
+        required: true
+      operationId: postV2UsersByUserIdDashboardsByDashboardIdDataFilters
+      x-operation-id-source: derived
+  /v2/users/{user_id}/dashboards/{dashboard_id}/data_filters#2:
+    post:
+      summary: Update multiple data filters
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataFilterList'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: dashboard_id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        required: true
+      operationId: postV2UsersByUserIdDashboardsByDashboardIdDataFilters#2
+      x-operation-id-source: derived
+  /v2/users/{user_id}/dashboards/{dashboard_id}/data_filters/{id}:
+    get:
+      summary: Show data filter
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataFilter'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: dashboard_id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Data Filter ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2UsersByUserIdDashboardsByDashboardIdDataFiltersById
+      x-operation-id-source: derived
+    patch:
+      summary: Update a data filter
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated data filter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataFilter'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: dashboard_id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Dashboard App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataFilterPayload'
+        required: true
+      operationId: patchV2UsersByUserIdDashboardsByDashboardIdDataFiltersById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a data filter
+      tags:
+      - Dashboards
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Data filter deleted
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: dashboard_id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Dashboard App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2UsersByUserIdDashboardsByDashboardIdDataFiltersById
+      x-operation-id-source: derived
+components:
+  schemas:
+    DashboardFolderDashboardSharePayload:
+      properties:
+        dashboard_folder_dashboard_share:
+          type: object
+          properties:
+            dashboard_share_id:
+              type: integer
+            position:
+              type: integer
+      example:
+        dashboard_folder_dashboard_share:
+          dashboard_share_id: 123
+          position: 13
+    DashboardFolderShareCreatePayload:
+      properties:
+        dashboard_folder_share:
+          type: object
+          properties:
+            owner_id:
+              type: integer
+            dashboard_folder_id:
+              type: integer
+      example:
+        dashboard_folder_share:
+          owner_id: 1234
+          dashboard_folder_id: 1234
+    DashboardFolderDashboardShareUpdatePayload:
+      properties:
+        dashboard_folder_dashboard_share:
+          type: object
+          properties:
+            position:
+              type: integer
+      example:
+        dashboard_folder_dashboard_share:
+          position: 13
+    DashboardFolder:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            position:
+              type: integer
+              format: int64
+            user_id:
+              type: integer
+              format: int64
+            type:
+              type: string
+        relationships:
+          type: object
+          properties:
+            user:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            dashboard_folder_dashboard_shares:
+              type: object
+              properties:
+                data:
+                  type: array
+      example:
+        id: 123
+        type: dashboard_folder
+        attributes:
+          id: '123'
+          name: Folder 1
+          user_id: 1234
+          type: archive
+          position: 1
+        relationships:
+          user:
+            data:
+              id: '1234'
+              type: user
+          dashboard_folder_dashboard_shares:
+            data: []
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    DashboardFolderDashboardShare:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            dashboard_folder_id:
+              type: integer
+              format: int64
+            dashboard_share_id:
+              type: integer
+              format: int64
+            position:
+              type: integer
+              format: int64
+        relationships:
+          type: object
+          properties:
+            dashboard_folder:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            dashboard_share:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 123
+        type: dashboard_folder_dashboard_share
+        attributes:
+          id: '123'
+          dashboard_folder_id: 123
+          dashboard_share_id: 1234
+          position: 1
+        relationships:
+          dashboard_folder:
+            data:
+              id: '123'
+              type: dashboard_folder
+          dashboard_share:
+            data:
+              id: '1234'
+              type: dashboard_share
+    DashboardV2Minimum:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            type:
+              type: string
+            order:
+              type: integer
+              format: int64
+            name:
+              type: string
+            slug:
+              type: string
+            icon:
+              type: string
+            owner_id:
+              type: integer
+              format: int64
+            owner_type:
+              type: string
+            visibility:
+              type: string
+            dashboard_share_id:
+              type: integer
+              format: int64
+            dashboard_share_role:
+              type: string
+            shared_by:
+              type: string
+            segment:
+              type: array
+            layout:
+              type: string
+            unit_system:
+              type: string
+            category:
+              type: string
+            last_viewed_at:
+              type: string
+              format: date-time
+            settings:
+              type: object
+              properties:
+                dashboard_custom_icon:
+                  type: string
+                dashboard_icon_color:
+                  type: string
+      example:
+        id: 12345
+        type: dashboard_minimal
+        attributes:
+          id: '123'
+          type: asset_dashboard
+          order: 13
+          name: Traces
+          slug: traces-13978158c5
+          icon: traces
+          owner_id: 11
+          owner_type: User
+          visibility: visible
+          dashboard_share_id: 21
+          dashboard_share_role: creator
+          shared_by: Derek Smith
+          segment:
+          - drilling
+          layout: singleApp
+          unit_system: Unit System
+          category: usageAnalyticsDashboard
+          last_viewed_at: '2025-01-01T08:00:00.000Z'
+          settings:
+            dashboard_custom_icon: corva.bha
+            dashboard_icon_color: '#FF0000'
+    DataFilterPayload:
+      properties:
+        name:
+          type: string
+        filter_type:
+          type: string
+        query_string:
+          type: string
+        details:
+          type: array
+        options:
+          type: object
+      example:
+        name: DateRange
+        filter_type: static
+        query_string: ''
+        details:
+        - id: uuid1
+          key: All
+          value: all
+          checked: false
+        - id: uuid2
+          key: All
+          value: all
+          checked: false
+        options:
+          selection: single
+          is_default: true
+          default_key: All
+          selected_key: All
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    DashboardFolderShareUpdatePayload:
+      properties:
+        dashboard_folder_share:
+          type: object
+          properties:
+            viewed:
+              type: boolean
+      example:
+        dashboard_folder_share:
+          viewed: true
+    DashboardFolderList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardFolder'
+    DashboardFolderShare:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            owner_id:
+              type: integer
+              format: int64
+            dashboard_folder_id:
+              type: integer
+              format: int64
+            shared_by_id:
+              type: integer
+              format: int64
+            viewed:
+              type: boolean
+            created_at:
+              type: string
+              format: date-time
+            updated:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            owner:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            shared_by:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            dashboard_folder:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 123
+        type: dashboard_folder_share
+        attributes:
+          id: '123'
+          owner_id: 1234
+          shared_by_id: 1230
+          dashboard_folder_id: 1234
+          viewed: false
+          created_at: '2022-11-11T09:11:52.326Z'
+          updated_at: '2022-11-11T09:11:52.326Z'
+        relationships:
+          owner:
+            data:
+              id: '1234'
+              type: user
+          shared_by:
+            data:
+              id: '1234'
+              type: user
+          dashboard_folder:
+            data:
+              id: '1234'
+              type: dashboard_folder
+    DataFilter:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            details:
+              type: string
+            options:
+              type: string
+            filter_type:
+              type: string
+            query_string:
+              type: string
+            created_at:
+              type: string
+            updated_at:
+              type: string
+            dashboard_id:
+              type: integer
+              format: int64
+            company_id:
+              type: integer
+              format: int64
+      example:
+        id: 12345
+        type: data_filter
+        attributes:
+          id: '123'
+          name: DataFilter1
+          details: ''
+          options: ''
+          filter_type: static
+          query_string: ''
+          created_at: '2021-03-01T13:01:45.872Z'
+          updated_at: '2021-03-01T13:01:45.872Z'
+          dashboard_id: 123
+          company_id: 1
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    DashboardV2Payload:
+      properties:
+        dashboard:
+          type: object
+          properties:
+            type:
+              type: string
+            name:
+              type: string
+            layout:
+              type: string
+            icon:
+              type: string
+            settings:
+              type: object
+              properties:
+                show_control_apps:
+                  type: boolean
+                timezones:
+                  type: object
+                  properties:
+                    asset_id_1:
+                      type: string
+                unit_systems:
+                  type: object
+                  properties:
+                    asset_id_1:
+                      type: string
+            order:
+              type: integer
+            segment:
+              type: array
+            timezone:
+              type: string
+            unit_system:
+              type: string
+            category:
+              type: string
+      example:
+        dashboard:
+          type: asset_dashboard
+          name: Traces
+          layout: singleApp
+          icon: traces
+          settings:
+            show_control_apps: true
+            timezones:
+              pad_id_1: America/Chicago
+            unit_systems:
+              frac_fleet_id_1: Imperial
+          order: 13
+          segment:
+          - drilling
+          - completion
+          timezone: America/Chicago
+          unit_system: Unit System
+          category: usageAnalyticsDashboard
+    BulkCreatedDashboardApps:
+      items:
+        $ref: '#/components/schemas/DashboardApp'
+    DashboardApp:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            settings:
+              type: object
+            coordinates:
+              type: object
+            name:
+              type: string
+            category:
+              type: string
+            segment:
+              type: array
+        relationships:
+          type: object
+          properties:
+            app:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            package:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: dashboard
+        attributes:
+          id: '123'
+          settings: {}
+          coodrinates:
+            x: 0
+            y: 15
+          name: Traces
+          category: Category1
+          segment:
+          - drilling
+          - completion
+        relationships:
+          app:
+            data:
+              id: '1'
+              type: app
+          package:
+            data:
+              id: '1'
+              type: package
+    DashboardTimezones:
+      properties:
+        asset_type:
+          type: string
+        asset_name:
+          type: string
+        timezone:
+          type: string
+        parent_asset_type:
+          type: string
+        parent_asset_name:
+          type: string
+      example:
+        asset_type: Well
+        asset_name: Well with timezone
+        timezone: America/Chicago
+        parent_asset_type: FracFleet
+        parent_asset_name: Active Frac Fleet
+    DataFilterList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataFilter'
+    DashboardV2:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            type:
+              type: string
+            order:
+              type: integer
+              format: int64
+            name:
+              type: string
+            layout:
+              type: string
+            slug:
+              type: string
+            locked:
+              type: boolean
+            icon:
+              type: string
+            settings:
+              type: object
+            segment:
+              type: array
+            timezone:
+              type: string
+            unit_system:
+              type: string
+            category:
+              type: string
+            owner_name:
+              type: string
+            owner_dashboard_share_id:
+              type: integer
+              format: int64
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            reports:
+              type: object
+              properties:
+                data:
+                  type: array
+            data_filters:
+              type: object
+              properties:
+                data:
+                  type: array
+            apps:
+              type: object
+              properties:
+                data:
+                  type: array
+      example:
+        id: 12345
+        type: dashboard
+        attributes:
+          id: '123'
+          type: asset_dashboard
+          order: 13
+          name: Traces
+          layout: singleApp
+          slug: traces-13978158c5
+          locked: true
+          icon: traces
+          settings:
+            show_control_apps: true
+            timezones:
+              pad_id_1: America/Chicago
+            unit_systems:
+              frac_fleet_id_1: Imperial
+          segment:
+          - drilling
+          - completion
+          timezone: America/Chicago
+          unit_system: Unit System
+          category: usageAnalyticsDashboard
+          owner_name: Derek Smith
+          owner_dashboard_share_id: 12345
+        relationships:
+          company:
+            data:
+              id: '1'
+              type: company
+          data_filters:
+            data: []
+          apps:
+            data: []
+    DashboardV2List:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardV2'
+    DashboardFolderShareList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardFolderShare'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+        - id: 12345
+          type: dashboard_folder_share
+          attributes:
+            id: 12345
+            owner_id: 12345
+            shared_by_id: 12340
+            dashboard_folder_id: 12345
+            viewed: false
+            created_at: '2024-08-07T09:11:52.326Z'
+            updated_at: '2024-08-07T09:11:52.326Z'
+          relationships:
+            owner:
+              data:
+                id: 12345
+                type: user
+            shared_by:
+              data:
+                id: 12340
+                type: user
+            dashboard_folder:
+              data:
+                id: 12345
+                type: dashboard_folder
+        included:
+        - id: 12345
+          type: user
+          attributes:
+            id: 12345
+            first_name: John
+            last_name: Smith
+        - id: 12340
+          type: user
+          attributes:
+            id: 12340
+            first_name: Mary
+            last_name: Smith
+        - id: 12345
+          type: dashboard_folder
+          attributes:
+            id: 12345
+            first_name: Mary
+            last_name: Smith
+    DashboardFolderPayload:
+      properties:
+        dashboard_folder:
+          type: object
+          properties:
+            name:
+              type: string
+            position:
+              type: integer
+      example:
+        dashboard_folder:
+          name: Folder X
+          position: 13
+    DashboardMinimumV2List:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardV2Minimum'
+    Dashboard:
+      required:
+      - id
+      - name
+      - type
+      - layout
+      - slug
+      - order
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        type:
+          type: string
+        layout:
+          type: string
+        slug:
+          type: string
+        icon:
+          type: string
+        locked:
+          type: boolean
+        order:
+          type: integer
+          format: int64
+        settings:
+          type: object
+        segment:
+          type: array
+        apps:
+          type: array
+        reports:
+          type: array
+        data_filters:
+          type: array
+        timezone:
+          type: string
+        unit_system:
+          type: string
+        category:
+          type: string
+        owner_name:
+          type: string
+        owner_dashboard_share_id:
+          type: integer
+          format: int64
+      example:
+        id: 24
+        name: Traces
+        type: asset_dashboard
+        layout: singleApp
+        slug: traces-13978158c5
+        icon: traces
+        locked: true
+        order: 13
+        settings:
+          show_control_apps: true
+        segment:
+        - drilling
+        - completion
+        apps: []
+        reports: []
+        data_filters: []
+        timezone: America/Chicago
+        unit_system: Unit System
+        category: usageAnalyticsDashboard
+        owner_name: Derek Smith
+        owner_dashboard_share_id: 12345
+    DashboardAppBatchUpdatePayload:
+      properties:
+        dashboard_apps:
+          type: array
+      example:
+        dashboard_apps:
+        - id: 123
+          settings: {}
+          coordinates:
+            x: 0
+            y: 1
+        - id: 124
+          settings: {}
+          coordinates:
+            x: 0
+            y: 3
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

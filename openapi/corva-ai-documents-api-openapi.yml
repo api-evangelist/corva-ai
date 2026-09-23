@@ -1,0 +1,620 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Documents API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Documents
+paths:
+  /v2/documents:
+    get:
+      summary: List documents
+      tags:
+      - Documents
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentList'
+      parameters:
+      - in: query
+        name: parent_slug
+        description: Filter documents by parent_slug
+        schema:
+          items:
+            type: string
+      - in: query
+        name: search
+        description: Search document text
+        schema:
+          type: string
+      operationId: getV2Documents
+      x-operation-id-source: derived
+    post:
+      summary: Create a document
+      tags:
+      - Documents
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created document
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentPayload'
+        description: Document Payload
+        required: true
+      operationId: postV2Documents
+      x-operation-id-source: derived
+  /v2/documents/{id}:
+    get:
+      summary: Show Document
+      tags:
+      - Documents
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+      parameters:
+      - in: path
+        name: id
+        description: Document ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2DocumentsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update a Document
+      tags:
+      - Documents
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Document
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+      parameters:
+      - in: path
+        name: id
+        description: Document ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentPayload'
+        description: Document Payload
+        required: true
+      operationId: patchV2DocumentsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a Document
+      tags:
+      - Documents
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Document deleted
+      parameters:
+      - in: path
+        name: id
+        description: Document ID
+        required: true
+        schema:
+          type: integer
+      operationId: deleteV2DocumentsById
+      x-operation-id-source: derived
+  /v2/documents/{document_id}/document_sections:
+    get:
+      summary: List sections of document
+      tags:
+      - Documents
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentSectionList'
+      parameters:
+      - in: path
+        name: document_id
+        description: Document ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2DocumentsByDocumentIdDocumentSections
+      x-operation-id-source: derived
+    post:
+      summary: Create a document section
+      tags:
+      - Documents
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created Document Section
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentSection'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentSectionPayload'
+        description: Document Payload
+        required: true
+      operationId: postV2DocumentsByDocumentIdDocumentSections
+      x-operation-id-source: derived
+  /v2/documents/{document_id}/document_sections/{id}:
+    get:
+      summary: Show Document Section
+      tags:
+      - Documents
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentSection'
+      parameters:
+      - in: path
+        name: document_id
+        description: Document ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Document Section ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2DocumentsByDocumentIdDocumentSectionsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update Document Section
+      tags:
+      - Documents
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Document Section
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentSection'
+      parameters:
+      - in: path
+        name: document_id
+        description: Document ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Document Section ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentSectionPayload'
+        description: Document Section Payload
+        required: true
+      operationId: patchV2DocumentsByDocumentIdDocumentSectionsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a Document Section
+      tags:
+      - Documents
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Document Section deleted
+      parameters:
+      - in: path
+        name: document_id
+        description: Document ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Document Section ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2DocumentsByDocumentIdDocumentSectionsById
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    Document:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            title:
+              type: string
+            slug:
+              type: string
+            parent_slug:
+              type: string
+            body:
+              type: string
+            sections:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/DocumentSection'
+      example:
+        id: 12345
+        type: document
+        attributes:
+          id: 12345
+          title: Dc Document Title
+          slug: dc-doc-01
+          parent_slug: dc-doc-parent
+          body: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+        sections:
+          data:
+          - id: 12345
+            body: Document Section body
+            position: 1
+    DocumentList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentIndex'
+    DocumentSectionPayload:
+      properties:
+        document_section:
+          type: object
+          properties:
+            body:
+              type: string
+      example:
+        document_section:
+          body: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+    DocumentSection:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            body:
+              type: string
+            position:
+              type: integer
+      example:
+        id: 12345
+        type: document_section
+        attributes:
+          id: 12345
+          body: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+          position: 1
+    DocumentPayload:
+      properties:
+        document:
+          type: object
+          properties:
+            title:
+              type: string
+            slug:
+              type: string
+            parent_slug:
+              type: string
+            body:
+              type: string
+      example:
+        document:
+          title: Dc Document Title
+          slug: dc-doc-01
+          parent_slug: dc-doc-parent
+          body: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+    DocumentSectionList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentSection'
+    DocumentIndex:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            title:
+              type: string
+            slug:
+              type: string
+            parent_slug:
+              type: string
+      example:
+        id: 12345
+        type: document
+        attributes:
+          id: 12345
+          title: Dc Document Title
+          slug: dc-doc-01
+          parent_slug: dc-doc-parent
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

@@ -1,0 +1,614 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Column Mapper Templates API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: ColumnMapperTemplates
+paths:
+  /v2/column_mapper_templates:
+    get:
+      summary: Get list of column mapper templates
+      tags:
+      - ColumnMapperTemplates
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List of column mapper templates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ColumnMapperTemplates'
+      parameters:
+      - in: query
+        name: rig_id
+        description: Filter by Rig ID
+        schema:
+          type: integer
+      - in: query
+        name: intervention_unit_id
+        description: Filter by Intervention Unit ID
+        schema:
+          type: integer
+      - in: query
+        name: search
+        description: Search by column mapper, rig, or intervention unit name
+        schema:
+          type: string
+      - in: query
+        name: per_page
+        description: Number of items to list per page
+        schema:
+          type: integer
+      - in: query
+        name: page
+        description: Number of page
+        schema:
+          type: integer
+      operationId: getV2ColumnMapperTemplates
+      x-operation-id-source: derived
+    post:
+      summary: Create column mapper template
+      tags:
+      - ColumnMapperTemplates
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created column mapper template
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ColumnMapperTemplate'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateColumnMapperTemplatePayload'
+        description: Column mapper payload
+      operationId: postV2ColumnMapperTemplates
+      x-operation-id-source: derived
+  /v2/column_mapper_templates/{id}:
+    get:
+      summary: Get one column mapper template by ID
+      tags:
+      - ColumnMapperTemplates
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Column mapper template
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ColumnMapperTemplate'
+      parameters:
+      - in: path
+        name: id
+        description: ColumnMapperTemplate ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2ColumnMapperTemplatesById
+      x-operation-id-source: derived
+    patch:
+      summary: Update column mapper
+      tags:
+      - ColumnMapperTemplates
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Column mapper template
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ColumnMapperTemplate'
+      parameters:
+      - in: path
+        name: id
+        description: ColumnMapperTemplate ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateColumnMapperTemplatePayload'
+        description: Column mapper payload
+      operationId: patchV2ColumnMapperTemplatesById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete column mapper
+      tags:
+      - ColumnMapperTemplates
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: ColumnMapperTemplate deleted
+          content:
+            application/json:
+              schema:
+                example:
+                  status: deleted
+      parameters:
+      - in: path
+        name: id
+        description: ColumnMapperTemplate ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2ColumnMapperTemplatesById
+      x-operation-id-source: derived
+  /v2/column_mapper_templates/{id}/change_rig:
+    patch:
+      summary: Associate a rig with a column mapper template
+      tags:
+      - ColumnMapperTemplates
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Column mapper template rig was updated
+          content:
+            application/json:
+              schema:
+                example:
+                  message: updated rig
+      parameters:
+      - in: path
+        name: id
+        description: ColumnMapperTemplate ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                rig_id:
+                  type: integer
+                  format: int64
+                  description: Rig ID
+              example:
+                rig_id: 1111
+        description: Rig association payload
+      operationId: patchV2ColumnMapperTemplatesByIdChangeRig
+      x-operation-id-source: derived
+  /v2/column_mapper_templates/{id}/change_intervention_unit:
+    patch:
+      summary: Associate an intervention unit with a column mapper template
+      tags:
+      - ColumnMapperTemplates
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Column mapper template intervention unit was updated
+          content:
+            application/json:
+              schema:
+                example:
+                  message: updated intervention unit
+      parameters:
+      - in: path
+        name: id
+        description: ColumnMapperTemplate ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                intervention_unit_id:
+                  type: integer
+                  format: int64
+                  description: Intervention Unit ID
+              example:
+                intervention_unit_id: 1111
+        description: Intervention unit association payload
+      operationId: patchV2ColumnMapperTemplatesByIdChangeInterventionUnit
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    ColumnMapperTemplates:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ColumnMapperTemplate'
+    UpdateColumnMapperTemplatePayload:
+      properties:
+        apply_to_all_streams:
+          type: boolean
+        column_mapper_template:
+          properties:
+            name:
+              type: string
+            app_stream_ids:
+              type: array
+            rig_id:
+              type: integer
+              format: int64
+              description: Mutually exclusive with intervention_unit_id
+            intervention_unit_id:
+              type: integer
+              format: int64
+              description: Mutually exclusive with rig_id
+            witsml_source_link:
+              type: string
+            column_mapper_template_channels: {}
+      example:
+        apply_to_all_streams: true
+        app_stream_ids:
+        - 111
+        column_mapper_template:
+          name: Random
+          rig_id: 555
+          witsml_source_link: https://app.qa.corva.ai
+          column_mapper_template_channels:
+            channel:
+              column: column
+              source_unit: unit
+    CreateColumnMapperTemplatePayload:
+      properties:
+        apply_to_all_streams:
+          type: boolean
+        column_mapper_template:
+          properties:
+            name:
+              type: string
+            rig_id:
+              type: integer
+              format: int64
+              description: Provide exactly one of rig_id or intervention_unit_id
+            intervention_unit_id:
+              type: integer
+              format: int64
+              description: Provide exactly one of rig_id or intervention_unit_id
+            app_stream_ids:
+              type: array
+            witsml_source_link:
+              type: string
+            column_mapper_template_channels:
+              type: object
+      example:
+        apply_to_all_streams: true
+        app_stream_ids:
+        - 111
+        column_mapper_template:
+          name: Random
+          rig_id: 555
+          witsml_source_link: https://app.qa.corva.ai
+          column_mapper_template_channels:
+            channel:
+              column: column
+              source_unit: unit
+    ColumnMapperTemplate:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            witsml_source_link:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            column_mapper_hash_format: {}
+            relationships:
+              type: object
+              properties:
+                rig:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          format: int64
+                        type:
+                          type: string
+                intervention_unit:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          format: int64
+                        type:
+                          type: string
+                company:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          format: int64
+                        type:
+                          type: string
+                created_by:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          format: int64
+                        type:
+                          type: string
+                last_edited_by:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          format: int64
+                        type:
+                          type: string
+                column_mapper_template_channels:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      items:
+                        properties:
+                          id:
+                            type: integer
+                            format: int64
+                          type:
+                            type: string
+                column_mapper_template_rules:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      items:
+                        properties:
+                          id:
+                            type: integer
+                            format: int64
+                          type:
+                            type: string
+      example:
+        id: 111
+        type: column_mapper_template
+        attributes:
+          id: 111
+          name: Your my Venus
+          witsml_source_link: https://app.qa.corva.ai
+          created_at: '2010-01-01T00:00:00.000Z'
+          updated_at: '2010-01-01T00:00:00.000Z'
+          column_mapper_hash_format:
+            channel:
+              column: column
+              source_unit: unit
+              backup_channels:
+              - column: Column 2
+                source_unit: unit2
+                backup_rules:
+                - duration_minutes: 20
+                  conditions:
+                  - logical_operator: null
+                    operand: 10
+                    operator: OPERATOR_EQUAL
+        relationships:
+          column_mapper_template_channels:
+            data:
+            - id: '123'
+              type: column_mapper_template_channel
+          company:
+            data:
+              id: '123'
+              type: company
+          rig:
+            data:
+              id: '123'
+              type: rig
+          intervention_unit:
+            data: null
+          created_by:
+            data:
+              id: '123'
+              type: user
+          last_edited_by:
+            data:
+              id: '123'
+              type: user
+          column_mapper_template_rules:
+            data:
+            - id: '123'
+              type: column_mapper_template_rule
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

@@ -1,0 +1,1437 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Alert Groups API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Alert Groups
+  description: Alert group management - team-scoped alert configurations
+paths:
+  /v2/alert_groups:
+    get:
+      summary: List Alert Groups
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List of alert groups
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertGroupList'
+      parameters:
+      - in: query
+        name: search
+        description: Search by name
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: page
+        description: Page number
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Items per page
+        required: false
+        schema:
+          type: integer
+      operationId: getV2AlertGroups
+      x-operation-id-source: derived
+    post:
+      summary: Create Alert Group
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created alert group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertGroupSingle'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertGroupPayload'
+        required: true
+      operationId: postV2AlertGroups
+      x-operation-id-source: derived
+  /v2/alert_groups/{id}:
+    get:
+      summary: Get Alert Group
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Alert group details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertGroupSingle'
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2AlertGroupsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update Alert Group
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated alert group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertGroupSingle'
+        '400':
+          description: Validation error, including changing segment while the group has scopes or configuration overrides whose type is invalid for the new segment
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertGroupPayload'
+        required: true
+      operationId: patchV2AlertGroupsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete Alert Group
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Deleted
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2AlertGroupsById
+      x-operation-id-source: derived
+  /v2/alert_groups/{id}/merge:
+    post:
+      summary: Merge Alert Group
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Not authorized to update the target or destroy the source
+        '404':
+          description: Either group is not visible to the caller
+        '200':
+          description: Merged alert group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertGroupSingle'
+        '400':
+          description: Missing source_alert_group_id, merging a group into itself, or groups that differ in company or segment
+      description: Merges the source group into the group named in the path, which survives. Members, scopes, alert definitions and configurations are unioned; wherever both groups hold the same member, scope target or configuration key, the target group's row is kept and the source's is dropped. The target keeps its own name, workflow and settings. Notification policies scoped to the source follow it to the target. The whole merge is one transaction and cannot be undone.
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertGroupMergePayload'
+        required: true
+      operationId: postV2AlertGroupsByIdMerge
+      x-operation-id-source: derived
+  /v2/alert_groups/{alert_group_id}/alert_group_users:
+    get:
+      summary: List Group Members
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List of group members; each member embeds its user record (UserMinimalSerializer) in the response `included` array
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertGroupUserList'
+      parameters:
+      - in: path
+        name: alert_group_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2AlertGroupsByAlertGroupIdAlertGroupUsers
+      x-operation-id-source: derived
+    post:
+      summary: Add Member to Group
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Added member
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertGroupUserSingle'
+      parameters:
+      - in: path
+        name: alert_group_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertGroupUserPayload'
+        required: true
+      operationId: postV2AlertGroupsByAlertGroupIdAlertGroupUsers
+      x-operation-id-source: derived
+  /v2/alert_groups/{alert_group_id}/alert_group_users/{id}:
+    delete:
+      summary: Remove Member from Group
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Removed
+      parameters:
+      - in: path
+        name: alert_group_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2AlertGroupsByAlertGroupIdAlertGroupUsersById
+      x-operation-id-source: derived
+  /v2/alert_groups/{alert_group_id}/alert_group_scopes:
+    get:
+      summary: List Group Scopes
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List of group scope targets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertGroupScopeList'
+      parameters:
+      - in: path
+        name: alert_group_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2AlertGroupsByAlertGroupIdAlertGroupScopes
+      x-operation-id-source: derived
+    post:
+      summary: Add Scope Target to Group
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Added scope target
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertGroupScopeSingle'
+      parameters:
+      - in: path
+        name: alert_group_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertGroupScopePayload'
+        required: true
+      operationId: postV2AlertGroupsByAlertGroupIdAlertGroupScopes
+      x-operation-id-source: derived
+  /v2/alert_groups/{alert_group_id}/alert_group_scopes/{id}:
+    delete:
+      summary: Remove Scope Target from Group
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Removed
+      parameters:
+      - in: path
+        name: alert_group_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2AlertGroupsByAlertGroupIdAlertGroupScopesById
+      x-operation-id-source: derived
+  /v2/alert_groups/{alert_group_id}/alert_group_configurations:
+    get:
+      summary: List Group Configurations
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List of configurations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertGroupConfigurationList'
+      parameters:
+      - in: path
+        name: alert_group_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2AlertGroupsByAlertGroupIdAlertGroupConfigurations
+      x-operation-id-source: derived
+    post:
+      summary: Create Group Configuration
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertGroupConfigurationSingle'
+      parameters:
+      - in: path
+        name: alert_group_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertGroupConfigurationPayload'
+        required: true
+      operationId: postV2AlertGroupsByAlertGroupIdAlertGroupConfigurations
+      x-operation-id-source: derived
+  /v2/alert_groups/{alert_group_id}/alert_group_configurations/{id}:
+    patch:
+      summary: Update Group Configuration
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertGroupConfigurationSingle'
+        '400':
+          description: Validation error, or scope_type/scope_id provided without the other — the pair must always be updated together
+      parameters:
+      - in: path
+        name: alert_group_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertGroupConfigurationPayload'
+        required: true
+      operationId: patchV2AlertGroupsByAlertGroupIdAlertGroupConfigurationsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete Group Configuration
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Deleted
+      parameters:
+      - in: path
+        name: alert_group_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2AlertGroupsByAlertGroupIdAlertGroupConfigurationsById
+      x-operation-id-source: derived
+  /v2/alert_groups/{alert_group_id}/alert_group_users/bulk_create:
+    post:
+      summary: Bulk Add Members to Group
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Members added (idempotent — an existing member keeps its row, role updated when the payload sets alert_role_id)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertGroupUserList'
+        '400':
+          description: Validation error; no members were added
+      parameters:
+      - in: path
+        name: alert_group_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertGroupUserBulkPayload'
+        required: true
+      operationId: postV2AlertGroupsByAlertGroupIdAlertGroupUsersBulkCreate
+      x-operation-id-source: derived
+  /v2/alert_groups/{alert_group_id}/alert_group_users/bulk_destroy:
+    delete:
+      summary: Bulk Remove Members from Group
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Members removed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkDeleteResult'
+      parameters:
+      - in: path
+        name: alert_group_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertGroupUserBulkPayload'
+        required: true
+      operationId: deleteV2AlertGroupsByAlertGroupIdAlertGroupUsersBulkDestroy
+      x-operation-id-source: derived
+  /v2/alert_groups/{alert_group_id}/alert_group_scopes/bulk_create:
+    post:
+      summary: Bulk Add Scope Targets to Group
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Scope targets added (idempotent — targets already in the group are skipped)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertGroupScopeList'
+        '400':
+          description: Validation error; no scope targets were added
+      parameters:
+      - in: path
+        name: alert_group_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertGroupScopeBulkPayload'
+        required: true
+      operationId: postV2AlertGroupsByAlertGroupIdAlertGroupScopesBulkCreate
+      x-operation-id-source: derived
+  /v2/alert_groups/{alert_group_id}/alert_group_scopes/bulk_destroy:
+    delete:
+      summary: Bulk Remove Scope Targets from Group
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Scope targets removed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkDeleteResult'
+      parameters:
+      - in: path
+        name: alert_group_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertGroupScopeBulkPayload'
+        required: true
+      operationId: deleteV2AlertGroupsByAlertGroupIdAlertGroupScopesBulkDestroy
+      x-operation-id-source: derived
+  /v2/alert_groups/{alert_group_id}/alert_group_scopes/bulk_replace:
+    put:
+      summary: Replace Group Scope Targets
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: 'Scope set replaced with the payload: targets not in the payload are removed, new ones added, targets already in the group are kept unchanged. An explicit empty scopes array removes all scope targets'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertGroupScopeList'
+        '400':
+          description: Missing scopes key or validation error; no changes were made
+      parameters:
+      - in: path
+        name: alert_group_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertGroupScopeBulkPayload'
+        required: true
+      operationId: putV2AlertGroupsByAlertGroupIdAlertGroupScopesBulkReplace
+      x-operation-id-source: derived
+  /v2/alert_groups/{alert_group_id}/alert_group_configurations/bulk_create:
+    post:
+      summary: Bulk Create Group Configurations
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Configurations created (all-or-nothing — none created if any is invalid)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertGroupConfigurationList'
+        '400':
+          description: Validation error; no configurations were created
+      parameters:
+      - in: path
+        name: alert_group_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertGroupConfigurationBulkCreatePayload'
+        required: true
+      operationId: postV2AlertGroupsByAlertGroupIdAlertGroupConfigurationsBulkCreate
+      x-operation-id-source: derived
+  /v2/alert_groups/{alert_group_id}/alert_group_configurations/bulk_destroy:
+    delete:
+      summary: Bulk Delete Group Configurations
+      tags:
+      - Alert Groups
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Configurations removed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkDeleteResult'
+      parameters:
+      - in: path
+        name: alert_group_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertGroupConfigurationBulkDestroyPayload'
+        required: true
+      operationId: deleteV2AlertGroupsByAlertGroupIdAlertGroupConfigurationsBulkDestroy
+      x-operation-id-source: derived
+components:
+  schemas:
+    AlertGroupScopeBulkPayload:
+      properties:
+        alert_group_scope:
+          type: object
+          properties:
+            scopes:
+              type: array
+              items:
+                $ref: '#/components/schemas/AlertGroupScopeInput'
+    AlertGroupScopeInput:
+      properties:
+        scope_type:
+          type: string
+          enum:
+          - Well
+          - Rig
+          - Pad
+          - FracFleet
+          - InterventionUnit
+        scope_id:
+          type: integer
+          format: int64
+    AlertGroupUserInput:
+      properties:
+        user_id:
+          type: integer
+          format: int64
+        alert_role_id:
+          type: integer
+          format: int64
+          description: Optional role; ignored on bulk_destroy
+    AlertGroupUser:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          type: object
+          required:
+          - id
+          - alert_group_id
+          - user_id
+          properties:
+            id:
+              type: integer
+              format: int64
+            alert_group_id:
+              type: integer
+              format: int64
+            user_id:
+              type: integer
+              format: int64
+            alert_role_id:
+              type: integer
+              format: int64
+              description: Assigned alert role; NULL when the member has no role
+            alert_role:
+              type: object
+              description: Embedded summary of the assigned role; NULL when none is assigned
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                name:
+                  type: string
+                description:
+                  type: string
+            created_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            user:
+              type: object
+              description: The embedded member; the full user object is returned in the response `included` array (UserMinimalSerializer)
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+    AlertGroupScopePayload:
+      properties:
+        alert_group_scope:
+          type: object
+          properties:
+            scope_type:
+              type: string
+              enum:
+              - Well
+              - Rig
+              - Pad
+              - FracFleet
+              - InterventionUnit
+            scope_id:
+              type: integer
+              format: int64
+    AlertGroupConfiguration:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          type: object
+          required:
+          - id
+          - alert_group_id
+          properties:
+            id:
+              type: integer
+              format: int64
+            alert_group_id:
+              type: integer
+              format: int64
+            alert_definition_id:
+              type: integer
+              format: int64
+              description: NULL for global modifiers
+            scope_type:
+              type: string
+              enum:
+              - Well
+              - Rig
+              - Pad
+              - FracFleet
+              - InterventionUnit
+              description: NULL for group defaults
+            scope_id:
+              type: integer
+              format: int64
+              description: NULL for group defaults
+            severity_override:
+              type: string
+            thresholds:
+              type: object
+              description: Flat threshold values for this configuration row
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AlertGroupScope:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          type: object
+          required:
+          - id
+          - alert_group_id
+          - scope_type
+          - scope_id
+          properties:
+            id:
+              type: integer
+              format: int64
+            alert_group_id:
+              type: integer
+              format: int64
+            scope_type:
+              type: string
+              enum:
+              - Well
+              - Rig
+              - Pad
+              - FracFleet
+              - InterventionUnit
+              description: Target model; allowed types depend on the group's segment
+            scope_id:
+              type: integer
+              format: int64
+              description: Id in the scope_type table
+    AlertGroupUserSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AlertGroupUser'
+    AlertGroupPayload:
+      properties:
+        alert_group:
+          type: object
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            company_id:
+              type: integer
+              format: int64
+            workflow_id:
+              type: integer
+              format: int64
+            segment:
+              type: string
+              enum:
+              - drilling
+              - completion
+              - intervention
+    AlertGroupSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AlertGroup'
+    AlertGroupConfigurationPayload:
+      properties:
+        alert_group_configuration:
+          type: object
+          properties:
+            alert_definition_id:
+              type: integer
+              format: int64
+            scope_type:
+              type: string
+              enum:
+              - Well
+              - Rig
+              - Pad
+              - FracFleet
+              - InterventionUnit
+            scope_id:
+              type: integer
+              format: int64
+            severity_override:
+              type: string
+            thresholds:
+              type: object
+    AlertGroupConfigurationBulkCreatePayload:
+      properties:
+        alert_group_configurations:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertGroupConfigurationInput'
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AlertGroupConfigurationInput:
+      properties:
+        alert_definition_id:
+          type: integer
+          format: int64
+        scope_type:
+          type: string
+          enum:
+          - Well
+          - Rig
+          - Pad
+          - FracFleet
+          - InterventionUnit
+        scope_id:
+          type: integer
+          format: int64
+        severity_override:
+          type: string
+        thresholds:
+          type: object
+    AlertGroupUserList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertGroupUser'
+    AlertGroupConfigurationSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AlertGroupConfiguration'
+    AlertGroupConfigurationList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertGroupConfiguration'
+    AlertGroupMergePayload:
+      required:
+      - source_alert_group_id
+      properties:
+        source_alert_group_id:
+          type: integer
+          format: int64
+          description: Group to consume. It is destroyed once its members, scopes, alert definitions and configurations move to the target.
+    AlertGroupScopeList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertGroupScope'
+    AlertGroupScopeSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AlertGroupScope'
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AlertGroupConfigurationBulkDestroyPayload:
+      properties:
+        alert_group_configuration:
+          type: object
+          properties:
+            ids:
+              type: array
+              items:
+                type: integer
+                format: int64
+    AlertGroupUserBulkPayload:
+      properties:
+        alert_group_users:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertGroupUserInput'
+    BulkDeleteResult:
+      properties:
+        status:
+          type: string
+          description: Always 'deleted'
+        count:
+          type: integer
+          description: Number of records removed
+    AlertGroupUserPayload:
+      properties:
+        alert_group_user:
+          type: object
+          properties:
+            user_id:
+              type: integer
+              format: int64
+            alert_role_id:
+              type: integer
+              format: int64
+              description: Optional alert role to assign on add
+    AlertGroupList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertGroup'
+    AlertGroup:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          type: object
+          required:
+          - id
+          - name
+          - company_id
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            description:
+              type: string
+            company_id:
+              type: integer
+              format: int64
+            workflow_id:
+              type: integer
+              format: int64
+            segment:
+              type: string
+              enum:
+              - drilling
+              - completion
+              - intervention
+            users_count:
+              type: integer
+              description: Number of members in the group
+            alert_definitions_count:
+              type: integer
+              description: Number of alert definitions in the group
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

@@ -1,0 +1,2052 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Workflows API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Workflows
+paths:
+  /v2/workflows:
+    get:
+      summary: List Workflows
+      tags:
+      - Workflows
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowList'
+      parameters:
+      - in: query
+        name: segment
+        description: Workflow segment filter
+        schema:
+          items:
+            type: string
+      - in: query
+        name: company_id
+        description: Workflow company filter
+        schema:
+          items:
+            type: integer
+      - in: query
+        name: allow_empty_company
+        description: While filter by company, allow to add Workflows without company in results
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+          default: 'false'
+      - in: query
+        name: visibility
+        description: Filter by visibility
+        schema:
+          type: string
+          enum:
+          - public
+          - company
+          - private
+      - in: query
+        name: search
+        description: Search workflow by name/caption
+        schema:
+          type: string
+      - in: query
+        name: page
+        description: Number of page
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of items to list per page
+        schema:
+          type: integer
+      - in: query
+        name: sort
+        description: 'One or more fields to sort by. Prefix with a - for descending order. Ex: name,-updated_at'
+        schema:
+          type: array
+          enum:
+          - name
+          - caption
+          - segment
+          - position
+          - created_at
+          - updated_at
+          default: position -updated_at
+      - in: query
+        name: order
+        description: A sorting direction
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+      operationId: getV2Workflows
+      x-operation-id-source: derived
+    post:
+      summary: Create a Workflow
+      tags:
+      - Workflows
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created Workflow
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowPayload'
+        description: Workflow Payload
+        required: true
+      operationId: postV2Workflows
+      x-operation-id-source: derived
+  /v2/workflows/{id}:
+    get:
+      summary: Show workflow
+      tags:
+      - Workflows
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+      parameters:
+      - in: path
+        name: id
+        description: Workflow workflow_key or ID
+        required: true
+        schema:
+          type: string
+      operationId: getV2WorkflowsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update a Workflow
+      tags:
+      - Workflows
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Workflow
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+      parameters:
+      - in: path
+        name: id
+        description: Workflow workflow_key or ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowPayload'
+        description: Workflow Payload
+        required: true
+      operationId: patchV2WorkflowsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a Workflow
+      tags:
+      - Workflows
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Workflow deleted
+      parameters:
+      - in: path
+        name: id
+        description: Workflow workflow_key or ID
+        required: true
+        schema:
+          type: string
+      operationId: deleteV2WorkflowsById
+      x-operation-id-source: derived
+  /v2/{workflow_id}/workflow_content_blocks:
+    get:
+      summary: List Workflow Content Blocks of a workflow
+      tags:
+      - Workflows
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowContentBlockList'
+      parameters:
+      - in: path
+        name: workflow_id
+        description: Workflow workflow_key or ID
+        required: true
+        schema:
+          type: string
+      operationId: getV2ByWorkflowIdWorkflowContentBlocks
+      x-operation-id-source: derived
+    post:
+      summary: Create a Workflow Content Block
+      tags:
+      - Workflows
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created Workflow Content Block
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowContentBlock'
+      parameters:
+      - in: path
+        name: workflow_id
+        description: Workflow workflow_key or ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowContentBlockPayload'
+        description: Workflow Content Block Payload
+        required: true
+      operationId: postV2ByWorkflowIdWorkflowContentBlocks
+      x-operation-id-source: derived
+  /v2/{workflow_id}/workflow_content_blocks/{id}:
+    get:
+      summary: Show Workflow Content Block
+      tags:
+      - Workflows
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowContentBlock'
+      parameters:
+      - in: path
+        name: workflow_id
+        description: Workflow workflow_key or ID
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: id
+        description: Workflow Content Block ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2ByWorkflowIdWorkflowContentBlocksById
+      x-operation-id-source: derived
+    patch:
+      summary: Update a Workflow Content Block
+      tags:
+      - Workflows
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Workflow Content Block
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowContentBlock'
+      parameters:
+      - in: path
+        name: workflow_id
+        description: Workflow workflow_key or ID
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: id
+        description: Workflow Content Block ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowContentBlockPayload'
+        description: Workflow Content Block Payload
+        required: true
+      operationId: patchV2ByWorkflowIdWorkflowContentBlocksById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a Workflow Content Block
+      tags:
+      - Workflows
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Workflow Content Block deleted
+      parameters:
+      - in: path
+        name: workflow_id
+        description: Workflow workflow_key or ID
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: id
+        description: Workflow Content Block ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2ByWorkflowIdWorkflowContentBlocksById
+      x-operation-id-source: derived
+  /v2/{workflow_id}/workflow_apps:
+    get:
+      summary: List Workflow Apps of a Workflow
+      tags:
+      - Workflows
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowAppList'
+      parameters:
+      - in: path
+        name: workflow_id
+        description: Workflow workflow_key or ID
+        required: true
+        schema:
+          type: string
+      operationId: getV2ByWorkflowIdWorkflowApps
+      x-operation-id-source: derived
+    put:
+      summary: Update many Workflow Apps
+      tags:
+      - Workflows
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Workflow Apps
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowAppList'
+      parameters:
+      - in: path
+        name: workflow_id
+        description: Workflow workflow_key or ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowAppsPayload'
+        description: Workflow Apps Payload
+        required: true
+      operationId: putV2ByWorkflowIdWorkflowApps
+      x-operation-id-source: derived
+  /v2/{workflow_id}/workflow_apps/{id}:
+    get:
+      summary: Show Workflow App
+      tags:
+      - Workflows
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowApp'
+      parameters:
+      - in: path
+        name: workflow_id
+        description: Workflow workflow_key or ID
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: id
+        description: Workflow App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2ByWorkflowIdWorkflowAppsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update a Workflow App
+      tags:
+      - Workflows
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Workflow App
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowApp'
+      parameters:
+      - in: path
+        name: workflow_id
+        description: Workflow workflow_key or ID
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: id
+        description: Workflow App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowAppPayload'
+        description: Workflow App Payload
+        required: true
+      operationId: patchV2ByWorkflowIdWorkflowAppsById
+      x-operation-id-source: derived
+  /v2/users/{user_id}/dashboards/{dashboard_id}/dashboard_workflows:
+    get:
+      summary: List Dashboard Workflows of a Dashboard
+      tags:
+      - Workflows
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardWorkflowList'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: dashboard_id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2UsersByUserIdDashboardsByDashboardIdDashboardWorkflows
+      x-operation-id-source: derived
+  /v2/users/{user_id}/dashboards/{dashboard_id}/dashboard_workflows/{id}:
+    get:
+      summary: Show Dashboard Workflow
+      tags:
+      - Workflows
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardWorkflowSingle'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: dashboard_id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Dashboard Workflow ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2UsersByUserIdDashboardsByDashboardIdDashboardWorkflowsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete Dashboard Workflow
+      tags:
+      - Workflows
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Dashboard Workflow deleted
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: dashboard_id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Dashboard Workflow ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2UsersByUserIdDashboardsByDashboardIdDashboardWorkflowsById
+      x-operation-id-source: derived
+  /v2/users/{user_id}/dashboards/{dashboard_id}/dashboard_workflows/{id}/ungroup:
+    post:
+      summary: Ungroup Dashboard Workflow
+      tags:
+      - Workflows
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                properties:
+                  dashboard_app_ids:
+                    type: array
+                    items:
+                      type: integer
+                example:
+                  dashboard_app_ids:
+                  - 34
+                  - 12345
+                  - 134
+                  - 256
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: dashboard_id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Dashboard Workflow ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2UsersByUserIdDashboardsByDashboardIdDashboardWorkflowsByIdUngroup
+      x-operation-id-source: derived
+  /v2/users/{user_id}/dashboards/{dashboard_id}/dashboard_workflows/ungroup_all:
+    post:
+      summary: Ungroup All Dashboard Workflows for Dashboard
+      tags:
+      - Workflows
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                properties:
+                  dashboard_app_ids:
+                    type: array
+                    items:
+                      type: integer
+                example:
+                  dashboard_app_ids:
+                  - 34
+                  - 12345
+                  - 134
+                  - 256
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: dashboard_id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2UsersByUserIdDashboardsByDashboardIdDashboardWorkflowsUngroupAll
+      x-operation-id-source: derived
+  /v2/users/{user_id}/dashboards/{dashboard_id}/dashboard_workflows/{id}/change_asset:
+    put:
+      summary: Change Asset of Dashboard Workflows and related Dashboard Apps
+      tags:
+      - Workflows
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardWorkflowSingle'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: dashboard_id
+        description: Dashboard ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Dashboard Workflow ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                new_asset:
+                  type: object
+                  properties:
+                    assetId:
+                      type: integer
+                    rigId:
+                      type: integer
+                    fracFleetId:
+                      type: integer
+                    padId:
+                      type: integer
+                    wellId:
+                      type: integer
+                    replacedAssetId:
+                      type: integer
+        description: New Assets
+        required: true
+      operationId: putV2UsersByUserIdDashboardsByDashboardIdDashboardWorkflowsByIdChangeAsset
+      x-operation-id-source: derived
+components:
+  schemas:
+    DashboardWorkflow:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            asset_id:
+              type: integer
+              format: int64
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            workflow:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: dashboard_workflow
+        attributes:
+          id: 12345
+          asset_id: 12345
+          created_at: '2022-11-11T09:11:52.326Z'
+          updated_at: '2022-11-11T09:11:52.326Z'
+        relationships:
+          workflow:
+            data:
+              id: 12345
+              type: workflow
+    WorkflowPayload:
+      properties:
+        workflow:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            workflow_key:
+              type: string
+            caption:
+              type: string
+            visibility:
+              type: string
+            segment:
+              type: string
+            image_url:
+              type: string
+            video_url:
+              type: string
+            overview:
+              type: string
+            introduction:
+              type: string
+            position:
+              type: integer
+            app_keys:
+              type: array
+            attachment_metadata:
+              type: array
+              items:
+                properties:
+                  file_name:
+                    type: string
+                  type:
+                    type: string
+                  uploaded_at:
+                    type: string
+                    format: date-time
+                  cdn_url:
+                    type: string
+            workflow_content_blocks_attributes:
+              type: array
+              items:
+                properties:
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  video_url:
+                    type: string
+                  app_key:
+                    type: string
+                  attachment_metadata:
+                    type: array
+                    items:
+                      properties:
+                        file_name:
+                          type: string
+                        type:
+                          type: string
+                        uploaded_at:
+                          type: string
+                          format: date-time
+                        cdn_url:
+                          type: string
+      example:
+        workflow:
+          name: workflow_1
+          workflow_key: provider.workflow_1
+          caption: 'Workflow #1'
+          visibility: public
+          segment: drilling
+          image_url: http://www.example.com/image.jpg
+          video_url: http://www.example.com/video.mp4
+          overview: Overview text
+          introduction: Introduction text
+          position: 2
+          app_keys:
+          - app_key_1
+          - app_key_2
+          attachment_metadata:
+          - file_name: example.mp4
+            type: video
+            uploaded_at: '2020-01-01T13:00:00.000Z'
+            cdn_url: https://dz2j2ahzlt5dj.cloudfront.net/workflows/example.mp4
+          workflow_content_blocks_attributes:
+          - title: 'WCB #1'
+            description: 'WCB #1 description'
+            image_url: http://www.example.com/image.jpg
+            video_url: http://www.example.com/video.mp4
+            attachment_metadata:
+            - file_name: example.mp4
+              type: video
+              uploaded_at: '2020-01-01T13:00:00.000Z'
+              cdn_url: https://dz2j2ahzlt5dj.cloudfront.net/workflows/example.mp4
+            app_key: app_key_1
+          - title: 'WCB #2'
+            description: 'WCB #2 description'
+            image_url: http://www.example.com/image.jpg
+            video_url: http://www.example.com/video.mp4
+            attachment_metadata: []
+            app_key: app_key_2
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    WorkflowAppList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowApp'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+        - id: 12345
+          type: workflow_app
+          attributes:
+            id: 12345
+            coordinates:
+              x: '0'
+              y: '171'
+            settings:
+              some_setting: Setting value
+              foo: bar
+            created_at: '2022-11-11T09:11:52.326Z'
+            updated_at: '2022-11-11T09:11:52.326Z'
+          relationships:
+            workflow:
+              data:
+                id: 12345
+                type: workflow
+            app:
+              data:
+                id: 12456
+                type: app
+        included:
+        - id: 12345
+          type: Workflow
+          attributes:
+            id: 12345
+            name: 'WF #1'
+        - id: 348
+          type: app
+          attributes:
+            id: 348
+            name: My App
+            app_key: my.example.app
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    WorkflowContentBlockList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowContentBlock'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+        - id: 12345
+          type: workflow_content_block
+          attributes:
+            id: 12345
+            title: Content Block Title
+            description: Long text description
+            position: 2
+            image_url: http://www.example.com/image.jpg
+            video_url: http://www.example.com/video.mp4
+            created_at: '2022-11-11T09:11:52.326Z'
+            updated_at: '2022-11-11T09:11:52.326Z'
+          relationships:
+            workflow:
+              data:
+                id: 12345
+                type: workflow
+            app:
+              data:
+                id: 12456
+                type: app
+        included:
+        - id: 12345
+          type: Workflow
+          attributes:
+            id: 12345
+            name: 'WF #1'
+        - id: 348
+          type: app
+          attributes:
+            id: 348
+            name: My App
+            app_key: my.example.app
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    WorkflowIndex:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            workflow_key:
+              type: string
+            name:
+              type: string
+            overview:
+              type: text
+            caption:
+              type: string
+            visibility:
+              type: string
+            segment:
+              type: string
+            image_url:
+              type: string
+            video_url:
+              type: string
+            position:
+              type: integer
+            created_at:
+              type: string
+              format: date-time
+            updated:
+              type: string
+              format: date-time
+            attachment_metadata:
+              type: array
+              items:
+                properties:
+                  file_name:
+                    type: string
+                  type:
+                    type: string
+                  uploaded_at:
+                    type: string
+                    format: date-time
+                  cdn_url:
+                    type: string
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+            apps:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                      type:
+                        type: string
+      example:
+        id: 12345
+        type: workflow
+        attributes:
+          id: 12345
+          workflow_key: provider.workflow_6
+          name: Workflow 6
+          caption: Workflow 6 Caption
+          visibility: public
+          segment: drilling
+          image_url: http://www.example.com/image.jpg
+          video_url: http://www.example.com/video.mp4
+          position: 2
+          created_at: '2022-11-11T09:11:52.326Z'
+          updated_at: '2022-11-11T09:11:52.326Z'
+          attachment_metadata:
+          - file_name: example.mp4
+            type: video
+            uploaded_at: '2020-01-01T13:00:00.000Z'
+            cdn_url: https://dz2j2ahzlt5dj.cloudfront.net/workflows/example.mp4
+        relationships:
+          company:
+            data:
+              id: 12345
+              type: company
+          apps:
+            data:
+            - id: 12456
+              type: app
+            - id: 345
+              type: app
+    WorkflowContentBlockPayload:
+      properties:
+        workflow_content_block:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            title:
+              type: string
+            description:
+              type: string
+            position:
+              type: integer
+            image_url:
+              type: string
+            video_url:
+              type: string
+            overview:
+              type: string
+            introduction:
+              type: string
+            app_key:
+              type: string
+      example:
+        workflow_content_block:
+          id: 12345
+          title: Workflow Content Block Title
+          description: Long text description
+          position: 1
+          image_url: http://www.example.com/image.jpg
+          video_url: http://www.example.com/video.mp4
+          created_at: '2022-11-11T09:11:52.326Z'
+          updated_at: '2022-11-11T09:11:52.326Z'
+          app_key: app_key
+    DashboardWorkflowSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/DashboardWorkflow'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+          id: 12345
+          type: dashboard_workflow
+          attributes:
+            id: 12345
+            asset_id: 12345
+            created_at: '2022-11-11T09:11:52.326Z'
+            updated_at: '2022-11-11T09:11:52.326Z'
+          relationships:
+            workflow:
+              data:
+                id: 12345
+                type: workflow
+            dashboard_apps:
+              data:
+              - id: 10000
+                type: dashboard_app
+              - id: 10001
+                type: dashboard_app
+        included:
+        - id: 12345
+          type: Workflow
+          attributes:
+            id: 12345
+            name: 'WF #1'
+        - id: 10000
+          type: dashboard_app
+          attributes:
+            id: 10000
+            name: Corva Data App 1
+            settings:
+              rigId: 5884
+              assetId: 31259041
+        - id: 10001
+          type: dashboard_app
+          attributes:
+            id: 10001
+            name: Corva Data App 2
+            settings:
+              rigId: 5884
+              assetId: 31259041
+    WorkflowContentBlock:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            title:
+              type: string
+            description:
+              type: string
+            position:
+              type: integer
+            image_url:
+              type: string
+            video_url:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+            updated:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            workflow:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+            app:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: workflow_content_block
+        attributes:
+          id: 12345
+          title: Workflow Content Block Title
+          description: Long text description
+          position: 1
+          image_url: http://www.example.com/image.jpg
+          video_url: http://www.example.com/video.mp4
+          created_at: '2022-11-11T09:11:52.326Z'
+          updated_at: '2022-11-11T09:11:52.326Z'
+        relationships:
+          workflow:
+            data:
+              id: 12345
+              type: workflow
+          app:
+            data:
+              id: 12456
+              type: app
+    DashboardWorkflowList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardWorkflow'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+        - id: 12345
+          type: dashboard_workflow
+          attributes:
+            id: 12345
+            asset_id: 12345
+            created_at: '2022-11-11T09:11:52.326Z'
+            updated_at: '2022-11-11T09:11:52.326Z'
+          relationships:
+            workflow:
+              data:
+                id: 12345
+                type: workflow
+            dashboard_apps:
+              data:
+              - id: 10000
+                type: dashboard_app
+              - id: 10001
+                type: dashboard_app
+        included:
+        - id: 12345
+          type: workflow
+          attributes:
+            id: 12345
+            name: 'WF #1'
+        - id: 10000
+          type: dashboard_app
+          attributes:
+            id: 10000
+            name: Corva Data App 1
+            settings:
+              rigId: 5884
+              assetId: 31259041
+        - id: 10001
+          type: dashboard_app
+          attributes:
+            id: 10001
+            name: Corva Data App 2
+            settings:
+              rigId: 5884
+              assetId: 31259041
+    Workflow:
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                workflow_key:
+                  type: string
+                name:
+                  type: string
+                caption:
+                  type: string
+                visibility:
+                  type: string
+                segment:
+                  type: string
+                image_url:
+                  type: string
+                video_url:
+                  type: string
+                overview:
+                  type: string
+                introduction:
+                  type: string
+                position:
+                  type: integer
+                created_at:
+                  type: string
+                  format: date-time
+                updated:
+                  type: string
+                  format: date-time
+                attachment_metadata:
+                  type: array
+                  items:
+                    properties:
+                      file_name:
+                        type: string
+                      type:
+                        type: string
+                      uploaded_at:
+                        type: string
+                        format: date-time
+                      cdn_url:
+                        type: string
+            relationships:
+              type: object
+              properties:
+                company:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        type:
+                          type: string
+                apps:
+                  type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        properties:
+                          id:
+                            type: integer
+                          type:
+                            type: string
+                workflow_content_blocks:
+                  type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        properties:
+                          id:
+                            type: integer
+                          type:
+                            type: string
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+              relationships:
+                type: object
+      example:
+        data:
+          id: 12345
+          type: workflow
+          attributes:
+            id: 12345
+            workflow_key: provider.workflow_6
+            name: Workflow 6
+            caption: Workflow 6 Caption
+            visibility: public
+            segment: drilling
+            image_url: http://www.example.com/image.jpg
+            video_url: http://www.example.com/video.mp4
+            position: 2
+            overview: Overview text
+            introduction: Introduction text
+            created_at: '2022-11-11T09:11:52.326Z'
+            updated_at: '2022-11-11T09:11:52.326Z'
+            attachment_metadata:
+            - file_name: example.mp4
+              type: video
+              uploaded_at: '2020-01-01T13:00:00.000Z'
+              cdn_url: https://dz2j2ahzlt5dj.cloudfront.net/workflows/example.mp4
+          relationships:
+            company:
+              data:
+                id: 12345
+                type: company
+            apps:
+              data:
+              - id: 12456
+                type: app
+              - id: 345
+                type: app
+            workflow_content_blocks:
+              data:
+              - id: 12446
+                type: workflow_content_block
+              - id: 345
+                type: workflow_content_block
+        included:
+        - id: 12345
+          type: company
+          attributes:
+            id: 12345
+            name: Corva
+        - id: 348
+          type: app
+          attributes:
+            id: 348
+            name: My App
+            app_key: my.example.app
+        - id: '356'
+          type: workflow_content_block
+          attributes:
+            id: 356
+            title: 'WCB #2'
+            description: 'WCB #2 description'
+            position: 2
+            image_url: http://www.example.com/image.jpg
+            video_url: http://www.example.com/video.mp4
+            attachment_metadata:
+            - file_name: example.mp4
+              type: video
+              uploaded_at: '2020-01-01T13:00:00.000Z'
+              cdn_url: https://dz2j2ahzlt5dj.cloudfront.net/workflows/example.mp4
+            created_at: '2022-11-11T10:31:02.536Z'
+            updated_at: '2022-11-11T10:31:02.536Z'
+          relationships:
+            workflow:
+              data:
+                id: '1372'
+                type: workflow
+            app:
+              data:
+                id: '8111'
+                type: app
+    WorkflowApp:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            coordinates:
+              type: object
+            settings:
+              type: object
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            category:
+              type: string
+            availability:
+              type: object
+            package:
+              type: object
+        relationships:
+          type: object
+          properties:
+            workflow:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+            app:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: workflow_app
+        attributes:
+          id: 12345
+          coordinates:
+            x: '0'
+            y: '171'
+          settings:
+            some_setting: Setting value
+            foo: bar
+          created_at: '2022-11-11T09:11:52.326Z'
+          updated_at: '2022-11-11T09:11:52.326Z'
+          category: App Category
+          availability:
+            subscription: true
+            asset_subscription: true
+          package:
+            id: 1
+            app_id: 2
+            version: 1
+            build: '1'
+            status: published
+            manifest: {}
+            created_at: '2022-11-11T09:11:52.326Z'
+            updated_at: '2022-11-11T09:11:52.326Z'
+            label: ''
+            notes: ''
+            package_code_version: 1
+            url: https://package.qa.corva.ai/provider_1/app/corva-data-app-1/packages/1/app.js
+        relationships:
+          workflow:
+            data:
+              id: 12345
+              type: workflow
+          app:
+            data:
+              id: 12456
+              type: app
+    WorkflowList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowIndex'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+        - id: 12345
+          type: workflow
+          attributes:
+            id: 12345
+            workflow_key: provider.workflow_6
+            name: Workflow 6
+            overview: Long Text
+            caption: Workflow 6 Caption
+            visibility: public
+            segment: drilling
+            image_url: http://www.example.com/image.jpg
+            video_url: http://www.example.com/video.mp4
+            position: 2
+            attachment_metadata:
+            - file_name: example.mp4
+              type: video
+              uploaded_at: '2020-01-01T13:00:00.000Z'
+              cdn_url: https://dz2j2ahzlt5dj.cloudfront.net/workflows/example.mp4
+            created_at: '2022-11-11T09:11:52.326Z'
+            updated_at: '2022-11-11T09:11:52.326Z'
+          relationships:
+            company:
+              data:
+                id: 12345
+                type: company
+            apps:
+              data:
+              - id: 12456
+                type: app
+              - id: 345
+                type: app
+        included:
+        - id: 12345
+          type: company
+          attributes:
+            id: 12345
+            name: Corva
+        - id: 348
+          type: app
+          attributes:
+            id: 348
+            name: My App
+            app_key: my.example.app
+            icon:
+              id: 111
+              app_id: 348
+              file_name: file_name
+              file_type: image
+              media_type: icon
+              s3_path: path_to_s3
+              url: https://package.qa.corva.ai/path/to/s3
+              position: 1
+    WorkflowAppPayload:
+      properties:
+        workflow_app:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            coordinates:
+              type: object
+              format: int64
+            settings:
+              type: object
+      example:
+        workflow_app:
+          coordinates:
+            x: '19'
+            y: '171'
+          settings:
+            some_setting: Setting value
+            foo: bar
+    WorkflowAppsPayload:
+      properties:
+        workflow_apps:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+                format: int64
+              coordinates:
+                type: object
+                format: int64
+              settings:
+                type: object
+      example:
+        workflow_apps:
+        - id: 12345
+          coordinates:
+            x: '19'
+            y: '171'
+          settings:
+            some_setting: Setting value
+            foo: bar
+        - id: 178
+          coordinates:
+            x: '3'
+            y: '34'
+          settings:
+            some_setting: Setting value
+            foo: bar
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

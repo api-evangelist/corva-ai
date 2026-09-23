@@ -1,0 +1,134 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Revolt Chat API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: RevoltChat
+paths:
+  /v2/integration/revolt_chat_sessions:
+    post:
+      summary: Create or fetch Revolt Chat session
+      tags:
+      - RevoltChat
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Returns session token and channel info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  revolt_session_token:
+                    type: string
+                  revolt_user_id:
+                    type: string
+                  revolt_company_server_id:
+                    type: string
+                  revolt_user_joined_server_id:
+                    type: string
+                  revolt_channel_id:
+                    type: string
+                example:
+                  revolt_session_token: rvlt_session_123abc456xyz
+                  revolt_user_id: 01K6ND3NGTDYMSTX48XQWQ89EW
+                  revolt_company_server_id: 01K81Z06QFPKDAJWX1RDV4RM5P
+                  revolt_user_joined_server_id: 01K81Z06QFPKDAJWX1RDV4RM5P
+                  revolt_channel_id: 01K81Z06QF2WW6NK6Q39JRV4K8
+        '502':
+          description: Revolt API error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                example:
+                  code: 502
+                  message: 'Failed to create channel: 500 - error'
+      parameters:
+      - in: query
+        name: well_id
+        description: Well ID
+        schema:
+          type: integer
+      - in: query
+        name: pad_id
+        description: Pad ID
+        schema:
+          type: integer
+      operationId: postV2IntegrationRevoltChatSessions
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

@@ -1,0 +1,254 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva App API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: App
+paths:
+  /v2/apps/{app_id}/metrics:
+    get:
+      summary: Metric statistics for a given App
+      tags:
+      - App
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppMetricList'
+        '422':
+          type: object
+          description: Failure response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppMetricError'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: metric_name
+        description: The App name
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: start_time
+        description: Unix timestamp
+        required: true
+        schema:
+          type: integer
+      - in: query
+        name: end_time
+        description: Unix timestamp
+        required: true
+        schema:
+          type: integer
+      - in: query
+        name: period
+        description: Period must be divisible by 60
+        schema:
+          type: integer
+      operationId: getV2AppsByAppIdMetrics
+      x-operation-id-source: derived
+  /v2/app_metrics/for_selected_apps:
+    get:
+      summary: Metric statistics for the selected Apps
+      tags:
+      - App
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppMetricsList'
+      parameters:
+      - in: query
+        name: app_ids
+        description: Apps ids
+        required: true
+        schema:
+          type: integer
+      - in: query
+        name: metric_name
+        description: Metric name
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: start_time
+        description: Unix timestamp
+        required: true
+        schema:
+          type: integer
+      - in: query
+        name: end_time
+        description: Unix timestamp
+        required: true
+        schema:
+          type: integer
+      - in: query
+        name: period
+        description: Period must be divisible by 60
+        schema:
+          type: integer
+      - in: query
+        name: segment
+        description: Segment for apps
+        schema:
+          type: string
+      operationId: getV2AppMetricsForSelectedApps
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AppMetric:
+      properties:
+        ts:
+          type: integer
+        value:
+          type: float
+      example:
+        ts: 1638462480
+        value: 1.0
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AppMetricList:
+      properties:
+        data:
+          type: object
+          items:
+            $ref: '#/components/schemas/AppMetric'
+        period:
+          type: integer
+        available_from:
+          type: integer
+      example:
+        data:
+          ts: 1638462480
+          value: 1.0
+        period: 120
+        available_from: 1643116200
+    AppMetricsList:
+      items:
+        properties:
+          app_id:
+            type: integer
+          app_name:
+            type: string
+          data:
+            type: object
+            items:
+              $ref: '#/components/schemas/AppMetric'
+          period:
+            type: integer
+          available_from:
+            type: integer
+      example:
+        app_id: 111
+        app_name: App Example name
+        data:
+        - ts: 1638462480
+          value: 1.0
+        period: 600
+        available_from: 1602305040
+    AppMetricError:
+      properties:
+        errors:
+          type: object
+      example:
+        errors:
+        - Some error occurred
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

@@ -1,0 +1,2174 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Users API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Users
+  description: User, API key, and session management
+paths:
+  /v1/.well-known/jwks.json:
+    get:
+      summary: Get JWKS public keys
+      tags:
+      - Users
+      description: Returns JSON Web Key Set (JWKS) containing public keys for verifying RS256-signed JWT tokens. This is a public endpoint that does not require authentication. External services can use these keys to verify tokens issued by this API. Returns an empty keys array if JWKS is not configured.
+      operationId: getJwks
+      responses:
+        '200':
+          description: JWKS public key set
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwksResponse'
+  /v1/user_token#1:
+    post:
+      summary: Obtain user token via email + password authentication
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: New JSON Web Token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationResponse'
+      description: 'Authenticates user and returns JWT tokens. By default returns HMAC tokens (HS256). For JWKS tokens (RS256), include "X-Token-Format: jwks" header or add "token_format: jwks" to auth params.'
+      parameters:
+      - in: header
+        name: X-Token-Format
+        description: 'Token format (optional): "jwks" or "rsa" for RSA-signed tokens'
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailPasswordAuthentication'
+        description: Authentication Data
+        required: true
+      operationId: postV1UserToken#1
+      x-operation-id-source: derived
+  /v1/user_token#2:
+    post:
+      summary: Obtain user token via Auth0 SSO authentication
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: New JSON Web Token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationResponse'
+      description: 'Authenticates user via Auth0 and returns JWT tokens. By default returns HMAC tokens (HS256). For JWKS tokens (RS256), include "X-Token-Format: jwks" header or add "token_format: jwks" to auth params.'
+      parameters:
+      - in: header
+        name: X-Token-Format
+        description: 'Token format (optional): "jwks" or "rsa" for RSA-signed tokens'
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Auth0Authentication'
+        description: Authentication Data
+        required: true
+      operationId: postV1UserToken#2
+      x-operation-id-source: derived
+  /v1/user_token#3:
+    post:
+      summary: Obtain user token via email + password authentication with multi-factor…
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: New JSON Web Token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationResponse'
+      description: 'Authenticates user with MFA and returns JWT tokens. By default returns HMAC tokens (HS256). For JWKS tokens (RS256), include "X-Token-Format: jwks" header or add "token_format: jwks" to auth params.'
+      parameters:
+      - in: header
+        name: X-Token-Format
+        description: 'Token format (optional): "jwks" or "rsa" for RSA-signed tokens'
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailPasswordMFAAuthentication'
+        description: Authentication Data
+        required: true
+      operationId: postV1UserToken#3
+      x-operation-id-source: derived
+  /v1/user_token#4:
+    post:
+      summary: Refresh jwt token using refresh_token
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: New JSON Web Token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationResponse'
+      description: 'Refreshes JWT token using refresh_token. By default returns HMAC tokens (HS256). For JWKS tokens (RS256), include "X-Token-Format: jwks" header or add "token_format: jwks" to auth params.'
+      parameters:
+      - in: header
+        name: X-Token-Format
+        description: 'Token format (optional): "jwks" or "rsa" for RSA-signed tokens'
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenAuthentication'
+        description: Authentication Data
+        required: true
+      operationId: postV1UserToken#4
+      x-operation-id-source: derived
+  /v1/sessions/verification/request:
+    post:
+      summary: Request verification code
+      tags:
+      - Users
+      responses:
+        '200':
+          description: Verification code requested
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  identity_verification:
+                    type: object
+                    properties:
+                      required:
+                        type: boolean
+                      enabled:
+                        type: boolean
+                      available_modes:
+                        type: array
+                        items:
+                          type: string
+                      enabled_modes:
+                        type: array
+                        items:
+                          type: string
+                  triggered:
+                    type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Mode
+      operationId: postV1SessionsVerificationRequest
+      x-operation-id-source: derived
+  /v1/sessions/schemas:
+    get:
+      summary: Get available authentication schemas
+      tags:
+      - Users
+      parameters:
+      - in: query
+        name: email
+        description: User email
+        schema:
+          type: string
+      - in: query
+        name: provider
+        description: Provider name to filter by
+        schema:
+          type: string
+      - in: query
+        name: connection
+        description: Connection name to filter by
+        schema:
+          type: string
+      - in: query
+        name: with_provider
+        description: Include provider and respond with extended format or not. "false" by default.
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: List of available schemas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuthenticationSchema'
+      operationId: getV1SessionsSchemas
+      x-operation-id-source: derived
+  /v2/users:
+    get:
+      summary: List Users
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserList'
+      operationId: getV2Users
+      x-operation-id-source: derived
+    post:
+      summary: Create a User
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created User
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPayloadCreate'
+        description: User Payload
+        required: true
+      operationId: postV2Users
+      x-operation-id-source: derived
+  /v2/users/{id}:
+    get:
+      summary: Show User
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      parameters:
+      - in: path
+        name: id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2UsersById
+      x-operation-id-source: derived
+    patch:
+      summary: Update a User
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated User
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      parameters:
+      - in: path
+        name: id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPayloadUpdate'
+        description: User Payload
+        required: true
+      operationId: patchV2UsersById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a User
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: User deleted
+      parameters:
+      - in: path
+        name: id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2UsersById
+      x-operation-id-source: derived
+  /v2/users/export:
+    get:
+      summary: Export users by company as csv
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters:
+      - in: query
+        name: company_id
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2UsersExport
+      x-operation-id-source: derived
+  /v2/users/streaks:
+    get:
+      summary: User Streaks list
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserStreaksList'
+      parameters:
+      - in: query
+        name: ids
+        description: User IDs
+        required: false
+        schema:
+          type: string
+          format: int64
+      - in: query
+        name: page
+        description: Number of page
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of items to list per page
+        schema:
+          type: integer
+      - in: query
+        name: sort
+        description: 'One or more fields to sort by. Prefix with a - for descending order. Ex: name,-updated_at'
+        schema:
+          type: string
+          enum:
+          - created_at
+          - updated_at
+      - in: query
+        name: order
+        description: A sorting direction
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+      operationId: getV2UsersStreaks
+      x-operation-id-source: derived
+  /v2/users/{user_id}/settings:
+    get:
+      summary: Get all settings for a user
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSettings'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2UsersByUserIdSettings
+      x-operation-id-source: derived
+    post:
+      summary: Add settings for a user
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated User
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSettingsUpdated'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSettingsPayload'
+        description: Settings Payload
+        required: true
+      operationId: postV2UsersByUserIdSettings
+      x-operation-id-source: derived
+  /v2/users/{user_id}/settings/{key}:
+    get:
+      summary: Get a setting with a key
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                example:
+                  key: value
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: key
+        description: Settings key
+        required: true
+        schema:
+          type: string
+      operationId: getV2UsersByUserIdSettingsByKey
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a setting with a key
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSettings'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: key
+        description: Settings key
+        required: true
+        schema:
+          type: string
+      operationId: deleteV2UsersByUserIdSettingsByKey
+      x-operation-id-source: derived
+  /v2/users/{user_id}/identity_verifiers:
+    get:
+      summary: List Identity Verifiers for a User
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentityVerifierList'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2UsersByUserIdIdentityVerifiers
+      x-operation-id-source: derived
+    post:
+      summary: Create Identity Verifier for a User
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created Identity Verifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentityVerifier'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Identity Verifier Settings
+      operationId: postV2UsersByUserIdIdentityVerifiers
+      x-operation-id-source: derived
+  /v2/users/{user_id}/identity_verifiers/{mode}:
+    get:
+      summary: Show Specific Identity Verifier for a User
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Identity Verifier not found
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentityVerifier'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: mode
+        description: Identity Verifier Mode
+        required: true
+        schema:
+          type: string
+      operationId: getV2UsersByUserIdIdentityVerifiersByMode
+      x-operation-id-source: derived
+    patch:
+      summary: Update Specific Identity Verifier for a User
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Identity Verifier not found
+        '200':
+          description: Updated Identity Verifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentityVerifier'
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: mode
+        description: Identity Verifier Mode
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Identity Verifier Settings
+      operationId: patchV2UsersByUserIdIdentityVerifiersByMode
+      x-operation-id-source: derived
+    delete:
+      summary: Delete Specific Identity Verifier for a User
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Identity Verifier not found
+        '200':
+          description: Identity Verifier deleted
+      parameters:
+      - in: path
+        name: user_id
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: mode
+        description: Identity Verifier Mode
+        required: true
+        schema:
+          type: string
+      operationId: deleteV2UsersByUserIdIdentityVerifiersByMode
+      x-operation-id-source: derived
+  /v2/api_keys:
+    get:
+      summary: List accessible API keys
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKeyList'
+      operationId: getV2ApiKeys
+      x-operation-id-source: derived
+    post:
+      summary: Create an API key
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiKeyPayload'
+        description: API Key Payload
+        required: true
+      operationId: postV2ApiKeys
+      x-operation-id-source: derived
+  /v2/api_keys/current:
+    get:
+      summary: Show current API key
+      tags:
+      - Users
+      description: Returns the API key used to authenticate the request
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
+      operationId: getV2ApiKeysCurrent
+      x-operation-id-source: derived
+  /v2/api_keys/{id}:
+    get:
+      summary: Show API key
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
+      parameters:
+      - in: path
+        name: id
+        description: API key ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2ApiKeysById
+      x-operation-id-source: derived
+    patch:
+      summary: Update an API key
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
+      parameters:
+      - in: path
+        name: id
+        description: API key ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiKeyPayload'
+        description: API Key Payload
+        required: true
+      operationId: patchV2ApiKeysById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete an API key
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: API key deleted
+      parameters:
+      - in: path
+        name: id
+        description: API key ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2ApiKeysById
+      x-operation-id-source: derived
+  /v2/api_keys/{id}/approve:
+    post:
+      summary: Approve and activate an API key
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Approved API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
+      parameters:
+      - in: path
+        name: id
+        description: API key ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2ApiKeysByIdApprove
+      x-operation-id-source: derived
+  /v2/api_keys/{id}/deactivate:
+    post:
+      summary: Deactivate an API key
+      tags:
+      - Users
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Deactivated API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
+      parameters:
+      - in: path
+        name: id
+        description: API key ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2ApiKeysByIdDeactivate
+      x-operation-id-source: derived
+components:
+  schemas:
+    UserSettingsUpdated:
+      properties:
+        favorites:
+          type: object
+        sms_blacklisted:
+          type: boolean
+        restricted_assets:
+          type: array
+        restricted_programs:
+          type: array
+        participates_in_beta_apps:
+          type: boolean
+        custom_property:
+          type: string
+        custom_property2:
+          type: object
+      example:
+        favorites: {}
+        sms_blacklisted: false
+        restricted_assets: []
+        restricted_programs: []
+        participates_in_beta_apps: true
+        custom_property: Value
+        custom_property2:
+          key: value
+    ApiKey:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            permissions:
+              type: string
+            status:
+              type: string
+            owner_id:
+              type: integer
+              format: int64
+            owner_type:
+              type: string
+            requested_at:
+              type: string
+              format: date-time
+            approved_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            requested_by:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            approved_by:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: api_key
+        attributes:
+          id: '12345'
+          name: ApiKey Name or key alias
+          permissions: read
+          status: active
+          owner_id: 10000
+          owner_type: App
+          requested_at: '2020-01-01T08:00:00.000Z'
+          approved_at: '2020-01-01T13:00:00.000Z'
+        relationships:
+          company:
+            id: '1'
+            type: company
+          requested_by:
+            id: '123'
+            type: user
+          approved_by:
+            id: '456'
+            type: user
+    User:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            company_id:
+              type: integer
+              format: int64
+            first_name:
+              type: string
+            last_name:
+              type: string
+            email:
+              type: string
+            mobile:
+              type: string
+            created_at:
+              type: string
+            terms_acceptance_at:
+              type: string
+            profile_photo:
+              type: string
+            recently_viewed_asset_ids:
+              type: array
+            company:
+              type: object
+            unit_system:
+              type: object
+            custom_unit_system:
+              type: object
+            role:
+              type: string
+            title:
+              type: string
+            group:
+              type: array
+            favourite_aset_id:
+              type: integer
+              format: int64
+            current_segment:
+              type: string
+            theme:
+              type: string
+            messaging_id:
+              type: string
+            restricted_assets:
+              type: array
+            resource:
+              type: array
+            settings:
+              type: object
+            last_sign_in_at:
+              type: string
+            intercom_user_hash:
+              type: string
+            locked_access:
+              type: boolean
+            unit_ids:
+              type: array
+        relationships:
+          type: object
+          properties:
+            profile_groups:
+              type: object
+              properties:
+                data:
+                  type: array
+            preference:
+              type: object
+              properties:
+                data:
+                  type: object
+            groups:
+              type: object
+              properties:
+                data:
+                  type: array
+      example:
+        id: 2499
+        type: user
+        attributes:
+          company_id: 12
+          first_name: Derek
+          last_name: Smith
+          email: email7@corva.ai
+          mobile: '+1555555555'
+          created_at: '2021-02-19T11:53:42.626Z'
+          terms_acceptance_at: '2021-02-19T11:53:42.626Z'
+          profile_photo: aws_s3_file_path
+          recently_viewed_asset_ids: []
+          company:
+            id: 12
+            name: Big Data Energy
+          unit_system:
+            yp: hsf
+            oil: bbl
+            area: ft2
+            mass: lb
+            force: klbf
+            speed: ft/h
+            length: ft
+            system: imperial
+            torque: ft-klbf
+            volume: gal
+            density: ppg
+            pressure: psi
+            shortLength: in
+            temperature: F
+            massPerLength: lb-ft
+            volumeFlowRate: gal/min
+          custom_unit_system:
+            mass: kg
+            distance: m
+          role: user
+          title: Drilling Engineer
+          group:
+          - Field
+          - Office
+          - RTOC
+          favorite_asset_id: 2
+          current_segment: drilling
+          theme: dark
+          messaging_id: test_123
+          restricted_assets: []
+          resource: []
+          settings:
+            favorites: {}
+            sms_blacklisted: false
+            restricted_assets: []
+            restricted_programs: []
+            participates_in_beta_apps: false
+          last_sign_in_at: '2021-02-19T11:53:42.626Z'
+          intercom_user_hash: ef587b24d6c758c48fab6223ddb7388324a46f3bf01892aac8fe1295c3722cb1
+          locked_access: false
+          unit_ids: []
+        relationships:
+          profile_groups:
+            data:
+            - id: 123
+              type: profile_group
+            - id: 124
+              type: profile_group
+          preference:
+            data:
+              id: 123
+              type: preference
+          groups:
+            data:
+            - id: 123
+              type: group
+            - id: 124
+              type: group
+    UserPayloadUpdate:
+      properties:
+        user:
+          type: object
+          properties:
+            user_id:
+              type: integer
+            email:
+              type: string
+            first_name:
+              type: string
+            last_name:
+              type: string
+            title:
+              type: string
+            profile_photo:
+              type: string
+            group:
+              type: array
+              items:
+                type: string
+            group_ids:
+              type: array
+              items:
+                type: integer
+            current_segment:
+              type: string
+            role:
+              type: string
+            favorite_asset_id:
+              type: integer
+            resource:
+              type: array
+              items:
+                type: string
+            theme:
+              type: string
+            mobile:
+              type: string
+            unit_system:
+              type: object
+            custom_unit_system:
+              type: object
+      example:
+        user:
+          email: john.doe@example.com
+          first_name: John
+          last_name: Doe
+          title: Title
+          group_ids:
+          - 13
+          - 445
+          - 890
+          role: user
+          theme: dark
+          mobile: '+1555555555'
+          resource:
+          - Conventional
+          unit_system:
+            yp: hsf
+            oil: bbl
+            area: ft2
+            mass: lb
+            force: klbf
+            speed: ft/h
+            length: ft
+            system: imperial
+            torque: ft-klbf
+            volume: gal
+            density: ppg
+            pressure: psi
+            shortLength: in
+            temperature: F
+            massPerLength: lb-ft
+            volumeFlowRate: gal/min
+          custom_unit_system:
+            mass: kg
+            distance: m
+    UserMinimal:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            first_name:
+              type: string
+            last_name:
+              type: string
+            email:
+              type: string
+            title:
+              type: string
+            role:
+              type: string
+            profile_photo:
+              type: string
+            terms_acceptance_at:
+              type: string
+              format: date-time
+            messaging_id:
+              type: string
+            company_id:
+              type: integer
+              format: int64
+            mobile:
+              type: string
+            last_sign_in_at:
+              type: string
+              format: date-time
+            current_segment:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            groups:
+              type: object
+              properties:
+                data:
+                  type: array
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            company:
+              type: object
+              properties:
+                data:
+                  type: array
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+      example:
+        id: 2499
+        type: user
+        attributes:
+          first_name: Derek
+          last_name: Smith
+          email: email7@corva.ai
+          title: Drilling Engineer
+          role: User role
+          profile_photo: aws_s3_file_path
+          terms_acceptance_at: '2020-02-04T12:48:59.593Z'
+          messaging_id: test_13684
+          company_id: 123
+          mobile: Mobile string
+          last_sign_in_at: '2020-02-04T12:48:59.593Z'
+          current_segment: drilling
+          created_at: '2020-02-04T12:48:59.593Z'
+        relationships:
+          groups:
+            data:
+            - id: 123
+              type: group
+            - id: 124
+              type: group
+          company:
+            data:
+              id: 123
+              type: company
+        included:
+        - id: 123
+          type: group
+          attributes:
+            id: 123
+            name: Group name
+        - id: 123
+          type: company
+          attributes:
+            id: 123
+            name: Company name
+    IdentityVerifier:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            mode:
+              type: string
+            settings:
+              type: object
+      example:
+        id: 1
+        type: identity_verifier
+        attributes:
+          mode: email
+          settings:
+            key: value
+    RefreshTokenAuthentication:
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        auth:
+          refresh_token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMzUwLCJleHAiOjE1NzkxOTgyOTksImNvbXBhbnlfaWQiOjI3MjksImltcGVyc29uYXRvcl9pZCI6bnVsbH0.nWitzFwOW5FfXelRrkcTz90u1QUtGNXcJQc2lkcW1_k
+    UserPayloadCreate:
+      properties:
+        user:
+          type: object
+          properties:
+            company_id:
+              type: integer
+            password:
+              type: string
+            password_confirmation:
+              type: string
+            user_id:
+              type: integer
+            email:
+              type: string
+            first_name:
+              type: string
+            last_name:
+              type: string
+            title:
+              type: string
+            profile_photo:
+              type: string
+            group:
+              type: array
+              items:
+                type: string
+            group_ids:
+              type: array
+              items:
+                type: integer
+            current_segment:
+              type: string
+            role:
+              type: string
+            favorite_asset_id:
+              type: integer
+            resource:
+              type: array
+              items:
+                type: string
+            theme:
+              type: string
+            mobile:
+              type: string
+            unit_system:
+              type: object
+            custom_unit_system:
+              type: object
+            unit_ids:
+              type: array
+              items:
+                type: integer
+      example:
+        user:
+          company_id: 1
+          password: Password
+          password_confirmation: Password
+          email: john.doe@example.com
+          group_ids:
+          - 13
+          - 445
+          - 890
+          unit_ids:
+          - 134
+          - 445
+          - 850
+          first_name: John
+          last_name: Doe
+          title: Title
+          role: user
+          theme: dark
+          mobile: '+1555555555'
+          resource:
+          - Conventional
+          group:
+          - Field
+          unit_system:
+            yp: hsf
+            oil: bbl
+            area: ft2
+            mass: lb
+            force: klbf
+            speed: ft/h
+            length: ft
+            system: imperial
+            torque: ft-klbf
+            volume: gal
+            density: ppg
+            pressure: psi
+            shortLength: in
+            temperature: F
+            massPerLength: lb-ft
+            volumeFlowRate: gal/min
+          custom_unit_system:
+            mass: kg
+            distance: m
+    JwksResponse:
+      description: JWKS (JSON Web Key Set) containing public keys for verifying JWT tokens
+      properties:
+        keys:
+          type: array
+          items:
+            $ref: '#/components/schemas/JwksKey'
+      example:
+        keys:
+        - kid: corva-api-1731540000
+          kty: RSA
+          alg: RS256
+          use: sig
+          n: xGOr-H7A7RCQBzJvq9jKMjPqJT5AYo1oqP6LmcR2...
+          e: AQAB
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    UserList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserMinimal'
+    UserSettingsPayload:
+      properties:
+        custom_property:
+          type: string
+        custom_property2:
+          type: object
+        participates_in_beta_apps:
+          type: boolean
+      example:
+        custom_property: Value
+        custom_property2:
+          key: value
+        participates_in_beta_apps: true
+    IdentityVerifierList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdentityVerifier'
+    AuthenticationSchema:
+      properties:
+        connection:
+          type: string
+        title:
+          type: string
+        provider:
+          type: string
+      example:
+        connection: connection-abc
+        title: Connection to ABC
+        provider: google
+    ApiKeyList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiKey'
+    ApiKeyPayload:
+      properties:
+        api_key:
+          type: object
+          properties:
+            key:
+              type: string
+            permissions:
+              type: string
+            owner_id:
+              type: integer
+              format: int64
+            owner_type:
+              type: string
+            requested_by_id:
+              type: integer
+              format: int64
+            approved_by_id:
+              type: integer
+              format: int64
+            company_id:
+              type: integer
+              format: int64
+      example:
+        api_key:
+          name: ApiKey Name
+          status: active
+          key: some-auto-generated-key
+          permissions: read
+          owner_id: 12345
+          owner_type: App
+          requested_by_id: 123
+          approved_by_id: 456
+          company_id: 456
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    UserSettings:
+      properties:
+        favorites:
+          type: object
+        sms_blacklisted:
+          type: boolean
+        restricted_assets:
+          type: array
+        restricted_programs:
+          type: array
+        participates_in_beta_apps:
+          type: boolean
+      example:
+        favorites: {}
+        sms_blacklisted: false
+        restricted_assets: []
+        restricted_programs: []
+        participates_in_beta_apps: false
+    EmailPasswordMFAAuthentication:
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        verification_mode:
+          type: string
+          enum:
+          - email
+          - sms
+          - authenticator
+        verification_code:
+          type: string
+      example:
+        auth:
+          email: me@mycompany.com
+          password: ThisIsMyP@55w0rd!
+          verification_mode: email
+          verification_code: '123456'
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationResponse:
+      description: 'Authentication response containing JWT tokens. By default returns HMAC (HS256) tokens. To receive JWKS (RS256) tokens, include "X-Token-Format: jwks" header or "token_format: jwks" in auth params.'
+      properties:
+        jwt:
+          type: string
+        auth_key:
+          type: string
+        refresh_token:
+          type: string
+        user_id:
+          type: integer
+          format: int64
+        intercom_hash:
+          type: string
+      example:
+        jwt: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMzUwLCJleHAiOjE1NzkxOTgyOTksImNvbXBhbnlfaWQiOjI3MjksImltcGVyc29uYXRvcl9pZCI6bnVsbH0.nWitzFwOW5FfXelRrkcTz90u1QUtGNXcJQc2lkcW1_k
+        auth_key: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMzUwLCJleHAiOjE1NzkxOTgyOTksImNvbXBhbnlfaWQiOjI3MjksImltcGVyc29uYXRvcl9pZCI6bnVsbH0.nWitzFwOW5FfXelRrkcTz90u1QUtGNXcJQc2lkcW1_k
+        refresh_token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMzUwLCJleHAiOjE1NzkxOTgyOTksImNvbXBhbnlfaWQiOjI3MjksImltcGVyc29uYXRvcl9pZCI6bnVsbH0.nWitzFwOW5FfXelRrkcTz90u1QUtGNXcJQc2lkcW1_k
+        user_id: 1042
+        intercom_hash: 2128ecf9724b23d96da879ff3febc393694c0b43f6f204a6997317c853f593cd
+    UserStreaksList:
+      properties:
+        data:
+          type: array
+          items:
+            properties:
+              id:
+                type: string
+                format: int64
+              type:
+                type: string
+              attributes:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  email:
+                    type: integer
+                  streak:
+                    type: object
+                    properties:
+                      current_streak:
+                        type: integer
+                      longest_streak:
+                        type: integer
+                      last_active_on:
+                        type: date
+      example:
+        data:
+        - id: '1'
+          type: user
+          attributes:
+            id: 1
+            email: example@email.com
+            streak:
+              current_streak: 1
+              longest_streak: 10
+              last_active_on: '2025-04-25'
+    Auth0Authentication:
+      properties:
+        token:
+          type: string
+        nonce:
+          type: string
+      example:
+        auth:
+          token: auth0-token-goes-here
+          nonce: auth0-nonce-goes-here
+    EmailPasswordAuthentication:
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        auth:
+          email: me@mycompany.com
+          password: ThisIsMyP@55w0rd!
+    JwksKey:
+      description: JWKS public key for JWT token verification
+      properties:
+        kid:
+          type: string
+          description: Key ID
+        kty:
+          type: string
+          description: Key type (RSA)
+        alg:
+          type: string
+          description: Algorithm (RS256)
+        use:
+          type: string
+          description: Key usage (sig for signature)
+        n:
+          type: string
+          description: Base64url-encoded RSA modulus
+        e:
+          type: string
+          description: Base64url-encoded RSA exponent
+      example:
+        kid: corva-api-1731540000
+        kty: RSA
+        alg: RS256
+        use: sig
+        n: xGOr-H7A7RCQBzJvq9jKMjPqJT5AYo1oqP6LmcR2...
+        e: AQAB
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

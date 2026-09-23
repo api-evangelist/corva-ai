@@ -1,0 +1,236 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Registered Models API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Registered Models
+paths:
+  /v2/integration/registered_models:
+    get:
+      summary: Show list of Registered Models
+      tags:
+      - Registered Models
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List of Registered Models
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: Registered Models that match the search criteria
+                    items:
+                      properties:
+                        model:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            creation_timestamp:
+                              type: integer
+                            last_updated_timestamp:
+                              type: integer
+                            latest_versions:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  name:
+                                    type: string
+                                  version:
+                                    type: string
+                                  current_stage:
+                                    type: string
+                            aliases:
+                              type: array
+                              items:
+                                properties:
+                                  alias:
+                                    type: string
+                                  version:
+                                    type: string
+                        metadata:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            company_ids:
+                              type: object
+                            asset_ids:
+                              type: array
+                example:
+                  data:
+                  - model:
+                      name: model_name
+                      creation_timestamp: 1710260937079
+                      last_updated_timestamp: 1710268556343
+                      latest_versions:
+                      - name: model_name1
+                        version: '4'
+                        current_stage: None
+                    version:
+                      name: corva-haynesville-multi
+                      version: 1
+                      creation_timestamp: 1711479723420
+                      last_updated_timestamp: 1711479723420
+                      current_stage: None
+                      description: ''
+                      source: mlflow-artifacts:/0/10a0b6365b4a4ae09b3478e675c3d0f9/artifacts/sk_learn
+                      run_id: 10a0b6365b4a4ae09b3478e675c3d0f9
+                      status: READY
+                      run_link: ''
+                    metadata:
+                      orientation: lateral
+                      asset_ids:
+                      - 88843773
+                      formations:
+                        Haynesville: 54
+                      company_names:
+                        Rockcliff Energy: 54
+                      company_ids:
+                        '36': 54
+                      basins:
+                        Carthage (Haynesville): 53
+                        Carthage (Cotton Valley): 1
+                      rigs:
+                        H&P 475: 13
+                        Nabors X17: 11
+                      wells:
+                      - H&P 475, Abney-T.P. Smith HV Unit A 1H
+                      - 'H&P 475, Abney-T.P. Smith HV Unit B 2H '
+                      major_company_name: rockcliff-energy
+                      major_formation: haynesville
+                      major_basin: carthage--haynesville-
+                      dataset_save_location: datasets/rockcliff_haynesville_assets/preprocessed/_lateral
+                      model_save_location: models/rockcliff-energy/carthage--haynesville-/lateral/haynesville/haynesville_gbt_reg_model
+                      target_feature_name: rop
+                      split_train_test_random_seed: 12345
+                      timestamp_range: null
+                      major_company_id: '36'
+      parameters:
+      - in: query
+        name: filter
+        description: Filter by model name
+        schema:
+          type: string
+      - in: query
+        name: uuid
+        description: Filter by model name
+        example: name1,name2
+        schema:
+          type: string
+      - in: query
+        name: alias
+        description: Filter by model alias (e.g., "qa" or "prod")
+        schema:
+          type: string
+      - in: query
+        name: company_id
+        description: Filter by company ID
+        schema:
+          type: string
+      - in: query
+        name: asset_id
+        description: Filter by asset ID
+        schema:
+          type: string
+      - in: query
+        name: basin
+        description: Filter by basin name
+        schema:
+          type: string
+      - in: query
+        name: max_results
+        description: Limit number of items, Default is 100. Max threshold is 1000.
+        schema:
+          type: integer
+      - in: query
+        name: order_by
+        description: List of columns for ordering search results
+        schema:
+          type: array
+      - in: query
+        name: page_token
+        description: Next page token
+        schema:
+          type: string
+      - in: query
+        name: force
+        description: Use to force request MLFlow API instead of cache
+        schema:
+          type: boolean
+      operationId: getV2IntegrationRegisteredModels
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

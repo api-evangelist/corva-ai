@@ -1,0 +1,459 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva App Stream Template API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: AppStreamTemplate
+paths:
+  /v2/app_stream_templates:
+    get:
+      summary: List accessible app stream templates
+      tags:
+      - AppStreamTemplate
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppStreamTemplateList'
+      parameters:
+      - in: query
+        name: log_type
+        description: Filter by log_type. Can be time or depth
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: segment
+        description: Filter by segment. Can be drilling or completion
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: data_source
+        description: Filter by data source. Can be witsml or csv
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: stream_mode
+        description: Filter by stream mode. Can be live or historical
+        required: false
+        schema:
+          type: string
+      operationId: getV2AppStreamTemplates
+      x-operation-id-source: derived
+    post:
+      summary: Create an app stream template
+      tags:
+      - AppStreamTemplate
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created app
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppStreamTemplate'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppStreamTemplatePayload'
+        description: App Stream Template Payload
+        required: true
+      operationId: postV2AppStreamTemplates
+      x-operation-id-source: derived
+  /v2/app_stream_templates/{id}:
+    get:
+      summary: Show app stream template
+      tags:
+      - AppStreamTemplate
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppStreamTemplateShow'
+      parameters:
+      - in: path
+        name: id
+        description: AppStreamTemplate ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2AppStreamTemplatesById
+      x-operation-id-source: derived
+    patch:
+      summary: Update an AppStreamTemplate
+      tags:
+      - AppStreamTemplate
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated AppStreamTemplate
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppStreamTemplate'
+      parameters:
+      - in: path
+        name: id
+        description: AppStreamTemplate ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppStreamTemplatePayload'
+        description: App Stream Template Payload
+        required: true
+      operationId: patchV2AppStreamTemplatesById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete an AppStreamTemplate
+      tags:
+      - AppStreamTemplate
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: AppStreamTemplate deleted
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: AppStreamTemplate ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2AppStreamTemplatesById
+      x-operation-id-source: derived
+components:
+  schemas:
+    AppStreamTemplatePayload:
+      properties:
+        app_stream_template:
+          type: object
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            segment:
+              type: string
+              enum:
+              - drilling
+              - completion
+              - intervention
+            source_type:
+              type: string
+              enum:
+              - drilling
+              - drillout
+              - frac
+              - pumpdown
+              - wireline
+            log_type:
+              type: string
+              enum:
+              - time
+              - depth
+      example:
+        app_stream_template:
+          name: CustomTemplate1
+          description: Description
+          segment: drilling
+          source_type: drilling
+          log_type: time
+    AppStreamTemplateShow:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AppStreamTemplate'
+        included:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppStreamTemplateAppSummary'
+      example:
+        data:
+          id: 12345
+          type: app_stream_template
+          attributes:
+            id: 12345
+            company_id: 12345
+            name: StreamX drilling time
+            segment: drilling
+            source_type: drilling
+            log_type: time
+            data_sources:
+            - witsml
+            stream_mode: live
+            template_key: streamx-drilling-time-witsml
+          relationships:
+            app_stream_template_apps:
+              data:
+              - id: 435
+                type: app_stream_template_app
+        included:
+        - id: 435
+          type: app_stream_template_app
+          attributes:
+            id: 435
+            app_stream_template_id: 12345
+            app_id: 999
+            key: corva.streamx-witsml-source
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AppStreamTemplate:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            company_id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            description:
+              type: string
+            segment:
+              type: string
+            source_type:
+              type: string
+            log_type:
+              type: string
+            data_source:
+              type: string
+            stream_mode:
+              type: string
+            template_key:
+              type: string
+        relationships:
+          type: object
+          properties:
+            app_stream_template_apps:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                        format: int64
+                      type:
+                        type: string
+      example:
+        id: 12345
+        type: app_stream_template
+        attributes:
+          id: 12345
+          app_id: 12345
+          company_id: 12345
+          name: FracStreamTemplate1
+          segment: completion
+          source_type: frac
+          log_type: time
+          data_sources:
+          - witsml
+          stream_mode: historical
+          template_key: frac-stream-template-1
+        relationships:
+          app_stream_template_apps:
+            data:
+            - id: 435
+              type: app_stream_template_app
+    AppStreamTemplateList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppStreamTemplate'
+    AppStreamTemplateAppSummary:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            app_stream_template_id:
+              type: integer
+              format: int64
+            app_id:
+              type: integer
+              format: int64
+            key:
+              type: string
+      example:
+        id: 12345
+        type: app_stream_template_app
+        attributes:
+          id: 12345
+          app_stream_template_id: 299
+          app_id: 999
+          key: corva.streamx-witsml-source
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

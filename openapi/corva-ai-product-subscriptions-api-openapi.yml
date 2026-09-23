@@ -1,0 +1,777 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Product Subscriptions API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Product Subscriptions
+paths:
+  /v2/product_subscriptions:
+    get:
+      summary: List Product Subscriptions
+      tags:
+      - Product Subscriptions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSubscriptionList'
+      parameters:
+      - in: query
+        name: status
+        description: Filter Product Subscriptions by status
+        schema:
+          type: string
+          enum:
+          - unapproved
+          - active
+          - cancelled
+          - denied
+          - all
+      - in: query
+        name: company_id
+        description: Filter Product Subscriptions by company_id
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: asset_name
+        description: Filter Product Subscriptions by asset name
+        schema:
+          type: string
+      - in: query
+        name: name
+        description: Filter Product Subscriptions by subscription name
+        schema:
+          type: string
+      - in: query
+        name: page
+        description: Number of page
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of items to list per page
+        schema:
+          type: integer
+      - in: query
+        name: sort
+        description: 'One or more fields to sort by. Prefix with a - for descending order. Ex: name,-updated_at'
+        schema:
+          type: string
+          enum:
+          - name
+          - price
+          - created_at
+          - updated_at
+      - in: query
+        name: order
+        description: A sorting direction
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+      operationId: getV2ProductSubscriptions
+      x-operation-id-source: derived
+    post:
+      summary: Create a Product Subscription
+      tags:
+      - Product Subscriptions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created Product Subscription
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSubscription'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductSubscriptionPayload'
+        description: Product Subscription Payload
+        required: true
+      operationId: postV2ProductSubscriptions
+      x-operation-id-source: derived
+  /v2/product_subscriptions/{uuid}:
+    get:
+      summary: Show Product Subscription
+      tags:
+      - Product Subscriptions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSubscription'
+      parameters:
+      - in: path
+        name: uuid
+        description: Product Subscription UUID
+        required: true
+        schema:
+          type: string
+      operationId: getV2ProductSubscriptionsByUuid
+      x-operation-id-source: derived
+    patch:
+      summary: Update a Product Subscription
+      tags:
+      - Product Subscriptions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Product Subscription
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSubscription'
+      parameters:
+      - in: path
+        name: uuid
+        description: Product Subscription UUID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductSubscriptionUpdatePayload'
+        description: Product Subscription Payload
+        required: true
+      operationId: patchV2ProductSubscriptionsByUuid
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a Product Subscription
+      tags:
+      - Product Subscriptions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Product Subscription deleted
+      parameters:
+      - in: path
+        name: uuid
+        description: Product Subscription UUID
+        required: true
+        schema:
+          type: string
+      operationId: deleteV2ProductSubscriptionsByUuid
+      x-operation-id-source: derived
+  /v2/product_subscriptions/{uuid}/cancel:
+    post:
+      summary: Cancel a Product Subscription
+      tags:
+      - Product Subscriptions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Product Subscription's status after cancellation
+      parameters:
+      - in: path
+        name: uuid
+        description: Product Subscription UUID
+        required: true
+        schema:
+          type: string
+      operationId: postV2ProductSubscriptionsByUuidCancel
+      x-operation-id-source: derived
+  /v2/product_subscriptions/{id}/approve:
+    post:
+      summary: Approve a Product Subscription
+      tags:
+      - Product Subscriptions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Product Subscription approved
+      parameters:
+      - in: path
+        name: id
+        description: Product Subscription ID
+        required: true
+        schema:
+          type: integer
+      operationId: postV2ProductSubscriptionsByIdApprove
+      x-operation-id-source: derived
+  /v2/product_subscriptions/{id}/deny:
+    post:
+      summary: Deny a Product Subscription
+      tags:
+      - Product Subscriptions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Product Subscription denied
+      parameters:
+      - in: path
+        name: id
+        description: Product Subscription ID
+        required: true
+        schema:
+          type: integer
+      operationId: postV2ProductSubscriptionsByIdDeny
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    ProductSubscriptionPayload:
+      properties:
+        product_subscription:
+          type: object
+          properties:
+            company_id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            segment:
+              type: string
+              enum:
+              - drilling
+              - completion
+              - intervention
+            asset_type:
+              type: string
+              enum:
+              - company
+              - program
+              - rig
+              - frac_fleet
+              - drillout_unit
+            billing_period:
+              type: string
+              enum:
+              - monthly
+              - daily
+              - annually
+            billing_calc_method:
+              type: string
+              enum:
+              - well_afe_day
+              - well_afe_month
+              - corva_active_day
+              - corva_active_month
+            billing_contact:
+              type: string
+            billing_email:
+              type: string
+            billing_phone:
+              type: string
+            account_manager:
+              type: string
+            price:
+              type: float
+            features:
+              type: object
+            asset_ids:
+              type: array
+              items:
+                type: integer
+            app_ids:
+              type: array
+              items:
+                type: integer
+            tier_ids:
+              type: array
+              items:
+                type: integer
+      example:
+        product_subscription:
+          price: 19.95
+          features:
+            alert_count: 10
+            asset_count: 5
+            user_count: 5
+            api_access: true
+            data_quality: true
+            mobile_apps: true
+            sso: true
+            wellview_integration: true
+          company_id: 12345
+          name: Product Name
+          segment: drilling
+          asset_type: program
+          billing_period: monthly
+          billing_calc_method: well_afe_day
+          billing_contact: Billing contact
+          billing_email: example@email.com
+          billing_phone: +1-415 652 0000
+          account_manager: Manager name
+          asset_ids:
+          - 4
+          app_ids:
+          - 1
+          tier_ids:
+          - 12345
+          - 12346
+    ProductSubscriptionList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductSubscription'
+    ProductSubscriptionUpdatePayload:
+      properties:
+        product_subscription:
+          type: object
+          properties:
+            name:
+              type: string
+            asset_type:
+              type: string
+              enum:
+              - company
+              - program
+              - rig
+              - frac_fleet
+              - drillout_unit
+            billing_period:
+              type: string
+              enum:
+              - monthly
+              - daily
+              - annually
+            billing_calc_method:
+              type: string
+              enum:
+              - well_afe_day
+              - well_afe_month
+              - corva_active_day
+              - corva_active_month
+            billing_contact:
+              type: string
+            billing_email:
+              type: string
+            billing_phone:
+              type: string
+            account_manager:
+              type: string
+            price:
+              type: float
+            features:
+              type: object
+            asset_ids:
+              type: array
+              items:
+                type: integer
+            apps:
+              type: array
+              items:
+                type: integer
+            tier_ids:
+              type: array
+              items:
+                type: integer
+      example:
+        product_subscription:
+          price: 19.95
+          features:
+            alert_count: 10
+            asset_count: 5
+            user_count: 5
+            api_access: true
+            data_quality: true
+            mobile_apps: true
+            sso: true
+            wellview_integration: true
+          name: Product Name
+          asset_type: rig
+          billing_period: monthly
+          billing_calc_method: well_afe_day
+          billing_contact: Billing contact
+          billing_email: example@email.com
+          billing_phone: +1-415 652 0000
+          account_manager: Manager name
+          asset_ids:
+          - 1
+          - 2
+          - 3
+          app_ids:
+          - 1
+          - 2
+          - 3
+          tier_ids:
+          - 12345
+          - 12346
+    ProductSubscription:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            price:
+              type: float
+            features:
+              type: object
+            company_id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            segment:
+              type: string
+              enum:
+              - drilling
+              - completion
+              - intervention
+            status:
+              type: string
+              enum:
+              - unapproved
+              - active
+              - cancelled
+              - denied
+            asset_type:
+              type: string
+              enum:
+              - company
+              - program
+              - rig
+              - frac_fleet
+              - drillout_unit
+            billing_period:
+              type: string
+              enum:
+              - monthly
+              - daily
+              - annually
+            billing_calc_method:
+              type: string
+              enum:
+              - well_afe_day
+              - well_afe_month
+              - corva_active_day
+              - corva_active_month
+            billing_contact:
+              type: string
+            billing_email:
+              type: string
+            billing_phone:
+              type: string
+            account_manager:
+              type: string
+            provider_company_id:
+              type: integer
+              format: int64
+            new_subscription_version_id:
+              type: integer
+              format: int64
+            uuid:
+              type: string
+            activated_at:
+              type: string
+              format: date-time
+            cancelled_at:
+              type: string
+              format: date-time
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            apps:
+              type: object
+              properties:
+                data:
+                  type: array
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    app_key:
+                      type: string
+                    app_type:
+                      type: string
+                    category:
+                      type: string
+                    name:
+                      type: string
+                    segment:
+                      type: string
+                    visibility:
+                      type: string
+            assets:
+              type: object
+              properties:
+                data:
+                  type: array
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    asset_id:
+                      type: integer
+                      format: int64
+                    old_asset_id:
+                      type: integer
+                      format: int64
+                    asset_type:
+                      type: string
+                    asset_name:
+                      type: string
+            company:
+              type: object
+              properties:
+                data:
+                  type: array
+                  properties:
+                    name:
+                      type: string
+            tiers:
+              type: object
+              properties:
+                data:
+                  type: array
+                  properties:
+                    name:
+                      type: string
+      example:
+        id: 12345
+        type: product_subscription
+        attributes:
+          id: 12345
+          price: 19.95
+          features:
+            alert_count: 10
+            asset_count: 5
+            user_count: 5
+            api_access: true
+            data_quality: true
+            mobile_apps: true
+            sso: true
+            wellview_integration: true
+          name: Product Name
+          segment: drilling
+          status: active
+          asset_type: company
+          billing_period: monthly
+          billing_calc_method: well_afe_day
+          billing_contact: Billing contact
+          billing_email: example@email.com
+          billing_phone: +1-415 652 0000
+          account_manager: Manager name
+          provider_company_id: 10001
+          company_id: 12345
+          new_subscription_version_id: 10002
+          uuid: a628bd6c-2c2c-479f-a38c-48cc47b360f1
+          activated_at: '2010-01-01T00:00:00.000Z'
+          cancelled_at: '2010-01-02T00:00:00.000Z'
+          created_at: '2010-01-01T00:00:00.000Z'
+          updated_at: '2010-01-01T00:00:00.000Z'
+        relationships:
+          apps:
+          - id: '1'
+            type: app
+          assets:
+          - id: '3'
+            type: product_subscription_asset
+          tiers:
+          - id: '1'
+            type: tier
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

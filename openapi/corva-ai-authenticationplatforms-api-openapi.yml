@@ -1,0 +1,150 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Authentication Platforms API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: AuthenticationPlatforms
+  description: Read authentication platforms (broker tenants) used for SSO. Read-only; managed in ActiveAdmin.
+paths:
+  /v2/authentication_platforms:
+    get:
+      summary: List authentication platforms
+      description: Returns every authentication platform (broker tenant) configured for this Corva instance. Open to any authenticated caller; `options` is scrubbed of secrets before the response leaves the API. Writes are not exposed here — platforms are managed in ActiveAdmin.
+      tags:
+      - AuthenticationPlatforms
+      responses:
+        '401':
+          description: Missing or invalid authentication
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Authentication platforms
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationPlatformV2List'
+      operationId: getV2AuthenticationPlatforms
+      x-operation-id-source: derived
+  /v2/authentication_platforms/{id}:
+    get:
+      summary: Show authentication platform
+      description: Open to any authenticated caller; `options` is scrubbed of secrets before the response leaves the API.
+      tags:
+      - AuthenticationPlatforms
+      responses:
+        '401':
+          description: Missing or invalid authentication
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found
+        '200':
+          description: Authentication platform
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationPlatformV2Single'
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      operationId: getV2AuthenticationPlatformsById
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationPlatformV2Single:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AuthenticationPlatformV2'
+    AuthenticationPlatformV2List:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticationPlatformV2'
+    AuthenticationPlatformV2:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          example: authentication_platform
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+              example: Auth0
+            identifier:
+              type: string
+              description: Stable slug used in code paths (e.g. `auth0`, `dex`). Unique across platforms.
+              example: auth0
+            options:
+              type: object
+              description: Provider-specific broker config. Keys matching the secret-scrubbing pattern (`secret`, `password`, `token`, `*key`, `credential`, `passphrase`, `authCode`, `signature`) are stripped from responses. `passwordless` is preserved as a known false positive.
+              example:
+                server: https://corva.auth0.com/
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

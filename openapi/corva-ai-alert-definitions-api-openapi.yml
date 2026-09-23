@@ -1,0 +1,1387 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Alert Definitions API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Alert Definitions
+  description: Alert definition management (V2)
+paths:
+  /v2/alerts/definitions:
+    get:
+      summary: List Alert Definitions
+      tags:
+      - Alert Definitions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List of alert definitions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertDefinitionV2List'
+      parameters:
+      - in: query
+        name: type
+        description: Filter by type (personal/company)
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: alert_group_id
+        description: 'Filter by alert group: a single id, a comma-separated list of ids, or "none" for ungrouped definitions'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: search
+        description: Search by name
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: segment
+        description: 'Filter by segment: a single key or a comma-separated list (e.g. "drilling,completion"). Matches definitions whose segment array overlaps the given values.'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: alert_tag_ids
+        description: 'Filter by alert tag: a single value or a comma-separated list of tag ids and/or names (numeric values are treated as ids, names match case-insensitively). Matches definitions tagged with any of the given tags.'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: mine
+        description: When true, returns only company definitions and the caller's own personal definitions. Off by default.
+        required: false
+        schema:
+          type: boolean
+      - in: query
+        name: exclude_templates
+        description: When true, excludes every library template (preset and standard). Off by default.
+        required: false
+        schema:
+          type: boolean
+      - in: query
+        name: exclude_preset_templates
+        description: When true, excludes Corva preset templates but keeps company standard templates. Off by default.
+        required: false
+        schema:
+          type: boolean
+      - in: query
+        name: active
+        description: When true, returns only active definitions. Off by default.
+        required: false
+        schema:
+          type: boolean
+      - in: query
+        name: page
+        description: Page number
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Items per page
+        required: false
+        schema:
+          type: integer
+      operationId: getV2AlertsDefinitions
+      x-operation-id-source: derived
+    post:
+      summary: Create Alert Definition
+      tags:
+      - Alert Definitions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created alert definition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertDefinitionV2Single'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertDefinitionV2Payload'
+        required: true
+      operationId: postV2AlertsDefinitions
+      x-operation-id-source: derived
+  /v2/alerts/definitions/templates/{template_type}:
+    get:
+      summary: List Alert Definition Templates
+      tags:
+      - Alert Definitions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List of alert definition templates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertDefinitionV2List'
+      description: 'Returns the template catalog for the requested library shelf. Unlike the v1 endpoint, templates are returned as-is: enabled templates are not replaced by the company/user copies made from them.'
+      parameters:
+      - in: path
+        name: template_type
+        required: true
+        description: Template type (standard/preset)
+        schema:
+          type: string
+      - in: query
+        name: scope
+        required: false
+        description: 'Library shelf: corva (default), company, or user'
+        schema:
+          type: string
+      - in: query
+        name: search
+        description: Search by name
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: segment
+        description: 'Filter by segment: a single key or a comma-separated list (e.g. "drilling,completion"). Matches templates whose segment array overlaps the given values.'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: alert_tag_ids
+        description: 'Filter by alert tag: a single value or a comma-separated list of tag ids and/or names (numeric values are treated as ids, names match case-insensitively). Matches templates tagged with any of the given tags.'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: page
+        description: Page number
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Items per page
+        required: false
+        schema:
+          type: integer
+      operationId: getV2AlertsDefinitionsTemplatesByTemplateType
+      x-operation-id-source: derived
+  /v2/alerts/definitions/{id}:
+    get:
+      summary: Get Alert Definition
+      tags:
+      - Alert Definitions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Alert definition not found or not readable
+        '200':
+          description: Alert definition details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertDefinitionV2Single'
+      description: Corva catalog templates are readable by any company, matching the templates index; any other definition must be readable by the caller, otherwise 404.
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2AlertsDefinitionsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update Alert Definition
+      tags:
+      - Alert Definitions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Not authorized to edit this definition or template, including a type change that would put the definition outside your permissions
+        '404':
+          description: Definition not found or not visible to the caller
+        '200':
+          description: Updated alert definition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertDefinitionV2Single'
+      description: 'Also edits library templates: Company Library templates per the company alert-definition update permission, My Library templates only by their owning user (403 otherwise). Corva preset templates sit outside a company ability scope, so company users get 404; Corva admins can edit them. Editing a template never changes the copies already made from it.'
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertDefinitionV2Payload'
+        required: true
+      operationId: patchV2AlertsDefinitionsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete Alert Definition
+      tags:
+      - Alert Definitions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Deleted
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2AlertsDefinitionsById
+      x-operation-id-source: derived
+  /v2/alerts/definitions/{id}/copy:
+    post:
+      summary: Copy Alert Definition
+      tags:
+      - Alert Definitions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: The copied alert definition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertDefinitionV2Single'
+      description: Creates a copy of the alert definition (with its filters, constraints, levels and dashboard) in the current company. When called with a user session the copy becomes a personal definition owned by that user.
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2AlertsDefinitionsByIdCopy
+      x-operation-id-source: derived
+  /v2/alerts/definitions/{id}/apply:
+    post:
+      summary: Apply Library Template To Alert Group
+      tags:
+      - Alert Definitions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: The alert definition placed in the group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertDefinitionV2Single'
+        '400':
+          description: Missing alert_group_id, unknown mode, or the source is not a library template
+        '409':
+          description: The group already holds a copy of this template, or holds several and replace is ambiguous
+      description: Copies a library template into an alert group and activates the copy, stamping template_id on it. The source must be a template on one of the three shelves. Returns the resulting alert definition.
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - alert_group_id
+              properties:
+                alert_group_id:
+                  type: integer
+                  format: int64
+                  description: Alert group to place the copy in
+                mode:
+                  type: string
+                  enum:
+                  - add
+                  - replace
+                  - duplicate
+                  description: add (default) places one copy and conflicts if the group already holds one; replace overwrites the existing copy in place, keeping its subscriptions and history; duplicate always adds another copy
+        required: true
+      operationId: postV2AlertsDefinitionsByIdApply
+      x-operation-id-source: derived
+  /v2/alerts/definitions/{id}/refresh:
+    post:
+      summary: Refresh Alert Definition From Library
+      tags:
+      - Alert Definitions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: The refreshed alert definition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertDefinitionV2Single'
+        '400':
+          description: The alert definition was not created from a library template
+      description: 'Re-pulls the source library template into this copy. A full overwrite: every configuration value, including filters, constraints and levels, comes from the template, and customizations on the copy are replaced rather than merged. The copy keeps its id, company, user, alert group, template link, active state and subscriptions. Not gated on version.'
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2AlertsDefinitionsByIdRefresh
+      x-operation-id-source: derived
+  /v2/alerts/definitions/{id}/refresh_preview:
+    get:
+      summary: Preview A Library Refresh
+      tags:
+      - Alert Definitions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Definition not found, or its template is not visible to the caller
+        '200':
+          description: The changes a refresh would apply
+          content:
+            application/json:
+              schema:
+                properties:
+                  attributes:
+                    type: object
+                    description: Changed columns, each as {from, to}
+                  filters:
+                    type: object
+                    properties:
+                      added:
+                        type: array
+                        items:
+                          type: object
+                      removed:
+                        type: array
+                        items:
+                          type: object
+                      changed:
+                        type: array
+                        items:
+                          type: object
+                  tags:
+                    type: object
+                    properties:
+                      added:
+                        type: array
+                        items:
+                          type: object
+                      removed:
+                        type: array
+                        items:
+                          type: object
+        '400':
+          description: The alert definition was not created from a library template
+      description: 'Reports the changes a refresh would apply to this copy, without applying them. Mirrors the refresh rules exactly: preserved attributes never appear, a template with no filters reports no filter changes, and tags are reported after the cross-company name resolution a refresh would perform. Filters are matched on data_point; a data_point used more than once on either side is reported as a removal plus an addition rather than a change. version is omitted as bookkeeping.'
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2AlertsDefinitionsByIdRefreshPreview
+      x-operation-id-source: derived
+  /v2/alerts/definitions/{id}/subscribe:
+    post:
+      summary: Subscribe to Alert Definition
+      tags:
+      - Alert Definitions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Subscription created; activates an inactive definition
+        '409':
+          description: Subscription already exists
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                alert_notification_types:
+                  type: array
+                  description: Notification type identifiers to subscribe to; all (except banner) when omitted
+                  items:
+                    type: string
+                assets:
+                  type: array
+                  description: Asset scoping for the subscription
+                  items:
+                    type: object
+      operationId: postV2AlertsDefinitionsByIdSubscribe
+      x-operation-id-source: derived
+  /v2/alerts/definitions/{id}/unsubscribe:
+    post:
+      summary: Unsubscribe from Alert Definition
+      tags:
+      - Alert Definitions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Unsubscribed; deactivates a personal definition left without subscriptions
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: postV2AlertsDefinitionsByIdUnsubscribe
+      x-operation-id-source: derived
+  /v2/alert_groups/{alert_group_id}/alert_definitions:
+    get:
+      summary: List an Alert Group's Definitions
+      tags:
+      - Alert Definitions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: The alert group's definitions (same payload as /v2/alerts/definitions?alert_group_id=:id)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertDefinitionV2List'
+      parameters:
+      - in: path
+        name: alert_group_id
+        description: Alert group ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: type
+        description: Filter by type (personal/company)
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: search
+        description: Search by name
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: alert_tag_ids
+        description: 'Filter by alert tag: a single value or a comma-separated list of tag ids and/or names (numeric values are treated as ids, names match case-insensitively). Matches definitions tagged with any of the given tags.'
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: page
+        description: Page number
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Items per page
+        required: false
+        schema:
+          type: integer
+      operationId: getV2AlertGroupsByAlertGroupIdAlertDefinitions
+      x-operation-id-source: derived
+    post:
+      summary: Assign an Alert Definition to a Group
+      tags:
+      - Alert Definitions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Unknown or unreadable alert definition
+        '200':
+          description: Definition assigned; a definition already in another group is moved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertDefinitionV2Single'
+        '400':
+          description: Validation error, e.g. a different company or a segment the group does not carry
+      parameters:
+      - in: path
+        name: alert_group_id
+        description: Alert group ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertGroupAlertDefinitionPayload'
+        required: true
+      operationId: postV2AlertGroupsByAlertGroupIdAlertDefinitions
+      x-operation-id-source: derived
+  /v2/alert_groups/{alert_group_id}/alert_definitions/{id}:
+    delete:
+      summary: Unassign an Alert Definition from a Group
+      tags:
+      - Alert Definitions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Definition unassigned from the group; the definition itself is kept
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertGroupAlertDefinitionUnassignResult'
+      parameters:
+      - in: path
+        name: alert_group_id
+        description: Alert group ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: id
+        description: Alert definition ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2AlertGroupsByAlertGroupIdAlertDefinitionsById
+      x-operation-id-source: derived
+  /v2/alert_groups/{alert_group_id}/alert_definitions/bulk_create:
+    post:
+      summary: Bulk Assign Alert Definitions to a Group
+      tags:
+      - Alert Definitions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: One or more ids are unknown or unreadable; no definitions were assigned
+        '200':
+          description: Definitions assigned (idempotent — definitions already in the group are skipped)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertDefinitionV2List'
+        '400':
+          description: Validation error; no definitions were assigned
+      parameters:
+      - in: path
+        name: alert_group_id
+        description: Alert group ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertGroupAlertDefinitionBulkPayload'
+        required: true
+      operationId: postV2AlertGroupsByAlertGroupIdAlertDefinitionsBulkCreate
+      x-operation-id-source: derived
+  /v2/alert_groups/{alert_group_id}/alert_definitions/bulk_destroy:
+    delete:
+      summary: Bulk Unassign Alert Definitions from a Group
+      tags:
+      - Alert Definitions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Definitions unassigned; ids that are not in the group are ignored
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertGroupAlertDefinitionUnassignResult'
+      parameters:
+      - in: path
+        name: alert_group_id
+        description: Alert group ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertGroupAlertDefinitionBulkPayload'
+        required: true
+      operationId: deleteV2AlertGroupsByAlertGroupIdAlertDefinitionsBulkDestroy
+      x-operation-id-source: derived
+  /v2/alert_groups/{alert_group_id}/alert_definitions/bulk_replace:
+    put:
+      summary: Replace an Alert Group's Definitions
+      tags:
+      - Alert Definitions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: One or more ids are unknown or unreadable; no changes were made
+        '200':
+          description: 'Definition set replaced with the payload: definitions not in the payload are unassigned, new ones assigned, definitions already in the group are kept unchanged. An explicit empty ids array unassigns every definition'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertDefinitionV2List'
+        '400':
+          description: Missing ids key or validation error; no changes were made
+      parameters:
+      - in: path
+        name: alert_group_id
+        description: Alert group ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertGroupAlertDefinitionBulkPayload'
+        required: true
+      operationId: putV2AlertGroupsByAlertGroupIdAlertDefinitionsBulkReplace
+      x-operation-id-source: derived
+components:
+  schemas:
+    AlertDefinitionV2Single:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AlertDefinitionV2'
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AlertDefinitionV2List:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertDefinitionV2'
+    AlertGroupAlertDefinitionUnassignResult:
+      properties:
+        status:
+          type: string
+          description: Always 'unassigned'
+        count:
+          type: integer
+          description: Number of definitions unassigned; bulk responses only
+    AlertDefinitionV2:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          type: object
+          required:
+          - id
+          - name
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            identifier:
+              type: string
+            description:
+              type: string
+            level:
+              type: string
+              enum:
+              - info
+              - warning
+              - critical
+            active:
+              type: boolean
+            type:
+              type: string
+              enum:
+              - personal
+              - company
+            template_type:
+              type: string
+              enum:
+              - standard
+              - preset
+            check_type:
+              type: string
+              enum:
+              - time
+              - event
+            filter_logic:
+              type: string
+            period:
+              type: integer
+            interval:
+              type: integer
+            recurrence:
+              type: string
+              enum:
+              - continuous
+              - periodic
+              - episodic
+              - once
+              - once-per-asset
+              description: episodic notifies once per episode, then on renotification_interval, until rearm_after_checks non-matching checks re-arm it; time checks only
+            trigger_dataset:
+              type: string
+              description: Dataset whose new records gate firing; while it stalls an episodic episode cannot re-arm. time checks only
+            trigger_dataset_field:
+              type: string
+              description: Explicit dotted path (e.g. data.last_updated_at) on the trigger dataset's newest record to gate on (epoch seconds); blank uses the record timestamp
+            segment:
+              type: array
+              items:
+                type: string
+                enum:
+                - drilling
+                - completion
+                - intervention
+            topic:
+              type: string
+            requires_validation:
+              type: boolean
+            reopen_interval:
+              type: integer
+              description: Seconds before a cleared alert may reopen
+            max_open_duration:
+              type: integer
+              description: Max seconds a legacy-mode alert stays open before it is replaced
+            renotification_interval:
+              type: integer
+              description: Seconds between notifications while an alert or an episode stays open; null notifies once
+            rearm_after_checks:
+              type: integer
+              description: Consecutive non-matching evaluations that re-arm an episodic definition; null means one
+            required_notification_types:
+              type: array
+              description: Notification types a subscriber must enable
+              items:
+                type: string
+            limit:
+              type: object
+              description: Unused. Reserved by a 2017 migration; no code reads it.
+            version:
+              type: integer
+            company_id:
+              type: integer
+              format: int64
+            user_id:
+              type: integer
+              format: int64
+              description: Owner of a personal definition; null for company rules
+            alert_group_id:
+              type: integer
+              format: int64
+              description: Alert group this definition belongs to
+            dashboard_id:
+              type: integer
+              format: int64
+            workflow_id:
+              type: integer
+              format: int64
+            template_id:
+              type: integer
+              format: int64
+            alert_tags:
+              type: array
+              description: Alert tags applied to this definition
+              items:
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                  name:
+                    type: string
+                  color:
+                    type: string
+                    description: 'Hex color code such as #1a2b3c, blank when unset'
+                  parent_id:
+                    type: integer
+                    format: int64
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            alert_definition_filters:
+              type: array
+              items:
+                $ref: '#/components/schemas/AlertDefinitionFilterV2'
+    AlertDefinitionV2Payload:
+      properties:
+        alert_definition:
+          type: object
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            level:
+              type: string
+              enum:
+              - info
+              - warning
+              - critical
+            active:
+              type: boolean
+              description: Whether the definition evaluates. Set false to deactivate.
+            type:
+              type: string
+              enum:
+              - personal
+              - company
+            check_type:
+              type: string
+              enum:
+              - time
+              - event
+            filter_logic:
+              type: string
+            period:
+              type: integer
+            interval:
+              type: integer
+            recurrence:
+              type: string
+              enum:
+              - continuous
+              - periodic
+              - episodic
+              - once
+              - once-per-asset
+              description: episodic notifies once per episode, then on renotification_interval, until rearm_after_checks non-matching checks re-arm it; time checks only
+            trigger_dataset:
+              type: string
+              description: Dataset whose new records gate firing; while it stalls an episodic episode cannot re-arm. time checks only
+            trigger_dataset_field:
+              type: string
+              description: Explicit dotted path (e.g. data.last_updated_at) on the trigger dataset's newest record to gate on (epoch seconds); blank uses the record timestamp
+            reopen_interval:
+              type: integer
+              description: Seconds before a cleared alert may reopen
+            max_open_duration:
+              type: integer
+              description: Max seconds a legacy-mode alert stays open before it is replaced
+            renotification_interval:
+              type: integer
+              description: Seconds between notifications while an alert or an episode stays open; null notifies once
+            rearm_after_checks:
+              type: integer
+              description: Consecutive non-matching evaluations that re-arm an episodic definition; null means one
+            topic:
+              type: string
+            requires_validation:
+              type: boolean
+            required_notification_types:
+              type: array
+              description: Notification types a subscriber must enable
+              items:
+                type: string
+            limit:
+              type: object
+              description: Unused. Reserved by a 2017 migration; no code reads it.
+            alert_group_id:
+              type: integer
+              format: int64
+            dashboard_id:
+              type: integer
+              format: int64
+            workflow_id:
+              type: integer
+              format: int64
+            identifier:
+              type: string
+            segment:
+              type: array
+              items:
+                type: string
+                enum:
+                - drilling
+                - completion
+                - intervention
+            alert_tag_ids:
+              type: array
+              description: Alert tags to apply; replaces the current set. An empty array clears all tags; omitting the key leaves them untouched
+              items:
+                type: integer
+                format: int64
+            filters:
+              type: array
+              description: Nested filters. An empty array clears all filters; omitting the key leaves them untouched. Records with an :id are updated, the rest created.
+              items:
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                  data_point:
+                    type: string
+                  sample_interval:
+                    type: integer
+                  sample_function:
+                    type: string
+                  period:
+                    type: integer
+                  operator:
+                    type: string
+                  threshold:
+                    type: number
+                  constraint_logic:
+                    type: string
+                  last_record_mode:
+                    type: boolean
+                  data_point_friendly_name:
+                    type: string
+                  required_constraint:
+                    type: boolean
+                  unit_type:
+                    type: string
+                    description: Quantity kind for the threshold, e.g. length, percent, unitless.
+                  constraints:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                          format: int64
+                        data_point:
+                          type: string
+                        operator:
+                          type: string
+                        value:
+                          type: string
+                  levels:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                          format: int64
+                        level:
+                          type: string
+                        threshold:
+                          type: number
+                        active:
+                          type: boolean
+    AlertDefinitionFilterV2:
+      properties:
+        id:
+          type: integer
+          format: int64
+        data_point:
+          type: string
+        sample_interval:
+          type: integer
+        sample_function:
+          type: string
+        period:
+          type: integer
+        operator:
+          type: string
+        threshold:
+          type: number
+        constraint_logic:
+          type: string
+        last_record_mode:
+          type: boolean
+        data_point_friendly_name:
+          type: string
+        required_constraint:
+          type: boolean
+        unit_type:
+          type: string
+          description: Quantity kind for the threshold, e.g. length, percent, unitless. Null when unset.
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        alert_definition_constraints:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertDefinitionConstraintV2'
+        alert_definition_filter_levels:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertDefinitionFilterLevelV2'
+    AlertGroupAlertDefinitionBulkPayload:
+      properties:
+        alert_definition:
+          type: object
+          properties:
+            ids:
+              type: array
+              items:
+                type: integer
+                format: int64
+    AlertGroupAlertDefinitionPayload:
+      properties:
+        alert_definition:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+              description: Alert definition to assign to the group
+    AlertDefinitionConstraintV2:
+      properties:
+        id:
+          type: integer
+          format: int64
+        data_point:
+          type: string
+        operator:
+          type: string
+        value:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    AlertDefinitionFilterLevelV2:
+      properties:
+        id:
+          type: integer
+          format: int64
+        level:
+          type: string
+        threshold:
+          type: number
+        active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

@@ -1,0 +1,764 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Provisioning Subscriptions API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: ProvisioningSubscriptions
+paths:
+  /v2/provisioning_subscriptions:
+    get:
+      summary: List Provisioning Subscriptions
+      tags:
+      - ProvisioningSubscriptions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProvisioningSubscriptionList'
+      parameters:
+      - in: query
+        name: status
+        description: Filter Provisioning Subscriptions by status
+        schema:
+          type: string
+          enum:
+          - unapproved
+          - active
+          - cancelled
+          - denied
+          - all
+      - in: query
+        name: company_id
+        description: Filter Provisioning Subscriptions by company_id
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: asset_name
+        description: Filter Provisioning Subscriptions by asset name
+        schema:
+          type: string
+      - in: query
+        name: name
+        description: Filter Provisioning Subscriptions by subscription name or apps name
+        schema:
+          type: string
+      - in: query
+        name: page
+        description: Number of page
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of items to list per page
+        schema:
+          type: integer
+      - in: query
+        name: sort
+        description: 'One or more fields to sort by. Prefix with a - for descending order. Ex: name,-updated_at'
+        schema:
+          type: string
+          enum:
+          - name
+          - created_at
+          - updated_at
+      - in: query
+        name: order
+        description: A sorting direction
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+      operationId: getV2ProvisioningSubscriptions
+      x-operation-id-source: derived
+    post:
+      summary: Create a Provisioning Subscription
+      tags:
+      - ProvisioningSubscriptions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created Provisioning Subscription
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProvisioningSubscription'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProvisioningSubscriptionPayload'
+        description: Provisioning Subscription Payload
+        required: true
+      operationId: postV2ProvisioningSubscriptions
+      x-operation-id-source: derived
+  /v2/provisioning_subscriptions/{uuid}:
+    get:
+      summary: Show Provisioning Subscription
+      tags:
+      - ProvisioningSubscriptions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProvisioningSubscription'
+      parameters:
+      - in: path
+        name: uuid
+        description: Provisioning Subscription UUID
+        required: true
+        schema:
+          type: string
+      operationId: getV2ProvisioningSubscriptionsByUuid
+      x-operation-id-source: derived
+    patch:
+      summary: Update a Provisioning Subscription
+      tags:
+      - ProvisioningSubscriptions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Provisioning Subscription
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProvisioningSubscription'
+      parameters:
+      - in: path
+        name: uuid
+        description: Provisioning Subscription UUID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProvisioningSubscriptionUpdatePayload'
+        description: Provisioning Subscription Payload
+        required: true
+      operationId: patchV2ProvisioningSubscriptionsByUuid
+      x-operation-id-source: derived
+    delete:
+      summary: Delete a Provisioning Subscription
+      tags:
+      - ProvisioningSubscriptions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Provisioning Subscription deleted
+      parameters:
+      - in: path
+        name: uuid
+        description: Provisioning Subscription UUID
+        required: true
+        schema:
+          type: string
+      operationId: deleteV2ProvisioningSubscriptionsByUuid
+      x-operation-id-source: derived
+  /v2/provisioning_subscriptions/{uuid}/cancel:
+    post:
+      summary: Cancel a Provisioning Subscription
+      tags:
+      - ProvisioningSubscriptions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Provisioning Subscription's status after cancellation
+      parameters:
+      - in: path
+        name: uuid
+        description: Provisioning Subscription UUID
+        required: true
+        schema:
+          type: string
+      operationId: postV2ProvisioningSubscriptionsByUuidCancel
+      x-operation-id-source: derived
+  /v2/provisioning_subscriptions/{id}/approve:
+    post:
+      summary: Approve a Provisioning Subscription
+      tags:
+      - ProvisioningSubscriptions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Provisioning Subscription approved
+      parameters:
+      - in: path
+        name: id
+        description: Provisioning Subscription ID
+        required: true
+        schema:
+          type: integer
+      operationId: postV2ProvisioningSubscriptionsByIdApprove
+      x-operation-id-source: derived
+  /v2/provisioning_subscriptions/{id}/deny:
+    post:
+      summary: Deny a Provisioning Subscription
+      tags:
+      - ProvisioningSubscriptions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Provisioning Subscription denied
+      parameters:
+      - in: path
+        name: id
+        description: Provisioning Subscription ID
+        required: true
+        schema:
+          type: integer
+      operationId: postV2ProvisioningSubscriptionsByIdDeny
+      x-operation-id-source: derived
+  /v2/provisioning_subscriptions/{id}/resume:
+    post:
+      summary: Resume a Provisioning Subscription
+      tags:
+      - ProvisioningSubscriptions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Provisioning response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProvisioningSubscription'
+        '400':
+          type: object
+          description: Error on resuming
+          content:
+            application/json:
+              schema:
+                message: string
+                example:
+                  message: Subscription is not cancelled
+      parameters:
+      - in: path
+        name: id
+        description: Platform Subscription ID
+        required: true
+        schema:
+          type: integer
+      operationId: postV2ProvisioningSubscriptionsByIdResume
+      x-operation-id-source: derived
+  /v2/provisioning_subscriptions/{id}/app_streams:
+    get:
+      summary: Show AppStream info for a Provisioning Subscription
+      tags:
+      - ProvisioningSubscriptions
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Provisioning response
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      properties:
+                        app_stream_id:
+                          type: integer
+                          format: int64
+                        app_stream_name:
+                          type: string
+                        app_stream_status:
+                          type: string
+                        apps:
+                          type: array
+                          items:
+                            properties:
+                              id:
+                                type: integer
+                                format: int64
+                              name:
+                                type: string
+                              depends_on_apps:
+                                type: array
+                                items:
+                                  properties:
+                                    id:
+                                      type: integer
+                                      format: int64
+                                    name:
+                                      type: string
+                example:
+                  data:
+                  - app_stream_id: 123
+                    app_stream_name: Rig HP 800 App Stream
+                    app_stream_status: active
+                    apps:
+                    - id: 10000
+                      name: Corva Data App 1
+                      depends_on_apps:
+                      - id: 10001
+                        name: Corva Data App 2
+      parameters:
+      - in: path
+        name: id
+        description: Platform Subscription ID
+        required: true
+        schema:
+          type: integer
+      operationId: getV2ProvisioningSubscriptionsByIdAppStreams
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    ProvisioningSubscription:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            company_id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            segment:
+              type: string
+              enum:
+              - drilling
+              - completion
+              - intervention
+            status:
+              type: string
+              enum:
+              - unapproved
+              - active
+              - cancelled
+              - denied
+            asset_type:
+              type: string
+              enum:
+              - company
+              - program
+              - rig
+              - frac_fleet
+              - drillout_unit
+            provider_company_id:
+              type: integer
+              format: int64
+            new_subscription_version_id:
+              type: integer
+              format: int64
+            uuid:
+              type: string
+            activated_at:
+              type: string
+              format: date-time
+            cancelled_at:
+              type: string
+              format: date-time
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            apps:
+              type: object
+              properties:
+                data:
+                  type: array
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    app_key:
+                      type: string
+                    app_type:
+                      type: string
+                    category:
+                      type: string
+                    name:
+                      type: string
+                    segment:
+                      type: string
+                    visibility:
+                      type: string
+            assets:
+              type: object
+              properties:
+                data:
+                  type: array
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    asset_id:
+                      type: integer
+                      format: int64
+                    old_asset_id:
+                      type: integer
+                      format: int64
+                    asset_type:
+                      type: string
+                    asset_name:
+                      type: string
+            company:
+              type: object
+              properties:
+                data:
+                  type: array
+                  properties:
+                    name:
+                      type: string
+      example:
+        id: 12345
+        type: provisioning_subscription
+        attributes:
+          id: 12345
+          name: Product Name
+          segment: drilling
+          status: active
+          asset_type: company
+          provider_company_id: 10001
+          company_id: 12345
+          new_subscription_version_id: 10002
+          uuid: a628bd6c-2c2c-479f-a38c-48cc47b360f1
+          activated_at: '2010-01-01T00:00:00.000Z'
+          cancelled_at: '2010-01-02T00:00:00.000Z'
+          created_at: '2010-01-01T00:00:00.000Z'
+          updated_at: '2010-01-01T00:00:00.000Z'
+        relationships:
+          apps:
+          - id: '1'
+            type: app
+          assets:
+          - id: '3'
+            type: product_subscription_asset
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    ProvisioningSubscriptionList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProvisioningSubscription'
+    ProvisioningSubscriptionPayload:
+      properties:
+        provisioning_subscription:
+          type: object
+          properties:
+            company_id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            segment:
+              type: string
+              enum:
+              - drilling
+              - completion
+              - intervention
+            asset_type:
+              type: string
+              enum:
+              - company
+              - program
+              - rig
+              - frac_fleet
+              - drillout_unit
+            asset_ids:
+              type: array
+              items:
+                type: integer
+            app_ids:
+              type: array
+              items:
+                type: integer
+            stream_asset_ids:
+              type: array
+              items:
+                type: integer
+      example:
+        provisioning_subscription:
+          company_id: 12345
+          name: Product Name
+          segment: drilling
+          asset_type: company
+          asset_ids:
+          - 4
+          app_ids:
+          - 1
+          stream_asset_ids:
+          - 12345
+          - 23456
+    ProvisioningSubscriptionUpdatePayload:
+      properties:
+        provisioning_subscription:
+          type: object
+          properties:
+            name:
+              type: string
+            asset_type:
+              type: string
+              enum:
+              - company
+              - program
+              - rig
+              - frac_fleet
+              - drillout_unit
+            asset_ids:
+              type: array
+              items:
+                type: integer
+            apps:
+              type: array
+              items:
+                type: integer
+      example:
+        provisioning_subscription:
+          name: Product Name
+          asset_type: company
+          asset_ids:
+          - 1
+          - 2
+          - 3
+          app_ids:
+          - 1
+          - 2
+          - 3
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

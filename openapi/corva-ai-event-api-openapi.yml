@@ -1,0 +1,145 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Event API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: Event
+paths:
+  /v2/events/publish:
+    post:
+      summary: Publish Events
+      tags:
+      - Event
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+        '400':
+          type: object
+          description: Failure response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventFailureResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventPayload'
+        description: Payload
+        required: true
+      operationId: postV2EventsPublish
+      x-operation-id-source: derived
+components:
+  schemas:
+    EventFailureResponse:
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+      example:
+        code: 400
+        message: Payload is invalid
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    EventPayload:
+      properties:
+        event:
+          type: string
+          enum:
+          - dataset.create
+          - dataset.delete
+        actor:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            type:
+              type: string
+        resource_type:
+          type: string
+          enum:
+          - Dataset
+        resource_id:
+          type: string
+        data:
+          type: object
+      example:
+        event: dataset.create
+        actor:
+          id: 111
+          type: User
+        resource_type: Dataset
+        resource_id: 1234
+        data:
+          name: Dataset Name
+          company_id: 1
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

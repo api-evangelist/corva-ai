@@ -1,0 +1,435 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Package Reviews API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: PackageReviews
+paths:
+  /v2/package_reviews:
+    get:
+      summary: List PackageReviews
+      tags:
+      - PackageReviews
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageReviewList'
+      parameters:
+      - in: query
+        name: page
+        description: Number of page
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of items to list per page
+        schema:
+          type: integer
+      - in: query
+        name: sort
+        description: 'One or more fields to sort by. Prefix with a - for descending order. Ex: name,-updated_at'
+        schema:
+          type: string
+          enum:
+          - status
+          - created_at
+          - updated_at
+      - in: query
+        name: order
+        description: A sorting direction
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+      - in: query
+        name: query
+        description: Search by App name
+        schema:
+          type: string
+      - in: query
+        name: status
+        description: Filter by PackageReview status
+        schema:
+          type: string
+          enum:
+          - pending
+          - approved
+          - rejected
+      operationId: getV2PackageReviews
+      x-operation-id-source: derived
+    post:
+      summary: Create a PackageReview
+      tags:
+      - PackageReviews
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created PackageReview
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageReview'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PackageReviewCreatePayload'
+        description: PackageReview Payload
+        required: true
+      operationId: postV2PackageReviews
+      x-operation-id-source: derived
+  /v2/package_reviews/{id}:
+    get:
+      summary: Show PackageReview
+      tags:
+      - PackageReviews
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageReview'
+      parameters:
+      - in: path
+        name: id
+        description: PackageReview ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2PackageReviewsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update a PackageReview
+      tags:
+      - PackageReviews
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated PackageReview
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageReview'
+        '400':
+          description: Package Review not updated
+          content:
+            application/json:
+              schema:
+                example:
+                  status: not_updated
+                  message: Package review's status isn't 'pending' or passed status is wrong
+      parameters:
+      - in: path
+        name: id
+        description: PackageReview ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PackageReviewUpdatePayload'
+        description: PackageReview Payload
+        required: true
+      operationId: patchV2PackageReviewsById
+      x-operation-id-source: derived
+    delete:
+      summary: Cancel a PackageReview
+      tags:
+      - PackageReviews
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Package Review deleted
+          content:
+            application/json:
+              schema:
+                example:
+                  status: deleted
+        '400':
+          description: Package Review not deleted
+          content:
+            application/json:
+              schema:
+                example:
+                  status: not_deleted
+                  message: Package review's status isn't pending
+      parameters:
+      - in: path
+        name: id
+        description: PackageReview ID
+        required: true
+        schema:
+          type: integer
+      operationId: deleteV2PackageReviewsById
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    PackageReviewUpdatePayload:
+      properties:
+        package_review:
+          type: object
+          properties:
+            status:
+              type: string
+              enum:
+              - approved
+              - rejected
+      example:
+        package_review:
+          status: approved
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    PackageReview:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            status:
+              type: string
+              enum:
+              - pending
+              - approved
+              - rejected
+            reviewer_email:
+              type: string
+            package_id:
+              type: integer
+              format: int64
+            app_name:
+              type: string
+            app_version:
+              type: string
+            app_id:
+              type: integer
+            segment:
+              type: array
+            app_icon:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                app_id:
+                  type: integer
+                  format: int64
+                filename:
+                  type: string
+                file_type:
+                  type: string
+                media_type:
+                  type: string
+                s3_path:
+                  type: string
+                url:
+                  type: string
+                position:
+                  type: integer
+            company_id:
+              type: integer
+              format: int64
+            company_name:
+              type: string
+            package_notes:
+              type: string
+            app_visibility:
+              type: string
+            package_label:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+      example:
+        id: 12345
+        type: package_review
+        attributes:
+          id: 12345
+          status: approved
+          reviewer_email: example@email.com
+          package_id: 100
+          app_name: App
+          app_version: 0.0.1
+          app_id: 235
+          segment:
+          - completion
+          company_id: 111
+          company_name: Company
+          app_visibility: public
+          package_label: stable
+          created_at: '2010-01-01T00:00:00.000Z'
+          updated_at: '2010-01-01T00:00:00.000Z'
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    PackageReviewCreatePayload:
+      properties:
+        package_review:
+          type: object
+          properties:
+            package_id:
+              type: integer
+              format: int64
+      example:
+        package_review:
+          package_id: 10001
+    PackageReviewList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PackageReview'
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

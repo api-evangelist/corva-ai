@@ -1,0 +1,1242 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Well View API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: WellView
+  description: WellView 3rd-Party integration
+paths:
+  /v2/integration/wellview/resolve:
+    post:
+      summary: Resolve an asset based on an array of lookups
+      tags:
+      - WellView
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Show asset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Asset'
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: 'Array of values such as Asset ID, API number, or well name. First successful match wins. Example: [31, "My Well", "42-501-20130"]'
+      operationId: postV2IntegrationWellviewResolve
+      x-operation-id-source: derived
+  /v2/integration/wellview/ingest:
+    post:
+      summary: Send data into Corva for processing
+      tags:
+      - WellView
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Send the data for processing
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/WellViewIngest'
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: JSON-formatted data sent as the entire request body in array format
+      operationId: postV2IntegrationWellviewIngest
+      x-operation-id-source: derived
+  /v2/integration/wellview/bha:
+    get:
+      summary: Retrieve Corva BHA/Drillstring data
+      tags:
+      - WellView
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List all data for the BHA dataset
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WellViewBHA'
+      parameters:
+      - in: query
+        name: asset_id
+        description: Corva Asset ID
+        schema:
+          type: integer
+      - in: query
+        name: query
+        description: Open-ended data query, such as {timestamp#gte#1577836800}. Be sure to URL encode.
+        schema:
+          type: string
+      - in: query
+        name: sort
+        description: Field to sort by, and the direction to sort in (asc is 1, desc is -1)
+        schema:
+          type: string
+          default: '{timestamp: -1}'
+      - in: query
+        name: limit
+        description: Number of records to retrieve
+        schema:
+          type: integer
+          default: 1
+      operationId: getV2IntegrationWellviewBha
+      x-operation-id-source: derived
+  /v2/integration/wellview/frac:
+    get:
+      summary: Retrieve Corva Fracking data
+      tags:
+      - WellView
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List all data for the Fracking dataset
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WellViewFrac'
+      parameters:
+      - in: query
+        name: asset_id
+        description: Corva Asset ID
+        schema:
+          type: integer
+      - in: query
+        name: query
+        description: Open-ended data query, such as {timestamp#gte#1577836800}. Be sure to URL encode.
+        schema:
+          type: string
+      - in: query
+        name: sort
+        description: Field to sort by, and the direction to sort in (asc is 1, desc is -1)
+        schema:
+          type: string
+          default: '{timestamp: -1}'
+      - in: query
+        name: limit
+        description: Number of records to retrieve
+        schema:
+          type: integer
+          default: 1
+      operationId: getV2IntegrationWellviewFrac
+      x-operation-id-source: derived
+  /v2/integration/wellview/frac_stage_design:
+    get:
+      summary: Retrieve Corva Frac Stage Design data
+      tags:
+      - WellView
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List all data for the Frac Stage Design dataset
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WellViewFracStageDesign'
+      parameters:
+      - in: query
+        name: asset_id
+        description: Corva Asset ID
+        schema:
+          type: integer
+      - in: query
+        name: query
+        description: Open-ended data query, such as {timestamp#gte#1577836800}. Be sure to URL encode.
+        schema:
+          type: string
+      - in: query
+        name: sort
+        description: Field to sort by, and the direction to sort in (asc is 1, desc is -1)
+        schema:
+          type: string
+          default: '{timestamp: -1}'
+      - in: query
+        name: limit
+        description: Number of records to retrieve
+        schema:
+          type: integer
+          default: 1
+      operationId: getV2IntegrationWellviewFracStageDesign
+      x-operation-id-source: derived
+  /v2/integration/wellview/frac_stage_summary:
+    get:
+      summary: Retrieve Corva Frac Stage Summary data
+      tags:
+      - WellView
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List all data for the Frac Stage Summary dataset
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WellViewFracStageSummary'
+      parameters:
+      - in: query
+        name: asset_id
+        description: Corva Asset ID
+        schema:
+          type: integer
+      - in: query
+        name: query
+        description: Open-ended data query, such as {timestamp#gte#1577836800}. Be sure to URL encode.
+        schema:
+          type: string
+      - in: query
+        name: sort
+        description: Field to sort by, and the direction to sort in (asc is 1, desc is -1)
+        schema:
+          type: string
+          default: '{timestamp: -1}'
+      - in: query
+        name: limit
+        description: Number of records to retrieve
+        schema:
+          type: integer
+          default: 1
+      operationId: getV2IntegrationWellviewFracStageSummary
+      x-operation-id-source: derived
+  /v2/integration/wellview/frac_stage_summary_calculated:
+    get:
+      summary: Retrieve Corva Frac Stage Summary Calculated data
+      tags:
+      - WellView
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List all data for the Frac Stage Summary Calculated dataset
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WellViewFracStageSummaryCalculated'
+      parameters:
+      - in: query
+        name: asset_id
+        description: Corva Asset ID
+        schema:
+          type: integer
+      - in: query
+        name: query
+        description: Open-ended data query, such as {timestamp#gte#1577836800}. Be sure to URL encode.
+        schema:
+          type: string
+      - in: query
+        name: sort
+        description: Field to sort by, and the direction to sort in (asc is 1, desc is -1)
+        schema:
+          type: string
+          default: '{timestamp: -1}'
+      - in: query
+        name: limit
+        description: Number of records to retrieve
+        schema:
+          type: integer
+          default: 1
+      operationId: getV2IntegrationWellviewFracStageSummaryCalculated
+      x-operation-id-source: derived
+  /v2/integration/wellview/job_settings:
+    get:
+      summary: Retrieve Corva Job Settings data
+      tags:
+      - WellView
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List all data for the Job Settings dataset
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WellViewJobSettings'
+      parameters:
+      - in: query
+        name: asset_id
+        description: Corva Asset ID
+        schema:
+          type: integer
+      - in: query
+        name: query
+        description: Open-ended data query, such as {timestamp#gte#1577836800}. Be sure to URL encode.
+        schema:
+          type: string
+      - in: query
+        name: sort
+        description: Field to sort by, and the direction to sort in (asc is 1, desc is -1)
+        schema:
+          type: string
+          default: '{timestamp: -1}'
+      - in: query
+        name: limit
+        description: Number of records to retrieve
+        schema:
+          type: integer
+          default: 1
+      operationId: getV2IntegrationWellviewJobSettings
+      x-operation-id-source: derived
+  /v2/integration/wellview/plugs:
+    get:
+      summary: Retrieve Corva Plugs data
+      tags:
+      - WellView
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List all data for the Plugs dataset
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WellViewPlugs'
+      parameters:
+      - in: query
+        name: asset_id
+        description: Corva Asset ID
+        schema:
+          type: integer
+      - in: query
+        name: query
+        description: Open-ended data query, such as {timestamp#gte#1577836800}. Be sure to URL encode.
+        schema:
+          type: string
+      - in: query
+        name: sort
+        description: Field to sort by, and the direction to sort in (asc is 1, desc is -1)
+        schema:
+          type: string
+          default: '{timestamp: -1}'
+      - in: query
+        name: limit
+        description: Number of records to retrieve
+        schema:
+          type: integer
+          default: 1
+      operationId: getV2IntegrationWellviewPlugs
+      x-operation-id-source: derived
+components:
+  schemas:
+    WellViewFracStageSummaryCalculated:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        options:
+          type: object
+        items:
+          type: array
+      example:
+        dataset: frac_stage_summary_calculated
+        results:
+        - _id: 5c9a92d834022a04c4acb6d3
+          timestamp: 1536912275
+          version: 1
+          provider: corva
+          dataset: completion.predictions
+          asset_id: 1
+          company_id: 1
+          data:
+            max_flow_rate: 74.98
+            breakdown:
+            - wellhead_pressure: 8403.12
+              slurry_flow_rate_in: 55.9523
+              elapsed_time: 3636
+              clean_flow_rate_in: 0
+              total_clean_volume_in: 0
+              total_slurry_volume_in: 0
+              total_chemical_rate_in: 0
+              total_proppant_concentration: 0
+              total_proppant_mass: 0
+              bottomhole_proppant_concentration: 0
+              hydrostatic_pressure: 0
+              inverse_hydrostatic_pressure: 0
+              backside_pressure: null
+              timestamp: 1536912275
+              enzyme_breaker: 0
+              scale_inhibitor: 0
+              surfactant: 0
+              friction_reducer: 0
+              cross_linker: 0
+              acid: 0
+              gel: 0
+              ph_adjusting_agent: 0
+              accelerator: 0
+              fluid_loss: 0
+              ploymer_plug: 0
+              acid_inhibitor: 0
+              acid_retarder: 0
+              emulsifier: 0
+              clay_stabilizer: 0
+              non_emulsifier: 0
+              fines_suspender: 0
+              anti_sludge: 0
+              iron_control: 0
+              oxygen_scavenger: 0
+              mutual_solvent: 0
+              corrosion_inhibitor: 0
+              paraffin_control: 0
+              biocide: 0
+              instant_crosslinker: 0
+              delayed_crosslinker: 0
+              liquid_breaker: 0
+              powder_breaker: 0
+              divertor: 0
+              powder_gel: 0
+              powder_friction_reducer: 0
+              powder_enzyme_breaker: 0
+              proppant_1_concentration: 0
+              proppant_2_concentration: 0
+              proppant_1_mass: 0
+              proppant_2_mass: 0
+            isip:
+            - wellhead_pressure: 3848.64
+              slurry_flow_rate_in: 1.8126
+              elapsed_time: 7450
+              clean_flow_rate_in: 0
+              total_clean_volume_in: 0
+              total_slurry_volume_in: 0
+              total_chemical_rate_in: 0
+              total_proppant_concentration: 0
+              total_proppant_mass: 0
+              bottomhole_proppant_concentration: 0
+              hydrostatic_pressure: 0
+              inverse_hydrostatic_pressure: 0
+              backside_pressure: null
+              timestamp: 1536912275
+              enzyme_breaker: 0
+              scale_inhibitor: 0
+              surfactant: 0
+              friction_reducer: 0
+              cross_linker: 0
+              acid: 0
+              gel: 0
+              ph_adjusting_agent: 0
+              accelerator: 0
+              fluid_loss: 0
+              ploymer_plug: 0
+              acid_inhibitor: 0
+              acid_retarder: 0
+              emulsifier: 0
+              clay_stabilizer: 0
+              non_emulsifier: 0
+              fines_suspender: 0
+              anti_sludge: 0
+              iron_control: 0
+              oxygen_scavenger: 0
+              mutual_solvent: 0
+              corrosion_inhibitor: 0
+              paraffin_control: 0
+              biocide: 0
+              instant_crosslinker: 0
+              delayed_crosslinker: 0
+              liquid_breaker: 0
+              powder_breaker: 0
+              divertor: 0
+              powder_gel: 0
+              powder_friction_reducer: 0
+              powder_enzyme_breaker: 0
+              proppant_1_concentration: 0
+              proppant_2_concentration: 0
+              proppant_1_mass: 0
+              proppant_2_mass: 0
+            optimal_pressure_window: null
+            ave_breakdown: 8401
+            ave_isip: 3967
+            ave_pumping_rate: 74.4
+            total_slurry_volume: 5060
+            total_clean_volume: 4934
+            total_proppant_mass: 121048
+            ave_proppant_concentration: 0.591
+            max_treating_pressure: 8320
+            ave_treating_pressure: 6362
+            pumping_duration: 4978
+            duration_to_max_rate: 1325
+            hydraulic_horse_power: 11700
+            delta_pressure: 2397
+            fracturing_operation_interval:
+              start_timestamp: 1535933614
+              end_timestamp: 1535938595
+            fracturing_operation_interval_pressure:
+              start_timestamp: 1535933503
+              end_timestamp: 1535938830
+            main_pumping_start_timestamp: 1535533614
+            proppant_injection_start_timestamp: 1535534940
+            flush_volume: null
+            flush_volumes:
+              flush_volume_design: null
+              flush_volume_actual: 361.26
+            fracture_gradient: null
+            cumulative_chemicals:
+              enzyme_breaker: 0
+              scale_inhibitor: 0
+              surfactant: 0
+              friction_reducer: 0
+              cross_linker: 0
+              acid: 0
+              gel: 0
+              ph_adjusting_agent: 0
+              accelerator: 0
+              fluid_loss: 0
+              ploymer_plug: 0
+              acid_inhibitor: 0
+              acid_retarder: 0
+              emulsifier: 0
+              clay_stabilizer: 0
+              non_emulsifier: 0
+              fines_suspender: 0
+              anti_sludge: 0
+              iron_control: 0
+              oxygen_scavenger: 0
+              mutual_solvent: 0
+              corrosion_inhibitor: 0
+              paraffin_control: 0
+              biocide: 24.16
+              instant_crosslinker: 0
+              delayed_crosslinker: 0
+              liquid_breaker: 0
+              powder_breaker: 0.2
+              divertor: 0
+              powder_gel: 0
+              powder_friction_reducer: 0
+              powder_enzyme_breaker: 0
+            ave_chemicals:
+              enzyme_breaker: 0
+              scale_inhibitor: 0
+              surfactant: 0
+              friction_reducer: 0
+              cross_linker: 0
+              acid: 0
+              gel: 0
+              ph_adjusting_agent: 0
+              accelerator: 0
+              fluid_loss: 0
+              ploymer_plug: 0
+              acid_inhibitor: 0
+              acid_retarder: 0
+              emulsifier: 0
+              clay_stabilizer: 0
+              non_emulsifier: 0
+              fines_suspender: 0
+              anti_sludge: 0
+              iron_control: 0
+              oxygen_scavenger: 0
+              mutual_solvent: 0
+              corrosion_inhibitor: 0
+              paraffin_control: 0
+              biocide: 0.12
+              instant_crosslinker: 0
+              delayed_crosslinker: 0
+              liquid_breaker: 0
+              powder_breaker: 0
+              divertor: 0
+              powder_gel: 0
+              powder_friction_reducer: 0
+              powder_enzyme_breaker: 0
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    WellViewBHA:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        options:
+          type: object
+        items:
+          type: array
+      example:
+        dataset: bha
+        results:
+        - _id: 5a26fbe28a5da5323c7f6d8f
+          asset_id: 1
+          timestamp: 1508774989
+          data:
+            components:
+            - outer_diameter_tooljoint: 5.38
+              family: dp
+              length: 31
+              material: Steel
+              component_length: 31
+              inner_diameter_tooljoint: 3
+              name: Drillpipe
+              order: 0
+              outer_diameter: 4.5
+              linear_weight: 18.44
+              inner_diameter: 3.83
+              grade: S135
+              class: Premium
+              weight: 571.64
+              expanded: true
+              length_tooljoint: 1.5
+              id: b1466040-a91b-11e7-ab30-a5e060b4f02f
+              connection_type: CET43
+            - family: sub
+              length: 3.56
+              material: Steel
+              name: CET43 B x 3 1/2IF P
+              order: 1
+              outer_diameter: 5.38
+              linear_weight: 75
+              inner_diameter: 2.25
+              weight: 267
+              expanded: false
+              id: afa81c50-b5ce-11e7-b4df-676cb51f71f4
+              connection_type: 'CET43 to 3 .50 IF '
+            - family: dc
+              length: 30.31
+              material: Non Magnetic
+              component_length: 30.31
+              name: NMDC
+              order: 2
+              outer_diameter: 4.69
+              linear_weight: 39.43
+              inner_diameter: 2.69
+              weight: 1195.02
+              id: 14e8fa80-b5cf-11e7-b4df-676cb51f71f4
+              connection_type: 3.50 IF
+              sub_category: NonMag
+            start_timestamp: 1508861340
+            id: 8
+            start_depth: 10160
+            planning: false
+          version: 1
+          provider: corva
+          dataset: data.drillstring
+          company_id: 1
+    WellViewPlugs:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        options:
+          type: object
+        items:
+          type: array
+      example:
+        dataset: plugs
+        results:
+        - _id: 5c9a92d834022a04c4acb6d3
+          timestamp: 1536912275
+          version: 1
+          provider: corva
+          dataset: completion.data.plugs
+          asset_id: 1
+          company_id: 1
+          data:
+            type: FRAC PLUG
+            make: HALLIBURTON
+            model: FAS DRILL
+            outside_diameter: 4.38
+            run_date: 8/28/19 12:35
+            top_depth: 12656
+            bottom_depth: 13853
+            number: 6
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    WellViewIngest:
+      required:
+      - asset_id
+      - data_type
+      - timestamp
+      properties:
+        asset_id:
+          type: integer
+          format: int64
+        data_type:
+          type: string
+        timestamp:
+          type: integer
+          format: int64
+        data:
+          type: object
+      example:
+        asset_id: 24
+        data_type: bha
+        timestamp: 1577836800
+        data:
+          nested: data
+          another: value
+    Asset:
+      required:
+      - id
+      - type
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+            visible_rerun_id:
+              type: integer
+              description: If the asset has been rerun and the rerun has been set visible, the ID of the rerun asset is returned here.
+            merging_rerun_as_source:
+              type: boolean
+            merging_rerun_as_target:
+              type: boolean
+            running_rerun_as_source:
+              type: boolean
+            running_rerun_as_target:
+              type: boolean
+            source_well:
+              type: object
+              description: If the asset has been created during rerun this property will contain mane and ID of source well
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+            rig_changed_at:
+              type: datetime
+              format: timestamp
+              description: Datetime when the rig was last changed. Returned for Asset::Well.
+            country:
+              type: string
+        relationships:
+          type: object
+      example:
+        id: 7926
+        type: asset
+        attributes:
+          company_id: 123
+          company_name: My Company
+          type: Asset::Well
+          asset_type: well
+          timezone: America/Chicago
+          lon_lat:
+            longitude: -103.0
+            latitude: 32.0
+          created_at: '2020-01-01T00:00:00.000Z'
+          last_active_at: '2020-01-01T00:00:00.000Z'
+          status: active
+          state: drilling
+          visibility: visible
+          rig_changed_at: '2026-06-20T20:01:35.000Z'
+          name: The Best Well
+          parent_asset_id: 12345
+          parent_asset_name: A Big Rig
+          root_asset_id: 123
+          root_asset_name: The Permian Program
+          api_number: 00-111-22222
+          county: Eddy
+          country: United States
+          basin: Permian
+          area: Midland
+          string_design: '4'
+          merging_rerun_as_source: false
+          merging_rerun_as_target: true
+          running_rerun_as_source: false
+          running_rerun_as_target: false
+          top_hole:
+            raw: 32.000000, -103.000000
+            coordinates:
+            - 32.0
+            - -103.0
+          bottom_hole: {}
+          contractor_name: The Contractor
+          directional_driller: The DD
+          mud_company: The Mud Company
+          customer_well_id: customer-id-909488abtx
+          original_well_id: '4444'
+          original_well_created_at: '2020-01-01T00:00:00.000Z'
+          settings:
+            day_shift_start_time: 06:00
+            spud_release: []
+            last_mongo_refresh: '2020-01-01T00:00:00.000Z'
+          stats:
+            spud_at: '2020-01-01T00:00:00.000Z'
+            well_start: 100
+            well_end: 1000
+            total_cost: 10000
+            total_time: 999
+            total_depth: 10000
+            first_active_at: 149900000
+            witsml_data_frequency: 5
+          source_well:
+            id: 12345
+            name: Rerun Source Well
+          custom_properties:
+            anything: goes
+        relationships:
+          company:
+            data:
+              id: '123'
+              type: company
+          parent_asset:
+            data:
+              id: '12345'
+              type: asset
+          active_child:
+            data:
+              id: '54321'
+              type: asset
+          last_active_child:
+            data:
+              id: '54321'
+              type: asset
+    WellViewFracStageSummary:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        options:
+          type: object
+        items:
+          type: array
+      example:
+        dataset: frac_stage_summary
+        results:
+        - _id: 5c9a92d834022a04c4acb6d3
+          timestamp: 1536912275
+          version: 1
+          provider: corva
+          dataset: completion.data.actual-stages
+          asset_id: 1
+          company_id: 1
+          data:
+            average_pumping_rate: 87.8
+            average_treating_pressure: 9084
+            bottom_perforation: 20674
+            break_down: 6194
+            chemicals:
+            - type: Scale Inhibitor
+              unit_type: volume
+              unit: gal
+              amount: 30.2
+            - type: Liquid FR
+              unit_type: volume
+              unit: gal
+              amount: 540.5
+            end_isip: 2840
+            end_time: 1536912275
+            fluids:
+            - type: Slickwater
+              unit_type: oil
+              unit: bbl
+              amount: 10500
+            flush_volume: 948
+            formation_gradient: 0.72
+            formation_name: Wolfcamp A
+            hydraulic_power: 12450.25
+            max_pumping_rate: 101.6
+            max_treating_pressure: 10148
+            pad_isip: null
+            perforated_length: 120
+            plug_depth: 19809
+            proppants:
+            - type: 40/70 RBS
+              unit_type: mass
+              unit: lb
+              amount: 12012.2
+            - type: 100 Mesh
+              unit_type: mass
+              unit: lb
+              amount: 165500
+            stage_number: 2
+            stand_by_time: 1
+            start_time: 1536912255
+            top_perforation: 21765
+            total_shots: 32
+            total_pump_time: null
+            vertical_depth: null
+    WellViewJobSettings:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        options:
+          type: object
+        items:
+          type: array
+      example:
+        dataset: job_settings
+        results:
+        - _id: 5c9a92d834022a04c4acb6d3
+          timestamp: 1536912275
+          version: 1
+          provider: corva
+          dataset: completion.data.job-settings
+          asset_id: 1
+          company_id: 1
+          data:
+            equivalent_length_of_surface_equipment: 0.98
+            goal_rate: 259.8
+            max_goal_pressure: 12300
+            maximum_allowable_surface_treating_pressure: 0
+            maximum_casing_hanger_pressure: 0
+            maximum_casing_internal_pressure: 0
+            maximum_hhp: 1
+            maximum_pumping_capacity: 1.2
+            min_goal_pressure: 8700
+            packer_plug_pressure_rating: 0
+            surface_fluid_storage_capacity: 1
+            wellhead_pressure_rating: 0
+    WellViewFrac:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        options:
+          type: object
+        items:
+          type: array
+      example:
+        dataset: frac
+        results:
+        - _id: 5c9a92d834022a04c4acb6d3
+          timestamp: 1536912275
+          version: 1
+          provider: corva
+          dataset: completion.wits
+          asset_id: 1
+          stage_number: 1
+          company_id: 1
+          data:
+            wellhead_pressure: -5.34
+            slurry_flow_rate_in: 0
+            clean_flow_rate_in: 0
+            total_clean_volume_in: 6185.35
+            total_slurry_volume_in: 6470.48
+            total_pump_spm: null
+            state: Pressure Testing or Bad Data
+            elapsed_time: 52
+            total_chemical_rate_in: 1.47
+            cum_pumped_slurry_volume: 0
+            total_proppant_concentration: 0
+            cum_proppant_concentration: 0
+            total_proppant_mass: 0
+            cum_proppant_mass: 0
+            pressure_change_rate: 0.1299999999999999
+            timestamp: 1536912275
+            powder_breaker: 0
+            gel: 1.47
+            proppant_1_mass: 0
+            proppant_2_mass: 0
+            proppant_1_concentration: 0
+            proppant_2_concentration: 0
+    WellViewFracStageDesign:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        options:
+          type: object
+        items:
+          type: array
+      example:
+        dataset: frac_stage_design
+        results:
+        - _id: 5c9a92d834022a04c4acb6d3
+          timestamp: 1587481401
+          version: 1
+          provider: corva
+          dataset: completion.data.stages
+          asset_id: 1
+          company_id: 1
+          data:
+            chemicals:
+            - type: Clay Stabilizer
+              unit_type: volume
+              unit: gal
+              amount: 105
+            - type: Biocide
+              unit_type: volume
+              unit: gal
+              amount: 63
+            - type: Liquid FR
+              unit_type: volume
+              unit: gal
+              amount: 410
+            - type: Liquid Breaker
+              unit_type: volume
+              unit: gal
+              amount: 100
+            - type: Scale Inhibitor
+              unit_type: volume
+              unit: gal
+              amount: 85
+            perforation_phasing: null
+            perforated_length: 80
+            fluids:
+            - type: Slickwater
+              amount: 10000
+              unit_type: oil
+              unit: bbl
+            stage_number: 1
+            fluids_specification:
+            - type: Slickwater
+              component:
+              - type: Clay Stabilizer
+                name: KCl
+                unit: gpt
+                amount: 0.25
+              - type: Biocide
+                name: Bio
+                unit: gpt
+                amount: 0.15
+              - type: Diverter
+                name: Diverter
+                unit: ppt
+                amount: 1.1
+              - type: Liquid FR
+                name: FR
+                unit: gpt
+                amount: 1
+              - type: Liquid Breaker
+                name: Breaker
+                unit: gpt
+                amount: 0.25
+              - type: Scale Inhibitor
+                name: SI
+                unit: gpt
+                amount: 0.2
+            plug_depth: 21100
+            temp: null
+            flush_volume: 294.2
+            shot_per_foot: null
+            bottom_perforation: 21090
+            formation_name: Formation 123
+            proppants:
+            - type: 100 Mesh
+              amount: 105000
+              unit_type: mass
+              unit: lb
+            - type: 40/70 NWS
+              amount: 245000
+              unit_type: mass
+              unit: lb
+            total_shots: null
+            top_perforation: 21009
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

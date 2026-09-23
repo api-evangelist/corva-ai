@@ -1,0 +1,230 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva App Assets API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: AppAssets
+paths:
+  /v2/apps/{app_id}/assets:
+    get:
+      summary: Retrieve app assets
+      tags:
+      - AppAssets
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          type: object
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppAssetList'
+      parameters:
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: asset_name
+        description: Asset Name
+        schema:
+          type: string
+      - in: query
+        name: asset_status
+        description: 'Asset Status. Possible: "all", "active", "paused", "complete", "idle"'
+        schema:
+          type: string
+      - in: query
+        name: from
+        description: Unix timestamp to start filtering assets "from" any time. Will filter assets by last_active_at field
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: to
+        description: 'Unix timestamp to start filtering assets "to: any time. Will filter assets by last_active_at field'
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: page
+        description: Number of page
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of items to list per page
+        schema:
+          type: integer
+      operationId: getV2AppsByAppIdAssets
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AppAssetList:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            status:
+              type: string
+            last_active_at:
+              type: string
+              format: date-time
+            company_name:
+              type: string
+              description: Company name of the asset
+            rig_name:
+              type: string
+            pad:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                name:
+                  type: string
+            frac_fleet:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                name:
+                  type: string
+            streams:
+              type: array
+              description: Related app streams (excluding deleted), with id, name, statuses and app_version
+              items:
+                $ref: '#/components/schemas/AppAssetStream'
+      example:
+        id: 12345
+        type: app_asset
+        attributes:
+          id: 12345
+          name: Well
+          status: active
+          last_active_at: '2021-10-27T17:05:32.860Z'
+          company_name: Corva Drilling Inc.
+          rig_name: Rig
+          pad:
+            id: 111
+            name: Pad name
+          frac_fleet:
+            id: 111
+            name: FracFleet name
+          streams:
+          - id: 456
+            name: App Stream Well
+            status: active
+            statuses:
+              status: active
+              visibility: visible
+            app_version: abc123
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AppAssetStream:
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: App stream ID
+        name:
+          type: string
+          description: App stream name
+        status:
+          type: string
+          description: App stream status
+        statuses:
+          type: object
+          description: App stream status details
+          properties:
+            status:
+              type: string
+              description: Stream status
+            visibility:
+              type: string
+              description: Stream visibility (e.g. visible, deleted)
+        app_version:
+          type:
+          - string
+          - 'null'
+          description: App version from AppConnection on stream (Package build)
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

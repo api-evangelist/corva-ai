@@ -1,0 +1,449 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Pad Frac Fleets API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: PadFracFleets
+paths:
+  /v2/pad_frac_fleets:
+    get:
+      summary: List Pad/Frac Fleet Relations
+      tags:
+      - PadFracFleets
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List of Pad/Frac Fleet Relations
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/EdrProviders'
+      parameters:
+      - in: query
+        name: frac_fleet_id
+        description: Filter by frac_fleet_id
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: pad_id
+        description: Filter by pad_id
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: order
+        description: Order pad frac fleets by 'asc' or 'desc'
+        schema:
+          type: string
+      - in: query
+        name: sort
+        description: Available sort values - created_at, last_current_at
+        schema:
+          type: string
+      - in: query
+        name: page
+        description: Number of page
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Number of items to list per page
+        schema:
+          type: integer
+      operationId: getV2PadFracFleets
+      x-operation-id-source: derived
+    post:
+      summary: Create Pad/Frac Fleet Relation
+      tags:
+      - PadFracFleets
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created Pad/Frac Fleet Relation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PadFracFleet'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePadFracFleetPayload'
+        description: Pad/Frac Fleet Payload
+        required: true
+      operationId: postV2PadFracFleets
+      x-operation-id-source: derived
+  /v2/pad_frac_fleets/{id}:
+    patch:
+      summary: Patch Pad/Frac Fleet Relation
+      tags:
+      - PadFracFleets
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Pad/Frac Fleet Relation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PadFracFleet'
+      parameters:
+      - in: path
+        name: id
+        description: Pad/Frac Fleet ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePadFracFleetPayload'
+        description: Pad/Frac Fleet Payload
+        required: true
+      operationId: patchV2PadFracFleetsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete Pad/Frac Fleet Relation
+      tags:
+      - PadFracFleets
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Pad/Frac Fleet Relation deleted
+      parameters:
+      - in: path
+        name: id
+        description: Pad/Frac Fleet ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2PadFracFleetsById
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    EdrProviders:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EdrProvider'
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    CreatePadFracFleetPayload:
+      properties:
+        pad_frac_fleet:
+          type: object
+          properties:
+            frac_fleet_id:
+              type: integer
+              format: int64
+            pad_id:
+              type: integer
+              format: int64
+            current:
+              type: boolean
+      example:
+        pad_frac_fleet:
+          frac_fleet_id: 123
+          pad_id: 333
+          current: false
+    UpdatePadFracFleetPayload:
+      properties:
+        pad_frac_fleet:
+          type: object
+          properties:
+            current:
+              type: boolean
+            contract_data:
+              type: object
+      example:
+        pad_frac_fleet:
+          current: true
+          contract_data:
+            something: value
+    EdrProvider:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            link:
+              type: string
+            username:
+              type: string
+            password:
+              type: string
+            provider_type:
+              type: string
+              enum:
+              - witsml
+              - generic
+            metadata:
+              type: object
+              description: Raw provider metadata. May include credentials for generic providers.
+            last_data_received_at:
+              type: string
+              format: date-time
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            relationships:
+              type: object
+              properties:
+                created_by:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          format: int64
+                        type:
+                          type: string
+                last_edited_by:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          format: int64
+                        type:
+                          type: string
+      example:
+        id: 111
+        type: edr_provider
+        attributes:
+          id: 111
+          name: Edr provider
+          link: https://app.corva.ai
+          username: Username
+          password: password
+          provider_type: witsml
+          metadata:
+            witsml_version: '1.4'
+          created_at: '2010-01-01T00:00:00.000Z'
+          updated_at: '2010-01-01T00:00:00.000Z'
+          last_data_received_at: '2010-01-01T00:00:00.000Z'
+        relationships:
+          created_by:
+            data:
+              id: '123'
+              type: user
+          last_edited_by:
+            data:
+              id: '123'
+              type: user
+    PadFracFleet:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            current:
+              type: boolean
+            last_current_at:
+              type: string
+              format: date-time
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            contract_data:
+              type: object
+        relationships:
+          type: object
+          properties:
+            frac_fleet:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+            pad:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+            frac_fleet_lines:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: pad_frac_fleet
+        attributes:
+          id: 12345
+          current: true
+          created_at: '2022-11-11T09:11:52.326Z'
+          updated_at: '2022-11-11T09:11:52.326Z'
+          last_current_at: '2022-11-11T09:11:52.326Z'
+          frac_fleet:
+            id: 234
+          pad:
+            id: 234
+          contract_data:
+            something: value
+        relationships:
+          frac_fleet_lines:
+          - id: 555
+            type: frac_fleet_line
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

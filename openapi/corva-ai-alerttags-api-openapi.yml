@@ -1,0 +1,300 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Alert Tags API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: AlertTags
+paths:
+  /v2/alert_tags:
+    get:
+      summary: List Alert Tags
+      tags:
+      - AlertTags
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List of alert tags for the current company
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertTagList'
+      parameters:
+      - in: query
+        name: search
+        description: Search by name
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: page
+        description: Page number
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        description: Items per page
+        required: false
+        schema:
+          type: integer
+      operationId: getV2AlertTags
+      x-operation-id-source: derived
+    post:
+      summary: Create Alert Tag
+      tags:
+      - AlertTags
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created alert tag
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertTagSingle'
+        '400':
+          description: Validation error, including a name already used in the company, a parent in another company, or a parent that is not a top-level tag
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertTagPayload'
+        required: true
+      operationId: postV2AlertTags
+      x-operation-id-source: derived
+  /v2/alert_tags/{id}:
+    patch:
+      summary: Update Alert Tag
+      tags:
+      - AlertTags
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated alert tag
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertTagSingle'
+        '400':
+          description: Validation error
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertTagPayload'
+        required: true
+      operationId: patchV2AlertTagsById
+      x-operation-id-source: derived
+    delete:
+      summary: Delete Alert Tag
+      tags:
+      - AlertTags
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Deleted. Child tags and definition taggings are removed as well
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: deleteV2AlertTagsById
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AlertTagSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AlertTag'
+    AlertTag:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          type: object
+          required:
+          - id
+          - name
+          - company_id
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            color:
+              type: string
+              description: 'Hex color code in #rrggbb form; empty string when the tag has no color'
+            company_id:
+              type: integer
+              format: int64
+            parent_id:
+              type: integer
+              format: int64
+              description: Parent tag id; NULL for top-level tags. Tags nest at most one level deep
+            alert_definitions_count:
+              type: integer
+              description: Alert definitions directly tagged with this tag. Deleting the tag removes it from all of them
+            children_count:
+              type: integer
+              description: Child tags, which are destroyed along with this tag
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+    AlertTagPayload:
+      properties:
+        alert_tag:
+          type: object
+          properties:
+            name:
+              type: string
+            color:
+              type: string
+              description: 'Optional six digit hex color code, with or without the leading #, stored as #rrggbb in lower case. Send an empty string to clear it. Defaults to an empty string'
+            parent_id:
+              type: integer
+              format: int64
+              description: Optional parent tag; must reference a top-level tag in the same company
+            company_id:
+              type: integer
+              format: int64
+              description: Create only; defaults to the current company
+    AlertTagList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertTag'
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header

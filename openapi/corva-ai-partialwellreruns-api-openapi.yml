@@ -1,0 +1,1082 @@
+openapi: 3.2.0
+info:
+  version: v2.222.1
+  title: Corva Partial Well Reruns API
+  description: 'The Corva API is a powerful interface providing great flexibility and extensibility with Corva. Whether your needs are simple UI visualizations, data entry, replication/sync tasks, real-time stream processing, or complex machine learning CPU-intensive apps, the Corva API is the way to make it happen. Our concepts are split into three distinct silos: data apps, visualization apps, and a REST API'
+  termsOfService: https://www.corva.ai/terms-and-conditions/
+  contact:
+    name: Corva API Team
+    email: support@corva.ai
+security:
+- api_key: []
+tags:
+- name: PartialWellReruns
+paths:
+  /v2/partial_reruns:
+    get:
+      summary: List Partial Well Reruns
+      tags:
+      - PartialWellReruns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List of Partial Well Reruns
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PartialWellRerun'
+      parameters:
+      - in: query
+        name: status
+        description: Filter by multiple statuses
+        schema:
+          items:
+            type: string
+            enum:
+            - initialized
+            - running
+            - pending_merge
+            - merge_initialized
+            - merging
+            - failed
+            - stopped
+            - completed
+      - in: query
+        name: company_id
+        description: Filter by company_id
+        schema:
+          type: integer
+      - in: query
+        name: rig_id
+        description: Filter by rig_id
+        schema:
+          type: integer
+      - in: query
+        name: start_timestamp
+        description: Filter runs that started later than start_timestamp. start_timestamp is in seconds
+        schema:
+          type: integer
+      - in: query
+        name: user_email
+        description: Filter by user email. Can filter by parts of email
+        schema:
+          type: string
+      - in: query
+        name: well_id
+        description: Filter by source's and target's well id
+        schema:
+          type: integer
+      - in: query
+        name: start
+        description: Unix timestamp in seconds that filters reruns by created date and are created later than param specified
+        schema:
+          type: integer
+      - in: query
+        name: end
+        description: Unix timestamp in seconds that filters reruns by created date and are created before than param specified
+        schema:
+          type: integer
+      - in: query
+        name: mergeable
+        description: Filter by mergeable status
+        schema:
+          type: boolean
+      - in: query
+        name: order
+        description: Order partial well reruns by 'asc' or 'desc'
+        schema:
+          type: string
+      - in: query
+        name: sort
+        description: Available sort values - id, company, rig, source_well_name, target_well_name, start_timestamp, status, created_at
+        schema:
+          type: string
+      operationId: getV2PartialReruns
+      x-operation-id-source: derived
+  /v2/partial_reruns/list:
+    post:
+      summary: List Partial Well Reruns
+      tags:
+      - PartialWellReruns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: List of Partial Well Reruns
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PartialWellRerun'
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Available sort values - id, company, rig, source_well_name, target_well_name, start_timestamp, status, created_at
+      operationId: postV2PartialRerunsList
+      x-operation-id-source: derived
+  /v2/partial_reruns/{id}:
+    get:
+      summary: Show Partial Well Rerun
+      tags:
+      - PartialWellReruns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Partial Well Rerun
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartialWellRerunFull'
+      parameters:
+      - in: path
+        name: id
+        description: Partial Well Rerun ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2PartialRerunsById
+      x-operation-id-source: derived
+    patch:
+      summary: Update Partial Well Rerun
+      tags:
+      - PartialWellReruns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Partial Well Rerun
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartialWellRerun'
+      parameters:
+      - in: path
+        name: id
+        description: Partial Well Rerun ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePartialWellRerunPayload'
+        description: PartialWellRerun Payload
+        required: true
+      operationId: patchV2PartialRerunsById
+      x-operation-id-source: derived
+  /v2/partial_reruns/{id}/start_merging:
+    patch:
+      summary: Start rerun merging
+      tags:
+      - PartialWellReruns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Partial Well Rerun
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartialWellRerun'
+      parameters:
+      - in: path
+        name: id
+        description: Partial Well Rerun ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: patchV2PartialRerunsByIdStartMerging
+      x-operation-id-source: derived
+  /v2/partial_reruns/{id}/resume:
+    patch:
+      summary: Change rerun status to synchronizing_streams
+      tags:
+      - PartialWellReruns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Partial Well Rerun
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartialWellRerun'
+      parameters:
+      - in: path
+        name: id
+        description: Partial Well Rerun ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: patchV2PartialRerunsByIdResume
+      x-operation-id-source: derived
+  /v2/partial_reruns/{id}/stop:
+    patch:
+      summary: Change rerun status to stop
+      tags:
+      - PartialWellReruns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Partial Well Rerun
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartialWellRerun'
+      parameters:
+      - in: path
+        name: id
+        description: Partial Well Rerun ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: patchV2PartialRerunsByIdStop
+      x-operation-id-source: derived
+  /v2/partial_reruns/{id}/fail:
+    patch:
+      summary: Change rerun status to failed
+      tags:
+      - PartialWellReruns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Partial Well Rerun
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartialWellRerun'
+      parameters:
+      - in: path
+        name: id
+        description: Partial Well Rerun ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: patchV2PartialRerunsByIdFail
+      x-operation-id-source: derived
+  /v2/partial_reruns/{id}/cancel:
+    patch:
+      summary: Change rerun status to canceled
+      tags:
+      - PartialWellReruns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Partial Well Rerun
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartialWellRerun'
+      parameters:
+      - in: path
+        name: id
+        description: Partial Well Rerun ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: patchV2PartialRerunsByIdCancel
+      x-operation-id-source: derived
+  /v2/partial_reruns/{id}/restart:
+    patch:
+      summary: Restart partial rerun, which will change its status to running
+      tags:
+      - PartialWellReruns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Partial Well Rerun
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartialWellRerun'
+      parameters:
+      - in: path
+        name: id
+        description: Partial Well Rerun ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: patchV2PartialRerunsByIdRestart
+      x-operation-id-source: derived
+  /v2/partial_reruns/{id}/app_progress/{app_id}:
+    get:
+      summary: Show Partial Well Rerun App Progress
+      tags:
+      - PartialWellReruns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Partial Well Rerun
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartialWellRerunAppProgress'
+      parameters:
+      - in: path
+        name: id
+        description: Partial Well Rerun ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      operationId: getV2PartialRerunsByIdAppProgressByAppId
+      x-operation-id-source: derived
+    patch:
+      summary: Update Partial Well Rerun App Progress
+      tags:
+      - PartialWellReruns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Updated Partial Well Rerun
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartialWellRerunAppProgress'
+      parameters:
+      - in: path
+        name: id
+        description: Partial Well Rerun ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: app_id
+        description: App ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePartialWellRerunAppProgressPayload'
+        description: PartialWellRerunAppProgress Payload
+        required: true
+      operationId: patchV2PartialRerunsByIdAppProgressByAppId
+      x-operation-id-source: derived
+  /v2/wells/{well_id}/partial_reruns:
+    post:
+      summary: Create Partial Well Rerun
+      tags:
+      - PartialWellReruns
+      responses:
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '403':
+          description: Authorization error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationError'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '200':
+          description: Created Partial Well Rerun
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartialWellRerun'
+        '412':
+          description: Well is missing drilling#time stream
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                example:
+                  code: 412
+                  message: No drilling time app stream found for the asset
+      parameters:
+      - in: path
+        name: well_id
+        description: Well ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Enable alerts for target well
+      operationId: postV2WellsByWellIdPartialReruns
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    UpdatePartialWellRerunAppProgressPayload:
+      properties:
+        app_progress:
+          type: object
+          properties:
+            status:
+              type: integer
+            completed_app_connection:
+              type: integer
+            fail_reason:
+              type: string
+            dataset_progresses:
+              type: array
+              properties:
+                dataset_id:
+                  type: integer
+                processed_timestamp:
+                  type: integer
+                completed:
+                  type: boolean
+            app_connection_progresses:
+              type: array
+              properties:
+                dataset_id:
+                  type: integer
+                completed:
+                  type: boolean
+      example:
+        app_progress:
+          status: completed
+          completed_app_connection: 123
+          fail_reason: Failed
+          dataset_progresses:
+          - dataset_id: 345
+            processed_timestamp: 55560
+            completed: false
+          app_connection_progresses:
+          - app_connection_id: 345
+            completed: false
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    UpdatePartialWellRerunPayload:
+      properties:
+        rerun:
+          type: object
+          properties:
+            status:
+              type: string
+            start_timestamp:
+              type: integer
+            end_timestamp:
+              type: integer
+            app_progresses:
+              type: array
+              properties:
+                app_id:
+                  type: integer
+                status:
+                  type: integer
+                dataset_progresses:
+                  type: array
+                  properties:
+                    dataset_id:
+                      type: integer
+                    processed_timestamp:
+                      type: integer
+                    completed:
+                      type: boolean
+                app_connection_progresses:
+                  type: array
+                  properties:
+                    app_connection_id:
+                      type: integer
+                    completed:
+                      type: boolean
+      example:
+        rerun:
+          status: stopped
+          start_timestamp: 55555
+          end_timestamp: 66666
+          data_source: witsml
+          app_progresses:
+          - app_id: 249
+            status: completed
+            dataset_progresses:
+            - dataset_id: 345
+              processed_timestamp: 55560
+              completed: false
+            app_connection_progresses:
+            - app_connection_id: 567
+              completed: false
+    PartialWellRerunFull:
+      properties:
+        data:
+          $ref: '#/components/schemas/PartialWellRerun'
+        included:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartialWellRerunAppProgress'
+      example:
+        data:
+          id: '123'
+          type: partial_well_rerun
+          attributes:
+            id: 123
+            source_asset_id: 555
+            target_asset_id: 999
+            source_well_name: Original well
+            target_well_name: Target well
+            source_app_stream_id: 1395
+            target_app_stream_id: 1402
+            rerun_mode: live
+            start_timestamp: 1543847760
+            end_timestamp: null
+            rig_id: 111
+            rig_name: The drill
+            company_id: 222
+            company_name: Mainframe
+            status: running
+            created_at:
+              first_name: Tom
+              last_name: Jerry
+              profile_photo: null
+              email: tomjerry@gmail.com
+            mergeable: false
+            mergeable_reason: All streams are not synchronized
+          relationships:
+            app_progresses:
+              data:
+              - id: '123'
+                type: partial_well_rerun_app_progress
+        included:
+        - id: '123'
+          type: partial_well_rerun_app_progress
+          attributes:
+            app_id: 44
+            status: merging
+            app_key: corva.enrichment-wrapper
+            relationships:
+              dataset_progresses:
+                data:
+                - id: '4'
+                  type: partial_well_rerun_dataset_progress
+              app_connection_progresses:
+                data:
+                - id: '5'
+                  type: partial_well_rerun_app_connection_progress
+    PartialWellRerun:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            source_asset_id:
+              type: integer
+              format: int64
+            target_asset_id:
+              type: integer
+              format: int64
+            source_well_name:
+              type: string
+            target_well_name:
+              type: string
+            source_app_stream_id:
+              type: integer
+              format: int64
+            target_app_stream_id:
+              type: integer
+              format: int64
+            rerun_mode:
+              type: string
+            start_timestamp:
+              type: integer
+              format: int64
+            end_timestamp:
+              type: integer
+              format: int64
+            rig_id:
+              type: integer
+              format: int64
+            rig_name:
+              type: string
+            company_id:
+              type: integer
+              format: int64
+            company_name:
+              type: integer
+              format: int64
+            status:
+              type: string
+            completed_at:
+              type: string
+              format: date-time
+            merge_started_at:
+              type: string
+              format: date-time
+            completion_rate:
+              type: float
+            created_by:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                profile_photo:
+                  type: string
+                email:
+                  type: string
+            mergeable:
+              type: boolean
+            fail_reasons:
+              type: object
+              properties:
+                app_name:
+                  type: string
+                app_id:
+                  type: integer
+                  format: int64
+                fail_reason:
+                  type: string
+        relationships:
+          type: object
+          properties:
+            app_progresses:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: string
+                    type:
+                      type: string
+      example:
+        id: '123'
+        type: partial_well_rerun
+        attributes:
+          id: 123
+          source_asset_id: 555
+          target_asset_id: 999
+          source_well_name: Original well
+          target_well_name: Target well
+          source_app_stream_id: 1395
+          target_app_stream_id: 1402
+          rerun_mode: live
+          start_timestamp: 1543847760
+          end_timestamp: null
+          rig_id: 111
+          rig_name: The drill
+          company_id: 222
+          company_name: Mainframe
+          completed_at: '2010-01-01T00:00:00.000Z'
+          merge_started_at: '2010-01-01T00:00:00.000Z'
+          status: running
+          created_at:
+            first_name: Tom
+            last_name: Jerry
+            profile_photo: null
+            email: tomjerry@gmail.com
+          mergeable: false
+          mergeable_reason: All streams are not synchronized
+          fail_reasons:
+          - app_name: App
+            app_id: 123
+            fail_reason: Failed
+        relationships:
+          app_progresses:
+            data:
+            - id: '123'
+              type: partial_well_rerun_app_progress
+    PartialWellRerunDatasetProgress:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            dataset_id:
+              type: integer
+              format: int64
+            processed_timestamp:
+              type: integer
+            completed:
+              type: boolean
+            dataset_name:
+              type: string
+      example:
+        id: 123
+        type: partial_well_rerun_dataset_progress
+        attributes:
+          id: 100
+          dataset_id: 786
+          processed_timestamp: 58457475
+          completed: false
+          dataset_name: New dataset
+    PartialWellRerunAppProgress:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            app_id:
+              type: integer
+              format: int64
+            app_key:
+              type: string
+            app_name:
+              type: string
+            status:
+              type: string
+            fail_reason:
+              type: string
+            rerun_status:
+              type: string
+            rerun_completion_rate:
+              type: float
+            partial_well_rerun_id:
+              type: integer
+              format: int64
+        relationships:
+          type: object
+          properties:
+            dataset_progresses:
+              type: array
+              items:
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        format: string
+                      type:
+                        type: string
+            app_connection_progresses:
+              type: array
+              items:
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        format: string
+                      type:
+                        type: string
+        included:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartialWellRerunDatasetProgress'
+      example:
+        data:
+          id: '123'
+          type: partial_well_rerun_app_progress
+          attributes:
+            app_id: 124
+            app_key: corva.enrichment-wrapper
+            status: merging
+            fail_reason: null
+          relationships:
+            dataset_progresses:
+              data:
+              - id: '5'
+                type: partial_well_rerun_dataset_progress
+            app_connection_progresses:
+              data:
+              - id: '6'
+                type: partial_well_rerun_app_connection_progress
+        included:
+        - id: '5'
+          type: partial_well_rerun_dataset_progress
+          attributes:
+            dataset_id: 132
+            processed_timestamp: 1543847760
+            completed: false
+            dataset_name: corva#wits
+        - id: '6'
+          type: partial_well_rerun_app_connection_progress
+          attributes:
+            app_connection_id: 444
+            rerun_app_connection_id: 555
+            completed: false
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header
