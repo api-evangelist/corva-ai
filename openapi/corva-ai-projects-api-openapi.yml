@@ -283,6 +283,41 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    ProjectList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectObject'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+        - id: 12345
+          type: project
+          attributes:
+            id: 12345
+            name: Project Name
+            status: active
+            user_id: 348
+            description: Project description text
+            settings:
+              foo: bar
+            dependencies:
+              flask: 1
+              python3: 1
+            created_at: '2022-11-11T09:11:52.326Z'
+            updated_at: '2022-11-11T09:11:52.326Z'
+          relationships: {}
+        included: []
     AuthorizationError:
       required:
       - code
@@ -296,19 +331,6 @@ components:
       example:
         code: 403
         message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
     AuthenticationError:
       required:
       - code
@@ -347,41 +369,19 @@ components:
           dependencies:
             flask: 1
             python3: 1
-    ProjectList:
+    NotFoundError:
+      required:
+      - code
+      - message
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectObject'
-        included:
-          type: array
-          items:
-            properties:
-              id:
-                type: integer
-              type:
-                type: string
-              attributes:
-                type: object
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
       example:
-        data:
-        - id: 12345
-          type: project
-          attributes:
-            id: 12345
-            name: Project Name
-            status: active
-            user_id: 348
-            description: Project description text
-            settings:
-              foo: bar
-            dependencies:
-              flask: 1
-              python3: 1
-            created_at: '2022-11-11T09:11:52.326Z'
-            updated_at: '2022-11-11T09:11:52.326Z'
-          relationships: {}
-        included: []
+        code: 404
+        message: Not found
     ProjectObject:
       properties:
         data:

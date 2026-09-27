@@ -295,32 +295,6 @@ components:
           - 248
           - 93434
           factor: 56
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
     TaskShow:
       properties:
         id:
@@ -356,7 +330,7 @@ components:
         properties:
           attribute: value
         payload: {}
-    AuthenticationError:
+    AuthorizationError:
       required:
       - code
       - message
@@ -367,8 +341,8 @@ components:
         message:
           type: string
       example:
-        code: 401
-        message: Missing authentication. Please try again.
+        code: 403
+        message: Access denied
     Task:
       required:
       - id
@@ -448,6 +422,32 @@ components:
           - 93434
           factor: 56
         app_version: 2
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

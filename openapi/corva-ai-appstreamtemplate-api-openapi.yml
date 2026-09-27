@@ -239,6 +239,19 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
     AppStreamTemplatePayload:
       properties:
         app_stream_template:
@@ -311,45 +324,6 @@ components:
             app_stream_template_id: 12345
             app_id: 999
             key: corva.streamx-witsml-source
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     AppStreamTemplate:
       properties:
         id:
@@ -417,12 +391,6 @@ components:
             data:
             - id: 435
               type: app_stream_template_app
-    AppStreamTemplateList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppStreamTemplate'
     AppStreamTemplateAppSummary:
       properties:
         id:
@@ -452,6 +420,38 @@ components:
           app_stream_template_id: 299
           app_id: 999
           key: corva.streamx-witsml-source
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AppStreamTemplateList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppStreamTemplate'
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

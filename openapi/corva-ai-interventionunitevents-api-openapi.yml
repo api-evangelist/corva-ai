@@ -208,6 +208,51 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    UpdateInterventionUnitEventPayload:
+      properties:
+        operation:
+          type: string
+        set_at:
+          type: string
+          format: date-time
+        start_at:
+          type: string
+          format: date-time
+        release_at:
+          type: string
+          format: date-time
+        integration_id:
+          type: string
+      example:
+        operation: operation
+        integration_id: 32959483F393D
+        set_at: '2010-01-01T00:00:00.000Z'
+        start_at: '2010-01-01T00:00:00.000Z'
+        release_at: '2010-01-01T00:00:00.000Z'
+    CreateInterventionUnitEventPayload:
+      properties:
+        intervention_unit_id:
+          type: integer
+        operation:
+          type: string
+        integration_id:
+          type: string
+        set_at:
+          type: string
+          format: date-time
+        start_at:
+          type: string
+          format: date-time
+        release_at:
+          type: string
+          format: date-time
+      example:
+        intervention_id: 123
+        operation: operation
+        integration_id: 32959483F393D
+        set_at: '2010-01-01T00:00:00.000Z'
+        start_at: '2010-01-01T00:00:00.000Z'
+        release_at: '2010-01-01T00:00:00.000Z'
     AuthorizationError:
       required:
       - code
@@ -221,32 +266,6 @@ components:
       example:
         code: 403
         message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     InterventionUnitEvent:
       properties:
         id:
@@ -309,51 +328,32 @@ components:
             data:
               id: '222'
               type: well
-    UpdateInterventionUnitEventPayload:
+    AuthenticationError:
+      required:
+      - code
+      - message
       properties:
-        operation:
-          type: string
-        set_at:
-          type: string
-          format: date-time
-        start_at:
-          type: string
-          format: date-time
-        release_at:
-          type: string
-          format: date-time
-        integration_id:
-          type: string
-      example:
-        operation: operation
-        integration_id: 32959483F393D
-        set_at: '2010-01-01T00:00:00.000Z'
-        start_at: '2010-01-01T00:00:00.000Z'
-        release_at: '2010-01-01T00:00:00.000Z'
-    CreateInterventionUnitEventPayload:
-      properties:
-        intervention_unit_id:
+        code:
           type: integer
-        operation:
+          format: int32
+        message:
           type: string
-        integration_id:
-          type: string
-        set_at:
-          type: string
-          format: date-time
-        start_at:
-          type: string
-          format: date-time
-        release_at:
-          type: string
-          format: date-time
       example:
-        intervention_id: 123
-        operation: operation
-        integration_id: 32959483F393D
-        set_at: '2010-01-01T00:00:00.000Z'
-        start_at: '2010-01-01T00:00:00.000Z'
-        release_at: '2010-01-01T00:00:00.000Z'
+        code: 401
+        message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     InterventionUnit:
       properties:
         id:

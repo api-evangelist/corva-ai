@@ -251,32 +251,6 @@ components:
       example:
         code: 403
         message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     PicklistPayload:
       properties:
         name:
@@ -293,6 +267,23 @@ components:
         require_admin: true
         company_id: 1
         options:
+          some: option
+    PicklistItemPayload:
+      properties:
+        name:
+          type: string
+        order:
+          type: integer
+          format: int64
+        secure:
+          type: object
+        metadata:
+          type: object
+      example:
+        name: New Picklist Item
+        order: 1
+        secure: {}
+        metadata:
           some: option
     Picklist:
       required:
@@ -317,6 +308,19 @@ components:
         items:
         - nested: data
           more: additional data
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
     PicklistUpdatePayload:
       properties:
         name:
@@ -357,23 +361,19 @@ components:
           some: option
         secure: {}
         picklist_id: 1
-    PicklistItemPayload:
+    NotFoundError:
+      required:
+      - code
+      - message
       properties:
-        name:
-          type: string
-        order:
+        code:
           type: integer
-          format: int64
-        secure:
-          type: object
-        metadata:
-          type: object
+          format: int32
+        message:
+          type: string
       example:
-        name: New Picklist Item
-        order: 1
-        secure: {}
-        metadata:
-          some: option
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

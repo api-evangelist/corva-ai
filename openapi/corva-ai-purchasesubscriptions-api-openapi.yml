@@ -224,6 +224,110 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    PurchaseSubscriptionUpdatePayload:
+      properties:
+        purchase_subscription:
+          type: object
+          properties:
+            name:
+              type: string
+            asset_type:
+              type: string
+              enum:
+              - company
+              - program
+              - rig
+              - frac_fleet
+              - drillout_unit
+            billing_period:
+              type: string
+              enum:
+              - monthly
+              - daily
+              - annually
+            billing_calc_method:
+              type: string
+              enum:
+              - well_afe_day
+              - well_afe_month
+              - corva_active_day
+              - corva_active_month
+            billing_contact:
+              type: string
+            billing_email:
+              type: string
+            billing_phone:
+              type: string
+            account_manager:
+              type: string
+            price:
+              type: float
+            asset_ids:
+              type: array
+              items:
+                type: integer
+            apps:
+              type: array
+              items:
+                type: integer
+      example:
+        purchase_subscription:
+          price: 19.95
+          name: Product Name
+          asset_type: rig
+          billing_period: monthly
+          billing_calc_method: well_afe_day
+          billing_contact: Billing contact
+          billing_email: example@email.com
+          billing_phone: +1-415 652 0000
+          account_manager: Manager name
+          asset_ids:
+          - 1
+          - 2
+          - 3
+          app_ids:
+          - 1
+          - 2
+          - 3
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     PurchaseSubscription:
       properties:
         id:
@@ -387,110 +491,6 @@ components:
           assets:
           - id: '3'
             type: product_subscription_asset
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    PurchaseSubscriptionUpdatePayload:
-      properties:
-        purchase_subscription:
-          type: object
-          properties:
-            name:
-              type: string
-            asset_type:
-              type: string
-              enum:
-              - company
-              - program
-              - rig
-              - frac_fleet
-              - drillout_unit
-            billing_period:
-              type: string
-              enum:
-              - monthly
-              - daily
-              - annually
-            billing_calc_method:
-              type: string
-              enum:
-              - well_afe_day
-              - well_afe_month
-              - corva_active_day
-              - corva_active_month
-            billing_contact:
-              type: string
-            billing_email:
-              type: string
-            billing_phone:
-              type: string
-            account_manager:
-              type: string
-            price:
-              type: float
-            asset_ids:
-              type: array
-              items:
-                type: integer
-            apps:
-              type: array
-              items:
-                type: integer
-      example:
-        purchase_subscription:
-          price: 19.95
-          name: Product Name
-          asset_type: rig
-          billing_period: monthly
-          billing_calc_method: well_afe_day
-          billing_contact: Billing contact
-          billing_email: example@email.com
-          billing_phone: +1-415 652 0000
-          account_manager: Manager name
-          asset_ids:
-          - 1
-          - 2
-          - 3
-          app_ids:
-          - 1
-          - 2
-          - 3
     PurchaseSubscriptionList:
       properties:
         data:

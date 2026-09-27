@@ -251,32 +251,41 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
+    CompanyV1List:
+      items:
+        $ref: '#/components/schemas/CompanyV1'
       example:
-        code: 403
-        message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
+      - id: 123
+        name: Company Name
+        time_zone: America/Chicago
+        language: English
+        provider: Corva
+        unit_system:
+          system: imperial
+          density: ppg
+          length: ft
+          shortLength: in
+        custom_unit_system:
+          mass: kg
+          distance: m
+        custom_units:
+          mass:
+            metrics:
+            - kg
+            - g
+            - mg
+            default: kg
+          distance:
+            metrics:
+            - m
+            - km
+            - mile
+            default: m
+        dev_center_enabled: true
+        competitor_analysis_enabled: true
+        alert_workflow_id: 5
+        alert_rbac_enabled: false
+        tool_ordering_enabled: false
     CompanyType:
       properties:
         id:
@@ -301,6 +310,19 @@ components:
           id: 1
           name: Company Name
           provider: Provider name
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
     AuthenticationError:
       required:
       - code
@@ -314,14 +336,6 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    CompanyV1UnitSystemParam:
-      properties:
-        name_of_metric:
-          type: string
-      example:
-        angle: value
-        system: imperial
-        density: ppg
     CompanyListStructure:
       properties:
         data:
@@ -393,41 +407,27 @@ components:
         alert_workflow_id: 5
         alert_rbac_enabled: false
         tool_ordering_enabled: false
-    CompanyV1List:
-      items:
-        $ref: '#/components/schemas/CompanyV1'
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
       example:
-      - id: 123
-        name: Company Name
-        time_zone: America/Chicago
-        language: English
-        provider: Corva
-        unit_system:
-          system: imperial
-          density: ppg
-          length: ft
-          shortLength: in
-        custom_unit_system:
-          mass: kg
-          distance: m
-        custom_units:
-          mass:
-            metrics:
-            - kg
-            - g
-            - mg
-            default: kg
-          distance:
-            metrics:
-            - m
-            - km
-            - mile
-            default: m
-        dev_center_enabled: true
-        competitor_analysis_enabled: true
-        alert_workflow_id: 5
-        alert_rbac_enabled: false
-        tool_ordering_enabled: false
+        code: 404
+        message: Not found
+    CompanyV1UnitSystemParam:
+      properties:
+        name_of_metric:
+          type: string
+      example:
+        angle: value
+        system: imperial
+        density: ppg
   securitySchemes:
     api_key:
       type: apiKey

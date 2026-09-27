@@ -270,19 +270,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
     PackageReviewUpdatePayload:
       properties:
         package_review:
@@ -296,7 +283,7 @@ components:
       example:
         package_review:
           status: approved
-    NotFoundError:
+    AuthorizationError:
       required:
       - code
       - message
@@ -307,8 +294,8 @@ components:
         message:
           type: string
       example:
-        code: 404
-        message: Not found
+        code: 403
+        message: Access denied
     PackageReview:
       properties:
         id:
@@ -422,6 +409,19 @@ components:
       example:
         package_review:
           package_id: 10001
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     PackageReviewList:
       properties:
         data:

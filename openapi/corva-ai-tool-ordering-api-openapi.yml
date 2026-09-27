@@ -1464,25 +1464,38 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    DistributionContact:
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        email:
-          type: string
-        created_at:
-          type: string
-          format: date-time
     VendorDirectoryList:
       properties:
         data:
           type: array
           items:
             $ref: '#/components/schemas/VendorDirectoryEntry'
-    ChangeProposalComponent:
+    DistributionContactList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DistributionContact'
+    OrderAttachmentList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderAttachment'
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    ToolOrderComponent:
       properties:
         id:
           type: integer
@@ -1506,79 +1519,64 @@ components:
           - rejected
         requested_specs:
           type: object
+          description: Free-form per tool_family; see GET /v2/tool_ordering/specifications
         accepted_specs:
           type: object
+          description: Latest approved specification snapshot, or null
         effective_specs:
           type: object
+          description: accepted_specs when present; otherwise requested_specs
+        final_specs:
+          type: object
+          description: As-built specifications supplied by the vendor
         rejected_at:
           type: string
           format: date-time
-    VendorSingle:
-      properties:
-        data:
+        received_at:
+          type: string
+          format: date-time
+        received_by:
           type: object
-          $ref: '#/components/schemas/Vendor'
-    ToolOrderList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ToolOrder'
+          description: Internal user who recorded receipt; null until received. Vendor payloads contain id and name only.
+          properties:
+            id:
+              type: integer
+              format: int64
+            email:
+              type: string
+            first_name:
+              type: string
+            last_name:
+              type: string
+        inventory_sync_state:
+          type: string
+          enum:
+          - not_started
+          - pending
+          - synced
+          - failed
     OrderAttachmentSingle:
       properties:
         data:
           type: object
           $ref: '#/components/schemas/OrderAttachment'
-    VendorContact:
+    ToolOrderingSpecificationField:
       properties:
-        id:
-          type: integer
-          format: int64
         name:
           type: string
-        email:
+        label:
           type: string
-        phone:
+        type:
           type: string
-    VendorDirectoryEntry:
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        email:
-          type: string
-        phone:
-          type: string
-        vendor_name:
-          type: string
-        vendor_id:
-          type: integer
-          format: int64
-    ChangeProposalSingle:
-      properties:
-        data:
-          type: object
-          $ref: '#/components/schemas/ChangeProposal'
-    OrderAttachmentDeleted:
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            status:
-              type: string
-              enum:
-              - deleted
-    ChangeProposalList:
-      properties:
-        data:
+          enum:
+          - text
+          - enum
+        required:
+          type: boolean
+        enum:
           type: array
           items:
-            $ref: '#/components/schemas/ChangeProposal'
+            type: string
     VendorMembership:
       properties:
         id:
@@ -1598,85 +1596,17 @@ components:
         deactivated_at:
           type: string
           format: date-time
-    ToolOrderingSpecification:
+    VendorSingle:
       properties:
-        tool_family:
-          type: string
-        fields:
+        data:
+          type: object
+          $ref: '#/components/schemas/Vendor'
+    ChangeProposalList:
+      properties:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/ToolOrderingSpecificationField'
-        constraints:
-          type: object
-          properties:
-            max_quantity:
-              type: integer
-    ToolOrderPayload:
-      properties:
-        tool_order:
-          type: object
-          properties:
-            asset_id:
-              type: integer
-              format: int64
-              description: Create only; the well this order is for
-            vendor_id:
-              type: integer
-              format: int64
-            well_name:
-              type: string
-              description: Defaults to the asset name when omitted on create
-            rig_name:
-              type: string
-              description: Defaults to the asset's parent rig name when omitted on create
-            operator_name:
-              type: string
-              description: Defaults to the company name when omitted on create
-            well_api:
-              type: string
-            county:
-              type: string
-            state:
-              type: string
-            hole_size:
-              type: string
-            preferred_trucking:
-              type: string
-            inspection_requirements:
-              type: string
-            order_notes:
-              type: string
-            requested_delivery_date:
-              type: string
-              format: date
-            components:
-              type: array
-              description: On update, replaces all components wholesale; omit the key to leave existing components untouched
-              items:
-                properties:
-                  tool_family:
-                    type: string
-                  tool_type:
-                    type: string
-                  quantity:
-                    type: integer
-                    description: Expands into that many component rows; defaults to 1
-                  requested_specs:
-                    type: object
-                    description: Free-form per tool_family; see GET /v2/tool_ordering/specifications
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
+            $ref: '#/components/schemas/ChangeProposal'
     ToolOrder:
       properties:
         id:
@@ -1776,24 +1706,48 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/ToolOrderComponent'
-    ChangeProposalDecisionSingle:
+    VendorContact:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+    VendorContactCreated:
       properties:
         data:
           type: object
-          $ref: '#/components/schemas/ChangeProposal'
-        order_status:
-          type: string
-          enum:
-          - draft
-          - awaiting_acknowledgement
-          - acknowledged
-          - in_progress
-          - ready_to_ship
-          - partially_shipped
-          - shipped
-          - received_on_rig
-          - cancelled
-          - rejected
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            email:
+              type: string
+            phone:
+              type: string
+            vendor_id:
+              type: integer
+              format: int64
+    OrderAttachmentPresign:
+      properties:
+        data:
+          type: object
+          properties:
+            signed_url:
+              type: string
+              description: PUT the file body here within 15 minutes, sending required_headers verbatim
+            s3_key:
+              type: string
+              description: Pass back to POST /attachments after the upload
+            required_headers:
+              type: object
+              description: Headers the PUT request must include exactly (they are part of the URL signature); currently only Content-Type
     ChangeProposal:
       properties:
         id:
@@ -1843,45 +1797,59 @@ components:
         decided_at:
           type: string
           format: date-time
-    VendorMembershipList:
+    ToolOrderPayload:
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/VendorMembership'
-    VendorPayload:
-      properties:
-        vendor:
+        tool_order:
           type: object
           properties:
-            name:
+            asset_id:
+              type: integer
+              format: int64
+              description: Create only; the well this order is for
+            vendor_id:
+              type: integer
+              format: int64
+            well_name:
               type: string
-            acronym:
+              description: Defaults to the asset name when omitted on create
+            rig_name:
               type: string
-              description: Optional; derived from the name when omitted. Uppercased on write, must be unique per company
-            active:
-              type: boolean
-              description: 'false deactivates the vendor: hidden from the default list and rejected for new orders and contacts, while memberships and order history stay. true reactivates. The name stays reserved, so reactivate instead of recreating'
-            phones:
+              description: Defaults to the asset's parent rig name when omitted on create
+            operator_name:
+              type: string
+              description: Defaults to the company name when omitted on create
+            well_api:
+              type: string
+            county:
+              type: string
+            state:
+              type: string
+            hole_size:
+              type: string
+            preferred_trucking:
+              type: string
+            inspection_requirements:
+              type: string
+            order_notes:
+              type: string
+            requested_delivery_date:
+              type: string
+              format: date
+            components:
               type: array
+              description: On update, replaces all components wholesale; omit the key to leave existing components untouched
               items:
-                type: string
-            supported_tool_families:
-              type: array
-              items:
-                type: string
-            member_user_ids:
-              type: array
-              description: 'Optional. When present, the vendor members are synced to exactly these company user ids: new ones are granted vendor access (membership + vendor_tool_order group), missing ones are deactivated. Requires manage permission on the vendor (company admin) and a named user'
-              items:
-                type: integer
-                format: int64
-    DeletedStatus:
-      properties:
-        status:
-          type: string
-          enum:
-          - deleted
+                properties:
+                  tool_family:
+                    type: string
+                  tool_type:
+                    type: string
+                  quantity:
+                    type: integer
+                    description: Expands into that many component rows; defaults to 1
+                  requested_specs:
+                    type: object
+                    description: Free-form per tool_family; see GET /v2/tool_ordering/specifications
     VendorContactPayload:
       properties:
         vendor_contact:
@@ -1903,216 +1871,6 @@ components:
               type: string
             phone:
               type: string
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    VendorContactCreated:
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            name:
-              type: string
-            email:
-              type: string
-            phone:
-              type: string
-            vendor_id:
-              type: integer
-              format: int64
-    ToolOrderingSpecificationField:
-      properties:
-        name:
-          type: string
-        label:
-          type: string
-        type:
-          type: string
-          enum:
-          - text
-          - enum
-        required:
-          type: boolean
-        enum:
-          type: array
-          items:
-            type: string
-    ToolOrderSingle:
-      properties:
-        data:
-          type: object
-          $ref: '#/components/schemas/ToolOrder'
-    ChangeProposalDecisionList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ChangeProposal'
-        order_status:
-          type: string
-          enum:
-          - draft
-          - awaiting_acknowledgement
-          - acknowledged
-          - in_progress
-          - ready_to_ship
-          - partially_shipped
-          - shipped
-          - received_on_rig
-          - cancelled
-          - rejected
-    DistributionContactSingle:
-      properties:
-        data:
-          type: object
-          $ref: '#/components/schemas/DistributionContact'
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    VendorMembershipSingle:
-      properties:
-        data:
-          type: object
-          $ref: '#/components/schemas/VendorMembership'
-    OrderAttachmentList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrderAttachment'
-    DistributionContactList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/DistributionContact'
-    ToolOrderComponent:
-      properties:
-        id:
-          type: integer
-          format: int64
-        position:
-          type: integer
-        tool_family:
-          type: string
-        tool_type:
-          type: string
-        status:
-          type: string
-          enum:
-          - draft
-          - submitted
-          - in_progress
-          - ready_to_ship
-          - shipped
-          - received_on_rig
-          - cancelled
-          - rejected
-        requested_specs:
-          type: object
-          description: Free-form per tool_family; see GET /v2/tool_ordering/specifications
-        accepted_specs:
-          type: object
-          description: Latest approved specification snapshot, or null
-        effective_specs:
-          type: object
-          description: accepted_specs when present; otherwise requested_specs
-        final_specs:
-          type: object
-          description: As-built specifications supplied by the vendor
-        rejected_at:
-          type: string
-          format: date-time
-        received_at:
-          type: string
-          format: date-time
-        received_by:
-          type: object
-          description: Internal user who recorded receipt; null until received. Vendor payloads contain id and name only.
-          properties:
-            id:
-              type: integer
-              format: int64
-            email:
-              type: string
-            first_name:
-              type: string
-            last_name:
-              type: string
-        inventory_sync_state:
-          type: string
-          enum:
-          - not_started
-          - pending
-          - synced
-          - failed
-    OrderAttachment:
-      properties:
-        id:
-          type: integer
-          format: int64
-        tool_order_component_id:
-          type: integer
-          format: int64
-          description: Null for order-level attachments
-        file_name:
-          type: string
-        content_type:
-          type: string
-        size_bytes:
-          type: integer
-          format: int64
-        uploaded_by:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            name:
-              type: string
-        download_url:
-          type: string
-          description: Presigned URL, valid for 15 minutes
-        created_at:
-          type: string
-          format: date-time
-    OrderAttachmentPresign:
-      properties:
-        data:
-          type: object
-          properties:
-            signed_url:
-              type: string
-              description: PUT the file body here within 15 minutes, sending required_headers verbatim
-            s3_key:
-              type: string
-              description: Pass back to POST /attachments after the upload
-            required_headers:
-              type: object
-              description: Headers the PUT request must include exactly (they are part of the URL signature); currently only Content-Type
     Vendor:
       properties:
         id:
@@ -2166,6 +1924,88 @@ components:
               description: Vendor memberships (active and deactivated) with the member user inlined
               items:
                 $ref: '#/components/schemas/VendorMembership'
+    ToolOrderingSpecification:
+      properties:
+        tool_family:
+          type: string
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/ToolOrderingSpecificationField'
+        constraints:
+          type: object
+          properties:
+            max_quantity:
+              type: integer
+    OrderAttachmentDeleted:
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            status:
+              type: string
+              enum:
+              - deleted
+    ToolOrderList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ToolOrder'
+    ChangeProposalComponent:
+      properties:
+        id:
+          type: integer
+          format: int64
+        position:
+          type: integer
+        tool_family:
+          type: string
+        tool_type:
+          type: string
+        status:
+          type: string
+          enum:
+          - draft
+          - submitted
+          - in_progress
+          - ready_to_ship
+          - shipped
+          - received_on_rig
+          - cancelled
+          - rejected
+        requested_specs:
+          type: object
+        accepted_specs:
+          type: object
+        effective_specs:
+          type: object
+        rejected_at:
+          type: string
+          format: date-time
+    VendorMembershipUpdatePayload:
+      properties:
+        vendor_membership:
+          type: object
+          properties:
+            active:
+              type: boolean
+              description: false deactivates (revokes access immediately), true reactivates
+            receives_notifications:
+              type: boolean
+    ChangeProposalSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/ChangeProposal'
+    ToolOrderSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/ToolOrder'
     VendorMembershipCreatePayload:
       properties:
         vendor_membership:
@@ -2177,16 +2017,176 @@ components:
               type: integer
               format: int64
               description: Must belong to the vendor customer company
-    VendorMembershipUpdatePayload:
+    VendorMembershipList:
       properties:
-        vendor_membership:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/VendorMembership'
+    ChangeProposalDecisionList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChangeProposal'
+        order_status:
+          type: string
+          enum:
+          - draft
+          - awaiting_acknowledgement
+          - acknowledged
+          - in_progress
+          - ready_to_ship
+          - partially_shipped
+          - shipped
+          - received_on_rig
+          - cancelled
+          - rejected
+    ChangeProposalDecisionSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/ChangeProposal'
+        order_status:
+          type: string
+          enum:
+          - draft
+          - awaiting_acknowledgement
+          - acknowledged
+          - in_progress
+          - ready_to_ship
+          - partially_shipped
+          - shipped
+          - received_on_rig
+          - cancelled
+          - rejected
+    DeletedStatus:
+      properties:
+        status:
+          type: string
+          enum:
+          - deleted
+    VendorDirectoryEntry:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        vendor_name:
+          type: string
+        vendor_id:
+          type: integer
+          format: int64
+    VendorMembershipSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/VendorMembership'
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    VendorPayload:
+      properties:
+        vendor:
           type: object
           properties:
+            name:
+              type: string
+            acronym:
+              type: string
+              description: Optional; derived from the name when omitted. Uppercased on write, must be unique per company
             active:
               type: boolean
-              description: false deactivates (revokes access immediately), true reactivates
-            receives_notifications:
-              type: boolean
+              description: 'false deactivates the vendor: hidden from the default list and rejected for new orders and contacts, while memberships and order history stay. true reactivates. The name stays reserved, so reactivate instead of recreating'
+            phones:
+              type: array
+              items:
+                type: string
+            supported_tool_families:
+              type: array
+              items:
+                type: string
+            member_user_ids:
+              type: array
+              description: 'Optional. When present, the vendor members are synced to exactly these company user ids: new ones are granted vendor access (membership + vendor_tool_order group), missing ones are deactivated. Requires manage permission on the vendor (company admin) and a named user'
+              items:
+                type: integer
+                format: int64
+    OrderAttachment:
+      properties:
+        id:
+          type: integer
+          format: int64
+        tool_order_component_id:
+          type: integer
+          format: int64
+          description: Null for order-level attachments
+        file_name:
+          type: string
+        content_type:
+          type: string
+        size_bytes:
+          type: integer
+          format: int64
+        uploaded_by:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+        download_url:
+          type: string
+          description: Presigned URL, valid for 15 minutes
+        created_at:
+          type: string
+          format: date-time
+    DistributionContactSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/DistributionContact'
+    DistributionContact:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        email:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     VendorList:
       properties:
         data:

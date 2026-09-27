@@ -58,89 +58,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    WorkflowRoleList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkflowRoleIndex'
-        included:
-          type: array
-          items:
-            properties:
-              id:
-                type: integer
-              type:
-                type: string
-              attributes:
-                type: object
-      example:
-        data:
-        - id: 12
-          type: workflow_role
-          attributes:
-            id: 12
-            workflow_id: 12345
-            name: Drilling Engineer
-            position: 1
-            segment: drilling
-            image_url: https://cdn.cloudfront.net/workflow_roles/workflow_12345_role_drilling_engineer
-            description: ''
-          relationships:
-            workflow:
-              data:
-                id: 12345
-                type: workflow
-        included:
-        - id: 12345
-          type: workflow
-          attributes:
-            id: 12345
-            name: Drilling Engineer Workflow
-            caption: ''
-            segment: drilling
-            introduction: long text
-            created_at: '2023-09-30T12:33:34.555Z'
-            updated_at: '2023-09-30T12:33:34.555Z'
     WorkflowRoleIndex:
       properties:
         id:
@@ -195,6 +112,89 @@ components:
             data:
               id: 12345
               type: workflow
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    WorkflowRoleList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowRoleIndex'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+        - id: 12
+          type: workflow_role
+          attributes:
+            id: 12
+            workflow_id: 12345
+            name: Drilling Engineer
+            position: 1
+            segment: drilling
+            image_url: https://cdn.cloudfront.net/workflow_roles/workflow_12345_role_drilling_engineer
+            description: ''
+          relationships:
+            workflow:
+              data:
+                id: 12345
+                type: workflow
+        included:
+        - id: 12345
+          type: workflow
+          attributes:
+            id: 12345
+            name: Drilling Engineer Workflow
+            caption: ''
+            segment: drilling
+            introduction: long text
+            created_at: '2023-09-30T12:33:34.555Z'
+            updated_at: '2023-09-30T12:33:34.555Z'
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

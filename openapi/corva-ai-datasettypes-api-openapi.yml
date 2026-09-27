@@ -134,6 +134,20 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    DatasetTypeList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetType'
+    DatasetTypePayload:
+      properties:
+        doc_intro:
+          type: string
+        doc_description:
+          type: string
+        doc_content:
+          type: string
     AuthorizationError:
       required:
       - code
@@ -147,19 +161,6 @@ components:
       example:
         code: 403
         message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
     AuthenticationError:
       required:
       - code
@@ -189,20 +190,19 @@ components:
           identifier: time
           name: Time
           doc_description: '[{''type'':''paragraph'',''children'':[{''text'':''These are the Backend apps...''}]}]'
-    DatasetTypeList:
+    NotFoundError:
+      required:
+      - code
+      - message
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/DatasetType'
-    DatasetTypePayload:
-      properties:
-        doc_intro:
+        code:
+          type: integer
+          format: int32
+        message:
           type: string
-        doc_description:
-          type: string
-        doc_content:
-          type: string
+      example:
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

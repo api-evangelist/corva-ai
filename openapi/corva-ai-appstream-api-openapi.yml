@@ -826,255 +826,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AppStreamItem:
-      properties:
-        id:
-          type: integer
-          format: int64
-        company_id:
-          type: integer
-          format: int64
-        asset_id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        configuration:
-          type: object
-        status:
-          type: string
-        visibility:
-          type: string
-        segment:
-          type: string
-        source_type:
-          type: string
-        log_type:
-          type: string
-        log_identifier:
-          type: string
-        log_display_name:
-          type: string
-        merging_rerun_as_source:
-          type: boolean
-        merging_rerun_as_target:
-          type: boolean
-        running_rerun_as_source:
-          type: boolean
-        running_rerun_as_target:
-          type: boolean
-        draft:
-          type: boolean
-        settings:
-          type: object
-        started_by:
-          type: string
-        last_active_at:
-          type: string
-          format: date-time
-        data_received_at:
-          type: string
-          format: date-time
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        app_connections:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppConnectionItem'
-        company:
-          type: object
-        asset:
-          type: object
-        edr_provider:
-          type: object
-        streamx_edr_providers:
-          type: array
-          description: Resolved StreamX EDR providers from settings.streamx_edr_provider_ids. Contains only existing providers.
-          items:
-            properties:
-              id:
-                type: integer
-                format: int64
-              name:
-                type: string
-              provider_type:
-                type: string
-              url:
-                type: string
-              username:
-                type: string
-      example:
-        id: 123
-        company_id: 11
-        asset_id: 20
-        name: Rig HP 800 App Stream
-        configuration: {}
-        status: idle
-        visibility: visible
-        segment: drilling
-        source_type: drilling
-        log_type: time
-        log_identifier: time
-        merging_rerun_as_source: false
-        merging_rerun_as_target: true
-        running_rerun_as_source: false
-        running_rerun_as_target: false
-        draft: false
-        settings: {}
-        started_by: user@email.com
-        last_active_at: '2020-01-01T08:00:00.000Z'
-        data_received_at: '2020-01-01T08:00:00.000Z'
-        created_at: '2020-01-01T08:00:00.000Z'
-        updated_at: '2020-01-01T08:00:00.000Z'
-        app_connections:
-        - id: 123
-          app_id: 10
-          setting: {}
-          status: idle
-          scheduler_type: no_scheduler
-          created_at: '2020-01-01T08:00:00.000Z'
-          updated_at: '2020-01-01T08:00:00.000Z'
-          next_schedule_check_at: '2020-01-01T08:00:00.000Z'
-          app: {}
-          company: {}
-        company: {}
-        asset: {}
-        edr_provider:
-          name: Edr Provider
-          provider_type: witsml
-          url: https://corva.ai
-          username: username
-        streamx_edr_providers:
-        - id: 91
-          name: Edr Provider
-          provider_type: witsml
-          url: https://corva.ai
-          username: username
-    AppConnectionItem:
-      properties:
-        id:
-          type: integer
-          format: int64
-        app_id:
-          type: integer
-          format: int64
-        settings:
-          type: object
-        status:
-          type: string
-        scheduler_type:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        next_schedule_check_at:
-          type: string
-          format: date-time
-        package_version:
-          type: string
-        code_version:
-          type: string
-        notes:
-          type: string
-        app:
-          type: object
-        company:
-          type: object
-      example:
-        id: 123
-        app_id: 10
-        settings: {}
-        status: idle
-        scheduler_type: no_scheduler
-        created_at: '2020-01-01T08:00:00.000Z'
-        updated_at: '2020-01-01T08:00:00.000Z'
-        next_schedule_check_at: '2020-01-01T08:00:00.000Z'
-        package_version: 1.0.0
-        code_version: '3'
-        notes: Notes
-        app: {}
-        company: {}
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    AppConnectionUpdateItemPayload:
-      properties:
-        id:
-          type: integer
-          format: int64
-        settings:
-          type: object
-        status:
-          type: string
-    AppStreamList:
-      items:
-        $ref: '#/components/schemas/AppStreamItem'
-    AppStreamBatchUpdatePayload:
-      properties:
-        app_stream:
-          type: object
-          properties:
-            status:
-              type: string
-      example:
-        app_stream:
-          status: active
-    AppConnectionSettingsBackfillPayload:
-      properties:
-        app_key1:
-          type: object
-        app_key2:
-          type: object
-      example:
-        corva.source-app:
-          setting1: foobar
-          setting2: some_s3_link
-        corva.data_quality:
-          start: 1696846892
-          end: 1696847513
     V2AppStreamList:
       properties:
         data:
@@ -1136,128 +887,32 @@ components:
             id: 348
             app_id: 1234
             status: active
-    V2AppStreamIndex:
+    AuthorizationError:
+      required:
+      - code
+      - message
       properties:
-        id:
+        code:
           type: integer
-          format: int64
-        type:
+          format: int32
+        message:
           type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            company_id:
-              type: integer
-              format: int64
-            asset_id:
-              type: integer
-              format: int64
-            name:
-              type: string
-            configuration:
-              type: object
-            status:
-              type: string
-            visibility:
-              type: string
-            segment:
-              type: string
-            source_type:
-              type: string
-            log_type:
-              type: string
-            log_identifier:
-              type: string
-            log_display_name:
-              type: string
-            settings:
-              type: object
-            streamx_edr_providers:
-              type: array
-              items:
-                properties:
-                  id:
-                    type: integer
-                    format: int64
-                  name:
-                    type: string
-                  provider_type:
-                    type: string
-                  url:
-                    type: string
-                  username:
-                    type: string
-            last_active_at:
-              type: string
-              format: date-time
-            data_received_at:
-              type: string
-              format: date-time
-            created_at:
-              type: string
-              format: date-time
-            updated_at:
-              type: string
-              format: date-time
-        relationships:
-          type: object
-          properties:
-            company:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    type:
-                      type: string
-            app_connections:
-              type: object
-              properties:
-                data:
-                  type: array
-                  items:
-                    properties:
-                      id:
-                        type: integer
-                      type:
-                        type: string
       example:
-        id: 12345
-        type: app_stream
-        attributes:
-          id: 12345
-          name: App Stream 6
-          visibility: public
-          segment: drilling
-          company_id: '1234'
-          asset_id: '12345'
-          configuration: {}
-          status: idle
-          source_type: drilling
-          log_type: time
-          log_identifier: time
-          settings: {}
-          streamx_edr_providers: []
-          last_active_at: '2020-01-01T08:00:00.000Z'
-          data_received_at: '2020-01-01T08:00:00.000Z'
-          created_at: '2022-11-11T09:11:52.326Z'
-          updated_at: '2022-11-11T09:11:52.326Z'
-        relationships:
-          company:
-            data:
-              id: 12345
-              type: company
-          app_connections:
-            data:
-            - id: 12456
-              type: app_connection
-            - id: 345
-              type: app_connection
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     V2AppStreamItem:
       properties:
         data:
@@ -1408,6 +1063,351 @@ components:
               id: 348
               app_id: 1234
               status: active
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AppConnectionItem:
+      properties:
+        id:
+          type: integer
+          format: int64
+        app_id:
+          type: integer
+          format: int64
+        settings:
+          type: object
+        status:
+          type: string
+        scheduler_type:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        next_schedule_check_at:
+          type: string
+          format: date-time
+        package_version:
+          type: string
+        code_version:
+          type: string
+        notes:
+          type: string
+        app:
+          type: object
+        company:
+          type: object
+      example:
+        id: 123
+        app_id: 10
+        settings: {}
+        status: idle
+        scheduler_type: no_scheduler
+        created_at: '2020-01-01T08:00:00.000Z'
+        updated_at: '2020-01-01T08:00:00.000Z'
+        next_schedule_check_at: '2020-01-01T08:00:00.000Z'
+        package_version: 1.0.0
+        code_version: '3'
+        notes: Notes
+        app: {}
+        company: {}
+    AppConnectionUpdateItemPayload:
+      properties:
+        id:
+          type: integer
+          format: int64
+        settings:
+          type: object
+        status:
+          type: string
+    AppStreamItem:
+      properties:
+        id:
+          type: integer
+          format: int64
+        company_id:
+          type: integer
+          format: int64
+        asset_id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        configuration:
+          type: object
+        status:
+          type: string
+        visibility:
+          type: string
+        segment:
+          type: string
+        source_type:
+          type: string
+        log_type:
+          type: string
+        log_identifier:
+          type: string
+        log_display_name:
+          type: string
+        merging_rerun_as_source:
+          type: boolean
+        merging_rerun_as_target:
+          type: boolean
+        running_rerun_as_source:
+          type: boolean
+        running_rerun_as_target:
+          type: boolean
+        draft:
+          type: boolean
+        settings:
+          type: object
+        started_by:
+          type: string
+        last_active_at:
+          type: string
+          format: date-time
+        data_received_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        app_connections:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppConnectionItem'
+        company:
+          type: object
+        asset:
+          type: object
+        edr_provider:
+          type: object
+        streamx_edr_providers:
+          type: array
+          description: Resolved StreamX EDR providers from settings.streamx_edr_provider_ids. Contains only existing providers.
+          items:
+            properties:
+              id:
+                type: integer
+                format: int64
+              name:
+                type: string
+              provider_type:
+                type: string
+              url:
+                type: string
+              username:
+                type: string
+      example:
+        id: 123
+        company_id: 11
+        asset_id: 20
+        name: Rig HP 800 App Stream
+        configuration: {}
+        status: idle
+        visibility: visible
+        segment: drilling
+        source_type: drilling
+        log_type: time
+        log_identifier: time
+        merging_rerun_as_source: false
+        merging_rerun_as_target: true
+        running_rerun_as_source: false
+        running_rerun_as_target: false
+        draft: false
+        settings: {}
+        started_by: user@email.com
+        last_active_at: '2020-01-01T08:00:00.000Z'
+        data_received_at: '2020-01-01T08:00:00.000Z'
+        created_at: '2020-01-01T08:00:00.000Z'
+        updated_at: '2020-01-01T08:00:00.000Z'
+        app_connections:
+        - id: 123
+          app_id: 10
+          setting: {}
+          status: idle
+          scheduler_type: no_scheduler
+          created_at: '2020-01-01T08:00:00.000Z'
+          updated_at: '2020-01-01T08:00:00.000Z'
+          next_schedule_check_at: '2020-01-01T08:00:00.000Z'
+          app: {}
+          company: {}
+        company: {}
+        asset: {}
+        edr_provider:
+          name: Edr Provider
+          provider_type: witsml
+          url: https://corva.ai
+          username: username
+        streamx_edr_providers:
+        - id: 91
+          name: Edr Provider
+          provider_type: witsml
+          url: https://corva.ai
+          username: username
+    AppStreamList:
+      items:
+        $ref: '#/components/schemas/AppStreamItem'
+    AppStreamBatchUpdatePayload:
+      properties:
+        app_stream:
+          type: object
+          properties:
+            status:
+              type: string
+      example:
+        app_stream:
+          status: active
+    AppConnectionSettingsBackfillPayload:
+      properties:
+        app_key1:
+          type: object
+        app_key2:
+          type: object
+      example:
+        corva.source-app:
+          setting1: foobar
+          setting2: some_s3_link
+        corva.data_quality:
+          start: 1696846892
+          end: 1696847513
+    V2AppStreamIndex:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            company_id:
+              type: integer
+              format: int64
+            asset_id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            configuration:
+              type: object
+            status:
+              type: string
+            visibility:
+              type: string
+            segment:
+              type: string
+            source_type:
+              type: string
+            log_type:
+              type: string
+            log_identifier:
+              type: string
+            log_display_name:
+              type: string
+            settings:
+              type: object
+            streamx_edr_providers:
+              type: array
+              items:
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                  name:
+                    type: string
+                  provider_type:
+                    type: string
+                  url:
+                    type: string
+                  username:
+                    type: string
+            last_active_at:
+              type: string
+              format: date-time
+            data_received_at:
+              type: string
+              format: date-time
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+            app_connections:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                      type:
+                        type: string
+      example:
+        id: 12345
+        type: app_stream
+        attributes:
+          id: 12345
+          name: App Stream 6
+          visibility: public
+          segment: drilling
+          company_id: '1234'
+          asset_id: '12345'
+          configuration: {}
+          status: idle
+          source_type: drilling
+          log_type: time
+          log_identifier: time
+          settings: {}
+          streamx_edr_providers: []
+          last_active_at: '2020-01-01T08:00:00.000Z'
+          data_received_at: '2020-01-01T08:00:00.000Z'
+          created_at: '2022-11-11T09:11:52.326Z'
+          updated_at: '2022-11-11T09:11:52.326Z'
+        relationships:
+          company:
+            data:
+              id: 12345
+              type: company
+          app_connections:
+            data:
+            - id: 12456
+              type: app_connection
+            - id: 345
+              type: app_connection
   securitySchemes:
     api_key:
       type: apiKey

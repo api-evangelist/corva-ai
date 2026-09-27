@@ -440,45 +440,49 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
+    DocumentPayload:
       properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
+        document:
+          type: object
+          properties:
+            title:
+              type: string
+            slug:
+              type: string
+            parent_slug:
+              type: string
+            body:
+              type: string
       example:
-        code: 403
-        message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
+        document:
+          title: Dc Document Title
+          slug: dc-doc-01
+          parent_slug: dc-doc-parent
+          body: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+    DocumentSection:
       properties:
-        code:
+        id:
           type: integer
-          format: int32
-        message:
+          format: int64
+        type:
           type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            body:
+              type: string
+            position:
+              type: integer
       example:
-        code: 404
-        message: Not found
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
+        id: 12345
+        type: document_section
+        attributes:
+          id: 12345
+          body: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+          position: 1
     Document:
       properties:
         id:
@@ -521,71 +525,6 @@ components:
           - id: 12345
             body: Document Section body
             position: 1
-    DocumentList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/DocumentIndex'
-    DocumentSectionPayload:
-      properties:
-        document_section:
-          type: object
-          properties:
-            body:
-              type: string
-      example:
-        document_section:
-          body: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-    DocumentSection:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            body:
-              type: string
-            position:
-              type: integer
-      example:
-        id: 12345
-        type: document_section
-        attributes:
-          id: 12345
-          body: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-          position: 1
-    DocumentPayload:
-      properties:
-        document:
-          type: object
-          properties:
-            title:
-              type: string
-            slug:
-              type: string
-            parent_slug:
-              type: string
-            body:
-              type: string
-      example:
-        document:
-          title: Dc Document Title
-          slug: dc-doc-01
-          parent_slug: dc-doc-parent
-          body: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-    DocumentSectionList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/DocumentSection'
     DocumentIndex:
       properties:
         id:
@@ -613,6 +552,67 @@ components:
           title: Dc Document Title
           slug: dc-doc-01
           parent_slug: dc-doc-parent
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    DocumentSectionPayload:
+      properties:
+        document_section:
+          type: object
+          properties:
+            body:
+              type: string
+      example:
+        document_section:
+          body: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    DocumentSectionList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentSection'
+    DocumentList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentIndex'
   securitySchemes:
     api_key:
       type: apiKey

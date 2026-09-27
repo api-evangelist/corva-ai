@@ -161,32 +161,34 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
+    PartialWellRerunDatasetProgress:
       properties:
-        code:
+        id:
           type: integer
-          format: int32
-        message:
+          format: int64
+        type:
           type: string
+        attributes:
+          type: object
+          properties:
+            dataset_id:
+              type: integer
+              format: int64
+            processed_timestamp:
+              type: integer
+            completed:
+              type: boolean
+            dataset_name:
+              type: string
       example:
-        code: 403
-        message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
+        id: 123
+        type: partial_well_rerun_dataset_progress
+        attributes:
+          id: 100
+          dataset_id: 786
+          processed_timestamp: 58457475
+          completed: false
+          dataset_name: New dataset
     UpdatePartialWellRerunAppProgressPayload:
       properties:
         app_progress:
@@ -226,7 +228,7 @@ components:
           app_connection_progresses:
           - app_connection_id: 345
             completed: false
-    AuthenticationError:
+    AuthorizationError:
       required:
       - code
       - message
@@ -237,36 +239,8 @@ components:
         message:
           type: string
       example:
-        code: 401
-        message: Missing authentication. Please try again.
-    PartialWellRerunDatasetProgress:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            dataset_id:
-              type: integer
-              format: int64
-            processed_timestamp:
-              type: integer
-            completed:
-              type: boolean
-            dataset_name:
-              type: string
-      example:
-        id: 123
-        type: partial_well_rerun_dataset_progress
-        attributes:
-          id: 100
-          dataset_id: 786
-          processed_timestamp: 58457475
-          completed: false
-          dataset_name: New dataset
+        code: 403
+        message: Access denied
     PartialWellRerunAppProgress:
       properties:
         id:
@@ -358,6 +332,32 @@ components:
             app_connection_id: 444
             rerun_app_connection_id: 555
             completed: false
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

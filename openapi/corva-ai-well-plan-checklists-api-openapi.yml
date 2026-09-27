@@ -122,32 +122,10 @@ components:
       example:
         code: 403
         message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
+    WellPlanChecklistV2Response:
       properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
+        data:
+          $ref: '#/components/schemas/WellPlanChecklistV2'
     WellPlanChecklistV2List:
       properties:
         data:
@@ -209,10 +187,32 @@ components:
             data:
               id: '1'
               type: company
-    WellPlanChecklistV2Response:
+    AuthenticationError:
+      required:
+      - code
+      - message
       properties:
-        data:
-          $ref: '#/components/schemas/WellPlanChecklistV2'
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

@@ -153,6 +153,13 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    AppMetricError:
+      properties:
+        errors:
+          type: object
+      example:
+        errors:
+        - Some error occurred
     AuthorizationError:
       required:
       - code
@@ -166,41 +173,6 @@ components:
       example:
         code: 403
         message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AppMetric:
-      properties:
-        ts:
-          type: integer
-        value:
-          type: float
-      example:
-        ts: 1638462480
-        value: 1.0
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     AppMetricList:
       properties:
         data:
@@ -240,13 +212,41 @@ components:
           value: 1.0
         period: 600
         available_from: 1602305040
-    AppMetricError:
+    AuthenticationError:
+      required:
+      - code
+      - message
       properties:
-        errors:
-          type: object
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
       example:
-        errors:
-        - Some error occurred
+        code: 401
+        message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AppMetric:
+      properties:
+        ts:
+          type: integer
+        value:
+          type: float
+      example:
+        ts: 1638462480
+        value: 1.0
   securitySchemes:
     api_key:
       type: apiKey

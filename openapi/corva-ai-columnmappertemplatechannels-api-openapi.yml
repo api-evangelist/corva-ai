@@ -137,19 +137,6 @@ components:
       example:
         code: 403
         message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
     AuthenticationError:
       required:
       - code
@@ -163,21 +150,52 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    UpdateColumnMapperTemplateChannelPayload:
+    CreateColumnMapperTemplateChannelPayload:
       properties:
         column_mapper_template_channel:
           properties:
+            channel:
+              type: string
             column_name:
               type: string
             unit:
               type: string
             unitless:
               type: boolean
+            primary_template_channel_id:
+              type: integer
+              format: int64
+            column_mapper_template_rules_attributes:
+              type: object
+              items:
+                properties:
+                  duration_in_minutes:
+                    type: integer
+                  conditions:
+                    type: object
+                    properties:
+                      operator:
+                        type: string
+                      operand:
+                        type: string
+                      logical_operator:
+                        type: string
       example:
         column_mapper_template_channel:
+          channel: rop
           column_name: OBR
           unit: ft
           unitless: false
+          backup_template_channels_attributes:
+          - channel: rop
+            column_name: BRO
+            unit: cm
+            column_mapper_template_rules_attributes:
+            - duration_in_minutes: 5
+              conditions:
+              - operator: OPERATOR_EQUAL
+                operand: 20
+                logical_operator: 'null'
     ColumnMapperTemplateChannel:
       properties:
         id:
@@ -251,52 +269,34 @@ components:
             data:
             - id: '123'
               type: column_mapper_template_rule
-    CreateColumnMapperTemplateChannelPayload:
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    UpdateColumnMapperTemplateChannelPayload:
       properties:
         column_mapper_template_channel:
           properties:
-            channel:
-              type: string
             column_name:
               type: string
             unit:
               type: string
             unitless:
               type: boolean
-            primary_template_channel_id:
-              type: integer
-              format: int64
-            column_mapper_template_rules_attributes:
-              type: object
-              items:
-                properties:
-                  duration_in_minutes:
-                    type: integer
-                  conditions:
-                    type: object
-                    properties:
-                      operator:
-                        type: string
-                      operand:
-                        type: string
-                      logical_operator:
-                        type: string
       example:
         column_mapper_template_channel:
-          channel: rop
           column_name: OBR
           unit: ft
           unitless: false
-          backup_template_channels_attributes:
-          - channel: rop
-            column_name: BRO
-            unit: cm
-            column_mapper_template_rules_attributes:
-            - duration_in_minutes: 5
-              conditions:
-              - operator: OPERATOR_EQUAL
-                operand: 20
-                logical_operator: 'null'
   securitySchemes:
     api_key:
       type: apiKey

@@ -510,43 +510,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    IndexSchema:
-      properties:
-        name:
-          type: string
-          title: Name
-          default: ''
-          example: asset_id_timestamp
-        fields:
-          items:
-            additionalProperties: true
-            type: object
-          type: array
-          title: Fields
-          example:
-          - asset_id: 1
-          - timestamp: -1
-        unique:
-          type: boolean
-          title: Unique
-          default: false
-        required:
-          type: boolean
-          title: Required
-          default: false
-        status:
-          type: string
-          title: Status
-          default: building
-          example: active
-        settings:
-          anyOf:
-          - $ref: '#/components/schemas/IndexSettings'
-          - type: 'null'
-          example:
-            expire_after_seconds: 3600
-      type: object
-      title: IndexSchema
     DatasetSchema:
       properties:
         company_id:
@@ -609,36 +572,6 @@ components:
           default: false
       type: object
       title: DatasetSchema
-    CompanyDatasetSerializer:
-      additionalProperties:
-        items:
-          $ref: '#/components/schemas/CompanyDatasetItemSerializer'
-        type: array
-      type: object
-      title: CompanyDatasetSerializer
-      example:
-        Big Data Energy:
-        - id: 74
-          name: depth-check
-          provider: big-data-energy
-          type: depth
-        Corva:
-        - id: 44
-          name: activities
-          provider: corva
-          type: time
-        - id: 95
-          name: activities.summary-2tours
-          provider: corva
-          type: time
-    DataType:
-      type: string
-      enum:
-      - time
-      - depth
-      - reference
-      - timeseries
-      title: DataType
     HTTPValidationError:
       properties:
         code:
@@ -652,7 +585,15 @@ components:
       - code
       - message
       title: ExceptionResponse
-    IndexSerializer:
+    DataType:
+      type: string
+      enum:
+      - time
+      - depth
+      - reference
+      - timeseries
+      title: DataType
+    IndexSchema:
       properties:
         name:
           type: string
@@ -687,57 +628,22 @@ components:
           - type: 'null'
           example:
             expire_after_seconds: 3600
-        statistics:
-          $ref: '#/components/schemas/IndexStatistics'
       type: object
-      required:
-      - statistics
-      title: IndexSerializer
-    DatasetStatistics:
+      title: IndexSchema
+    IndexStatistics:
       properties:
         size:
           type: integer
           title: Size
           default: 0
-          example: 1000000
-        count:
-          type: integer
-          title: Count
+          example: 929429
+        usage:
+          type: number
+          title: Usage
           default: 0
-          example: 282034
-        storage_size:
-          type: integer
-          title: Storage Size
-          default: 0
-          example: 8839043
-        index_size:
-          type: integer
-          title: Index Size
-          default: 0
-          example: 199234282
+          example: 112.294923
       type: object
-      title: DatasetStatistics
-    CompanyDatasetItemSerializer:
-      properties:
-        id:
-          type: integer
-          title: Id
-        provider:
-          type: string
-          title: Provider
-        name:
-          type: string
-          title: Name
-        type:
-          type: string
-          title: Type
-      type: object
-      required:
-      - id
-      - provider
-      - name
-      - type
-      title: CompanyDatasetItemSerializer
+      title: IndexStatistics
     IndexSettings:
       properties:
         expire_after_seconds:
@@ -757,20 +663,6 @@ components:
               $exists: true
       type: object
       title: IndexSettings
-    IndexStatistics:
-      properties:
-        size:
-          type: integer
-          title: Size
-          default: 0
-          example: 929429
-        usage:
-          type: number
-          title: Usage
-          default: 0
-          example: 112.294923
-      type: object
-      title: IndexStatistics
     DatasetSerializer:
       properties:
         company_id:
@@ -874,19 +766,114 @@ components:
       required:
       - id
       title: DatasetSerializer
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
+    CompanyDatasetSerializer:
+      additionalProperties:
+        items:
+          $ref: '#/components/schemas/CompanyDatasetItemSerializer'
+        type: array
+      type: object
+      title: CompanyDatasetSerializer
       example:
-        code: 403
-        message: Access denied
+        Big Data Energy:
+        - id: 74
+          name: depth-check
+          provider: big-data-energy
+          type: depth
+        Corva:
+        - id: 44
+          name: activities
+          provider: corva
+          type: time
+        - id: 95
+          name: activities.summary-2tours
+          provider: corva
+          type: time
+    CompanyDatasetItemSerializer:
+      properties:
+        id:
+          type: integer
+          title: Id
+        provider:
+          type: string
+          title: Provider
+        name:
+          type: string
+          title: Name
+        type:
+          type: string
+          title: Type
+      type: object
+      required:
+      - id
+      - provider
+      - name
+      - type
+      title: CompanyDatasetItemSerializer
+    IndexSerializer:
+      properties:
+        name:
+          type: string
+          title: Name
+          default: ''
+          example: asset_id_timestamp
+        fields:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Fields
+          example:
+          - asset_id: 1
+          - timestamp: -1
+        unique:
+          type: boolean
+          title: Unique
+          default: false
+        required:
+          type: boolean
+          title: Required
+          default: false
+        status:
+          type: string
+          title: Status
+          default: building
+          example: active
+        settings:
+          anyOf:
+          - $ref: '#/components/schemas/IndexSettings'
+          - type: 'null'
+          example:
+            expire_after_seconds: 3600
+        statistics:
+          $ref: '#/components/schemas/IndexStatistics'
+      type: object
+      required:
+      - statistics
+      title: IndexSerializer
+    DatasetStatistics:
+      properties:
+        size:
+          type: integer
+          title: Size
+          default: 0
+          example: 1000000
+        count:
+          type: integer
+          title: Count
+          default: 0
+          example: 282034
+        storage_size:
+          type: integer
+          title: Storage Size
+          default: 0
+          example: 8839043
+        index_size:
+          type: integer
+          title: Index Size
+          default: 0
+          example: 199234282
+      type: object
+      title: DatasetStatistics
     NotFoundError:
       required:
       - code
@@ -900,19 +887,6 @@ components:
       example:
         code: 404
         message: Not found
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     Dataset:
       properties:
         id:
@@ -955,6 +929,32 @@ components:
             updated_at:
               type: string
               format: date-time
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
   securitySchemes:
     HTTPBearer:
       type: http

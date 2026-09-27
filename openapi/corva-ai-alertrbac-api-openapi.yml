@@ -402,6 +402,11 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    AlertRoleSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AlertRole'
     AuthorizationError:
       required:
       - code
@@ -415,6 +420,60 @@ components:
       example:
         code: 403
         message: Access denied
+    AlertRoleList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertRole'
+    AlertRoleAbilitiesPayload:
+      properties:
+        abilities:
+          type: array
+          description: Full replacement set of ability grants for the role; applied atomically
+          items:
+            required:
+            - ability
+            - resource_class
+            properties:
+              ability:
+                type: string
+                description: Ability key from the catalog (GET /v2/alert_abilities)
+              resource_class:
+                type: string
+                description: Resource class for the ability
+                enum:
+                - Alert
+    AlertAbilityCatalog:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertAbilityCatalogItem'
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AlertRolePayload:
+      properties:
+        alert_role:
+          type: object
+          required:
+          - name
+          properties:
+            name:
+              type: string
+            description:
+              type: string
     NotFoundError:
       required:
       - code
@@ -428,17 +487,6 @@ components:
       example:
         code: 404
         message: Not found
-    AlertRolePayload:
-      properties:
-        alert_role:
-          type: object
-          required:
-          - name
-          properties:
-            name:
-              type: string
-            description:
-              type: string
     AlertAbilityCatalogItem:
       required:
       - resource_class
@@ -456,19 +504,6 @@ components:
         name:
           type: string
           description: Localized display name for the matrix UI
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     AlertRole:
       properties:
         id:
@@ -511,41 +546,6 @@ components:
             updated_at:
               type: string
               format: date-time
-    AlertRoleAbilitiesPayload:
-      properties:
-        abilities:
-          type: array
-          description: Full replacement set of ability grants for the role; applied atomically
-          items:
-            required:
-            - ability
-            - resource_class
-            properties:
-              ability:
-                type: string
-                description: Ability key from the catalog (GET /v2/alert_abilities)
-              resource_class:
-                type: string
-                description: Resource class for the ability
-                enum:
-                - Alert
-    AlertAbilityCatalog:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertAbilityCatalogItem'
-    AlertRoleList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertRole'
-    AlertRoleSingle:
-      properties:
-        data:
-          type: object
-          $ref: '#/components/schemas/AlertRole'
     AlertRbacStatus:
       properties:
         alert_rbac_enabled:

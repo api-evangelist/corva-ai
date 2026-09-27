@@ -927,11 +927,55 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AlertDefinitionV2Single:
+    AlertGroupAlertDefinitionPayload:
+      properties:
+        alert_definition:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+              description: Alert definition to assign to the group
+    AlertDefinitionFilterLevelV2:
+      properties:
+        id:
+          type: integer
+          format: int64
+        level:
+          type: string
+        threshold:
+          type: number
+        active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    AlertDefinitionV2List:
       properties:
         data:
-          type: object
-          $ref: '#/components/schemas/AlertDefinitionV2'
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertDefinitionV2'
+    AlertDefinitionConstraintV2:
+      properties:
+        id:
+          type: integer
+          format: int64
+        data_point:
+          type: string
+        operator:
+          type: string
+        value:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
     AuthorizationError:
       required:
       - code
@@ -945,191 +989,16 @@ components:
       example:
         code: 403
         message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
+    AlertGroupAlertDefinitionBulkPayload:
       properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    AlertDefinitionV2List:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertDefinitionV2'
-    AlertGroupAlertDefinitionUnassignResult:
-      properties:
-        status:
-          type: string
-          description: Always 'unassigned'
-        count:
-          type: integer
-          description: Number of definitions unassigned; bulk responses only
-    AlertDefinitionV2:
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-        attributes:
+        alert_definition:
           type: object
-          required:
-          - id
-          - name
           properties:
-            id:
-              type: integer
-              format: int64
-            name:
-              type: string
-            identifier:
-              type: string
-            description:
-              type: string
-            level:
-              type: string
-              enum:
-              - info
-              - warning
-              - critical
-            active:
-              type: boolean
-            type:
-              type: string
-              enum:
-              - personal
-              - company
-            template_type:
-              type: string
-              enum:
-              - standard
-              - preset
-            check_type:
-              type: string
-              enum:
-              - time
-              - event
-            filter_logic:
-              type: string
-            period:
-              type: integer
-            interval:
-              type: integer
-            recurrence:
-              type: string
-              enum:
-              - continuous
-              - periodic
-              - episodic
-              - once
-              - once-per-asset
-              description: episodic notifies once per episode, then on renotification_interval, until rearm_after_checks non-matching checks re-arm it; time checks only
-            trigger_dataset:
-              type: string
-              description: Dataset whose new records gate firing; while it stalls an episodic episode cannot re-arm. time checks only
-            trigger_dataset_field:
-              type: string
-              description: Explicit dotted path (e.g. data.last_updated_at) on the trigger dataset's newest record to gate on (epoch seconds); blank uses the record timestamp
-            segment:
+            ids:
               type: array
               items:
-                type: string
-                enum:
-                - drilling
-                - completion
-                - intervention
-            topic:
-              type: string
-            requires_validation:
-              type: boolean
-            reopen_interval:
-              type: integer
-              description: Seconds before a cleared alert may reopen
-            max_open_duration:
-              type: integer
-              description: Max seconds a legacy-mode alert stays open before it is replaced
-            renotification_interval:
-              type: integer
-              description: Seconds between notifications while an alert or an episode stays open; null notifies once
-            rearm_after_checks:
-              type: integer
-              description: Consecutive non-matching evaluations that re-arm an episodic definition; null means one
-            required_notification_types:
-              type: array
-              description: Notification types a subscriber must enable
-              items:
-                type: string
-            limit:
-              type: object
-              description: Unused. Reserved by a 2017 migration; no code reads it.
-            version:
-              type: integer
-            company_id:
-              type: integer
-              format: int64
-            user_id:
-              type: integer
-              format: int64
-              description: Owner of a personal definition; null for company rules
-            alert_group_id:
-              type: integer
-              format: int64
-              description: Alert group this definition belongs to
-            dashboard_id:
-              type: integer
-              format: int64
-            workflow_id:
-              type: integer
-              format: int64
-            template_id:
-              type: integer
-              format: int64
-            alert_tags:
-              type: array
-              description: Alert tags applied to this definition
-              items:
-                properties:
-                  id:
-                    type: integer
-                    format: int64
-                  name:
-                    type: string
-                  color:
-                    type: string
-                    description: 'Hex color code such as #1a2b3c, blank when unset'
-                  parent_id:
-                    type: integer
-                    format: int64
-            created_at:
-              type: string
-              format: date-time
-            updated_at:
-              type: string
-              format: date-time
-            alert_definition_filters:
-              type: array
-              items:
-                $ref: '#/components/schemas/AlertDefinitionFilterV2'
+                type: integer
+                format: int64
     AlertDefinitionV2Payload:
       properties:
         alert_definition:
@@ -1327,59 +1196,190 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AlertDefinitionFilterLevelV2'
-    AlertGroupAlertDefinitionBulkPayload:
+    AlertDefinitionV2Single:
       properties:
-        alert_definition:
+        data:
           type: object
-          properties:
-            ids:
-              type: array
-              items:
-                type: integer
-                format: int64
-    AlertGroupAlertDefinitionPayload:
+          $ref: '#/components/schemas/AlertDefinitionV2'
+    AuthenticationError:
+      required:
+      - code
+      - message
       properties:
-        alert_definition:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AlertGroupAlertDefinitionUnassignResult:
+      properties:
+        status:
+          type: string
+          description: Always 'unassigned'
+        count:
+          type: integer
+          description: Number of definitions unassigned; bulk responses only
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AlertDefinitionV2:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
           type: object
+          required:
+          - id
+          - name
           properties:
             id:
               type: integer
               format: int64
-              description: Alert definition to assign to the group
-    AlertDefinitionConstraintV2:
-      properties:
-        id:
-          type: integer
-          format: int64
-        data_point:
-          type: string
-        operator:
-          type: string
-        value:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-    AlertDefinitionFilterLevelV2:
-      properties:
-        id:
-          type: integer
-          format: int64
-        level:
-          type: string
-        threshold:
-          type: number
-        active:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
+            name:
+              type: string
+            identifier:
+              type: string
+            description:
+              type: string
+            level:
+              type: string
+              enum:
+              - info
+              - warning
+              - critical
+            active:
+              type: boolean
+            type:
+              type: string
+              enum:
+              - personal
+              - company
+            template_type:
+              type: string
+              enum:
+              - standard
+              - preset
+            check_type:
+              type: string
+              enum:
+              - time
+              - event
+            filter_logic:
+              type: string
+            period:
+              type: integer
+            interval:
+              type: integer
+            recurrence:
+              type: string
+              enum:
+              - continuous
+              - periodic
+              - episodic
+              - once
+              - once-per-asset
+              description: episodic notifies once per episode, then on renotification_interval, until rearm_after_checks non-matching checks re-arm it; time checks only
+            trigger_dataset:
+              type: string
+              description: Dataset whose new records gate firing; while it stalls an episodic episode cannot re-arm. time checks only
+            trigger_dataset_field:
+              type: string
+              description: Explicit dotted path (e.g. data.last_updated_at) on the trigger dataset's newest record to gate on (epoch seconds); blank uses the record timestamp
+            segment:
+              type: array
+              items:
+                type: string
+                enum:
+                - drilling
+                - completion
+                - intervention
+            topic:
+              type: string
+            requires_validation:
+              type: boolean
+            reopen_interval:
+              type: integer
+              description: Seconds before a cleared alert may reopen
+            max_open_duration:
+              type: integer
+              description: Max seconds a legacy-mode alert stays open before it is replaced
+            renotification_interval:
+              type: integer
+              description: Seconds between notifications while an alert or an episode stays open; null notifies once
+            rearm_after_checks:
+              type: integer
+              description: Consecutive non-matching evaluations that re-arm an episodic definition; null means one
+            required_notification_types:
+              type: array
+              description: Notification types a subscriber must enable
+              items:
+                type: string
+            limit:
+              type: object
+              description: Unused. Reserved by a 2017 migration; no code reads it.
+            version:
+              type: integer
+            company_id:
+              type: integer
+              format: int64
+            user_id:
+              type: integer
+              format: int64
+              description: Owner of a personal definition; null for company rules
+            alert_group_id:
+              type: integer
+              format: int64
+              description: Alert group this definition belongs to
+            dashboard_id:
+              type: integer
+              format: int64
+            workflow_id:
+              type: integer
+              format: int64
+            template_id:
+              type: integer
+              format: int64
+            alert_tags:
+              type: array
+              description: Alert tags applied to this definition
+              items:
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                  name:
+                    type: string
+                  color:
+                    type: string
+                    description: 'Hex color code such as #1a2b3c, blank when unset'
+                  parent_id:
+                    type: integer
+                    format: int64
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            alert_definition_filters:
+              type: array
+              items:
+                $ref: '#/components/schemas/AlertDefinitionFilterV2'
   securitySchemes:
     api_key:
       type: apiKey

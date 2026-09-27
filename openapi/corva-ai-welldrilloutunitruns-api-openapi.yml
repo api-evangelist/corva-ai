@@ -123,32 +123,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
     WellDrilloutUnitRun:
       properties:
         id:
@@ -210,6 +184,19 @@ components:
             data:
               id: '789'
               type: well
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
     AuthenticationError:
       required:
       - code
@@ -223,30 +210,6 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    WellDrilloutUnitRunResponse:
-      properties:
-        data:
-          $ref: '#/components/schemas/WellDrilloutUnitRun'
-        included:
-          type: array
-          items:
-            properties:
-              id:
-                type: string
-              type:
-                type: string
-              attributes:
-                type: object
-      example:
-        data:
-          id: '123'
-          type: well_drillout_unit_run
-          attributes:
-            drillout_unit_id: 456
-            well_id: 789
-            created_at: '2026-06-02T00:00:00.000Z'
-            updated_at: '2026-06-02T00:00:00.000Z'
-        included: []
     WellDrilloutUnitRunList:
       properties:
         data:
@@ -266,6 +229,43 @@ components:
       example:
         data:
         - id: '123'
+          type: well_drillout_unit_run
+          attributes:
+            drillout_unit_id: 456
+            well_id: 789
+            created_at: '2026-06-02T00:00:00.000Z'
+            updated_at: '2026-06-02T00:00:00.000Z'
+        included: []
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    WellDrilloutUnitRunResponse:
+      properties:
+        data:
+          $ref: '#/components/schemas/WellDrilloutUnitRun'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+          id: '123'
           type: well_drillout_unit_run
           attributes:
             drillout_unit_id: 456

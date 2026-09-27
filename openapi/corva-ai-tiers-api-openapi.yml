@@ -245,89 +245,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    TierList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Tier'
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    TierPayload:
-      properties:
-        tier:
-          type: object
-          properties:
-            name:
-              type: string
-            price:
-              type: float
-            segment:
-              type: string
-              enum:
-              - drilling
-              - completion
-              - intervention
-            features:
-              type: object
-            app_ids:
-              type: array
-              items:
-                type: integer
-      example:
-        tier:
-          name: Best Tier
-          price: 19.95
-          segment: drilling
-          features:
-            alert_count: 10
-            asset_count: 5
-            user_count: 5
-            api_access: true
-            data_quality: true
-            mobile_apps: true
-            sso: true
-            wellview_integration: true
-          app_ids:
-          - 12345
-          - 40345
     Tier:
       properties:
         id:
@@ -404,6 +321,89 @@ components:
           apps:
           - id: '1'
             type: app
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    TierPayload:
+      properties:
+        tier:
+          type: object
+          properties:
+            name:
+              type: string
+            price:
+              type: float
+            segment:
+              type: string
+              enum:
+              - drilling
+              - completion
+              - intervention
+            features:
+              type: object
+            app_ids:
+              type: array
+              items:
+                type: integer
+      example:
+        tier:
+          name: Best Tier
+          price: 19.95
+          segment: drilling
+          features:
+            alert_count: 10
+            asset_count: 5
+            user_count: 5
+            api_access: true
+            data_quality: true
+            mobile_apps: true
+            sso: true
+            wellview_integration: true
+          app_ids:
+          - 12345
+          - 40345
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    TierList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tier'
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

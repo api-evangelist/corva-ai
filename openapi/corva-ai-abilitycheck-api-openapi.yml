@@ -145,6 +145,12 @@ components:
       example:
         code: 404
         message: Not found
+    PermissionStatus:
+      properties:
+        active:
+          type: boolean
+      example:
+        active: 'true'
     AuthenticationError:
       required:
       - code
@@ -158,12 +164,6 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    PermissionStatus:
-      properties:
-        active:
-          type: boolean
-      example:
-        active: 'true'
     FeatureStatus:
       properties:
         active:

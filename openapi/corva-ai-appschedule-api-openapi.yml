@@ -206,53 +206,6 @@ components:
       example:
         code: 403
         message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    UpdateAppSchedulePayload:
-      properties:
-        app_schedule:
-          type: object
-          items:
-            properties:
-              status:
-                type: string
-              information:
-                type: string
-              start_at:
-                type: string
-                format: date-time
-              settings:
-                type: object
-      example:
-        app_schedule:
-          status: completed
-          information: Random
-          start_at: '2020-01-01T08:00:00.000Z'
-          settings: {}
     CreateAppSchedulePayload:
       properties:
         app_schedule:
@@ -278,6 +231,40 @@ components:
           information: Random
           start_at: '2020-01-01T08:00:00.000Z'
           settings: {}
+    UpdateAppSchedulePayload:
+      properties:
+        app_schedule:
+          type: object
+          items:
+            properties:
+              status:
+                type: string
+              information:
+                type: string
+              start_at:
+                type: string
+                format: date-time
+              settings:
+                type: object
+      example:
+        app_schedule:
+          status: completed
+          information: Random
+          start_at: '2020-01-01T08:00:00.000Z'
+          settings: {}
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
     AppSchedule:
       properties:
         id:
@@ -324,6 +311,19 @@ components:
           started_at: '2020-01-01T08:00:00.000Z'
           completed_at: '2020-01-01T08:00:00.000Z'
           settings: {}
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

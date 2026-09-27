@@ -47,6 +47,15 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    Country:
+      properties:
+        label:
+          type: string
+        value:
+          type: string
+      example:
+        label: United States
+        value: United States
     AuthorizationError:
       required:
       - code
@@ -60,19 +69,6 @@ components:
       example:
         code: 403
         message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
     AuthenticationError:
       required:
       - code
@@ -86,21 +82,25 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     CountryList:
       properties:
         data:
           type: array
           items:
             $ref: '#/components/schemas/Country'
-    Country:
-      properties:
-        label:
-          type: string
-        value:
-          type: string
-      example:
-        label: United States
-        value: United States
   securitySchemes:
     api_key:
       type: apiKey

@@ -1839,96 +1839,12 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AppHelpContentPayload:
-      properties:
-        app_help_content:
-          type: object
-          properties:
-            title:
-              type: string
-            description:
-              type: text
-            position:
-              type: integer
-            status:
-              type: string
-              enum:
-              - draft
-              - published
-            visibility:
-              type: string
-              enum:
-              - public
-              - company
-            app_id:
-              type: integer
-            author_id:
-              type: integer
-            attachment_metadata:
-              type: array
-              items:
-                properties:
-                  file_name:
-                    type: string
-                  type:
-                    type: string
-            article_content:
-              type: text
-      example:
-        app_help_content:
-          title: Help Title
-          description: Help description
-          position: 1
-          status: draft
-          visibility: public
-          app_id: 1
-          author_id: 2
-          attachment_metadata:
-          - file_name: example.mp4
-            type: video
-          article_content: Article text
     AppCategoryLookUp:
       properties:
         identifier:
           type: string
         description:
           type: string
-    AppErrorAlertPayload:
-      properties:
-        app_error_alert:
-          type: object
-          properties:
-            errors_number:
-              type: integer
-            period:
-              type: string
-              enum:
-              - minute
-              - hour
-              - day
-              - week
-              - month
-            notification_types:
-              type: array
-      example:
-        app_error_alert:
-          errors_number: 50
-          period: week
-          notification_types:
-          - mobile
-          - desktop
-    PackageList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Package'
-    AppHelpContentList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppHelpContent'
     UpdateAppPayload:
       properties:
         app:
@@ -2019,72 +1935,27 @@ components:
           - 12345
           - 12346
           - 12347
-    CompanyListStructure:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/CompanyType'
-    AppSecretParameterPayload:
-      properties:
-        key:
-          type: string
-        value:
-          type: string
-      example:
-        key: MY_PRECIOUS_SECRET
-        value: some value
-    AppHelpContent:
+    Installation:
       properties:
         id:
           type: integer
           format: int64
         type:
           type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            title:
-              type: string
-            description:
-              type: text
-            position:
-              type: integer
-            status:
-              type: string
-              enum:
-              - draft
-              - published
-            visibility:
-              type: string
-              enum:
-              - public
-              - company
-            created_at:
-              type: string
-              format: date-time
-            updated_at:
-              type: string
-              format: date-time
-            attachment_metadata:
-              type: array
-              items:
-                properties:
-                  file_name:
-                    type: string
-                  type:
-                    type: string
-                  uploaded_at:
-                    type: string
-                    format: date-time
-            article_content:
-              type: text
         relationships:
           type: object
           properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
             app:
               type: object
               properties:
@@ -2096,192 +1967,18 @@ components:
                       format: int64
                     type:
                       type: string
-            author:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                      format: int64
-                    type:
-                      type: string
-      example:
-        id: 123
-        type: app_help_content
-        attributes:
-          id: '123'
-          title: Help Title
-          description: Help description
-          position: 1
-          status: published
-          visibility: public
-          created_at: '2020-01-01T08:00:00.000Z'
-          updated_at: '2020-01-01T13:00:00.000Z'
-          attachment_metadata:
-          - file_name: example.mp4
-            type: video
-            uploaded_at: '2020-01-01T13:00:00.000Z'
-          article_content: Article text
-        relationships:
-          app:
-            id: '1'
-            type: app
-          author:
-            id: '2'
-            type: user
-    AppErrorAlert:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            errors_number:
-              type: integer
-            period:
-              type: string
-            notification_types:
-              type: array
-            created_by:
-              type: string
-            users:
-              type: array
-            created_at:
-              type: string
-              format: date-time
-            updated_at:
-              type: string
-              format: date-time
-      example:
-        id: 111
-        type: AppErrorAlert
-        attributes:
-          id: 1
-          errors_number: 10
-          period: week
-          notification_types:
-          - mobile
-          - desktop
-          created_by: user@email.com
-          users:
-          - id: 111
-            first_name: John
-            last_name: Doe
-            email: example@email.com
-            profile_photo: photo
-          created_at: '2010-01-01T00:00:00.000Z'
-          updated_at: '2010-01-01T00:00:00.000Z'
-    UpdatePackagePayload:
-      properties:
-        package:
-          type: object
-          properties:
-            status:
-              type: string
-            build:
-              type: string
-            label:
-              type: string
-            notes:
-              type: string
-            notes_type:
-              type: string
-      example:
-        package:
-          status: ready
-          build: my-app-0.0.10
-          label: beta
-          notes: Release notes for the package
-          notes_type: slate
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    AppCategory:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            name:
-              type: string
-            identifier:
-              type: string
-            description:
-              type: string
-            category:
-              type: string
-            parent_category_id:
-              type: integer
-            position:
-              type: integer
-            segment:
-              type: array
       example:
         id: 12345
-        type: app_category
-        attributes:
-          id: 12345
-          name: Category 1
-          identifier: scheduler
-          description: App category desc
-          category: ui_apps
-          parent_category_id: 11111
-          position: 3
-          segment:
-          - drilling
-          - completions
-    CompanyType:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            name:
-              type: string
-            provider:
-              type: string
-      example:
-        id: 111
-        type: company
-        attributes:
-          id: 1
-          name: Company Name
-          provider: Provider name
-    AppCategoryLookUpList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppCategoryLookUp'
+        type: installation
+        relationships:
+          app:
+            data:
+              id: 299
+              type: app
+          company:
+            data:
+              id: 999
+              type: company
     Package:
       properties:
         id:
@@ -2374,63 +2071,119 @@ components:
             data:
               id: 299
               type: app
-    AppCategoryList:
+    CreateAppPayload:
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppCategory'
-    AppList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/App'
-    Installation:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        relationships:
+        app:
           type: object
           properties:
-            company:
+            app_key:
+              type: string
+            app_type:
+              type: string
+            scheduler_type:
+              type: integer
+            package_type:
+              type: string
+            name:
+              type: string
+            website:
+              type: string
+            description:
+              type: string
+            summary:
+              type: string
+            version:
+              type: string
+            category:
+              type: string
+            manager:
+              type: string
+            visibility:
+              type: string
+            marketing_level:
+              type: string
+            log_type:
+              type: string
+            segment:
+              type: array
+            source_type:
+              type: array
+            pricing:
+              type: object
+            settings:
+              type: object
+            icon:
+              type: string
+              format: binary
+            dependent_app_ids:
+              type: array
+            depends_on_app_ids:
+              type: array
+            temporary:
+              type: boolean
+            delete_at:
+              type: string
+              format: date-time
+            dataset_attributes:
               type: object
               properties:
-                data:
+                name:
+                  type: string
+                data_type:
+                  type: string
+                schema:
                   type: object
-                  properties:
-                    id:
-                      type: integer
-                      format: int64
-                    type:
-                      type: string
-            app:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                      format: int64
-                    type:
-                      type: string
+                description:
+                  type: string
       example:
-        id: 12345
-        type: installation
-        relationships:
-          app:
-            data:
-              id: 299
-              type: app
-          company:
-            data:
-              id: 999
-              type: company
-    AuthorizationError:
+        app:
+          id: 12345
+          app_key: custom_key_23
+          name: CustomApp1
+          app_type: custom
+          scheduler_type: 1
+          package_type: archive
+          visibility: public
+          segment:
+          - drilling
+          - completion
+          - intervention
+          source_type:
+          - frac
+          - wireline
+          category: analytics app
+          description: CustomApp1 description
+          summary: CustomApp1 summary
+          website: http://example.com
+          version: 13.4.4
+          manager: FracFleet
+          log_type: time
+          pricing:
+            tier1: '12300'
+            tier2: '900003'
+          settings:
+            setting1: foobar
+            setting2: some_s3_link
+          icon: icon.png
+          dependent_app_ids:
+          - 12345
+          - 12346
+          - 12347
+          depends_on_app_ids:
+          - 12345
+          - 12346
+          - 12347
+          temporary: false
+          delete_at: '2020-01-01T00:00:00.000Z'
+          dataset_attributes:
+            name: corva#app.dataset
+            data_type: time
+            schema:
+              fields:
+              - field1
+              - field2
+            description: Dataset test description
+    AuthenticationError:
       required:
       - code
       - message
@@ -2441,52 +2194,96 @@ components:
         message:
           type: string
       example:
-        code: 403
-        message: Access denied
-    AppType:
-      properties:
-        identifier:
-          type: string
-        name:
-          type: string
-        group:
-          type: string
-        doc_intro:
-          type: string
-        doc_description:
-          type: string
-        doc_content:
-          type: string
-      example:
-        id: 12345
-        type: app_type
-        attributes:
-          id: 12345
-          identifier: scheduler
-          name: Polling App Scheduler
-          group: backend
-          doc_intro: '[{''type'':''paragraph'',''children'':[{''text'':''These are the Backend apps...''}]}]'
-          doc_description: '[{''type'':''paragraph'',''children'':[{''text'':''These are the Backend apps...''}]}]'
-          doc_content: '[{''type'':''paragraph'',''children'':[{''text'':''These are the Backend apps...''}]}]'
-    AppTypeList:
+        code: 401
+        message: Missing authentication. Please try again.
+    CompanyListStructure:
       properties:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/AppType'
-    NotFoundError:
-      required:
-      - code
-      - message
+            $ref: '#/components/schemas/CompanyType'
+    UpdatePackagePayload:
       properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
+        package:
+          type: object
+          properties:
+            status:
+              type: string
+            build:
+              type: string
+            label:
+              type: string
+            notes:
+              type: string
+            notes_type:
+              type: string
       example:
-        code: 404
-        message: Not found
+        package:
+          status: ready
+          build: my-app-0.0.10
+          label: beta
+          notes: Release notes for the package
+          notes_type: slate
+    AppHelpContentList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppHelpContent'
+    AppCategoryLookUpList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppCategoryLookUp'
+    AppHelpContentPayload:
+      properties:
+        app_help_content:
+          type: object
+          properties:
+            title:
+              type: string
+            description:
+              type: text
+            position:
+              type: integer
+            status:
+              type: string
+              enum:
+              - draft
+              - published
+            visibility:
+              type: string
+              enum:
+              - public
+              - company
+            app_id:
+              type: integer
+            author_id:
+              type: integer
+            attachment_metadata:
+              type: array
+              items:
+                properties:
+                  file_name:
+                    type: string
+                  type:
+                    type: string
+            article_content:
+              type: text
+      example:
+        app_help_content:
+          title: Help Title
+          description: Help description
+          position: 1
+          status: draft
+          visibility: public
+          app_id: 1
+          author_id: 2
+          attachment_metadata:
+          - file_name: example.mp4
+            type: video
+          article_content: Article text
     App:
       properties:
         id:
@@ -2756,118 +2553,321 @@ components:
             data:
             - id: 123
               type: user
-    CreateAppPayload:
+    AppErrorAlert:
       properties:
-        app:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
           type: object
           properties:
-            app_key:
-              type: string
-            app_type:
-              type: string
-            scheduler_type:
+            id:
               type: integer
-            package_type:
+              format: int64
+            errors_number:
+              type: integer
+            period:
               type: string
+            notification_types:
+              type: array
+            created_by:
+              type: string
+            users:
+              type: array
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+      example:
+        id: 111
+        type: AppErrorAlert
+        attributes:
+          id: 1
+          errors_number: 10
+          period: week
+          notification_types:
+          - mobile
+          - desktop
+          created_by: user@email.com
+          users:
+          - id: 111
+            first_name: John
+            last_name: Doe
+            email: example@email.com
+            profile_photo: photo
+          created_at: '2010-01-01T00:00:00.000Z'
+          updated_at: '2010-01-01T00:00:00.000Z'
+    AppTypeList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppType'
+    PackageList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Package'
+    CompanyType:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
             name:
               type: string
-            website:
+            provider:
+              type: string
+      example:
+        id: 111
+        type: company
+        attributes:
+          id: 1
+          name: Company Name
+          provider: Provider name
+    AppType:
+      properties:
+        identifier:
+          type: string
+        name:
+          type: string
+        group:
+          type: string
+        doc_intro:
+          type: string
+        doc_description:
+          type: string
+        doc_content:
+          type: string
+      example:
+        id: 12345
+        type: app_type
+        attributes:
+          id: 12345
+          identifier: scheduler
+          name: Polling App Scheduler
+          group: backend
+          doc_intro: '[{''type'':''paragraph'',''children'':[{''text'':''These are the Backend apps...''}]}]'
+          doc_description: '[{''type'':''paragraph'',''children'':[{''text'':''These are the Backend apps...''}]}]'
+          doc_content: '[{''type'':''paragraph'',''children'':[{''text'':''These are the Backend apps...''}]}]'
+    AppErrorAlertPayload:
+      properties:
+        app_error_alert:
+          type: object
+          properties:
+            errors_number:
+              type: integer
+            period:
+              type: string
+              enum:
+              - minute
+              - hour
+              - day
+              - week
+              - month
+            notification_types:
+              type: array
+      example:
+        app_error_alert:
+          errors_number: 50
+          period: week
+          notification_types:
+          - mobile
+          - desktop
+    AppList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/App'
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AppCategory:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+            identifier:
               type: string
             description:
               type: string
-            summary:
-              type: string
-            version:
-              type: string
             category:
               type: string
-            manager:
-              type: string
-            visibility:
-              type: string
-            marketing_level:
-              type: string
-            log_type:
-              type: string
+            parent_category_id:
+              type: integer
+            position:
+              type: integer
             segment:
               type: array
-            source_type:
-              type: array
-            pricing:
-              type: object
-            settings:
-              type: object
-            icon:
-              type: string
-              format: binary
-            dependent_app_ids:
-              type: array
-            depends_on_app_ids:
-              type: array
-            temporary:
-              type: boolean
-            delete_at:
-              type: string
-              format: date-time
-            dataset_attributes:
-              type: object
-              properties:
-                name:
-                  type: string
-                data_type:
-                  type: string
-                schema:
-                  type: object
-                description:
-                  type: string
       example:
-        app:
+        id: 12345
+        type: app_category
+        attributes:
           id: 12345
-          app_key: custom_key_23
-          name: CustomApp1
-          app_type: custom
-          scheduler_type: 1
-          package_type: archive
-          visibility: public
+          name: Category 1
+          identifier: scheduler
+          description: App category desc
+          category: ui_apps
+          parent_category_id: 11111
+          position: 3
           segment:
           - drilling
-          - completion
-          - intervention
-          source_type:
-          - frac
-          - wireline
-          category: analytics app
-          description: CustomApp1 description
-          summary: CustomApp1 summary
-          website: http://example.com
-          version: 13.4.4
-          manager: FracFleet
-          log_type: time
-          pricing:
-            tier1: '12300'
-            tier2: '900003'
-          settings:
-            setting1: foobar
-            setting2: some_s3_link
-          icon: icon.png
-          dependent_app_ids:
-          - 12345
-          - 12346
-          - 12347
-          depends_on_app_ids:
-          - 12345
-          - 12346
-          - 12347
-          temporary: false
-          delete_at: '2020-01-01T00:00:00.000Z'
-          dataset_attributes:
-            name: corva#app.dataset
-            data_type: time
-            schema:
-              fields:
-              - field1
-              - field2
-            description: Dataset test description
+          - completions
+    AppSecretParameterPayload:
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+      example:
+        key: MY_PRECIOUS_SECRET
+        value: some value
+    AppCategoryList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppCategory'
+    AppHelpContent:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            title:
+              type: string
+            description:
+              type: text
+            position:
+              type: integer
+            status:
+              type: string
+              enum:
+              - draft
+              - published
+            visibility:
+              type: string
+              enum:
+              - public
+              - company
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            attachment_metadata:
+              type: array
+              items:
+                properties:
+                  file_name:
+                    type: string
+                  type:
+                    type: string
+                  uploaded_at:
+                    type: string
+                    format: date-time
+            article_content:
+              type: text
+        relationships:
+          type: object
+          properties:
+            app:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            author:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 123
+        type: app_help_content
+        attributes:
+          id: '123'
+          title: Help Title
+          description: Help description
+          position: 1
+          status: published
+          visibility: public
+          created_at: '2020-01-01T08:00:00.000Z'
+          updated_at: '2020-01-01T13:00:00.000Z'
+          attachment_metadata:
+          - file_name: example.mp4
+            type: video
+            uploaded_at: '2020-01-01T13:00:00.000Z'
+          article_content: Article text
+        relationships:
+          app:
+            id: '1'
+            type: app
+          author:
+            id: '2'
+            type: user
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

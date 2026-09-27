@@ -353,71 +353,6 @@ components:
       example:
         code: 403
         message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    ColumnMapperTemplates:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ColumnMapperTemplate'
-    UpdateColumnMapperTemplatePayload:
-      properties:
-        apply_to_all_streams:
-          type: boolean
-        column_mapper_template:
-          properties:
-            name:
-              type: string
-            app_stream_ids:
-              type: array
-            rig_id:
-              type: integer
-              format: int64
-              description: Mutually exclusive with intervention_unit_id
-            intervention_unit_id:
-              type: integer
-              format: int64
-              description: Mutually exclusive with rig_id
-            witsml_source_link:
-              type: string
-            column_mapper_template_channels: {}
-      example:
-        apply_to_all_streams: true
-        app_stream_ids:
-        - 111
-        column_mapper_template:
-          name: Random
-          rig_id: 555
-          witsml_source_link: https://app.qa.corva.ai
-          column_mapper_template_channels:
-            channel:
-              column: column
-              source_unit: unit
     CreateColumnMapperTemplatePayload:
       properties:
         apply_to_all_streams:
@@ -452,6 +387,38 @@ components:
             channel:
               column: column
               source_unit: unit
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    ColumnMapperTemplates:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ColumnMapperTemplate'
     ColumnMapperTemplate:
       properties:
         id:
@@ -607,6 +574,39 @@ components:
             data:
             - id: '123'
               type: column_mapper_template_rule
+    UpdateColumnMapperTemplatePayload:
+      properties:
+        apply_to_all_streams:
+          type: boolean
+        column_mapper_template:
+          properties:
+            name:
+              type: string
+            app_stream_ids:
+              type: array
+            rig_id:
+              type: integer
+              format: int64
+              description: Mutually exclusive with intervention_unit_id
+            intervention_unit_id:
+              type: integer
+              format: int64
+              description: Mutually exclusive with rig_id
+            witsml_source_link:
+              type: string
+            column_mapper_template_channels: {}
+      example:
+        apply_to_all_streams: true
+        app_stream_ids:
+        - 111
+        column_mapper_template:
+          name: Random
+          rig_id: 555
+          witsml_source_link: https://app.qa.corva.ai
+          column_mapper_template_channels:
+            channel:
+              column: column
+              source_unit: unit
   securitySchemes:
     api_key:
       type: apiKey

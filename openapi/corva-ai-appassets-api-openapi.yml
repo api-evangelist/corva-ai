@@ -100,7 +100,34 @@ components:
       example:
         code: 403
         message: Access denied
-    NotFoundError:
+    AppAssetStream:
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: App stream ID
+        name:
+          type: string
+          description: App stream name
+        status:
+          type: string
+          description: App stream status
+        statuses:
+          type: object
+          description: App stream status details
+          properties:
+            status:
+              type: string
+              description: Stream status
+            visibility:
+              type: string
+              description: Stream visibility (e.g. visible, deleted)
+        app_version:
+          type:
+          - string
+          - 'null'
+          description: App version from AppConnection on stream (Package build)
+    AuthenticationError:
       required:
       - code
       - message
@@ -111,8 +138,8 @@ components:
         message:
           type: string
       example:
-        code: 404
-        message: Not found
+        code: 401
+        message: Missing authentication. Please try again.
     AppAssetList:
       properties:
         id:
@@ -183,7 +210,7 @@ components:
               status: active
               visibility: visible
             app_version: abc123
-    AuthenticationError:
+    NotFoundError:
       required:
       - code
       - message
@@ -194,35 +221,8 @@ components:
         message:
           type: string
       example:
-        code: 401
-        message: Missing authentication. Please try again.
-    AppAssetStream:
-      properties:
-        id:
-          type: integer
-          format: int64
-          description: App stream ID
-        name:
-          type: string
-          description: App stream name
-        status:
-          type: string
-          description: App stream status
-        statuses:
-          type: object
-          description: App stream status details
-          properties:
-            status:
-              type: string
-              description: Stream status
-            visibility:
-              type: string
-              description: Stream visibility (e.g. visible, deleted)
-        app_version:
-          type:
-          - string
-          - 'null'
-          description: App version from AppConnection on stream (Package build)
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

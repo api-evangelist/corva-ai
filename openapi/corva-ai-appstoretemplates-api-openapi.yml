@@ -246,45 +246,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     AppStoreTemplatePayload:
       properties:
         app_store_template:
@@ -299,48 +260,6 @@ components:
           title: New title
           status: draft
           view_type: drilling
-    AppStoreTemplateList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppStoreTemplateObject'
-        included:
-          type: array
-          items:
-            properties:
-              id:
-                type: integer
-              type:
-                type: string
-              attributes:
-                type: object
-      example:
-        data:
-        - id: 12345
-          type: app_store_template
-          attributes:
-            id: 12345
-            title: AppStore Template
-            status: draft
-            view_type: drilling
-            created_at: '2022-11-11T09:11:52.326Z'
-            updated_at: '2022-11-11T09:11:52.326Z'
-          relationships:
-            app_store_template_sections:
-              data:
-              - id: 12456
-                type: app_store_template_section
-              - id: 345
-                type: app_store_template_section
-        included:
-        - id: 348
-          type: app_store_template_section
-          attributes:
-            id: 348
-            title: Title
-            section_type: slide
-            position: 1
     AppStoreTemplateObject:
       properties:
         id:
@@ -395,6 +314,87 @@ components:
             data:
             - id: 12345
               type: app_store_template_section
+    AppStoreTemplateList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppStoreTemplateObject'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+        - id: 12345
+          type: app_store_template
+          attributes:
+            id: 12345
+            title: AppStore Template
+            status: draft
+            view_type: drilling
+            created_at: '2022-11-11T09:11:52.326Z'
+            updated_at: '2022-11-11T09:11:52.326Z'
+          relationships:
+            app_store_template_sections:
+              data:
+              - id: 12456
+                type: app_store_template_section
+              - id: 345
+                type: app_store_template_section
+        included:
+        - id: 348
+          type: app_store_template_section
+          attributes:
+            id: 348
+            title: Title
+            section_type: slide
+            position: 1
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

@@ -296,19 +296,12 @@ components:
       example:
         code: 403
         message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
+    EdrProviders:
       properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EdrProvider'
     AuthenticationError:
       required:
       - code
@@ -322,12 +315,6 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    EdrProviders:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/EdrProvider'
     EdrProvider:
       properties:
         id:
@@ -415,6 +402,19 @@ components:
             data:
               id: '123'
               type: user
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

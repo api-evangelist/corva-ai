@@ -366,6 +366,12 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    ProductSubscriptionList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductSubscription'
     AuthorizationError:
       required:
       - code
@@ -379,32 +385,6 @@ components:
       example:
         code: 403
         message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     ProductSubscriptionPayload:
       properties:
         product_subscription:
@@ -495,12 +475,6 @@ components:
           tier_ids:
           - 12345
           - 12346
-    ProductSubscriptionList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductSubscription'
     ProductSubscriptionUpdatePayload:
       properties:
         product_subscription:
@@ -584,6 +558,19 @@ components:
           tier_ids:
           - 12345
           - 12346
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
     ProductSubscription:
       properties:
         id:
@@ -770,6 +757,19 @@ components:
           tiers:
           - id: '1'
             type: tier
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

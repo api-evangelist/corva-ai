@@ -305,29 +305,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    WellPlanV2List:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/WellPlanV2'
-    WellPlanCopyV2Response:
-      properties:
-        data:
-          $ref: '#/components/schemas/WellPlanCopyV2'
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
     AuthorizationError:
       required:
       - code
@@ -341,87 +318,6 @@ components:
       example:
         code: 403
         message: Access denied
-    WellPlanCopyV2Payload:
-      required:
-      - source_well_plan_id
-      - target_well_plan_id
-      properties:
-        source_well_plan_id:
-          type: integer
-          format: int64
-          description: Well plan to copy from
-        target_well_plan_id:
-          type: integer
-          format: int64
-          description: Well plan to copy into
-        copy_action:
-          type: string
-          enum:
-          - import_custom_dashboards
-          description: Copy action to perform (defaults to import_custom_dashboards)
-        settings:
-          type: object
-          description: Optional. Restrict the copy to specific dashboards
-          properties:
-            dashboard_ids:
-              type: array
-              items:
-                type: integer
-                format: int64
-      example:
-        source_well_plan_id: 12345
-        target_well_plan_id: 67890
-        copy_action: import_custom_dashboards
-        settings:
-          dashboard_ids:
-          - 10
-          - 11
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    WellPlanV2UpdatePayload:
-      required:
-      - well_plan
-      properties:
-        well_plan:
-          type: object
-          properties:
-            name:
-              type: string
-            status:
-              type: string
-              enum:
-              - draft
-              - review
-              - approved
-            kind:
-              type: string
-              enum:
-              - default
-              - template
-            company_id:
-              type: integer
-              format: int64
-            well_id:
-              type: integer
-              format: int64
-            rig_id:
-              type: integer
-              format: int64
-      example:
-        well_plan:
-          name: Updated plan
-          status: approved
     WellPlanV2:
       properties:
         id:
@@ -571,6 +467,95 @@ components:
             data:
             - id: '999'
               type: well_plan_copy
+    WellPlanV2UpdatePayload:
+      required:
+      - well_plan
+      properties:
+        well_plan:
+          type: object
+          properties:
+            name:
+              type: string
+            status:
+              type: string
+              enum:
+              - draft
+              - review
+              - approved
+            kind:
+              type: string
+              enum:
+              - default
+              - template
+            company_id:
+              type: integer
+              format: int64
+            well_id:
+              type: integer
+              format: int64
+            rig_id:
+              type: integer
+              format: int64
+      example:
+        well_plan:
+          name: Updated plan
+          status: approved
+    WellPlanV2List:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WellPlanV2'
+    WellPlanV2Payload:
+      required:
+      - well_plan
+      properties:
+        well_plan:
+          type: object
+          properties:
+            name:
+              type: string
+            status:
+              type: string
+              enum:
+              - draft
+              - review
+              - approved
+            kind:
+              type: string
+              enum:
+              - default
+              - template
+            company_id:
+              type: integer
+              format: int64
+            well_id:
+              type: integer
+              format: int64
+            rig_id:
+              type: integer
+              format: int64
+      example:
+        well_plan:
+          name: Imported plan
+          status: draft
+          kind: default
+          company_id: 1
+          well_id: 2
+          rig_id: 3
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
     WellPlanCopyV2:
       properties:
         id:
@@ -633,47 +618,62 @@ components:
             - 11
           created_at: '2026-07-17T08:00:00.000Z'
           updated_at: '2026-07-17T08:01:00.000Z'
-    WellPlanV2Payload:
-      required:
-      - well_plan
-      properties:
-        well_plan:
-          type: object
-          properties:
-            name:
-              type: string
-            status:
-              type: string
-              enum:
-              - draft
-              - review
-              - approved
-            kind:
-              type: string
-              enum:
-              - default
-              - template
-            company_id:
-              type: integer
-              format: int64
-            well_id:
-              type: integer
-              format: int64
-            rig_id:
-              type: integer
-              format: int64
-      example:
-        well_plan:
-          name: Imported plan
-          status: draft
-          kind: default
-          company_id: 1
-          well_id: 2
-          rig_id: 3
     WellPlanV2Response:
       properties:
         data:
           $ref: '#/components/schemas/WellPlanV2'
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    WellPlanCopyV2Response:
+      properties:
+        data:
+          $ref: '#/components/schemas/WellPlanCopyV2'
+    WellPlanCopyV2Payload:
+      required:
+      - source_well_plan_id
+      - target_well_plan_id
+      properties:
+        source_well_plan_id:
+          type: integer
+          format: int64
+          description: Well plan to copy from
+        target_well_plan_id:
+          type: integer
+          format: int64
+          description: Well plan to copy into
+        copy_action:
+          type: string
+          enum:
+          - import_custom_dashboards
+          description: Copy action to perform (defaults to import_custom_dashboards)
+        settings:
+          type: object
+          description: Optional. Restrict the copy to specific dashboards
+          properties:
+            dashboard_ids:
+              type: array
+              items:
+                type: integer
+                format: int64
+      example:
+        source_well_plan_id: 12345
+        target_well_plan_id: 67890
+        copy_action: import_custom_dashboards
+        settings:
+          dashboard_ids:
+          - 10
+          - 11
   securitySchemes:
     api_key:
       type: apiKey
