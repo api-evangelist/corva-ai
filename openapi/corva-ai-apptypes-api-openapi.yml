@@ -134,6 +134,19 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
     AppType:
       properties:
         identifier:
@@ -159,38 +172,6 @@ components:
           doc_intro: '[{''type'':''paragraph'',''children'':[{''text'':''These are the Backend apps...''}]}]'
           doc_description: '[{''type'':''paragraph'',''children'':[{''text'':''These are the Backend apps...''}]}]'
           doc_content: '[{''type'':''paragraph'',''children'':[{''text'':''These are the Backend apps...''}]}]'
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    AppTypeList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppType'
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     AppTypePayload:
       properties:
         doc_intro:
@@ -212,6 +193,25 @@ components:
       example:
         code: 404
         message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AppTypeList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppType'
   securitySchemes:
     api_key:
       type: apiKey

@@ -87,19 +87,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
     AppAssetStream:
       properties:
         id:
@@ -127,6 +114,32 @@ components:
           - string
           - 'null'
           description: App version from AppConnection on stream (Package build)
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     AuthenticationError:
       required:
       - code
@@ -210,19 +223,6 @@ components:
               status: active
               visibility: visible
             app_version: abc123
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

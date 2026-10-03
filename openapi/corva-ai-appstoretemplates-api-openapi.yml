@@ -246,20 +246,19 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AppStoreTemplatePayload:
+    AuthorizationError:
+      required:
+      - code
+      - message
       properties:
-        app_store_template:
-          type: object
-          properties:
-            title:
-              type: string
-            status:
-              type: string
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
       example:
-        app_store_template:
-          title: New title
-          status: draft
-          view_type: drilling
+        code: 403
+        message: Access denied
     AppStoreTemplateObject:
       properties:
         id:
@@ -314,6 +313,20 @@ components:
             data:
             - id: 12345
               type: app_store_template_section
+    AppStoreTemplatePayload:
+      properties:
+        app_store_template:
+          type: object
+          properties:
+            title:
+              type: string
+            status:
+              type: string
+      example:
+        app_store_template:
+          title: New title
+          status: draft
+          view_type: drilling
     AppStoreTemplateList:
       properties:
         data:
@@ -356,32 +369,6 @@ components:
             title: Title
             section_type: slide
             position: 1
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     NotFoundError:
       required:
       - code
@@ -395,6 +382,19 @@ components:
       example:
         code: 404
         message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
   securitySchemes:
     api_key:
       type: apiKey

@@ -437,19 +437,6 @@ components:
         file_name: mycompany/1578593498/report.pdf
         display_name: report.pdf
         bucket: corva-files
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     NotFoundError:
       required:
       - code
@@ -477,6 +464,19 @@ components:
         key: provider_5/recent_historical.csv
         last_modified: Thu, 09 Jan 2020 18:11:37 +0000
         content_length: 7723
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
   securitySchemes:
     api_key:
       type: apiKey

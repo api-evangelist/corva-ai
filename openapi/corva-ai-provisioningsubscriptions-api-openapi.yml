@@ -494,12 +494,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    ProvisioningSubscriptionList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProvisioningSubscription'
     AuthorizationError:
       required:
       - code
@@ -513,6 +507,109 @@ components:
       example:
         code: 403
         message: Access denied
+    ProvisioningSubscriptionUpdatePayload:
+      properties:
+        provisioning_subscription:
+          type: object
+          properties:
+            name:
+              type: string
+            asset_type:
+              type: string
+              enum:
+              - company
+              - program
+              - rig
+              - frac_fleet
+              - drillout_unit
+            asset_ids:
+              type: array
+              items:
+                type: integer
+            apps:
+              type: array
+              items:
+                type: integer
+      example:
+        provisioning_subscription:
+          name: Product Name
+          asset_type: company
+          asset_ids:
+          - 1
+          - 2
+          - 3
+          app_ids:
+          - 1
+          - 2
+          - 3
+    ProvisioningSubscriptionPayload:
+      properties:
+        provisioning_subscription:
+          type: object
+          properties:
+            company_id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            segment:
+              type: string
+              enum:
+              - drilling
+              - completion
+              - intervention
+            asset_type:
+              type: string
+              enum:
+              - company
+              - program
+              - rig
+              - frac_fleet
+              - drillout_unit
+            asset_ids:
+              type: array
+              items:
+                type: integer
+            app_ids:
+              type: array
+              items:
+                type: integer
+            stream_asset_ids:
+              type: array
+              items:
+                type: integer
+      example:
+        provisioning_subscription:
+          company_id: 12345
+          name: Product Name
+          segment: drilling
+          asset_type: company
+          asset_ids:
+          - 4
+          app_ids:
+          - 1
+          stream_asset_ids:
+          - 12345
+          - 23456
+    ProvisioningSubscriptionList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProvisioningSubscription'
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     AuthenticationError:
       required:
       - code
@@ -660,103 +757,6 @@ components:
           assets:
           - id: '3'
             type: product_subscription_asset
-    ProvisioningSubscriptionPayload:
-      properties:
-        provisioning_subscription:
-          type: object
-          properties:
-            company_id:
-              type: integer
-              format: int64
-            name:
-              type: string
-            segment:
-              type: string
-              enum:
-              - drilling
-              - completion
-              - intervention
-            asset_type:
-              type: string
-              enum:
-              - company
-              - program
-              - rig
-              - frac_fleet
-              - drillout_unit
-            asset_ids:
-              type: array
-              items:
-                type: integer
-            app_ids:
-              type: array
-              items:
-                type: integer
-            stream_asset_ids:
-              type: array
-              items:
-                type: integer
-      example:
-        provisioning_subscription:
-          company_id: 12345
-          name: Product Name
-          segment: drilling
-          asset_type: company
-          asset_ids:
-          - 4
-          app_ids:
-          - 1
-          stream_asset_ids:
-          - 12345
-          - 23456
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    ProvisioningSubscriptionUpdatePayload:
-      properties:
-        provisioning_subscription:
-          type: object
-          properties:
-            name:
-              type: string
-            asset_type:
-              type: string
-              enum:
-              - company
-              - program
-              - rig
-              - frac_fleet
-              - drillout_unit
-            asset_ids:
-              type: array
-              items:
-                type: integer
-            apps:
-              type: array
-              items:
-                type: integer
-      example:
-        provisioning_subscription:
-          name: Product Name
-          asset_type: company
-          asset_ids:
-          - 1
-          - 2
-          - 3
-          app_ids:
-          - 1
-          - 2
-          - 3
   securitySchemes:
     api_key:
       type: apiKey

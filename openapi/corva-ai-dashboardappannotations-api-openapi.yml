@@ -743,6 +743,127 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    DashboardAppAnnotationPayload:
+      properties:
+        app_annotation:
+          type: object
+          properties:
+            body:
+              type: text
+            active_until:
+              type: string
+              format: date-time
+            asset_id:
+              type: integer
+              format: int64
+            app_id:
+              type: integer
+              format: int64
+            settings:
+              type: object
+            attachment:
+              type: object
+      example:
+        app_annotation:
+          body: My App Annotation
+          active_until: Wed, 29 Jan 2020 19:11:00 +0000
+          asset_id: 12344
+          app_id: 12344
+          settings:
+            assetId: 12344
+          attachment:
+            file_name: report.pdf
+            s3_link: some_s3_link
+    CommentPayload:
+      properties:
+        comment:
+          type: object
+          properties:
+            body:
+              type: string
+            attachment:
+              type: object
+              properties:
+                file_name:
+                  type: string
+                s3_link:
+                  type: string
+            attachments:
+              type: array
+              items:
+                properties:
+                  file_name:
+                    type: string
+                  s3_link:
+                    type: string
+      example:
+        comment:
+          body: Hey @[user:57689|Derek]
+          attachments:
+          - file_name: report.pdf
+            s3_link: some_s3_link
+    DashboardAppAnnotationSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/DashboardAppAnnotation'
+        included:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserMinimal'
+    Comment:
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int64
+        body:
+          type: string
+        attachment:
+          type: object
+          properties:
+            file_name:
+              type: string
+            s3_link:
+              type: string
+        attachments:
+          type: array
+          items:
+            properties:
+              file_name:
+                type: string
+              s3_link:
+                type: string
+        created_at:
+          type: string
+          format: date-time
+        mentioned_users:
+          type: array
+          items:
+            $ref: '#/components/schemas/V1UserMinimal'
+        likes_count:
+          type: integer
+        user:
+          type: object
+          $ref: '#/components/schemas/V1UserMinimal'
+        likes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Like'
     DashboardAppAnnotation:
       required:
       - id
@@ -850,70 +971,7 @@ components:
           - data:
               id: 2499
               type: user
-    DashboardAppAnnotationPayload:
-      properties:
-        app_annotation:
-          type: object
-          properties:
-            body:
-              type: text
-            active_until:
-              type: string
-              format: date-time
-            asset_id:
-              type: integer
-              format: int64
-            app_id:
-              type: integer
-              format: int64
-            settings:
-              type: object
-            attachment:
-              type: object
-      example:
-        app_annotation:
-          body: My App Annotation
-          active_until: Wed, 29 Jan 2020 19:11:00 +0000
-          asset_id: 12344
-          app_id: 12344
-          settings:
-            assetId: 12344
-          attachment:
-            file_name: report.pdf
-            s3_link: some_s3_link
-    V1UserMinimal:
-      properties:
-        id:
-          type: integer
-          format: int64
-        first_name:
-          type: string
-        last_name:
-          type: string
-        email:
-          type: string
-        title:
-          type: string
-        role:
-          type: string
-        profile_photo:
-          type: string
-        current_segment:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-      example:
-        id: 1072
-        first_name: Derek
-        last_name: Smith
-        email: email7@corva.ai
-        title: Drilling Engineer
-        role: user
-        profile_photo: aws_s3_file_path
-        current_segment: drilling
-        created_at: '2020-02-04T12:48:59.593Z'
-    AuthorizationError:
+    NotFoundError:
       required:
       - code
       - message
@@ -924,44 +982,50 @@ components:
         message:
           type: string
       example:
-        code: 403
-        message: Access denied
-    DashboardAppWithLastAnnotation:
+        code: 404
+        message: Not found
+    DashboardAppAnnotationList:
       properties:
-        id:
-          type: integer
-          format: int64
-        last_annotation:
-          type: object
-          $ref: '#/components/schemas/DashboardAppAnnotation'
-    CommentPayload:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardAppAnnotation'
+        included:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserMinimal'
+    DashboardAppAnnotationUpdatePayload:
       properties:
-        comment:
+        app_annotation:
           type: object
           properties:
             body:
+              type: text
+            active_until:
               type: string
+              format: date-time
             attachment:
               type: object
-              properties:
-                file_name:
-                  type: string
-                s3_link:
-                  type: string
-            attachments:
-              type: array
-              items:
-                properties:
-                  file_name:
-                    type: string
-                  s3_link:
-                    type: string
       example:
-        comment:
-          body: Hey @[user:57689|Derek]
-          attachments:
-          - file_name: report.pdf
+        app_annotation:
+          body: My App Annotation
+          active_until: Wed, 29 Jan 2020 19:11:00 +0000
+          attachment:
+            file_name: report.pdf
             s3_link: some_s3_link
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
     UserMinimal:
       properties:
         id:
@@ -1084,6 +1148,10 @@ components:
           attributes:
             id: 123
             name: Company name
+    DashboardAppWithLastAnnotationList:
+      type: array
+      items:
+        $ref: '#/components/schemas/DashboardAppWithLastAnnotation'
     Like:
       required:
       - id
@@ -1097,114 +1165,46 @@ components:
         user:
           type: object
           $ref: '#/components/schemas/V1UserMinimal'
-    DashboardAppAnnotationUpdatePayload:
-      properties:
-        app_annotation:
-          type: object
-          properties:
-            body:
-              type: text
-            active_until:
-              type: string
-              format: date-time
-            attachment:
-              type: object
-      example:
-        app_annotation:
-          body: My App Annotation
-          active_until: Wed, 29 Jan 2020 19:11:00 +0000
-          attachment:
-            file_name: report.pdf
-            s3_link: some_s3_link
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    Comment:
-      required:
-      - id
+    V1UserMinimal:
       properties:
         id:
           type: integer
           format: int64
-        body:
+        first_name:
           type: string
-        attachment:
-          type: object
-          properties:
-            file_name:
-              type: string
-            s3_link:
-              type: string
-        attachments:
-          type: array
-          items:
-            properties:
-              file_name:
-                type: string
-              s3_link:
-                type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        title:
+          type: string
+        role:
+          type: string
+        profile_photo:
+          type: string
+        current_segment:
+          type: string
         created_at:
           type: string
           format: date-time
-        mentioned_users:
-          type: array
-          items:
-            $ref: '#/components/schemas/V1UserMinimal'
-        likes_count:
-          type: integer
-        user:
-          type: object
-          $ref: '#/components/schemas/V1UserMinimal'
-        likes:
-          type: array
-          items:
-            $ref: '#/components/schemas/Like'
-    DashboardAppWithLastAnnotationList:
-      type: array
-      items:
-        $ref: '#/components/schemas/DashboardAppWithLastAnnotation'
-    DashboardAppAnnotationSingle:
+      example:
+        id: 1072
+        first_name: Derek
+        last_name: Smith
+        email: email7@corva.ai
+        title: Drilling Engineer
+        role: user
+        profile_photo: aws_s3_file_path
+        current_segment: drilling
+        created_at: '2020-02-04T12:48:59.593Z'
+    DashboardAppWithLastAnnotation:
       properties:
-        data:
+        id:
+          type: integer
+          format: int64
+        last_annotation:
           type: object
           $ref: '#/components/schemas/DashboardAppAnnotation'
-        included:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserMinimal'
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    DashboardAppAnnotationList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/DashboardAppAnnotation'
-        included:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserMinimal'
   securitySchemes:
     api_key:
       type: apiKey

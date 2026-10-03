@@ -272,30 +272,6 @@ components:
       example:
         code: 403
         message: Access denied
-    AppErrorAlertPayload:
-      properties:
-        app_error_alert:
-          type: object
-          properties:
-            errors_number:
-              type: integer
-            period:
-              type: string
-              enum:
-              - minute
-              - hour
-              - day
-              - week
-              - month
-            notification_types:
-              type: array
-      example:
-        app_error_alert:
-          errors_number: 50
-          period: week
-          notification_types:
-          - mobile
-          - desktop
     AppErrorAlert:
       properties:
         id:
@@ -344,19 +320,6 @@ components:
             profile_photo: photo
           created_at: '2010-01-01T00:00:00.000Z'
           updated_at: '2010-01-01T00:00:00.000Z'
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     NotFoundError:
       required:
       - code
@@ -370,6 +333,43 @@ components:
       example:
         code: 404
         message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AppErrorAlertPayload:
+      properties:
+        app_error_alert:
+          type: object
+          properties:
+            errors_number:
+              type: integer
+            period:
+              type: string
+              enum:
+              - minute
+              - hour
+              - day
+              - week
+              - month
+            notification_types:
+              type: array
+      example:
+        app_error_alert:
+          errors_number: 50
+          period: week
+          notification_types:
+          - mobile
+          - desktop
   securitySchemes:
     api_key:
       type: apiKey

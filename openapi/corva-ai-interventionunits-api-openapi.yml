@@ -230,47 +230,6 @@ components:
       example:
         code: 403
         message: Access denied
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    InterventionUnitPayload:
-      properties:
-        name:
-          type: string
-        intervention_type:
-          type: string
-        company_id:
-          type: integer
-        program_id:
-          type: integer
-      example:
-        name: Intervention Unit
-        intervention_type: wireline
-        company_id: 111
-        program_id: 123
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
     InterventionUnit:
       properties:
         id:
@@ -333,6 +292,47 @@ components:
             data:
               id: '222'
               type: company
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    InterventionUnitPayload:
+      properties:
+        name:
+          type: string
+        intervention_type:
+          type: string
+        company_id:
+          type: integer
+        program_id:
+          type: integer
+      example:
+        name: Intervention Unit
+        intervention_type: wireline
+        company_id: 111
+        program_id: 123
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
   securitySchemes:
     api_key:
       type: apiKey

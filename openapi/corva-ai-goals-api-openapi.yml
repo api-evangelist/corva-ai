@@ -222,49 +222,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    Goal:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            name:
-              type: string
-            goal_type:
-              type: string
-            data:
-              type: object
-      example:
-        id: 123
-        type: goal
-        attributes:
-          id: 123
-          name: Casing Name
-          goal_type: casing
-          data:
-            rotary_distance_drilled: '555'
-            laterial_distance_drilled: '1251'
-            rotary_drilling_time: '4594'
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
     GoalCreatePayload:
       properties:
         goal:
@@ -328,7 +285,7 @@ components:
             rotary_distance_drilled: '555'
             laterial_distance_drilled: '1251'
             rotary_drilling_time: '4594'
-    AuthenticationError:
+    AuthorizationError:
       required:
       - code
       - message
@@ -339,8 +296,8 @@ components:
         message:
           type: string
       example:
-        code: 401
-        message: Missing authentication. Please try again.
+        code: 403
+        message: Access denied
     NotFoundError:
       required:
       - code
@@ -354,6 +311,49 @@ components:
       example:
         code: 404
         message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    Goal:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            goal_type:
+              type: string
+            data:
+              type: object
+      example:
+        id: 123
+        type: goal
+        attributes:
+          id: 123
+          name: Casing Name
+          goal_type: casing
+          data:
+            rotary_distance_drilled: '555'
+            laterial_distance_drilled: '1251'
+            rotary_drilling_time: '4594'
   securitySchemes:
     api_key:
       type: apiKey

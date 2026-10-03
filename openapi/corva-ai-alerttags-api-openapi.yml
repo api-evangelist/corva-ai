@@ -185,42 +185,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AlertTagPayload:
-      properties:
-        alert_tag:
-          type: object
-          properties:
-            name:
-              type: string
-            color:
-              type: string
-              description: 'Optional six digit hex color code, with or without the leading #, stored as #rrggbb in lower case. Send an empty string to clear it. Defaults to an empty string'
-            parent_id:
-              type: integer
-              format: int64
-              description: Optional parent tag; must reference a top-level tag in the same company
-            company_id:
-              type: integer
-              format: int64
-              description: Create only; defaults to the current company
-    AlertTagSingle:
-      properties:
-        data:
-          type: object
-          $ref: '#/components/schemas/AlertTag'
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
     AlertTag:
       properties:
         id:
@@ -261,7 +225,7 @@ components:
             updated_at:
               type: string
               format: date-time
-    AuthenticationError:
+    AuthorizationError:
       required:
       - code
       - message
@@ -272,8 +236,31 @@ components:
         message:
           type: string
       example:
-        code: 401
-        message: Missing authentication. Please try again.
+        code: 403
+        message: Access denied
+    AlertTagPayload:
+      properties:
+        alert_tag:
+          type: object
+          properties:
+            name:
+              type: string
+            color:
+              type: string
+              description: 'Optional six digit hex color code, with or without the leading #, stored as #rrggbb in lower case. Send an empty string to clear it. Defaults to an empty string'
+            parent_id:
+              type: integer
+              format: int64
+              description: Optional parent tag; must reference a top-level tag in the same company
+            company_id:
+              type: integer
+              format: int64
+              description: Create only; defaults to the current company
+    AlertTagSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AlertTag'
     NotFoundError:
       required:
       - code
@@ -287,6 +274,19 @@ components:
       example:
         code: 404
         message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
     AlertTagList:
       properties:
         data:

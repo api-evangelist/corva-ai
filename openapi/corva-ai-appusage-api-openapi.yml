@@ -757,85 +757,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    TotalAppUsageTrend:
-      properties:
-        data:
-          type: array
-          items:
-            properties:
-              id:
-                type: integer
-                format: int64
-              type:
-                type: string
-              attributes:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  event_sum:
-                    type: integer
-                  view_date:
-                    type: string
-      example:
-        data:
-        - id: null
-          type: app_usage
-          attributes:
-            id: null
-            event_sum: 12345
-            view_date: '2023-08-24'
-    AppUsageByViewDateList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppUsageByViewDate'
-      example:
-        data:
-        - id: 12345
-          type: app_usage
-          attributes:
-            id: f89c
-            app_name: Corva Real-Time Traces
-            event_sum: 12345
-            view_date: '2023-08-24'
-            user_id: 123
-            user_name: John Doe
-            user_email: example@example.com
-            user_profile_photo: https://s3-path-to-photo
-            user_title: Engineer
-            user_mobile: '+11234567890'
-    AppUsageByViewDate:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: string
-            app_name:
-              type: string
-            event_sum:
-              type: integer
-            user_email:
-              type: string
-            user_id:
-              type: integer
-            user_mobile:
-              type: string
-            user_name:
-              type: string
-            user_profile_photo:
-              type: string
-            user_title:
-              type: string
-            view_date:
-              type: string
     TotalAppUsage:
       properties:
         id:
@@ -887,6 +808,55 @@ components:
       example:
         code: 403
         message: Access denied
+    AppUsageByViewDateList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppUsageByViewDate'
+      example:
+        data:
+        - id: 12345
+          type: app_usage
+          attributes:
+            id: f89c
+            app_name: Corva Real-Time Traces
+            event_sum: 12345
+            view_date: '2023-08-24'
+            user_id: 123
+            user_name: John Doe
+            user_email: example@example.com
+            user_profile_photo: https://s3-path-to-photo
+            user_title: Engineer
+            user_mobile: '+11234567890'
+    TotalAppUsageTrend:
+      properties:
+        data:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+                format: int64
+              type:
+                type: string
+              attributes:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  event_sum:
+                    type: integer
+                  view_date:
+                    type: string
+      example:
+        data:
+        - id: null
+          type: app_usage
+          attributes:
+            id: null
+            event_sum: 12345
+            view_date: '2023-08-24'
     AppUsageByUserList:
       properties:
         data:
@@ -905,7 +875,7 @@ components:
             user_name: John Doe
             user_email: example@email.com
             company_name: Nova Poshta
-    AppUsageTopApps:
+    AppUsageByViewDate:
       properties:
         id:
           type: integer
@@ -921,31 +891,33 @@ components:
               type: string
             event_sum:
               type: integer
+            user_email:
+              type: string
+            user_id:
+              type: integer
+            user_mobile:
+              type: string
+            user_name:
+              type: string
+            user_profile_photo:
+              type: string
+            user_title:
+              type: string
             view_date:
               type: string
-      example:
-        id: 12345
-        type: app_usage
-        attributes:
-          id: '12_345'
-          app_name: Corva Real-Time Traces
-          event_sum: 12345
-          view_date: '2023-08-24'
-    AppUsageTopAppsList:
+    NotFoundError:
+      required:
+      - code
+      - message
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppUsageTopApps'
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
       example:
-        data:
-        - id: 12345
-          type: app_usage
-          attributes:
-            id: f89c
-            app_name: Corva Real-Time Traces
-            event_sum: 12345
-            view_date: '2023-08-24'
+        code: 404
+        message: Not found
     AuthenticationError:
       required:
       - code
@@ -959,30 +931,6 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    TotalAppUsageList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/TotalAppUsage'
-      example:
-        data:
-        - id: 12345
-          type: app_usage
-          attributes:
-            id: f89c
-            app_name: Corva Real-Time Traces
-            device_family: Mac
-            os_family: Mac OS X
-            useragent_family: Chrome
-            event_sum: 12345
-            user_email: example@example.com
-            user_id: 123
-            user_mobile: '+11234567890'
-            user_name: John Doe
-            user_profile_photo: https://s3-path-to-photo
-            user_title: Engineer
-            user_group: RTOC
     AppUsageByUser:
       properties:
         id:
@@ -1018,19 +966,71 @@ components:
           user_name: John Doe
           user_email: example@email.com
           company_name: Nova Poshta
-    NotFoundError:
-      required:
-      - code
-      - message
+    AppUsageTopAppsList:
       properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppUsageTopApps'
       example:
-        code: 404
-        message: Not found
+        data:
+        - id: 12345
+          type: app_usage
+          attributes:
+            id: f89c
+            app_name: Corva Real-Time Traces
+            event_sum: 12345
+            view_date: '2023-08-24'
+    TotalAppUsageList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TotalAppUsage'
+      example:
+        data:
+        - id: 12345
+          type: app_usage
+          attributes:
+            id: f89c
+            app_name: Corva Real-Time Traces
+            device_family: Mac
+            os_family: Mac OS X
+            useragent_family: Chrome
+            event_sum: 12345
+            user_email: example@example.com
+            user_id: 123
+            user_mobile: '+11234567890'
+            user_name: John Doe
+            user_profile_photo: https://s3-path-to-photo
+            user_title: Engineer
+            user_group: RTOC
+    AppUsageTopApps:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: string
+            app_name:
+              type: string
+            event_sum:
+              type: integer
+            view_date:
+              type: string
+      example:
+        id: 12345
+        type: app_usage
+        attributes:
+          id: '12_345'
+          app_name: Corva Real-Time Traces
+          event_sum: 12345
+          view_date: '2023-08-24'
   securitySchemes:
     api_key:
       type: apiKey

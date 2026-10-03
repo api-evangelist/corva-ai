@@ -302,6 +302,19 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EdrProvider'
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     AuthenticationError:
       required:
       - code
@@ -402,19 +415,6 @@ components:
             data:
               id: '123'
               type: user
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

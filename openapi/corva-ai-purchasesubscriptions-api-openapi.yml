@@ -224,19 +224,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
     PurchaseSubscriptionUpdatePayload:
       properties:
         purchase_subscription:
@@ -302,7 +289,7 @@ components:
           - 1
           - 2
           - 3
-    AuthenticationError:
+    AuthorizationError:
       required:
       - code
       - message
@@ -313,21 +300,8 @@ components:
         message:
           type: string
       example:
-        code: 401
-        message: Missing authentication. Please try again.
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
+        code: 403
+        message: Access denied
     PurchaseSubscription:
       properties:
         id:
@@ -491,12 +465,38 @@ components:
           assets:
           - id: '3'
             type: product_subscription_asset
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     PurchaseSubscriptionList:
       properties:
         data:
           type: array
           items:
             $ref: '#/components/schemas/PurchaseSubscription'
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
   securitySchemes:
     api_key:
       type: apiKey

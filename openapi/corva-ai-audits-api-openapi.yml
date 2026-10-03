@@ -867,7 +867,55 @@ components:
               data:
                 id: 12345
                 type: company
-    ProvisioningSubscriptionAuditIndex:
+    ProvisioningSubscriptionAuditList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProvisioningSubscriptionAuditIndex'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+        - id: 12345
+          type: subscription_audit
+          attributes:
+            id: 12345
+            action: create
+            user_email: example@corva.com
+            comment: ProvisioningSubscription is created
+            name: Subscription Name
+            uuid: bb80a91f-3363-4a7d-88c1-382c48d1260b
+            status: active
+            segment: drilling
+            features: {}
+            price: '9.99'
+            asset_type: company
+            new_subscription_version_id: 12346
+            provider_company_id: 12346
+            activated_at: '2022-11-11T09:11:52.326Z'
+            cancelled_at: '2022-11-11T09:11:52.326Z'
+            created_at: '2022-11-11T09:11:52.326Z'
+          relationships:
+            company:
+              data:
+                id: 12345
+                type: company
+        included:
+        - id: 12345
+          type: company
+          attributes:
+            id: 12345
+            name: Corva
+    GroupMembershipAuditIndex:
       properties:
         id:
           type: integer
@@ -886,32 +934,15 @@ components:
               type: string
             comment:
               type: string
-            name:
+            target_user_email:
               type: string
-            uuid:
+            target_user_name:
               type: string
-            status:
+            group_name:
               type: string
-            segment:
-              type: string
-            features:
-              type: object
-            price:
-              type: string
-            asset_type:
-              type: string
-            new_subscription_version_id:
+            group_id:
               type: integer
               format: int64
-            provider_company_id:
-              type: integer
-              format: int64
-            activated_at:
-              type: string
-              format: date-time
-            cancelled_at:
-              type: string
-              format: date-time
             created_at:
               type: string
               format: date-time
@@ -930,35 +961,41 @@ components:
                       type: string
       example:
         id: 12345
-        type: subscription_audit
+        type: group_membership_audit
         attributes:
           id: 12345
-          action: create
-          user_email: example@corva.com
-          comment: ProvisioningSubscription is created
-          name: Subscription Name
-          uuid: bb80a91f-3363-4a7d-88c1-382c48d1260b
-          status: active
-          segment: drilling
-          features: {}
-          price: '9.99'
-          asset_type: company
-          new_subscription_version_id: 12346
-          provider_company_id: 12346
-          activated_at: '2022-11-11T09:11:52.326Z'
-          cancelled_at: '2022-11-11T09:11:52.326Z'
-          created_at: '2022-11-11T09:11:52.326Z'
+          action: add
+          user_email: admin@corva.com
+          comment: null
+          target_user_email: user@corva.com
+          target_user_name: John Doe
+          group_name: admin
+          group_id: 678
+          created_at: '2026-03-12T09:11:52.326Z'
         relationships:
           company:
             data:
               id: 12345
               type: company
-    ApiKeyAuditList:
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    PlatformSubscriptionAuditList:
       properties:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/ApiKeyAuditIndex'
+            $ref: '#/components/schemas/PlatformSubscriptionAuditIndex'
         included:
           type: array
           items:
@@ -972,13 +1009,23 @@ components:
       example:
         data:
         - id: 12345
-          type: api_key_audit
+          type: subscription_audit
           attributes:
             id: 12345
             action: create
             user_email: example@corva.com
+            comment: PlatformSubscription is created
+            name: Subscription Name
+            uuid: bb80a91f-3363-4a7d-88c1-382c48d1260b
             status: active
-            name: ApiKey name
+            segment: drilling
+            features: {}
+            price: '9.99'
+            asset_type: company
+            new_subscription_version_id: 12346
+            provider_company_id: 12346
+            activated_at: '2022-11-11T09:11:52.326Z'
+            cancelled_at: '2022-11-11T09:11:52.326Z'
             created_at: '2022-11-11T09:11:52.326Z'
           relationships:
             company:
@@ -1020,6 +1067,268 @@ components:
               data:
                 id: 12345
                 type: company
+    PurchaseSubscriptionAuditList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PurchaseSubscriptionAuditIndex'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+        - id: 12345
+          type: subscription_audit
+          attributes:
+            id: 12345
+            action: create
+            user_email: example@corva.com
+            comment: PurchaseSubscription is created
+            name: Subscription Name
+            uuid: bb80a91f-3363-4a7d-88c1-382c48d1260b
+            status: active
+            segment: drilling
+            features: {}
+            price: '9.99'
+            asset_type: company
+            new_subscription_version_id: 12346
+            provider_company_id: 12346
+            activated_at: '2022-11-11T09:11:52.326Z'
+            cancelled_at: '2022-11-11T09:11:52.326Z'
+            created_at: '2022-11-11T09:11:52.326Z'
+          relationships:
+            company:
+              data:
+                id: 12345
+                type: company
+        included:
+        - id: 12345
+          type: company
+          attributes:
+            id: 12345
+            name: Corva
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    PermissionAuditList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PermissionAuditIndex'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+        - id: 12345
+          type: permission_audit
+          attributes:
+            id: 12345
+            action: create
+            user_email: example@corva.com
+            comment: Permission has been created
+            ability: read
+            resource_class: User
+            friendly_name: Read one user
+            owner_type: User
+            owner_id: 12345
+            owner_name: John Doe
+            owner_email: user@corva.ai
+            created_at: '2022-11-11T09:11:52.326Z'
+          relationships:
+            company:
+              data:
+                id: 12345
+                type: company
+        included:
+        - id: 12345
+          type: company
+          attributes:
+            id: 12345
+            name: Corva
+    ApiKeyAuditList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiKeyAuditIndex'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+        - id: 12345
+          type: api_key_audit
+          attributes:
+            id: 12345
+            action: create
+            user_email: example@corva.com
+            status: active
+            name: ApiKey name
+            created_at: '2022-11-11T09:11:52.326Z'
+          relationships:
+            company:
+              data:
+                id: 12345
+                type: company
+        included:
+        - id: 12345
+          type: company
+          attributes:
+            id: 12345
+            name: Corva
+    PackageAuditList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PackageAuditIndex'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+        - id: 12345
+          type: package_audit
+          attributes:
+            id: 12345
+            action: create
+            user_email: example@corva.com
+            comment: Package is uploaded
+            app_name: App name
+            app_version: 0.0.1
+            status: published
+            api_key_id: 123
+            created_at: '2022-11-11T09:11:52.326Z'
+          relationships:
+            company:
+              data:
+                id: 12345
+                type: company
+        included:
+        - id: 12345
+          type: company
+          attributes:
+            id: 12345
+            name: Corva
+    ApiKeyAuditIndex:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            action:
+              type: string
+            user_email:
+              type: string
+            status:
+              type: string
+            name:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+    GroupMembershipAuditList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupMembershipAuditIndex'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+        - id: 12345
+          type: group_membership_audit
+          attributes:
+            id: 12345
+            action: add
+            user_email: admin@corva.com
+            comment: null
+            target_user_email: user@corva.com
+            target_user_name: John Doe
+            group_name: admin
+            group_id: 678
+            created_at: '2026-03-12T09:11:52.326Z'
+          relationships:
+            company:
+              data:
+                id: 12345
+                type: company
+        included:
+        - id: 12345
+          type: company
+          attributes:
+            id: 12345
+            name: Corva
     PlatformSubscriptionAuditIndex:
       properties:
         id:
@@ -1106,108 +1415,6 @@ components:
             data:
               id: 12345
               type: company
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    PlatformSubscriptionAuditList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/PlatformSubscriptionAuditIndex'
-        included:
-          type: array
-          items:
-            properties:
-              id:
-                type: integer
-              type:
-                type: string
-              attributes:
-                type: object
-      example:
-        data:
-        - id: 12345
-          type: subscription_audit
-          attributes:
-            id: 12345
-            action: create
-            user_email: example@corva.com
-            comment: PlatformSubscription is created
-            name: Subscription Name
-            uuid: bb80a91f-3363-4a7d-88c1-382c48d1260b
-            status: active
-            segment: drilling
-            features: {}
-            price: '9.99'
-            asset_type: company
-            new_subscription_version_id: 12346
-            provider_company_id: 12346
-            activated_at: '2022-11-11T09:11:52.326Z'
-            cancelled_at: '2022-11-11T09:11:52.326Z'
-            created_at: '2022-11-11T09:11:52.326Z'
-          relationships:
-            company:
-              data:
-                id: 12345
-                type: company
-        included:
-        - id: 12345
-          type: company
-          attributes:
-            id: 12345
-            name: Corva
-    GroupMembershipAuditList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/GroupMembershipAuditIndex'
-        included:
-          type: array
-          items:
-            properties:
-              id:
-                type: integer
-              type:
-                type: string
-              attributes:
-                type: object
-      example:
-        data:
-        - id: 12345
-          type: group_membership_audit
-          attributes:
-            id: 12345
-            action: add
-            user_email: admin@corva.com
-            comment: null
-            target_user_email: user@corva.com
-            target_user_name: John Doe
-            group_name: admin
-            group_id: 678
-            created_at: '2026-03-12T09:11:52.326Z'
-          relationships:
-            company:
-              data:
-                id: 12345
-                type: company
-        included:
-        - id: 12345
-          type: company
-          attributes:
-            id: 12345
-            name: Corva
     PackageAuditIndex:
       properties:
         id:
@@ -1269,103 +1476,7 @@ components:
             data:
               id: 12345
               type: company
-    ProvisioningSubscriptionAuditList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProvisioningSubscriptionAuditIndex'
-        included:
-          type: array
-          items:
-            properties:
-              id:
-                type: integer
-              type:
-                type: string
-              attributes:
-                type: object
-      example:
-        data:
-        - id: 12345
-          type: subscription_audit
-          attributes:
-            id: 12345
-            action: create
-            user_email: example@corva.com
-            comment: ProvisioningSubscription is created
-            name: Subscription Name
-            uuid: bb80a91f-3363-4a7d-88c1-382c48d1260b
-            status: active
-            segment: drilling
-            features: {}
-            price: '9.99'
-            asset_type: company
-            new_subscription_version_id: 12346
-            provider_company_id: 12346
-            activated_at: '2022-11-11T09:11:52.326Z'
-            cancelled_at: '2022-11-11T09:11:52.326Z'
-            created_at: '2022-11-11T09:11:52.326Z'
-          relationships:
-            company:
-              data:
-                id: 12345
-                type: company
-        included:
-        - id: 12345
-          type: company
-          attributes:
-            id: 12345
-            name: Corva
-    PurchaseSubscriptionAuditList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/PurchaseSubscriptionAuditIndex'
-        included:
-          type: array
-          items:
-            properties:
-              id:
-                type: integer
-              type:
-                type: string
-              attributes:
-                type: object
-      example:
-        data:
-        - id: 12345
-          type: subscription_audit
-          attributes:
-            id: 12345
-            action: create
-            user_email: example@corva.com
-            comment: PurchaseSubscription is created
-            name: Subscription Name
-            uuid: bb80a91f-3363-4a7d-88c1-382c48d1260b
-            status: active
-            segment: drilling
-            features: {}
-            price: '9.99'
-            asset_type: company
-            new_subscription_version_id: 12346
-            provider_company_id: 12346
-            activated_at: '2022-11-11T09:11:52.326Z'
-            cancelled_at: '2022-11-11T09:11:52.326Z'
-            created_at: '2022-11-11T09:11:52.326Z'
-          relationships:
-            company:
-              data:
-                id: 12345
-                type: company
-        included:
-        - id: 12345
-          type: company
-          attributes:
-            id: 12345
-            name: Corva
-    ApiKeyAuditIndex:
+    PermissionAuditIndex:
       properties:
         id:
           type: integer
@@ -1382,9 +1493,22 @@ components:
               type: string
             user_email:
               type: string
-            status:
+            comment:
               type: string
-            name:
+            ability:
+              type: string
+            resource_class:
+              type: string
+            friendly_name:
+              type: string
+            owner_type:
+              type: string
+            owner_id:
+              type: integer
+              format: int64
+            owner_name:
+              type: string
+            owner_email:
               type: string
             created_at:
               type: string
@@ -1402,6 +1526,126 @@ components:
                       type: integer
                     type:
                       type: string
+      example:
+        id: 12345
+        type: permission_audit
+        attributes:
+          id: 12345
+          action: create
+          user_email: example@corva.com
+          comment: Permission has been created
+          ability: read
+          resource_class: User
+          friendly_name: Read one user
+          owner_type: User
+          owner_id: 12345
+          owner_name: John Doe
+          owner_email: user@corva.ai
+          created_at: '2022-11-11T09:11:52.326Z'
+        relationships:
+          company:
+            data:
+              id: 12345
+              type: company
+    ProvisioningSubscriptionAuditIndex:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            action:
+              type: string
+            user_email:
+              type: string
+            comment:
+              type: string
+            name:
+              type: string
+            uuid:
+              type: string
+            status:
+              type: string
+            segment:
+              type: string
+            features:
+              type: object
+            price:
+              type: string
+            asset_type:
+              type: string
+            new_subscription_version_id:
+              type: integer
+              format: int64
+            provider_company_id:
+              type: integer
+              format: int64
+            activated_at:
+              type: string
+              format: date-time
+            cancelled_at:
+              type: string
+              format: date-time
+            created_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: subscription_audit
+        attributes:
+          id: 12345
+          action: create
+          user_email: example@corva.com
+          comment: ProvisioningSubscription is created
+          name: Subscription Name
+          uuid: bb80a91f-3363-4a7d-88c1-382c48d1260b
+          status: active
+          segment: drilling
+          features: {}
+          price: '9.99'
+          asset_type: company
+          new_subscription_version_id: 12346
+          provider_company_id: 12346
+          activated_at: '2022-11-11T09:11:52.326Z'
+          cancelled_at: '2022-11-11T09:11:52.326Z'
+          created_at: '2022-11-11T09:11:52.326Z'
+        relationships:
+          company:
+            data:
+              id: 12345
+              type: company
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     PurchaseSubscriptionAuditIndex:
       properties:
         id:
@@ -1488,250 +1732,6 @@ components:
             data:
               id: 12345
               type: company
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    GroupMembershipAuditIndex:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            action:
-              type: string
-            user_email:
-              type: string
-            comment:
-              type: string
-            target_user_email:
-              type: string
-            target_user_name:
-              type: string
-            group_name:
-              type: string
-            group_id:
-              type: integer
-              format: int64
-            created_at:
-              type: string
-              format: date-time
-        relationships:
-          type: object
-          properties:
-            company:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    type:
-                      type: string
-      example:
-        id: 12345
-        type: group_membership_audit
-        attributes:
-          id: 12345
-          action: add
-          user_email: admin@corva.com
-          comment: null
-          target_user_email: user@corva.com
-          target_user_name: John Doe
-          group_name: admin
-          group_id: 678
-          created_at: '2026-03-12T09:11:52.326Z'
-        relationships:
-          company:
-            data:
-              id: 12345
-              type: company
-    PermissionAuditIndex:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            action:
-              type: string
-            user_email:
-              type: string
-            comment:
-              type: string
-            ability:
-              type: string
-            resource_class:
-              type: string
-            friendly_name:
-              type: string
-            owner_type:
-              type: string
-            owner_id:
-              type: integer
-              format: int64
-            owner_name:
-              type: string
-            owner_email:
-              type: string
-            created_at:
-              type: string
-              format: date-time
-        relationships:
-          type: object
-          properties:
-            company:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    type:
-                      type: string
-      example:
-        id: 12345
-        type: permission_audit
-        attributes:
-          id: 12345
-          action: create
-          user_email: example@corva.com
-          comment: Permission has been created
-          ability: read
-          resource_class: User
-          friendly_name: Read one user
-          owner_type: User
-          owner_id: 12345
-          owner_name: John Doe
-          owner_email: user@corva.ai
-          created_at: '2022-11-11T09:11:52.326Z'
-        relationships:
-          company:
-            data:
-              id: 12345
-              type: company
-    PermissionAuditList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/PermissionAuditIndex'
-        included:
-          type: array
-          items:
-            properties:
-              id:
-                type: integer
-              type:
-                type: string
-              attributes:
-                type: object
-      example:
-        data:
-        - id: 12345
-          type: permission_audit
-          attributes:
-            id: 12345
-            action: create
-            user_email: example@corva.com
-            comment: Permission has been created
-            ability: read
-            resource_class: User
-            friendly_name: Read one user
-            owner_type: User
-            owner_id: 12345
-            owner_name: John Doe
-            owner_email: user@corva.ai
-            created_at: '2022-11-11T09:11:52.326Z'
-          relationships:
-            company:
-              data:
-                id: 12345
-                type: company
-        included:
-        - id: 12345
-          type: company
-          attributes:
-            id: 12345
-            name: Corva
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    PackageAuditList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/PackageAuditIndex'
-        included:
-          type: array
-          items:
-            properties:
-              id:
-                type: integer
-              type:
-                type: string
-              attributes:
-                type: object
-      example:
-        data:
-        - id: 12345
-          type: package_audit
-          attributes:
-            id: 12345
-            action: create
-            user_email: example@corva.com
-            comment: Package is uploaded
-            app_name: App name
-            app_version: 0.0.1
-            status: published
-            api_key_id: 123
-            created_at: '2022-11-11T09:11:52.326Z'
-          relationships:
-            company:
-              data:
-                id: 12345
-                type: company
-        included:
-        - id: 12345
-          type: company
-          attributes:
-            id: 12345
-            name: Corva
   securitySchemes:
     api_key:
       type: apiKey

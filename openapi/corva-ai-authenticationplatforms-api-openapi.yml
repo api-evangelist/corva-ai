@@ -75,12 +75,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthenticationPlatformV2List:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AuthenticationPlatformV2'
     AuthorizationError:
       required:
       - code
@@ -99,6 +93,12 @@ components:
         data:
           type: object
           $ref: '#/components/schemas/AuthenticationPlatformV2'
+    AuthenticationPlatformV2List:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticationPlatformV2'
     AuthenticationPlatformV2:
       properties:
         id:

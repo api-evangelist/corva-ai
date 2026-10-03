@@ -272,20 +272,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    ActivityWell:
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        parent_asset:
-          properties:
-            id:
-              type: integer
-              format: int64
-            name:
-              type: string
     V1UserMinimal:
       properties:
         id:
@@ -331,12 +317,92 @@ components:
       example:
         code: 403
         message: Access denied
-    ActivitiesList:
+    ActivityWell:
       properties:
-        data:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        parent_asset:
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+    ActivityRig:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        active_well:
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+    Comment:
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int64
+        body:
+          type: string
+        attachment:
+          type: object
+          properties:
+            file_name:
+              type: string
+            s3_link:
+              type: string
+        attachments:
           type: array
           items:
-            $ref: '#/components/schemas/V2Activity'
+            properties:
+              file_name:
+                type: string
+              s3_link:
+                type: string
+        created_at:
+          type: string
+          format: date-time
+        mentioned_users:
+          type: array
+          items:
+            $ref: '#/components/schemas/V1UserMinimal'
+        likes_count:
+          type: integer
+        user:
+          type: object
+          $ref: '#/components/schemas/V1UserMinimal'
+        likes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Like'
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    ActivitySingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/V2Activity'
         included:
           type: array
           items:
@@ -354,27 +420,6 @@ components:
                     $ref: '#/components/schemas/ActivityWell'
                   rig:
                     $ref: '#/components/schemas/ActivityRig'
-    ActivityPayload:
-      properties:
-        activity:
-          type: object
-          properties:
-            asset_id:
-              type: integer
-            app_id:
-              type: integer
-            context:
-              type: object
-            segment:
-              type: string
-      example:
-        activity:
-          asset_id: 123445
-          context:
-            post:
-              body: post body
-          segment: drilling
-          app_id: 11234
     UserMinimal:
       properties:
         id:
@@ -497,24 +542,25 @@ components:
           attributes:
             id: 123
             name: Company name
-    Like:
+    AuthenticationError:
       required:
-      - id
+      - code
+      - message
       properties:
-        id:
+        code:
           type: integer
-          format: int64
-        created_at:
+          format: int32
+        message:
           type: string
-          format: date-time
-        user:
-          type: object
-          $ref: '#/components/schemas/V1UserMinimal'
-    ActivitySingle:
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    ActivitiesList:
       properties:
         data:
-          type: object
-          $ref: '#/components/schemas/V2Activity'
+          type: array
+          items:
+            $ref: '#/components/schemas/V2Activity'
         included:
           type: array
           items:
@@ -532,59 +578,19 @@ components:
                     $ref: '#/components/schemas/ActivityWell'
                   rig:
                     $ref: '#/components/schemas/ActivityRig'
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    Comment:
+    Like:
       required:
       - id
       properties:
         id:
           type: integer
           format: int64
-        body:
-          type: string
-        attachment:
-          type: object
-          properties:
-            file_name:
-              type: string
-            s3_link:
-              type: string
-        attachments:
-          type: array
-          items:
-            properties:
-              file_name:
-                type: string
-              s3_link:
-                type: string
         created_at:
           type: string
           format: date-time
-        mentioned_users:
-          type: array
-          items:
-            $ref: '#/components/schemas/V1UserMinimal'
-        likes_count:
-          type: integer
         user:
           type: object
           $ref: '#/components/schemas/V1UserMinimal'
-        likes:
-          type: array
-          items:
-            $ref: '#/components/schemas/Like'
     V2Activity:
       required:
       - id
@@ -688,33 +694,27 @@ components:
                         format: int64
                       type:
                         type: string
-    ActivityRig:
+    ActivityPayload:
       properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        active_well:
+        activity:
+          type: object
           properties:
-            id:
+            asset_id:
               type: integer
-              format: int64
-            name:
+            app_id:
+              type: integer
+            context:
+              type: object
+            segment:
               type: string
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
       example:
-        code: 404
-        message: Not found
+        activity:
+          asset_id: 123445
+          context:
+            post:
+              body: post body
+          segment: drilling
+          app_id: 11234
   securitySchemes:
     api_key:
       type: apiKey

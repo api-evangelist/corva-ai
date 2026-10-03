@@ -131,28 +131,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    UsageTotal:
-      properties:
-        resource_type:
-          type: string
-        resource_id:
-          type: integer
-        measurement:
-          type: decimal
-        full_lambda_name:
-          type: string
-        date:
-          type: string
-          format: date-time
-        cost:
-          type: decimal
-      example:
-        resource_type: Dataset
-        resource_id: 1
-        measurement: 15.3
-        full_lambda_name: environment_app-key
-        date: '2019-11-01'
-        cost: 16
     UsageSummaryTotal:
       properties:
         resource_type:
@@ -174,6 +152,28 @@ components:
         measurement: 15.3
         full_lambda_name: environment_app-key
         month: 2019-11
+        cost: 16
+    UsageTotal:
+      properties:
+        resource_type:
+          type: string
+        resource_id:
+          type: integer
+        measurement:
+          type: decimal
+        full_lambda_name:
+          type: string
+        date:
+          type: string
+          format: date-time
+        cost:
+          type: decimal
+      example:
+        resource_type: Dataset
+        resource_id: 1
+        measurement: 15.3
+        full_lambda_name: environment_app-key
+        date: '2019-11-01'
         cost: 16
   securitySchemes:
     api_key:

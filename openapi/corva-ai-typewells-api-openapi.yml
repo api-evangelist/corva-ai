@@ -145,6 +145,79 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    TypeWell:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            subject_well_id:
+              type: integer
+              format: int64
+            offset_well_id:
+              type: integer
+              format: int64
+            subject_well_asset_id:
+              type: integer
+              format: int64
+            offset_well_asset_id:
+              type: integer
+              format: int64
+      example:
+        id: 555
+        type: type_well
+        attributes:
+          id: 555
+          subject_well_id: 123
+          offset_well_id: 456
+          subject_well_asset_id: 7527348
+          offset_well_asset_id: 12347575
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
     Well:
       required:
       - id
@@ -327,79 +400,6 @@ components:
             data:
               id: 923
               type: drillout_unit
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    TypeWell:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            subject_well_id:
-              type: integer
-              format: int64
-            offset_well_id:
-              type: integer
-              format: int64
-            subject_well_asset_id:
-              type: integer
-              format: int64
-            offset_well_asset_id:
-              type: integer
-              format: int64
-      example:
-        id: 555
-        type: type_well
-        attributes:
-          id: 555
-          subject_well_id: 123
-          offset_well_id: 456
-          subject_well_asset_id: 7527348
-          offset_well_asset_id: 12347575
   securitySchemes:
     api_key:
       type: apiKey

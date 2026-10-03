@@ -474,6 +474,78 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    PublishAppSettingsTemplatePayload:
+      properties:
+        data:
+          type: object
+          properties:
+            name:
+              type: string
+            metadata:
+              type: object
+            asset_id:
+              type: integer
+            asset_type:
+              type: string
+      example:
+        app_settings_template:
+          name: CustomTemplate1
+          metadata:
+            key1: value1
+            key2: value2
+          asset_id: 1
+          asset_type: Rig
+    AppSettingsTemplateList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppSettingsTemplate'
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AppSettingsTemplateShareList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppSettingsTemplateShare'
     AppSettingsTemplateShare:
       properties:
         id:
@@ -526,44 +598,6 @@ components:
             data:
               id: 999
               type: user
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    AppSettingsTemplateShareList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppSettingsTemplateShare'
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AppSettingsTemplateList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppSettingsTemplate'
     AppSettingsTemplatePayload:
       properties:
         app_settings_template:
@@ -584,19 +618,6 @@ components:
           metadata:
             key1: value1
             key2: value2
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     AppSettingsTemplate:
       properties:
         id:
@@ -643,27 +664,6 @@ components:
           shared: false
           shared_with:
           - 123
-          asset_id: 1
-          asset_type: Rig
-    PublishAppSettingsTemplatePayload:
-      properties:
-        data:
-          type: object
-          properties:
-            name:
-              type: string
-            metadata:
-              type: object
-            asset_id:
-              type: integer
-            asset_type:
-              type: string
-      example:
-        app_settings_template:
-          name: CustomTemplate1
-          metadata:
-            key1: value1
-            key2: value2
           asset_id: 1
           asset_type: Rig
   securitySchemes:

@@ -1033,143 +1033,19 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    WorkflowAppPayload:
+    AuthorizationError:
+      required:
+      - code
+      - message
       properties:
-        workflow_app:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            coordinates:
-              type: object
-              format: int64
-            settings:
-              type: object
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
       example:
-        workflow_app:
-          coordinates:
-            x: '19'
-            y: '171'
-          settings:
-            some_setting: Setting value
-            foo: bar
-    WorkflowContentBlockPayload:
-      properties:
-        workflow_content_block:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            title:
-              type: string
-            description:
-              type: string
-            position:
-              type: integer
-            image_url:
-              type: string
-            video_url:
-              type: string
-            overview:
-              type: string
-            introduction:
-              type: string
-            app_key:
-              type: string
-      example:
-        workflow_content_block:
-          id: 12345
-          title: Workflow Content Block Title
-          description: Long text description
-          position: 1
-          image_url: http://www.example.com/image.jpg
-          video_url: http://www.example.com/video.mp4
-          created_at: '2022-11-11T09:11:52.326Z'
-          updated_at: '2022-11-11T09:11:52.326Z'
-          app_key: app_key
-    WorkflowAppsPayload:
-      properties:
-        workflow_apps:
-          type: array
-          items:
-            properties:
-              id:
-                type: integer
-                format: int64
-              coordinates:
-                type: object
-                format: int64
-              settings:
-                type: object
-      example:
-        workflow_apps:
-        - id: 12345
-          coordinates:
-            x: '19'
-            y: '171'
-          settings:
-            some_setting: Setting value
-            foo: bar
-        - id: 178
-          coordinates:
-            x: '3'
-            y: '34'
-          settings:
-            some_setting: Setting value
-            foo: bar
-    WorkflowAppList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkflowApp'
-        included:
-          type: array
-          items:
-            properties:
-              id:
-                type: integer
-              type:
-                type: string
-              attributes:
-                type: object
-      example:
-        data:
-        - id: 12345
-          type: workflow_app
-          attributes:
-            id: 12345
-            coordinates:
-              x: '0'
-              y: '171'
-            settings:
-              some_setting: Setting value
-              foo: bar
-            created_at: '2022-11-11T09:11:52.326Z'
-            updated_at: '2022-11-11T09:11:52.326Z'
-          relationships:
-            workflow:
-              data:
-                id: 12345
-                type: workflow
-            app:
-              data:
-                id: 12456
-                type: app
-        included:
-        - id: 12345
-          type: Workflow
-          attributes:
-            id: 12345
-            name: 'WF #1'
-        - id: 348
-          type: app
-          attributes:
-            id: 348
-            name: My App
-            app_key: my.example.app
+        code: 403
+        message: Access denied
     WorkflowApp:
       properties:
         id:
@@ -1261,25 +1137,195 @@ components:
             data:
               id: 12456
               type: app
-    AuthorizationError:
-      required:
-      - code
-      - message
+    DashboardWorkflow:
       properties:
-        code:
+        id:
           type: integer
-          format: int32
-        message:
+          format: int64
+        type:
           type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            asset_id:
+              type: integer
+              format: int64
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            workflow:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
       example:
-        code: 403
-        message: Access denied
-    DashboardWorkflowList:
+        id: 12345
+        type: dashboard_workflow
+        attributes:
+          id: 12345
+          asset_id: 12345
+          created_at: '2022-11-11T09:11:52.326Z'
+          updated_at: '2022-11-11T09:11:52.326Z'
+        relationships:
+          workflow:
+            data:
+              id: 12345
+              type: workflow
+    WorkflowAppsPayload:
+      properties:
+        workflow_apps:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+                format: int64
+              coordinates:
+                type: object
+                format: int64
+              settings:
+                type: object
+      example:
+        workflow_apps:
+        - id: 12345
+          coordinates:
+            x: '19'
+            y: '171'
+          settings:
+            some_setting: Setting value
+            foo: bar
+        - id: 178
+          coordinates:
+            x: '3'
+            y: '34'
+          settings:
+            some_setting: Setting value
+            foo: bar
+    WorkflowPayload:
+      properties:
+        workflow:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            workflow_key:
+              type: string
+            caption:
+              type: string
+            visibility:
+              type: string
+            segment:
+              type: string
+            image_url:
+              type: string
+            video_url:
+              type: string
+            overview:
+              type: string
+            introduction:
+              type: string
+            position:
+              type: integer
+            app_keys:
+              type: array
+            attachment_metadata:
+              type: array
+              items:
+                properties:
+                  file_name:
+                    type: string
+                  type:
+                    type: string
+                  uploaded_at:
+                    type: string
+                    format: date-time
+                  cdn_url:
+                    type: string
+            workflow_content_blocks_attributes:
+              type: array
+              items:
+                properties:
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  video_url:
+                    type: string
+                  app_key:
+                    type: string
+                  attachment_metadata:
+                    type: array
+                    items:
+                      properties:
+                        file_name:
+                          type: string
+                        type:
+                          type: string
+                        uploaded_at:
+                          type: string
+                          format: date-time
+                        cdn_url:
+                          type: string
+      example:
+        workflow:
+          name: workflow_1
+          workflow_key: provider.workflow_1
+          caption: 'Workflow #1'
+          visibility: public
+          segment: drilling
+          image_url: http://www.example.com/image.jpg
+          video_url: http://www.example.com/video.mp4
+          overview: Overview text
+          introduction: Introduction text
+          position: 2
+          app_keys:
+          - app_key_1
+          - app_key_2
+          attachment_metadata:
+          - file_name: example.mp4
+            type: video
+            uploaded_at: '2020-01-01T13:00:00.000Z'
+            cdn_url: https://dz2j2ahzlt5dj.cloudfront.net/workflows/example.mp4
+          workflow_content_blocks_attributes:
+          - title: 'WCB #1'
+            description: 'WCB #1 description'
+            image_url: http://www.example.com/image.jpg
+            video_url: http://www.example.com/video.mp4
+            attachment_metadata:
+            - file_name: example.mp4
+              type: video
+              uploaded_at: '2020-01-01T13:00:00.000Z'
+              cdn_url: https://dz2j2ahzlt5dj.cloudfront.net/workflows/example.mp4
+            app_key: app_key_1
+          - title: 'WCB #2'
+            description: 'WCB #2 description'
+            image_url: http://www.example.com/image.jpg
+            video_url: http://www.example.com/video.mp4
+            attachment_metadata: []
+            app_key: app_key_2
+    WorkflowContentBlockList:
       properties:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/DashboardWorkflow'
+            $ref: '#/components/schemas/WorkflowContentBlock'
         included:
           type: array
           items:
@@ -1293,10 +1339,14 @@ components:
       example:
         data:
         - id: 12345
-          type: dashboard_workflow
+          type: workflow_content_block
           attributes:
             id: 12345
-            asset_id: 12345
+            title: Content Block Title
+            description: Long text description
+            position: 2
+            image_url: http://www.example.com/image.jpg
+            video_url: http://www.example.com/video.mp4
             created_at: '2022-11-11T09:11:52.326Z'
             updated_at: '2022-11-11T09:11:52.326Z'
           relationships:
@@ -1304,34 +1354,92 @@ components:
               data:
                 id: 12345
                 type: workflow
-            dashboard_apps:
+            app:
               data:
-              - id: 10000
-                type: dashboard_app
-              - id: 10001
-                type: dashboard_app
+                id: 12456
+                type: app
         included:
+        - id: 12345
+          type: Workflow
+          attributes:
+            id: 12345
+            name: 'WF #1'
+        - id: 348
+          type: app
+          attributes:
+            id: 348
+            name: My App
+            app_key: my.example.app
+    WorkflowList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowIndex'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
         - id: 12345
           type: workflow
           attributes:
             id: 12345
-            name: 'WF #1'
-        - id: 10000
-          type: dashboard_app
+            workflow_key: provider.workflow_6
+            name: Workflow 6
+            overview: Long Text
+            caption: Workflow 6 Caption
+            visibility: public
+            segment: drilling
+            image_url: http://www.example.com/image.jpg
+            video_url: http://www.example.com/video.mp4
+            position: 2
+            attachment_metadata:
+            - file_name: example.mp4
+              type: video
+              uploaded_at: '2020-01-01T13:00:00.000Z'
+              cdn_url: https://dz2j2ahzlt5dj.cloudfront.net/workflows/example.mp4
+            created_at: '2022-11-11T09:11:52.326Z'
+            updated_at: '2022-11-11T09:11:52.326Z'
+          relationships:
+            company:
+              data:
+                id: 12345
+                type: company
+            apps:
+              data:
+              - id: 12456
+                type: app
+              - id: 345
+                type: app
+        included:
+        - id: 12345
+          type: company
           attributes:
-            id: 10000
-            name: Corva Data App 1
-            settings:
-              rigId: 5884
-              assetId: 31259041
-        - id: 10001
-          type: dashboard_app
+            id: 12345
+            name: Corva
+        - id: 348
+          type: app
           attributes:
-            id: 10001
-            name: Corva Data App 2
-            settings:
-              rigId: 5884
-              assetId: 31259041
+            id: 348
+            name: My App
+            app_key: my.example.app
+            icon:
+              id: 111
+              app_id: 348
+              file_name: file_name
+              file_type: image
+              media_type: icon
+              s3_path: path_to_s3
+              url: https://package.qa.corva.ai/path/to/s3
+              position: 1
     WorkflowContentBlock:
       properties:
         id:
@@ -1462,12 +1570,12 @@ components:
             settings:
               rigId: 5884
               assetId: 31259041
-    WorkflowList:
+    DashboardWorkflowList:
       properties:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/WorkflowIndex'
+            $ref: '#/components/schemas/DashboardWorkflow'
         included:
           type: array
           items:
@@ -1481,57 +1589,143 @@ components:
       example:
         data:
         - id: 12345
-          type: workflow
+          type: dashboard_workflow
           attributes:
             id: 12345
-            workflow_key: provider.workflow_6
-            name: Workflow 6
-            overview: Long Text
-            caption: Workflow 6 Caption
-            visibility: public
-            segment: drilling
-            image_url: http://www.example.com/image.jpg
-            video_url: http://www.example.com/video.mp4
-            position: 2
-            attachment_metadata:
-            - file_name: example.mp4
-              type: video
-              uploaded_at: '2020-01-01T13:00:00.000Z'
-              cdn_url: https://dz2j2ahzlt5dj.cloudfront.net/workflows/example.mp4
+            asset_id: 12345
             created_at: '2022-11-11T09:11:52.326Z'
             updated_at: '2022-11-11T09:11:52.326Z'
           relationships:
-            company:
+            workflow:
               data:
                 id: 12345
-                type: company
-            apps:
+                type: workflow
+            dashboard_apps:
               data:
-              - id: 12456
-                type: app
-              - id: 345
+              - id: 10000
+                type: dashboard_app
+              - id: 10001
+                type: dashboard_app
+        included:
+        - id: 12345
+          type: workflow
+          attributes:
+            id: 12345
+            name: 'WF #1'
+        - id: 10000
+          type: dashboard_app
+          attributes:
+            id: 10000
+            name: Corva Data App 1
+            settings:
+              rigId: 5884
+              assetId: 31259041
+        - id: 10001
+          type: dashboard_app
+          attributes:
+            id: 10001
+            name: Corva Data App 2
+            settings:
+              rigId: 5884
+              assetId: 31259041
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    WorkflowAppPayload:
+      properties:
+        workflow_app:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            coordinates:
+              type: object
+              format: int64
+            settings:
+              type: object
+      example:
+        workflow_app:
+          coordinates:
+            x: '19'
+            y: '171'
+          settings:
+            some_setting: Setting value
+            foo: bar
+    WorkflowAppList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowApp'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+        - id: 12345
+          type: workflow_app
+          attributes:
+            id: 12345
+            coordinates:
+              x: '0'
+              y: '171'
+            settings:
+              some_setting: Setting value
+              foo: bar
+            created_at: '2022-11-11T09:11:52.326Z'
+            updated_at: '2022-11-11T09:11:52.326Z'
+          relationships:
+            workflow:
+              data:
+                id: 12345
+                type: workflow
+            app:
+              data:
+                id: 12456
                 type: app
         included:
         - id: 12345
-          type: company
+          type: Workflow
           attributes:
             id: 12345
-            name: Corva
+            name: 'WF #1'
         - id: 348
           type: app
           attributes:
             id: 348
             name: My App
             app_key: my.example.app
-            icon:
-              id: 111
-              app_id: 348
-              file_name: file_name
-              file_type: image
-              media_type: icon
-              s3_path: path_to_s3
-              url: https://package.qa.corva.ai/path/to/s3
-              position: 1
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
     Workflow:
       properties:
         data:
@@ -1711,24 +1905,20 @@ components:
               data:
                 id: '8111'
                 type: app
-    WorkflowPayload:
+    WorkflowContentBlockPayload:
       properties:
-        workflow:
+        workflow_content_block:
           type: object
           properties:
             id:
               type: integer
               format: int64
-            name:
+            title:
               type: string
-            workflow_key:
+            description:
               type: string
-            caption:
-              type: string
-            visibility:
-              type: string
-            segment:
-              type: string
+            position:
+              type: integer
             image_url:
               type: string
             video_url:
@@ -1737,209 +1927,19 @@ components:
               type: string
             introduction:
               type: string
-            position:
-              type: integer
-            app_keys:
-              type: array
-            attachment_metadata:
-              type: array
-              items:
-                properties:
-                  file_name:
-                    type: string
-                  type:
-                    type: string
-                  uploaded_at:
-                    type: string
-                    format: date-time
-                  cdn_url:
-                    type: string
-            workflow_content_blocks_attributes:
-              type: array
-              items:
-                properties:
-                  title:
-                    type: string
-                  description:
-                    type: string
-                  video_url:
-                    type: string
-                  app_key:
-                    type: string
-                  attachment_metadata:
-                    type: array
-                    items:
-                      properties:
-                        file_name:
-                          type: string
-                        type:
-                          type: string
-                        uploaded_at:
-                          type: string
-                          format: date-time
-                        cdn_url:
-                          type: string
+            app_key:
+              type: string
       example:
-        workflow:
-          name: workflow_1
-          workflow_key: provider.workflow_1
-          caption: 'Workflow #1'
-          visibility: public
-          segment: drilling
+        workflow_content_block:
+          id: 12345
+          title: Workflow Content Block Title
+          description: Long text description
+          position: 1
           image_url: http://www.example.com/image.jpg
           video_url: http://www.example.com/video.mp4
-          overview: Overview text
-          introduction: Introduction text
-          position: 2
-          app_keys:
-          - app_key_1
-          - app_key_2
-          attachment_metadata:
-          - file_name: example.mp4
-            type: video
-            uploaded_at: '2020-01-01T13:00:00.000Z'
-            cdn_url: https://dz2j2ahzlt5dj.cloudfront.net/workflows/example.mp4
-          workflow_content_blocks_attributes:
-          - title: 'WCB #1'
-            description: 'WCB #1 description'
-            image_url: http://www.example.com/image.jpg
-            video_url: http://www.example.com/video.mp4
-            attachment_metadata:
-            - file_name: example.mp4
-              type: video
-              uploaded_at: '2020-01-01T13:00:00.000Z'
-              cdn_url: https://dz2j2ahzlt5dj.cloudfront.net/workflows/example.mp4
-            app_key: app_key_1
-          - title: 'WCB #2'
-            description: 'WCB #2 description'
-            image_url: http://www.example.com/image.jpg
-            video_url: http://www.example.com/video.mp4
-            attachment_metadata: []
-            app_key: app_key_2
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    DashboardWorkflow:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            asset_id:
-              type: integer
-              format: int64
-            created_at:
-              type: string
-              format: date-time
-            updated_at:
-              type: string
-              format: date-time
-        relationships:
-          type: object
-          properties:
-            workflow:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    type:
-                      type: string
-      example:
-        id: 12345
-        type: dashboard_workflow
-        attributes:
-          id: 12345
-          asset_id: 12345
           created_at: '2022-11-11T09:11:52.326Z'
           updated_at: '2022-11-11T09:11:52.326Z'
-        relationships:
-          workflow:
-            data:
-              id: 12345
-              type: workflow
-    WorkflowContentBlockList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkflowContentBlock'
-        included:
-          type: array
-          items:
-            properties:
-              id:
-                type: integer
-              type:
-                type: string
-              attributes:
-                type: object
-      example:
-        data:
-        - id: 12345
-          type: workflow_content_block
-          attributes:
-            id: 12345
-            title: Content Block Title
-            description: Long text description
-            position: 2
-            image_url: http://www.example.com/image.jpg
-            video_url: http://www.example.com/video.mp4
-            created_at: '2022-11-11T09:11:52.326Z'
-            updated_at: '2022-11-11T09:11:52.326Z'
-          relationships:
-            workflow:
-              data:
-                id: 12345
-                type: workflow
-            app:
-              data:
-                id: 12456
-                type: app
-        included:
-        - id: 12345
-          type: Workflow
-          attributes:
-            id: 12345
-            name: 'WF #1'
-        - id: 348
-          type: app
-          attributes:
-            id: 348
-            name: My App
-            app_key: my.example.app
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
+          app_key: app_key
     WorkflowIndex:
       properties:
         id:

@@ -290,6 +290,91 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    AppStoreArticlePayload:
+      properties:
+        app_store_article:
+          type: object
+          properties:
+            caption:
+              type: string
+            name:
+              type: string
+            visibility:
+              type: string
+            cover_url:
+              type: string
+            position:
+              type: integer
+            app_store_template_section_id:
+              type: integer
+              format: int64
+            date:
+              type: string
+              format: date-time
+            overview:
+              type: text
+            text:
+              type: text
+      example:
+        app_store_article:
+          caption: Caption
+          name: Article name
+          visibility: public
+          cover_url: https://example.com
+          date: '2022-11-11T09:11:52.326Z'
+          position: 1
+          app_store_template_section_id: 1
+          overview: Some overview description for Article
+          text: Some content long text
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AppStoreArticleList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppStoreArticleObject'
+      example:
+        data:
+        - id: 12345
+          type: app_store_article
+          attributes:
+            id: 12345
+            article_key: provider.article_name
+            caption: Caption
+            name: Article name
+            visibility: public
+            cover_url: https://example.com
+            date: '2022-11-11T09:11:52.326Z'
+            overview: Some overview description for Article
+            text: Some content long text
+            position: 1
+            app_store_template_section_id: 1
+            created_at: '2022-11-11T09:11:52.326Z'
+            updated_at: '2022-11-11T09:11:52.326Z'
+          relationships:
+            app_store_template_sections:
+              data:
+              - id: 111
+                type: app_store_template_section
+        included:
+        - id: 111
+          type: app_store_template_section
+          attributes:
+            id: 111
+            title: Section Title
+            section_type: section
     AppStoreArticleObject:
       properties:
         id:
@@ -372,104 +457,6 @@ components:
           - 1
           created_at: '2022-11-11T09:11:52.326Z'
           updated_at: '2022-11-11T09:11:52.326Z'
-    AppStoreArticleList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppStoreArticleObject'
-      example:
-        data:
-        - id: 12345
-          type: app_store_article
-          attributes:
-            id: 12345
-            article_key: provider.article_name
-            caption: Caption
-            name: Article name
-            visibility: public
-            cover_url: https://example.com
-            date: '2022-11-11T09:11:52.326Z'
-            overview: Some overview description for Article
-            text: Some content long text
-            position: 1
-            app_store_template_section_id: 1
-            created_at: '2022-11-11T09:11:52.326Z'
-            updated_at: '2022-11-11T09:11:52.326Z'
-          relationships:
-            app_store_template_sections:
-              data:
-              - id: 111
-                type: app_store_template_section
-        included:
-        - id: 111
-          type: app_store_template_section
-          attributes:
-            id: 111
-            title: Section Title
-            section_type: section
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    AppStoreArticlePayload:
-      properties:
-        app_store_article:
-          type: object
-          properties:
-            caption:
-              type: string
-            name:
-              type: string
-            visibility:
-              type: string
-            cover_url:
-              type: string
-            position:
-              type: integer
-            app_store_template_section_id:
-              type: integer
-              format: int64
-            date:
-              type: string
-              format: date-time
-            overview:
-              type: text
-            text:
-              type: text
-      example:
-        app_store_article:
-          caption: Caption
-          name: Article name
-          visibility: public
-          cover_url: https://example.com
-          date: '2022-11-11T09:11:52.326Z'
-          position: 1
-          app_store_template_section_id: 1
-          overview: Some overview description for Article
-          text: Some content long text
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     NotFoundError:
       required:
       - code
@@ -483,6 +470,19 @@ components:
       example:
         code: 404
         message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
   securitySchemes:
     api_key:
       type: apiKey

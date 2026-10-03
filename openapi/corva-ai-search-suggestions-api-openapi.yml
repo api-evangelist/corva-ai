@@ -53,19 +53,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    SearchSuggestionItem:
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        type:
-          type: string
-      example:
-        id: 111
-        name: An app name
-        type: App
     AuthorizationError:
       required:
       - code
@@ -79,19 +66,19 @@ components:
       example:
         code: 403
         message: Access denied
-    AuthenticationError:
-      required:
-      - code
-      - message
+    SearchSuggestionItem:
       properties:
-        code:
+        id:
           type: integer
-          format: int32
-        message:
+          format: int64
+        name:
+          type: string
+        type:
           type: string
       example:
-        code: 401
-        message: Missing authentication. Please try again.
+        id: 111
+        name: An app name
+        type: App
     NotFoundError:
       required:
       - code
@@ -105,6 +92,19 @@ components:
       example:
         code: 404
         message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
     SearchSuggestionResult:
       properties:
         data:

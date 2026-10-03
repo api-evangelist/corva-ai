@@ -143,6 +143,38 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    AppReviewList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppReview'
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     AppReview:
       properties:
         id:
@@ -217,19 +249,6 @@ components:
             data:
               id: 999
               type: app
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
     AuthenticationError:
       required:
       - code
@@ -243,25 +262,6 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    AppReviewList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppReview'
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

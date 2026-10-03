@@ -295,41 +295,6 @@ components:
           - 248
           - 93434
           factor: 56
-    TaskShow:
-      properties:
-        id:
-          type: integer
-          format: uuid
-        state:
-          type: string
-        fail_reason:
-          type: string
-        asset_id:
-          type: integer
-          format: int64
-        company_id:
-          type: integer
-          format: int64
-        app_id:
-          type: integer
-          format: int64
-        document_bucket:
-          type: string
-        properties:
-          type: object
-        payload:
-          type: object
-      example:
-        id: e42776dd-2b13-48ad-9c89-620eb7808956
-        state: running
-        fail_reason: null
-        asset_id: 3208
-        company_id: 3
-        app_id: 596
-        document_bucket: corva-files
-        properties:
-          attribute: value
-        payload: {}
     AuthorizationError:
       required:
       - code
@@ -396,6 +361,54 @@ components:
           properties:
             attribute: value
           payload: {}
+    TaskShow:
+      properties:
+        id:
+          type: integer
+          format: uuid
+        state:
+          type: string
+        fail_reason:
+          type: string
+        asset_id:
+          type: integer
+          format: int64
+        company_id:
+          type: integer
+          format: int64
+        app_id:
+          type: integer
+          format: int64
+        document_bucket:
+          type: string
+        properties:
+          type: object
+        payload:
+          type: object
+      example:
+        id: e42776dd-2b13-48ad-9c89-620eb7808956
+        state: running
+        fail_reason: null
+        asset_id: 3208
+        company_id: 3
+        app_id: 596
+        document_bucket: corva-files
+        properties:
+          attribute: value
+        payload: {}
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     TaskConfiguration:
       properties:
         app_key:
@@ -435,19 +448,6 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

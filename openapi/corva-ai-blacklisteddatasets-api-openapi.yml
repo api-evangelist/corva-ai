@@ -152,17 +152,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    CreateBlacklistedDataset:
-      properties:
-        blacklisted_dataset:
-          type: object
-          properties:
-            dataset_id:
-              type: integer
-              format: int64
-      example:
-        blacklisted_dataset:
-          dataset_id: 12389
     AuthorizationError:
       required:
       - code
@@ -176,19 +165,6 @@ components:
       example:
         code: 403
         message: Access denied
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     BulkCreateBlacklistedDataset:
       properties:
         blacklisted_dataset:
@@ -293,6 +269,17 @@ components:
             id: 222
             name: user
           relationships: {}
+    CreateBlacklistedDataset:
+      properties:
+        blacklisted_dataset:
+          type: object
+          properties:
+            dataset_id:
+              type: integer
+              format: int64
+      example:
+        blacklisted_dataset:
+          dataset_id: 12389
     NotFoundError:
       required:
       - code
@@ -306,6 +293,19 @@ components:
       example:
         code: 404
         message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
   securitySchemes:
     api_key:
       type: apiKey

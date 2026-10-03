@@ -402,11 +402,11 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AlertRoleSingle:
+    AlertRbacStatus:
       properties:
-        data:
-          type: object
-          $ref: '#/components/schemas/AlertRole'
+        alert_rbac_enabled:
+          type: boolean
+          description: Whether per-company alert RBAC enforcement is on
     AuthorizationError:
       required:
       - code
@@ -426,6 +426,23 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AlertRole'
+    AlertAbilityCatalogItem:
+      required:
+      - resource_class
+      - ability
+      - name
+      properties:
+        resource_class:
+          type: string
+          description: Resource the ability applies to
+          enum:
+          - Alert
+        ability:
+          type: string
+          description: Assignable ability key (e.g. acknowledge, close, escalate)
+        name:
+          type: string
+          description: Localized display name for the matrix UI
     AlertRoleAbilitiesPayload:
       properties:
         abilities:
@@ -444,36 +461,6 @@ components:
                 description: Resource class for the ability
                 enum:
                 - Alert
-    AlertAbilityCatalog:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertAbilityCatalogItem'
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    AlertRolePayload:
-      properties:
-        alert_role:
-          type: object
-          required:
-          - name
-          properties:
-            name:
-              type: string
-            description:
-              type: string
     NotFoundError:
       required:
       - code
@@ -487,23 +474,24 @@ components:
       example:
         code: 404
         message: Not found
-    AlertAbilityCatalogItem:
-      required:
-      - resource_class
-      - ability
-      - name
+    AlertRoleSingle:
       properties:
-        resource_class:
+        data:
+          type: object
+          $ref: '#/components/schemas/AlertRole'
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
           type: string
-          description: Resource the ability applies to
-          enum:
-          - Alert
-        ability:
-          type: string
-          description: Assignable ability key (e.g. acknowledge, close, escalate)
-        name:
-          type: string
-          description: Localized display name for the matrix UI
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
     AlertRole:
       properties:
         id:
@@ -546,11 +534,23 @@ components:
             updated_at:
               type: string
               format: date-time
-    AlertRbacStatus:
+    AlertRolePayload:
       properties:
-        alert_rbac_enabled:
-          type: boolean
-          description: Whether per-company alert RBAC enforcement is on
+        alert_role:
+          type: object
+          required:
+          - name
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+    AlertAbilityCatalog:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertAbilityCatalogItem'
   securitySchemes:
     api_key:
       type: apiKey

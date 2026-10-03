@@ -196,25 +196,6 @@ components:
       example:
         code: 403
         message: Access denied
-    CreateInterventionUnitRerunPayload:
-      properties:
-        app_stream_id:
-          type: integer
-          required: true
-        new_app_stream_status:
-          type: string
-          required: true
-        intervention_unit_rerun:
-          type: object
-          properties:
-            name:
-              type: string
-      example:
-        intervention_unit_event_id: 123
-        app_stream_id: 456
-        new_app_stream_status: active
-        intervention_unit_rerun:
-          name: My Rerun
     InterventionUnitRerun:
       properties:
         id:
@@ -307,19 +288,6 @@ components:
             data:
               id: '222'
               type: well
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     NotFoundError:
       required:
       - code
@@ -333,6 +301,38 @@ components:
       example:
         code: 404
         message: Not found
+    CreateInterventionUnitRerunPayload:
+      properties:
+        app_stream_id:
+          type: integer
+          required: true
+        new_app_stream_status:
+          type: string
+          required: true
+        intervention_unit_rerun:
+          type: object
+          properties:
+            name:
+              type: string
+      example:
+        intervention_unit_event_id: 123
+        app_stream_id: 456
+        new_app_stream_status: active
+        intervention_unit_rerun:
+          name: My Rerun
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
   securitySchemes:
     api_key:
       type: apiKey

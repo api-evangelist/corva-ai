@@ -116,55 +116,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    ColumnMapperTemplateRulePayload:
-      properties:
-        column_mapper_template_rule:
-          properties:
-            duration_in_minutes:
-              type: integer
-            conditions:
-              type: object
-              items:
-                properties:
-                  operator:
-                    type: string
-                  operand:
-                    type: integer
-                  logical_operator:
-                    type: string
-      example:
-        column_mapper_template_rule:
-          duration_in_minutes: 10
-          conditions:
-          - operator: OPERATOR_EQUAL
-            operand: 20
-            logical_operator: null
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     ColumnMapperTemplateRule:
       properties:
         id:
@@ -222,6 +173,19 @@ components:
             logical_operator: null
           created_at: '2010-01-01T00:00:00.000Z'
           updated_at: '2010-01-01T00:00:00.000Z'
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
     NotFoundError:
       required:
       - code
@@ -235,6 +199,42 @@ components:
       example:
         code: 404
         message: Not found
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    ColumnMapperTemplateRulePayload:
+      properties:
+        column_mapper_template_rule:
+          properties:
+            duration_in_minutes:
+              type: integer
+            conditions:
+              type: object
+              items:
+                properties:
+                  operator:
+                    type: string
+                  operand:
+                    type: integer
+                  logical_operator:
+                    type: string
+      example:
+        column_mapper_template_rule:
+          duration_in_minutes: 10
+          conditions:
+          - operator: OPERATOR_EQUAL
+            operand: 20
+            logical_operator: null
   securitySchemes:
     api_key:
       type: apiKey

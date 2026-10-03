@@ -194,34 +194,6 @@ components:
       example:
         code: 403
         message: Access denied
-    AlertWorkflowV2List:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertWorkflowV2'
-    AlertWorkflowList:
-      type: array
-      items:
-        $ref: '#/components/schemas/AlertWorkflow'
-    AlertWorkflowV2Single:
-      properties:
-        data:
-          type: object
-          $ref: '#/components/schemas/AlertWorkflowV2'
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     AlertWorkflowV2:
       properties:
         id:
@@ -274,6 +246,19 @@ components:
             updated_at:
               type: string
               format: date-time
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     AlertWorkflow:
       required:
       - id
@@ -347,7 +332,12 @@ components:
         company_id: null
         created_at: '2026-04-09T12:00:00Z'
         updated_at: '2026-04-09T12:00:00Z'
-    NotFoundError:
+    AlertWorkflowV2Single:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AlertWorkflowV2'
+    AuthenticationError:
       required:
       - code
       - message
@@ -358,8 +348,18 @@ components:
         message:
           type: string
       example:
-        code: 404
-        message: Not found
+        code: 401
+        message: Missing authentication. Please try again.
+    AlertWorkflowV2List:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertWorkflowV2'
+    AlertWorkflowList:
+      type: array
+      items:
+        $ref: '#/components/schemas/AlertWorkflow'
   securitySchemes:
     api_key:
       type: apiKey

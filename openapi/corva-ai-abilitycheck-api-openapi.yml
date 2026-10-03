@@ -132,6 +132,18 @@ components:
       example:
         code: 403
         message: Access denied
+    FeatureStatus:
+      properties:
+        active:
+          type: boolean
+        total:
+          type: integer
+        used:
+          type: integer
+      example:
+        active: 'true'
+        total: 10
+        used: 2
     NotFoundError:
       required:
       - code
@@ -164,18 +176,6 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    FeatureStatus:
-      properties:
-        active:
-          type: boolean
-        total:
-          type: integer
-        used:
-          type: integer
-      example:
-        active: 'true'
-        total: 10
-        used: 2
   securitySchemes:
     api_key:
       type: apiKey
