@@ -1009,149 +1009,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AlertGroupList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertGroup'
-    BulkDeleteResult:
-      properties:
-        status:
-          type: string
-          description: Always 'deleted'
-        count:
-          type: integer
-          description: Number of records removed
-    AlertGroupConfigurationInput:
-      properties:
-        alert_definition_id:
-          type: integer
-          format: int64
-        scope_type:
-          type: string
-          enum:
-          - Well
-          - Rig
-          - Pad
-          - FracFleet
-          - InterventionUnit
-        scope_id:
-          type: integer
-          format: int64
-        severity_override:
-          type: string
-        thresholds:
-          type: object
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    AlertGroupConfigurationBulkCreatePayload:
-      properties:
-        alert_group_configurations:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertGroupConfigurationInput'
-    AlertGroupConfigurationList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertGroupConfiguration'
-    AlertGroup:
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-        attributes:
-          type: object
-          required:
-          - id
-          - name
-          - company_id
-          properties:
-            id:
-              type: integer
-              format: int64
-            name:
-              type: string
-            description:
-              type: string
-            company_id:
-              type: integer
-              format: int64
-            workflow_id:
-              type: integer
-              format: int64
-            segment:
-              type: string
-              enum:
-              - drilling
-              - completion
-              - intervention
-            users_count:
-              type: integer
-              description: Number of members in the group
-            alert_definitions_count:
-              type: integer
-              description: Number of alert definitions in the group
-            created_at:
-              type: string
-              format: date-time
-            updated_at:
-              type: string
-              format: date-time
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    AlertGroupScopeBulkPayload:
-      properties:
-        alert_group_scope:
-          type: object
-          properties:
-            scopes:
-              type: array
-              items:
-                $ref: '#/components/schemas/AlertGroupScopeInput'
-    AlertGroupUserPayload:
-      properties:
-        alert_group_user:
-          type: object
-          properties:
-            user_id:
-              type: integer
-              format: int64
-            alert_role_id:
-              type: integer
-              format: int64
-              description: Optional alert role to assign on add
-    AlertGroupUserList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertGroupUser'
     AlertGroupPayload:
       properties:
         alert_group:
@@ -1173,6 +1030,62 @@ components:
               - drilling
               - completion
               - intervention
+    AlertGroupList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertGroup'
+    AlertGroupUserList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertGroupUser'
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AlertGroupMergePayload:
+      required:
+      - source_alert_group_id
+      properties:
+        source_alert_group_id:
+          type: integer
+          format: int64
+          description: Group to consume. It is destroyed once its members, scopes, alert definitions and configurations move to the target.
+    AlertGroupConfigurationPayload:
+      properties:
+        alert_group_configuration:
+          type: object
+          properties:
+            alert_definition_id:
+              type: integer
+              format: int64
+            scope_type:
+              type: string
+              enum:
+              - Well
+              - Rig
+              - Pad
+              - FracFleet
+              - InterventionUnit
+            scope_id:
+              type: integer
+              format: int64
+            severity_override:
+              type: string
+            thresholds:
+              type: object
     AlertGroupUserInput:
       properties:
         user_id:
@@ -1182,43 +1095,27 @@ components:
           type: integer
           format: int64
           description: Optional role; ignored on bulk_destroy
+    AlertGroupScopeBulkPayload:
+      properties:
+        alert_group_scope:
+          type: object
+          properties:
+            scopes:
+              type: array
+              items:
+                $ref: '#/components/schemas/AlertGroupScopeInput'
     AlertGroupScopeList:
       properties:
         data:
           type: array
           items:
             $ref: '#/components/schemas/AlertGroupScope'
-    AlertGroupUserSingle:
+    AlertGroupConfigurationBulkCreatePayload:
       properties:
-        data:
-          type: object
-          $ref: '#/components/schemas/AlertGroupUser'
-    AlertGroupUserBulkPayload:
-      properties:
-        alert_group_users:
+        alert_group_configurations:
           type: array
           items:
-            $ref: '#/components/schemas/AlertGroupUserInput'
-    AlertGroupConfigurationSingle:
-      properties:
-        data:
-          type: object
-          $ref: '#/components/schemas/AlertGroupConfiguration'
-    AlertGroupConfigurationBulkDestroyPayload:
-      properties:
-        alert_group_configuration:
-          type: object
-          properties:
-            ids:
-              type: array
-              items:
-                type: integer
-                format: int64
-    AlertGroupScopeSingle:
-      properties:
-        data:
-          type: object
-          $ref: '#/components/schemas/AlertGroupScope'
+            $ref: '#/components/schemas/AlertGroupConfigurationInput'
     AlertGroupUser:
       properties:
         id:
@@ -1273,8 +1170,17 @@ components:
                       type: string
                     type:
                       type: string
-    AlertGroupScopeInput:
+    AlertGroupUserBulkPayload:
       properties:
+        alert_group_users:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertGroupUserInput'
+    AlertGroupConfigurationInput:
+      properties:
+        alert_definition_id:
+          type: integer
+          format: int64
         scope_type:
           type: string
           enum:
@@ -1286,53 +1192,19 @@ components:
         scope_id:
           type: integer
           format: int64
-    AlertGroupScope:
-      properties:
-        id:
+        severity_override:
           type: string
-        type:
-          type: string
-        attributes:
+        thresholds:
           type: object
-          required:
-          - id
-          - alert_group_id
-          - scope_type
-          - scope_id
-          properties:
-            id:
-              type: integer
-              format: int64
-            alert_group_id:
-              type: integer
-              format: int64
-            scope_type:
-              type: string
-              enum:
-              - Well
-              - Rig
-              - Pad
-              - FracFleet
-              - InterventionUnit
-              description: Target model; allowed types depend on the group's segment
-            scope_id:
-              type: integer
-              format: int64
-              description: Id in the scope_type table
-    AlertGroupMergePayload:
-      required:
-      - source_alert_group_id
+    BulkDeleteResult:
       properties:
-        source_alert_group_id:
+        status:
+          type: string
+          description: Always 'deleted'
+        count:
           type: integer
-          format: int64
-          description: Group to consume. It is destroyed once its members, scopes, alert definitions and configurations move to the target.
-    AlertGroupSingle:
-      properties:
-        data:
-          type: object
-          $ref: '#/components/schemas/AlertGroup'
-    NotFoundError:
+          description: Number of records removed
+    AuthorizationError:
       required:
       - code
       - message
@@ -1343,24 +1215,8 @@ components:
         message:
           type: string
       example:
-        code: 404
-        message: Not found
-    AlertGroupScopePayload:
-      properties:
-        alert_group_scope:
-          type: object
-          properties:
-            scope_type:
-              type: string
-              enum:
-              - Well
-              - Rig
-              - Pad
-              - FracFleet
-              - InterventionUnit
-            scope_id:
-              type: integer
-              format: int64
+        code: 403
+        message: Access denied
     AlertGroupConfiguration:
       properties:
         id:
@@ -1407,14 +1263,108 @@ components:
             updated_at:
               type: string
               format: date-time
-    AlertGroupConfigurationPayload:
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AlertGroupConfigurationBulkDestroyPayload:
       properties:
         alert_group_configuration:
           type: object
           properties:
-            alert_definition_id:
+            ids:
+              type: array
+              items:
+                type: integer
+                format: int64
+    AlertGroupScope:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          type: object
+          required:
+          - id
+          - alert_group_id
+          - scope_type
+          - scope_id
+          properties:
+            id:
               type: integer
               format: int64
+            alert_group_id:
+              type: integer
+              format: int64
+            scope_type:
+              type: string
+              enum:
+              - Well
+              - Rig
+              - Pad
+              - FracFleet
+              - InterventionUnit
+              description: Target model; allowed types depend on the group's segment
+            scope_id:
+              type: integer
+              format: int64
+              description: Id in the scope_type table
+    AlertGroupUserSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AlertGroupUser'
+    AlertGroupUserPayload:
+      properties:
+        alert_group_user:
+          type: object
+          properties:
+            user_id:
+              type: integer
+              format: int64
+            alert_role_id:
+              type: integer
+              format: int64
+              description: Optional alert role to assign on add
+    AlertGroupConfigurationSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AlertGroupConfiguration'
+    AlertGroupConfigurationList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertGroupConfiguration'
+    AlertGroupScopeInput:
+      properties:
+        scope_type:
+          type: string
+          enum:
+          - Well
+          - Rig
+          - Pad
+          - FracFleet
+          - InterventionUnit
+        scope_id:
+          type: integer
+          format: int64
+    AlertGroupScopePayload:
+      properties:
+        alert_group_scope:
+          type: object
+          properties:
             scope_type:
               type: string
               enum:
@@ -1426,10 +1376,60 @@ components:
             scope_id:
               type: integer
               format: int64
-            severity_override:
+    AlertGroupScopeSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AlertGroupScope'
+    AlertGroup:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          type: object
+          required:
+          - id
+          - name
+          - company_id
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
               type: string
-            thresholds:
-              type: object
+            description:
+              type: string
+            company_id:
+              type: integer
+              format: int64
+            workflow_id:
+              type: integer
+              format: int64
+            segment:
+              type: string
+              enum:
+              - drilling
+              - completion
+              - intervention
+            users_count:
+              type: integer
+              description: Number of members in the group
+            alert_definitions_count:
+              type: integer
+              description: Number of alert definitions in the group
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+    AlertGroupSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AlertGroup'
   securitySchemes:
     api_key:
       type: apiKey

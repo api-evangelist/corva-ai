@@ -108,7 +108,7 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    NotFoundError:
+    AuthorizationError:
       required:
       - code
       - message
@@ -119,8 +119,8 @@ components:
         message:
           type: string
       example:
-        code: 404
-        message: Not found
+        code: 403
+        message: Access denied
     CompetitorStatsData:
       properties:
         data:
@@ -282,19 +282,6 @@ components:
               median: 377.137945
               q1: 377.137945
               q3: 445.8042675
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
     AuthenticationError:
       required:
       - code
@@ -308,6 +295,19 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

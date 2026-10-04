@@ -707,114 +707,6 @@ components:
               powder_gel: 0
               powder_friction_reducer: 0
               powder_enzyme_breaker: 0
-    WellViewFracStageDesign:
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        options:
-          type: object
-        items:
-          type: array
-      example:
-        dataset: frac_stage_design
-        results:
-        - _id: 5c9a92d834022a04c4acb6d3
-          timestamp: 1587481401
-          version: 1
-          provider: corva
-          dataset: completion.data.stages
-          asset_id: 1
-          company_id: 1
-          data:
-            chemicals:
-            - type: Clay Stabilizer
-              unit_type: volume
-              unit: gal
-              amount: 105
-            - type: Biocide
-              unit_type: volume
-              unit: gal
-              amount: 63
-            - type: Liquid FR
-              unit_type: volume
-              unit: gal
-              amount: 410
-            - type: Liquid Breaker
-              unit_type: volume
-              unit: gal
-              amount: 100
-            - type: Scale Inhibitor
-              unit_type: volume
-              unit: gal
-              amount: 85
-            perforation_phasing: null
-            perforated_length: 80
-            fluids:
-            - type: Slickwater
-              amount: 10000
-              unit_type: oil
-              unit: bbl
-            stage_number: 1
-            fluids_specification:
-            - type: Slickwater
-              component:
-              - type: Clay Stabilizer
-                name: KCl
-                unit: gpt
-                amount: 0.25
-              - type: Biocide
-                name: Bio
-                unit: gpt
-                amount: 0.15
-              - type: Diverter
-                name: Diverter
-                unit: ppt
-                amount: 1.1
-              - type: Liquid FR
-                name: FR
-                unit: gpt
-                amount: 1
-              - type: Liquid Breaker
-                name: Breaker
-                unit: gpt
-                amount: 0.25
-              - type: Scale Inhibitor
-                name: SI
-                unit: gpt
-                amount: 0.2
-            plug_depth: 21100
-            temp: null
-            flush_volume: 294.2
-            shot_per_foot: null
-            bottom_perforation: 21090
-            formation_name: Formation 123
-            proppants:
-            - type: 100 Mesh
-              amount: 105000
-              unit_type: mass
-              unit: lb
-            - type: 40/70 NWS
-              amount: 245000
-              unit_type: mass
-              unit: lb
-            total_shots: null
-            top_perforation: 21009
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
     WellViewFracStageSummary:
       properties:
         id:
@@ -882,6 +774,151 @@ components:
             total_shots: 32
             total_pump_time: null
             vertical_depth: null
+    WellViewIngest:
+      required:
+      - asset_id
+      - data_type
+      - timestamp
+      properties:
+        asset_id:
+          type: integer
+          format: int64
+        data_type:
+          type: string
+        timestamp:
+          type: integer
+          format: int64
+        data:
+          type: object
+      example:
+        asset_id: 24
+        data_type: bha
+        timestamp: 1577836800
+        data:
+          nested: data
+          another: value
+    WellViewJobSettings:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        options:
+          type: object
+        items:
+          type: array
+      example:
+        dataset: job_settings
+        results:
+        - _id: 5c9a92d834022a04c4acb6d3
+          timestamp: 1536912275
+          version: 1
+          provider: corva
+          dataset: completion.data.job-settings
+          asset_id: 1
+          company_id: 1
+          data:
+            equivalent_length_of_surface_equipment: 0.98
+            goal_rate: 259.8
+            max_goal_pressure: 12300
+            maximum_allowable_surface_treating_pressure: 0
+            maximum_casing_hanger_pressure: 0
+            maximum_casing_internal_pressure: 0
+            maximum_hhp: 1
+            maximum_pumping_capacity: 1.2
+            min_goal_pressure: 8700
+            packer_plug_pressure_rating: 0
+            surface_fluid_storage_capacity: 1
+            wellhead_pressure_rating: 0
+    WellViewPlugs:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        options:
+          type: object
+        items:
+          type: array
+      example:
+        dataset: plugs
+        results:
+        - _id: 5c9a92d834022a04c4acb6d3
+          timestamp: 1536912275
+          version: 1
+          provider: corva
+          dataset: completion.data.plugs
+          asset_id: 1
+          company_id: 1
+          data:
+            type: FRAC PLUG
+            make: HALLIBURTON
+            model: FAS DRILL
+            outside_diameter: 4.38
+            run_date: 8/28/19 12:35
+            top_depth: 12656
+            bottom_depth: 13853
+            number: 6
+    WellViewFrac:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        options:
+          type: object
+        items:
+          type: array
+      example:
+        dataset: frac
+        results:
+        - _id: 5c9a92d834022a04c4acb6d3
+          timestamp: 1536912275
+          version: 1
+          provider: corva
+          dataset: completion.wits
+          asset_id: 1
+          stage_number: 1
+          company_id: 1
+          data:
+            wellhead_pressure: -5.34
+            slurry_flow_rate_in: 0
+            clean_flow_rate_in: 0
+            total_clean_volume_in: 6185.35
+            total_slurry_volume_in: 6470.48
+            total_pump_spm: null
+            state: Pressure Testing or Bad Data
+            elapsed_time: 52
+            total_chemical_rate_in: 1.47
+            cum_pumped_slurry_volume: 0
+            total_proppant_concentration: 0
+            cum_proppant_concentration: 0
+            total_proppant_mass: 0
+            cum_proppant_mass: 0
+            pressure_change_rate: 0.1299999999999999
+            timestamp: 1536912275
+            powder_breaker: 0
+            gel: 1.47
+            proppant_1_mass: 0
+            proppant_2_mass: 0
+            proppant_1_concentration: 0
+            proppant_2_concentration: 0
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     WellViewBHA:
       properties:
         id:
@@ -952,72 +989,6 @@ components:
           provider: corva
           dataset: data.drillstring
           company_id: 1
-    WellViewIngest:
-      required:
-      - asset_id
-      - data_type
-      - timestamp
-      properties:
-        asset_id:
-          type: integer
-          format: int64
-        data_type:
-          type: string
-        timestamp:
-          type: integer
-          format: int64
-        data:
-          type: object
-      example:
-        asset_id: 24
-        data_type: bha
-        timestamp: 1577836800
-        data:
-          nested: data
-          another: value
-    WellViewPlugs:
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        options:
-          type: object
-        items:
-          type: array
-      example:
-        dataset: plugs
-        results:
-        - _id: 5c9a92d834022a04c4acb6d3
-          timestamp: 1536912275
-          version: 1
-          provider: corva
-          dataset: completion.data.plugs
-          asset_id: 1
-          company_id: 1
-          data:
-            type: FRAC PLUG
-            make: HALLIBURTON
-            model: FAS DRILL
-            outside_diameter: 4.38
-            run_date: 8/28/19 12:35
-            top_depth: 12656
-            bottom_depth: 13853
-            number: 6
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
     Asset:
       required:
       - id
@@ -1143,6 +1114,19 @@ components:
             data:
               id: '54321'
               type: asset
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
     AuthenticationError:
       required:
       - code
@@ -1156,7 +1140,7 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    WellViewJobSettings:
+    WellViewFracStageDesign:
       properties:
         id:
           type: integer
@@ -1168,73 +1152,89 @@ components:
         items:
           type: array
       example:
-        dataset: job_settings
+        dataset: frac_stage_design
         results:
         - _id: 5c9a92d834022a04c4acb6d3
-          timestamp: 1536912275
+          timestamp: 1587481401
           version: 1
           provider: corva
-          dataset: completion.data.job-settings
+          dataset: completion.data.stages
           asset_id: 1
           company_id: 1
           data:
-            equivalent_length_of_surface_equipment: 0.98
-            goal_rate: 259.8
-            max_goal_pressure: 12300
-            maximum_allowable_surface_treating_pressure: 0
-            maximum_casing_hanger_pressure: 0
-            maximum_casing_internal_pressure: 0
-            maximum_hhp: 1
-            maximum_pumping_capacity: 1.2
-            min_goal_pressure: 8700
-            packer_plug_pressure_rating: 0
-            surface_fluid_storage_capacity: 1
-            wellhead_pressure_rating: 0
-    WellViewFrac:
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        options:
-          type: object
-        items:
-          type: array
-      example:
-        dataset: frac
-        results:
-        - _id: 5c9a92d834022a04c4acb6d3
-          timestamp: 1536912275
-          version: 1
-          provider: corva
-          dataset: completion.wits
-          asset_id: 1
-          stage_number: 1
-          company_id: 1
-          data:
-            wellhead_pressure: -5.34
-            slurry_flow_rate_in: 0
-            clean_flow_rate_in: 0
-            total_clean_volume_in: 6185.35
-            total_slurry_volume_in: 6470.48
-            total_pump_spm: null
-            state: Pressure Testing or Bad Data
-            elapsed_time: 52
-            total_chemical_rate_in: 1.47
-            cum_pumped_slurry_volume: 0
-            total_proppant_concentration: 0
-            cum_proppant_concentration: 0
-            total_proppant_mass: 0
-            cum_proppant_mass: 0
-            pressure_change_rate: 0.1299999999999999
-            timestamp: 1536912275
-            powder_breaker: 0
-            gel: 1.47
-            proppant_1_mass: 0
-            proppant_2_mass: 0
-            proppant_1_concentration: 0
-            proppant_2_concentration: 0
+            chemicals:
+            - type: Clay Stabilizer
+              unit_type: volume
+              unit: gal
+              amount: 105
+            - type: Biocide
+              unit_type: volume
+              unit: gal
+              amount: 63
+            - type: Liquid FR
+              unit_type: volume
+              unit: gal
+              amount: 410
+            - type: Liquid Breaker
+              unit_type: volume
+              unit: gal
+              amount: 100
+            - type: Scale Inhibitor
+              unit_type: volume
+              unit: gal
+              amount: 85
+            perforation_phasing: null
+            perforated_length: 80
+            fluids:
+            - type: Slickwater
+              amount: 10000
+              unit_type: oil
+              unit: bbl
+            stage_number: 1
+            fluids_specification:
+            - type: Slickwater
+              component:
+              - type: Clay Stabilizer
+                name: KCl
+                unit: gpt
+                amount: 0.25
+              - type: Biocide
+                name: Bio
+                unit: gpt
+                amount: 0.15
+              - type: Diverter
+                name: Diverter
+                unit: ppt
+                amount: 1.1
+              - type: Liquid FR
+                name: FR
+                unit: gpt
+                amount: 1
+              - type: Liquid Breaker
+                name: Breaker
+                unit: gpt
+                amount: 0.25
+              - type: Scale Inhibitor
+                name: SI
+                unit: gpt
+                amount: 0.2
+            plug_depth: 21100
+            temp: null
+            flush_volume: 294.2
+            shot_per_foot: null
+            bottom_perforation: 21090
+            formation_name: Formation 123
+            proppants:
+            - type: 100 Mesh
+              amount: 105000
+              unit_type: mass
+              unit: lb
+            - type: 40/70 NWS
+              amount: 245000
+              unit_type: mass
+              unit: lb
+            total_shots: null
+            top_perforation: 21009
   securitySchemes:
     api_key:
       type: apiKey

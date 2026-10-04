@@ -345,24 +345,46 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
+    TaskScheduleUpdatePayload:
+      description: Partial update. app_id, company_id, created_by_id, owner_type, and owner_id are immutable; supplying one returns 400.
       required:
-      - code
-      - message
+      - task_schedule
       properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    TaskScheduleSingle:
+        task_schedule:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Maximum 255 characters
+            description:
+              type: string
+            cron_expression:
+              type: string
+              description: Five-field cron expression; minimum interval is 60 minutes by default
+            timezone:
+              type: string
+              description: IANA timezone used to interpret cron_expression
+            properties:
+              type: object
+              description: Free-form task configuration; replaces the stored object
+            status:
+              type: string
+              enum:
+              - active
+              - paused
+              - disabled
+            asset_id:
+              type:
+              - integer
+              - 'null'
+              format: int64
+              description: Optional asset context belonging to the schedule company; explicitly set null to clear asset scope and make the schedule company-wide
+    TaskScheduleList:
       properties:
         data:
-          type: object
-          $ref: '#/components/schemas/TaskSchedule'
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskSchedule'
     TaskSchedule:
       properties:
         id:
@@ -492,61 +514,6 @@ components:
           total_failures: 0
           created_at: '2026-08-11T12:00:00.000Z'
           updated_at: '2026-08-11T12:00:00.000Z'
-    TaskScheduleDeleted:
-      required:
-      - status
-      properties:
-        status:
-          type: string
-          enum:
-          - deleted
-    TaskScheduleUpdatePayload:
-      description: Partial update. app_id, company_id, created_by_id, owner_type, and owner_id are immutable; supplying one returns 400.
-      required:
-      - task_schedule
-      properties:
-        task_schedule:
-          type: object
-          properties:
-            name:
-              type: string
-              description: Maximum 255 characters
-            description:
-              type: string
-            cron_expression:
-              type: string
-              description: Five-field cron expression; minimum interval is 60 minutes by default
-            timezone:
-              type: string
-              description: IANA timezone used to interpret cron_expression
-            properties:
-              type: object
-              description: Free-form task configuration; replaces the stored object
-            status:
-              type: string
-              enum:
-              - active
-              - paused
-              - disabled
-            asset_id:
-              type:
-              - integer
-              - 'null'
-              format: int64
-              description: Optional asset context belonging to the schedule company; explicitly set null to clear asset scope and make the schedule company-wide
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
     TaskScheduleCreatePayload:
       required:
       - task_schedule
@@ -601,6 +568,39 @@ components:
               - 'null'
               format: int64
               description: Optional asset context belonging to the schedule company; omit for company-wide execution
+    TaskScheduleBadRequest:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          enum:
+          - 400
+        message:
+          type: string
+    TaskScheduleDeleted:
+      required:
+      - status
+      properties:
+        status:
+          type: string
+          enum:
+          - deleted
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
     AuthenticationError:
       required:
       - code
@@ -614,13 +614,7 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    TaskScheduleList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaskSchedule'
-    TaskScheduleBadRequest:
+    NotFoundError:
       required:
       - code
       - message
@@ -628,10 +622,16 @@ components:
         code:
           type: integer
           format: int32
-          enum:
-          - 400
         message:
           type: string
+      example:
+        code: 404
+        message: Not found
+    TaskScheduleSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/TaskSchedule'
   securitySchemes:
     api_key:
       type: apiKey

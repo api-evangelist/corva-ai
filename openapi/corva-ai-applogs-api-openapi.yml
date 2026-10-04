@@ -197,6 +197,17 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    AppLogStreamList:
+      properties:
+        data:
+          type: object
+          properties:
+            next_token:
+              type: string
+            log_streams:
+              type: array
+              items:
+                $ref: '#/components/schemas/AppLogStream'
     AppLogStreamEventList:
       properties:
         data:
@@ -210,50 +221,6 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/AppLogStreamEvent'
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    AppLogFilterEventList:
-      properties:
-        data:
-          type: object
-          properties:
-            next_token:
-              type: string
-            events:
-              type: array
-              items:
-                $ref: '#/components/schemas/AppLogFilterEvent'
-    AppLogStream:
-      properties:
-        log_stream_name:
-          type: string
-        first_event_timestamp:
-          type: integer
-          format: int64
-        last_event_timestamp:
-          type: integer
-          format: int64
-    AppLogStreamEvent:
-      properties:
-        message:
-          type: string
-        timestamp:
-          type: integer
-          format: int64
-        ingestion_time:
-          type: integer
-          format: int64
     AppLogFilterEvent:
       properties:
         log_stream_name:
@@ -268,7 +235,18 @@ components:
           format: int64
         event_id:
           type: string
-    NotFoundError:
+    AppLogFilterEventList:
+      properties:
+        data:
+          type: object
+          properties:
+            next_token:
+              type: string
+            events:
+              type: array
+              items:
+                $ref: '#/components/schemas/AppLogFilterEvent'
+    AuthorizationError:
       required:
       - code
       - message
@@ -279,8 +257,18 @@ components:
         message:
           type: string
       example:
-        code: 404
-        message: Not found
+        code: 403
+        message: Access denied
+    AppLogStream:
+      properties:
+        log_stream_name:
+          type: string
+        first_event_timestamp:
+          type: integer
+          format: int64
+        last_event_timestamp:
+          type: integer
+          format: int64
     AuthenticationError:
       required:
       - code
@@ -294,17 +282,29 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    AppLogStreamList:
+    NotFoundError:
+      required:
+      - code
+      - message
       properties:
-        data:
-          type: object
-          properties:
-            next_token:
-              type: string
-            log_streams:
-              type: array
-              items:
-                $ref: '#/components/schemas/AppLogStream'
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AppLogStreamEvent:
+      properties:
+        message:
+          type: string
+        timestamp:
+          type: integer
+          format: int64
+        ingestion_time:
+          type: integer
+          format: int64
   securitySchemes:
     api_key:
       type: apiKey

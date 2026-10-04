@@ -193,44 +193,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    CreateAppSchedulePayload:
-      properties:
-        app_schedule:
-          type: object
-          items:
-            properties:
-              app_connection_id:
-                type: integer
-                format: int64
-              status:
-                type: string
-              information:
-                type: string
-              start_at:
-                type: string
-                format: date-time
-              settings:
-                type: object
-      example:
-        app_schedule:
-          app_connection_id: 9595
-          status: completed
-          information: Random
-          start_at: '2020-01-01T08:00:00.000Z'
-          settings: {}
     AppSchedule:
       properties:
         id:
@@ -277,7 +239,7 @@ components:
           started_at: '2020-01-01T08:00:00.000Z'
           completed_at: '2020-01-01T08:00:00.000Z'
           settings: {}
-    NotFoundError:
+    AuthorizationError:
       required:
       - code
       - message
@@ -288,21 +250,8 @@ components:
         message:
           type: string
       example:
-        code: 404
-        message: Not found
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
+        code: 403
+        message: Access denied
     UpdateAppSchedulePayload:
       properties:
         app_schedule:
@@ -320,6 +269,57 @@ components:
                 type: object
       example:
         app_schedule:
+          status: completed
+          information: Random
+          start_at: '2020-01-01T08:00:00.000Z'
+          settings: {}
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    CreateAppSchedulePayload:
+      properties:
+        app_schedule:
+          type: object
+          items:
+            properties:
+              app_connection_id:
+                type: integer
+                format: int64
+              status:
+                type: string
+              information:
+                type: string
+              start_at:
+                type: string
+                format: date-time
+              settings:
+                type: object
+      example:
+        app_schedule:
+          app_connection_id: 9595
           status: completed
           information: Random
           start_at: '2020-01-01T08:00:00.000Z'

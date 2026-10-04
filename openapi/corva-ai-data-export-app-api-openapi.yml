@@ -690,119 +690,45 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    MetricsDefinitionsList:
-      properties:
-        data:
-          type: array
-          description: One entry per segment (latest document per segment)
-          items:
-            $ref: '#/components/schemas/MetricsDefinitionsSegment'
-      example:
-        data:
-        - segment: drilling
-          timestamp: 1764005687
-          metrics_groups:
-          - status: active
-            metrics_definitions:
-              pu_bha_diamondback:
-                name: PU BHA
-                unit: hr
-                fe_data:
-                  category_name: Flat Time Metrics
-                  category_id: FLAT_TIME_METRICS
-                  main_app_unit: hr
-                  ilt_data:
-                    category_id: flat_time_group
-                    unit_type: time
-                    icon: TimelogIcon
-                    color: '#FF93BA'
-                    from_unit: s
-                    to_unit: h
-                    deviation_calc_type: negative_time_good
-                visibility: visible
-                status: active
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    ActivityCodeMappingsList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ActivityCodeMapping'
-      example:
-        data:
-        - activity_code_type: Phase
-          mapped_activity_code_type: SUB_CODE_1
-        - activity_code_type: Code 1
-          mapped_activity_code_type: SUB_CODE_2
-        - activity_code_type: Code 2
-          mapped_activity_code_type: SUB_CODE_3
-        - activity_code_type: NPT
-          mapped_activity_code_type: SUB_CODE_5
-    DataExportIncludedWell:
+    DataExportFlatItem:
       properties:
         id:
-          type: integer
-          description: Well ID
+          type: string
+          description: Unique identifier(e.g., bha_123_456_1)
         type:
           type: string
           enum:
+          - bha
+          - well_section
           - well
-          description: Always "well"
+          - mud
+          description: Item type
         attributes:
           type: object
+          description: Item-specific attributes(metrics, drillstring data, etc.)
+        relationships:
+          type: object
           properties:
-            name:
-              type: string
-            asset_id:
-              type: integer
-            company_id:
-              type: integer
-            status:
-              type: string
-            rig_name:
-              type: string
-            pad_name:
-              type: string
-            program_name:
-              type: string
-            area:
-              type: string
-            county:
-              type: string
-            basin:
-              type: string
-            latitude:
-              type: number
-            longitude:
-              type: number
+            well:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: Well ID reference
       example:
-        id: 123
-        type: well
+        id: bha_123_456_2
+        type: bha
         attributes:
-          name: Test Well
-          asset_id: 456
-          company_id: 1
-          status: active
-          rig_name: Rig A
-          pad_name: Pad A
-          program_name: Program A
-          area: Midland
-          county: Lee
-          basin: Delaware
-          latitude: 31.456
-          longitude: -103.123
+          bha_id: 2
+          bit_depth: 12345
+          hole_size: 8.5
+          well_sections:
+          - Surface
+          start_depth: 1000
+          end_depth: 2000
+        relationships:
+          well:
+            id: 123
     DataExportWell:
       properties:
         well_id:
@@ -905,6 +831,191 @@ components:
         completion_pad:
         - fracture_gradient: 0.65
           hydraulic_power: 1054000
+    DataExportFlatMeta:
+      properties:
+        total_count:
+          type: integer
+          description: Total items before filters (static across pages)
+        filtered_count:
+          type: integer
+          description: Items after filters applied (dynamic)
+        has_more:
+          type: boolean
+          description: Whether more pages exist
+        page:
+          type: integer
+          description: Current page number
+        per_page:
+          type: integer
+          description: Items per page
+      example:
+        total_count: 150
+        filtered_count: 45
+        has_more: true
+        page: 1
+        per_page: 80
+    ActivityCodeMappingsList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivityCodeMapping'
+      example:
+        data:
+        - activity_code_type: Phase
+          mapped_activity_code_type: SUB_CODE_1
+        - activity_code_type: Code 1
+          mapped_activity_code_type: SUB_CODE_2
+        - activity_code_type: Code 2
+          mapped_activity_code_type: SUB_CODE_3
+        - activity_code_type: NPT
+          mapped_activity_code_type: SUB_CODE_5
+    MetricsDefinitionsList:
+      properties:
+        data:
+          type: array
+          description: One entry per segment (latest document per segment)
+          items:
+            $ref: '#/components/schemas/MetricsDefinitionsSegment'
+      example:
+        data:
+        - segment: drilling
+          timestamp: 1764005687
+          metrics_groups:
+          - status: active
+            metrics_definitions:
+              pu_bha_diamondback:
+                name: PU BHA
+                unit: hr
+                fe_data:
+                  category_name: Flat Time Metrics
+                  category_id: FLAT_TIME_METRICS
+                  main_app_unit: hr
+                  ilt_data:
+                    category_id: flat_time_group
+                    unit_type: time
+                    icon: TimelogIcon
+                    color: '#FF93BA'
+                    from_unit: s
+                    to_unit: h
+                    deviation_calc_type: negative_time_good
+                visibility: visible
+                status: active
+    ActivityCodeMapping:
+      properties:
+        activity_code_type:
+          type: string
+          description: Custom display name for the activity code
+        mapped_activity_code_type:
+          type: string
+          description: Internal Corva code(SUB_CODE_1, SUB_CODE_2, etc.)
+      example:
+        activity_code_type: Phase
+        mapped_activity_code_type: SUB_CODE_1
+    DataExportIncludedWell:
+      properties:
+        id:
+          type: integer
+          description: Well ID
+        type:
+          type: string
+          enum:
+          - well
+          description: Always "well"
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+            asset_id:
+              type: integer
+            company_id:
+              type: integer
+            status:
+              type: string
+            rig_name:
+              type: string
+            pad_name:
+              type: string
+            program_name:
+              type: string
+            area:
+              type: string
+            county:
+              type: string
+            basin:
+              type: string
+            latitude:
+              type: number
+            longitude:
+              type: number
+      example:
+        id: 123
+        type: well
+        attributes:
+          name: Test Well
+          asset_id: 456
+          company_id: 1
+          status: active
+          rig_name: Rig A
+          pad_name: Pad A
+          program_name: Program A
+          area: Midland
+          county: Lee
+          basin: Delaware
+          latitude: 31.456
+          longitude: -103.123
+    MetricDefinition:
+      properties:
+        name:
+          type: string
+          description: Human-readable metric label
+        unit:
+          type: string
+          description: Source unit as stored in corva#metrics (e.g., "s", "hr")
+        fe_data:
+          type: object
+          description: 'FE rendering config: category, display unit, ILT settings'
+        visibility:
+          type: string
+          enum:
+          - visible
+          - hidden
+        status:
+          type: string
+          enum:
+          - active
+          - inactive
+      example:
+        name: NU/ND BOPs & Flowline Time
+        unit: s
+        fe_data:
+          category_name: Flat Time Metrics
+          category_id: FLAT_TIME_METRICS
+          main_app_unit: hr
+          ilt_data:
+            category_id: flat_time_group
+            unit_type: time
+            icon: TimelogIcon
+            color: '#FF93BA'
+            from_unit: s
+            to_unit: h
+            deviation_calc_type: negative_time_good
+        visibility: visible
+        status: active
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
     MetricsDefinitionsSegment:
       properties:
         segment:
@@ -932,6 +1043,97 @@ components:
                 main_app_unit: hr
               visibility: visible
               status: active
+    DataExportWellList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataExportWell'
+        total_count:
+          type: integer
+        current_total:
+          type: integer
+      example:
+        data:
+        - well_id: 123
+          well_name: Test Well
+          company_id: 1
+          asset_id: 456
+          pad_id: 1
+          status: active
+          rig_name: Rig A
+          pad_name: Pad A
+          program_id: 43451
+          program_name: Program A
+          rig_type: Land
+          target_formation: Spraberry
+          string_design: '3'
+          county: Lee
+          basin: Delaware
+          area: Midland
+          latitude: 31.456
+          longitude: -103.123
+          api_number: '1234567890'
+          rig_up: 03/13/2025 05:02
+          rig_release: 05/12/2025 05:02
+          spud: 03/15/2025 05:02
+          last_active: '2023-12-01T10:00:00Z'
+          metrics:
+            well_section:
+            - mud_type: Oil-based
+              well_section: Surface
+              start_depth: 1763
+              end_depth: 5751
+            asset:
+            - casing_count: 3
+            bha:
+            - bha_id: 2
+              bit_depth: 12345
+              well_sections:
+              - Surface
+              hole_size: 8.5
+          drillstrings:
+            start_depth: 1000
+            end_depth: 2000
+            bit_tfa: 1.16
+          completion_stage:
+          - average_proppant_concentration: 1.049
+          completion_pad:
+          - fracture_gradient: 0.65
+            hydraulic_power: 1054000
+        total_count: 10
+        current_total: 5
+    MetricsDefinitionsGroup:
+      properties:
+        status:
+          type: string
+          description: Group status (active/inactive)
+        usage_rules:
+          type: array
+          description: Optional rules for matching wells (e.g., by program name). Absent when the group applies unconditionally.
+          items:
+            type: object
+        metrics_definitions:
+          type: object
+          description: Map of metric key to its definition
+          $ref: '#/components/schemas/MetricDefinition'
+      example:
+        status: active
+        usage_rules:
+        - type: assetProgramName
+          matched_values:
+          - Permian
+          - Permian MRO
+        metrics_definitions:
+          nu_nd_bops_flowline_timelog_cop_permian:
+            name: NU/ND BOPs & Flowline Time
+            unit: s
+            fe_data:
+              category_name: Flat Time Metrics
+              category_id: FLAT_TIME_METRICS
+              main_app_unit: hr
+            visibility: visible
+            status: active
     DataExportFlatResponse:
       properties:
         data:
@@ -999,45 +1201,6 @@ components:
       example:
         code: 404
         message: Not found
-    DataExportFlatItem:
-      properties:
-        id:
-          type: string
-          description: Unique identifier(e.g., bha_123_456_1)
-        type:
-          type: string
-          enum:
-          - bha
-          - well_section
-          - well
-          - mud
-          description: Item type
-        attributes:
-          type: object
-          description: Item-specific attributes(metrics, drillstring data, etc.)
-        relationships:
-          type: object
-          properties:
-            well:
-              type: object
-              properties:
-                id:
-                  type: integer
-                  description: Well ID reference
-      example:
-        id: bha_123_456_2
-        type: bha
-        attributes:
-          bha_id: 2
-          bit_depth: 12345
-          hole_size: 8.5
-          well_sections:
-          - Surface
-          start_depth: 1000
-          end_depth: 2000
-        relationships:
-          well:
-            id: 123
     AuthenticationError:
       required:
       - code
@@ -1051,169 +1214,6 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    DataExportFlatMeta:
-      properties:
-        total_count:
-          type: integer
-          description: Total items before filters (static across pages)
-        filtered_count:
-          type: integer
-          description: Items after filters applied (dynamic)
-        has_more:
-          type: boolean
-          description: Whether more pages exist
-        page:
-          type: integer
-          description: Current page number
-        per_page:
-          type: integer
-          description: Items per page
-      example:
-        total_count: 150
-        filtered_count: 45
-        has_more: true
-        page: 1
-        per_page: 80
-    ActivityCodeMapping:
-      properties:
-        activity_code_type:
-          type: string
-          description: Custom display name for the activity code
-        mapped_activity_code_type:
-          type: string
-          description: Internal Corva code(SUB_CODE_1, SUB_CODE_2, etc.)
-      example:
-        activity_code_type: Phase
-        mapped_activity_code_type: SUB_CODE_1
-    MetricsDefinitionsGroup:
-      properties:
-        status:
-          type: string
-          description: Group status (active/inactive)
-        usage_rules:
-          type: array
-          description: Optional rules for matching wells (e.g., by program name). Absent when the group applies unconditionally.
-          items:
-            type: object
-        metrics_definitions:
-          type: object
-          description: Map of metric key to its definition
-          $ref: '#/components/schemas/MetricDefinition'
-      example:
-        status: active
-        usage_rules:
-        - type: assetProgramName
-          matched_values:
-          - Permian
-          - Permian MRO
-        metrics_definitions:
-          nu_nd_bops_flowline_timelog_cop_permian:
-            name: NU/ND BOPs & Flowline Time
-            unit: s
-            fe_data:
-              category_name: Flat Time Metrics
-              category_id: FLAT_TIME_METRICS
-              main_app_unit: hr
-            visibility: visible
-            status: active
-    MetricDefinition:
-      properties:
-        name:
-          type: string
-          description: Human-readable metric label
-        unit:
-          type: string
-          description: Source unit as stored in corva#metrics (e.g., "s", "hr")
-        fe_data:
-          type: object
-          description: 'FE rendering config: category, display unit, ILT settings'
-        visibility:
-          type: string
-          enum:
-          - visible
-          - hidden
-        status:
-          type: string
-          enum:
-          - active
-          - inactive
-      example:
-        name: NU/ND BOPs & Flowline Time
-        unit: s
-        fe_data:
-          category_name: Flat Time Metrics
-          category_id: FLAT_TIME_METRICS
-          main_app_unit: hr
-          ilt_data:
-            category_id: flat_time_group
-            unit_type: time
-            icon: TimelogIcon
-            color: '#FF93BA'
-            from_unit: s
-            to_unit: h
-            deviation_calc_type: negative_time_good
-        visibility: visible
-        status: active
-    DataExportWellList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataExportWell'
-        total_count:
-          type: integer
-        current_total:
-          type: integer
-      example:
-        data:
-        - well_id: 123
-          well_name: Test Well
-          company_id: 1
-          asset_id: 456
-          pad_id: 1
-          status: active
-          rig_name: Rig A
-          pad_name: Pad A
-          program_id: 43451
-          program_name: Program A
-          rig_type: Land
-          target_formation: Spraberry
-          string_design: '3'
-          county: Lee
-          basin: Delaware
-          area: Midland
-          latitude: 31.456
-          longitude: -103.123
-          api_number: '1234567890'
-          rig_up: 03/13/2025 05:02
-          rig_release: 05/12/2025 05:02
-          spud: 03/15/2025 05:02
-          last_active: '2023-12-01T10:00:00Z'
-          metrics:
-            well_section:
-            - mud_type: Oil-based
-              well_section: Surface
-              start_depth: 1763
-              end_depth: 5751
-            asset:
-            - casing_count: 3
-            bha:
-            - bha_id: 2
-              bit_depth: 12345
-              well_sections:
-              - Surface
-              hole_size: 8.5
-          drillstrings:
-            start_depth: 1000
-            end_depth: 2000
-            bit_tfa: 1.16
-          completion_stage:
-          - average_proppant_concentration: 1.049
-          completion_pad:
-          - fracture_gradient: 0.65
-            hydraulic_power: 1054000
-        total_count: 10
-        current_total: 5
   securitySchemes:
     api_key:
       type: apiKey

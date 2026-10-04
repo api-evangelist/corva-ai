@@ -320,19 +320,6 @@ components:
             profile_photo: photo
           created_at: '2010-01-01T00:00:00.000Z'
           updated_at: '2010-01-01T00:00:00.000Z'
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
     AuthenticationError:
       required:
       - code
@@ -346,6 +333,19 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     AppErrorAlertPayload:
       properties:
         app_error_alert:

@@ -365,6 +365,12 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    ApiKeyList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiKey'
     AuthorizationError:
       required:
       - code
@@ -378,72 +384,6 @@ components:
       example:
         code: 403
         message: Access denied
-    ApiKeyList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ApiKey'
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    ApiKeyPayload:
-      properties:
-        api_key:
-          type: object
-          properties:
-            key:
-              type: string
-            permissions:
-              type: string
-            owner_id:
-              type: integer
-              format: int64
-            owner_type:
-              type: string
-            requested_by_id:
-              type: integer
-              format: int64
-            approved_by_id:
-              type: integer
-              format: int64
-            company_id:
-              type: integer
-              format: int64
-      example:
-        api_key:
-          name: ApiKey Name
-          status: active
-          key: some-auto-generated-key
-          permissions: read
-          owner_id: 12345
-          owner_type: App
-          requested_by_id: 123
-          approved_by_id: 456
-          company_id: 456
     ApiKey:
       properties:
         id:
@@ -532,6 +472,66 @@ components:
           approved_by:
             id: '456'
             type: user
+    ApiKeyPayload:
+      properties:
+        api_key:
+          type: object
+          properties:
+            key:
+              type: string
+            permissions:
+              type: string
+            owner_id:
+              type: integer
+              format: int64
+            owner_type:
+              type: string
+            requested_by_id:
+              type: integer
+              format: int64
+            approved_by_id:
+              type: integer
+              format: int64
+            company_id:
+              type: integer
+              format: int64
+      example:
+        api_key:
+          name: ApiKey Name
+          status: active
+          key: some-auto-generated-key
+          permissions: read
+          owner_id: 12345
+          owner_type: App
+          requested_by_id: 123
+          approved_by_id: 456
+          company_id: 456
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

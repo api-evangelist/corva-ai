@@ -183,19 +183,25 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
+    CreateInterventionUnitRerunPayload:
       properties:
-        code:
+        app_stream_id:
           type: integer
-          format: int32
-        message:
+          required: true
+        new_app_stream_status:
           type: string
+          required: true
+        intervention_unit_rerun:
+          type: object
+          properties:
+            name:
+              type: string
       example:
-        code: 403
-        message: Access denied
+        intervention_unit_event_id: 123
+        app_stream_id: 456
+        new_app_stream_status: active
+        intervention_unit_rerun:
+          name: My Rerun
     InterventionUnitRerun:
       properties:
         id:
@@ -288,7 +294,7 @@ components:
             data:
               id: '222'
               type: well
-    NotFoundError:
+    AuthorizationError:
       required:
       - code
       - message
@@ -299,27 +305,8 @@ components:
         message:
           type: string
       example:
-        code: 404
-        message: Not found
-    CreateInterventionUnitRerunPayload:
-      properties:
-        app_stream_id:
-          type: integer
-          required: true
-        new_app_stream_status:
-          type: string
-          required: true
-        intervention_unit_rerun:
-          type: object
-          properties:
-            name:
-              type: string
-      example:
-        intervention_unit_event_id: 123
-        app_stream_id: 456
-        new_app_stream_status: active
-        intervention_unit_rerun:
-          name: My Rerun
+        code: 403
+        message: Access denied
     AuthenticationError:
       required:
       - code
@@ -333,6 +320,19 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

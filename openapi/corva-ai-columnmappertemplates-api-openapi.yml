@@ -340,32 +340,79 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
+    ColumnMapperTemplates:
       properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ColumnMapperTemplate'
+    UpdateColumnMapperTemplatePayload:
       properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
+        apply_to_all_streams:
+          type: boolean
+        column_mapper_template:
+          properties:
+            name:
+              type: string
+            app_stream_ids:
+              type: array
+            rig_id:
+              type: integer
+              format: int64
+              description: Mutually exclusive with intervention_unit_id
+            intervention_unit_id:
+              type: integer
+              format: int64
+              description: Mutually exclusive with rig_id
+            witsml_source_link:
+              type: string
+            column_mapper_template_channels: {}
       example:
-        code: 404
-        message: Not found
+        apply_to_all_streams: true
+        app_stream_ids:
+        - 111
+        column_mapper_template:
+          name: Random
+          rig_id: 555
+          witsml_source_link: https://app.qa.corva.ai
+          column_mapper_template_channels:
+            channel:
+              column: column
+              source_unit: unit
+    CreateColumnMapperTemplatePayload:
+      properties:
+        apply_to_all_streams:
+          type: boolean
+        column_mapper_template:
+          properties:
+            name:
+              type: string
+            rig_id:
+              type: integer
+              format: int64
+              description: Provide exactly one of rig_id or intervention_unit_id
+            intervention_unit_id:
+              type: integer
+              format: int64
+              description: Provide exactly one of rig_id or intervention_unit_id
+            app_stream_ids:
+              type: array
+            witsml_source_link:
+              type: string
+            column_mapper_template_channels:
+              type: object
+      example:
+        apply_to_all_streams: true
+        app_stream_ids:
+        - 111
+        column_mapper_template:
+          name: Random
+          rig_id: 555
+          witsml_source_link: https://app.qa.corva.ai
+          column_mapper_template_channels:
+            channel:
+              column: column
+              source_unit: unit
     ColumnMapperTemplate:
       properties:
         id:
@@ -521,6 +568,19 @@ components:
             data:
             - id: '123'
               type: column_mapper_template_rule
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
     AuthenticationError:
       required:
       - code
@@ -534,79 +594,19 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    ColumnMapperTemplates:
+    NotFoundError:
+      required:
+      - code
+      - message
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ColumnMapperTemplate'
-    CreateColumnMapperTemplatePayload:
-      properties:
-        apply_to_all_streams:
-          type: boolean
-        column_mapper_template:
-          properties:
-            name:
-              type: string
-            rig_id:
-              type: integer
-              format: int64
-              description: Provide exactly one of rig_id or intervention_unit_id
-            intervention_unit_id:
-              type: integer
-              format: int64
-              description: Provide exactly one of rig_id or intervention_unit_id
-            app_stream_ids:
-              type: array
-            witsml_source_link:
-              type: string
-            column_mapper_template_channels:
-              type: object
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
       example:
-        apply_to_all_streams: true
-        app_stream_ids:
-        - 111
-        column_mapper_template:
-          name: Random
-          rig_id: 555
-          witsml_source_link: https://app.qa.corva.ai
-          column_mapper_template_channels:
-            channel:
-              column: column
-              source_unit: unit
-    UpdateColumnMapperTemplatePayload:
-      properties:
-        apply_to_all_streams:
-          type: boolean
-        column_mapper_template:
-          properties:
-            name:
-              type: string
-            app_stream_ids:
-              type: array
-            rig_id:
-              type: integer
-              format: int64
-              description: Mutually exclusive with intervention_unit_id
-            intervention_unit_id:
-              type: integer
-              format: int64
-              description: Mutually exclusive with rig_id
-            witsml_source_link:
-              type: string
-            column_mapper_template_channels: {}
-      example:
-        apply_to_all_streams: true
-        app_stream_ids:
-        - 111
-        column_mapper_template:
-          name: Random
-          rig_id: 555
-          witsml_source_link: https://app.qa.corva.ai
-          column_mapper_template_channels:
-            channel:
-              column: column
-              source_unit: unit
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

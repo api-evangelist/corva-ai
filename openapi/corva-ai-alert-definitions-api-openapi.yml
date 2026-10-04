@@ -927,6 +927,71 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    AlertGroupAlertDefinitionBulkPayload:
+      properties:
+        alert_definition:
+          type: object
+          properties:
+            ids:
+              type: array
+              items:
+                type: integer
+                format: int64
+    AlertDefinitionFilterV2:
+      properties:
+        id:
+          type: integer
+          format: int64
+        data_point:
+          type: string
+        sample_interval:
+          type: integer
+        sample_function:
+          type: string
+        period:
+          type: integer
+        operator:
+          type: string
+        threshold:
+          type: number
+        constraint_logic:
+          type: string
+        last_record_mode:
+          type: boolean
+        data_point_friendly_name:
+          type: string
+        required_constraint:
+          type: boolean
+        unit_type:
+          type: string
+          description: Quantity kind for the threshold, e.g. length, percent, unitless. Null when unset.
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        alert_definition_constraints:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertDefinitionConstraintV2'
+        alert_definition_filter_levels:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertDefinitionFilterLevelV2'
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     AlertDefinitionV2Payload:
       properties:
         alert_definition:
@@ -1082,6 +1147,64 @@ components:
                           type: number
                         active:
                           type: boolean
+    AlertDefinitionConstraintV2:
+      properties:
+        id:
+          type: integer
+          format: int64
+        data_point:
+          type: string
+        operator:
+          type: string
+        value:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    AlertGroupAlertDefinitionPayload:
+      properties:
+        alert_definition:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+              description: Alert definition to assign to the group
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AlertDefinitionV2List:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertDefinitionV2'
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
     AlertDefinitionV2:
       properties:
         id:
@@ -1227,23 +1350,11 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/AlertDefinitionFilterV2'
-    AlertDefinitionConstraintV2:
+    AlertDefinitionV2Single:
       properties:
-        id:
-          type: integer
-          format: int64
-        data_point:
-          type: string
-        operator:
-          type: string
-        value:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
+        data:
+          type: object
+          $ref: '#/components/schemas/AlertDefinitionV2'
     AlertGroupAlertDefinitionUnassignResult:
       properties:
         status:
@@ -1252,117 +1363,6 @@ components:
         count:
           type: integer
           description: Number of definitions unassigned; bulk responses only
-    AlertDefinitionV2List:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertDefinitionV2'
-    AlertDefinitionFilterV2:
-      properties:
-        id:
-          type: integer
-          format: int64
-        data_point:
-          type: string
-        sample_interval:
-          type: integer
-        sample_function:
-          type: string
-        period:
-          type: integer
-        operator:
-          type: string
-        threshold:
-          type: number
-        constraint_logic:
-          type: string
-        last_record_mode:
-          type: boolean
-        data_point_friendly_name:
-          type: string
-        required_constraint:
-          type: boolean
-        unit_type:
-          type: string
-          description: Quantity kind for the threshold, e.g. length, percent, unitless. Null when unset.
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        alert_definition_constraints:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertDefinitionConstraintV2'
-        alert_definition_filter_levels:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertDefinitionFilterLevelV2'
-    AlertGroupAlertDefinitionPayload:
-      properties:
-        alert_definition:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-              description: Alert definition to assign to the group
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    AlertDefinitionV2Single:
-      properties:
-        data:
-          type: object
-          $ref: '#/components/schemas/AlertDefinitionV2'
-    AlertGroupAlertDefinitionBulkPayload:
-      properties:
-        alert_definition:
-          type: object
-          properties:
-            ids:
-              type: array
-              items:
-                type: integer
-                format: int64
     AlertDefinitionFilterLevelV2:
       properties:
         id:

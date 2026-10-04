@@ -259,19 +259,101 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
+    AppStoreTemplateSectionPayload:
       properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
+        app_store_template_section:
+          type: object
+          properties:
+            title:
+              type: string
+            section_type:
+              type: string
+            position:
+              type: integer
+            app_ids:
+              type: array
+            workflow_ids:
+              type: array
+            banner_ids:
+              type: array
+            app_store_article_keys:
+              type: array
+            app_store_template_apps_attributes:
+              type: object
+              properties:
+                image_url:
+                  type: string
+                app_key:
+                  type: string
+                workflow_id:
+                  type: integer
+            app_store_articles_attributes:
+              type: object
+              properties:
+                caption:
+                  type: string
+                name:
+                  type: string
+                overview:
+                  type: text
+                cover_url:
+                  type: string
+                text:
+                  type: text
+                date:
+                  type: string
+                  format: date-time
+                visibility:
+                  type: string
+                position:
+                  type: integer
+            banner_attributes:
+              type: object
+              properties:
+                featured_title:
+                  type: string
+                header:
+                  type: string
+                subheader:
+                  type: string
+                url:
+                  type: string
+                custom_image_url:
+                  type: string
       example:
-        code: 403
-        message: Access denied
+        app_store_template_section:
+          title: New title
+          section_type: slide
+          position: 1
+          app_ids:
+          - 1
+          - 2
+          - 3
+          workflow_ids:
+          - 1
+          - 2
+          - 3
+          banner_ids:
+          - 1
+          app_store_article_keys:
+          - provider.article_name
+          app_store_template_apps_attributes:
+          - image_url: https://www.example.com/image.jpg
+            app_key: app_key1
+          - image_url: https://www.example.com/image.jpg
+            app_key: app_key2
+          - image_url: https://www.example.com/image.jpg
+            workflow_id: 1
+          app_store_articles_attributes:
+          - caption: Caption
+            name: Article name
+            visibility: public
+          banner_attributes:
+            featured_title: Featured Title
+            header: Header
+            subheader: Sub header
+            url: https://example.com/foo/bar
+            custom_image_url: aws_image_url
     AppStoreTemplateSectionList:
       properties:
         data:
@@ -350,6 +432,32 @@ components:
             position: 1
             app_id: 123
             workflow_id: null
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
     AppStoreTemplateSectionObject:
       properties:
         id:
@@ -520,19 +628,6 @@ components:
               custom_image_url: aws_image_url
               created_at: '2022-11-11T09:11:52.326Z'
               updated_at: '2022-11-11T09:11:52.326Z'
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
     AuthenticationError:
       required:
       - code
@@ -546,101 +641,6 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    AppStoreTemplateSectionPayload:
-      properties:
-        app_store_template_section:
-          type: object
-          properties:
-            title:
-              type: string
-            section_type:
-              type: string
-            position:
-              type: integer
-            app_ids:
-              type: array
-            workflow_ids:
-              type: array
-            banner_ids:
-              type: array
-            app_store_article_keys:
-              type: array
-            app_store_template_apps_attributes:
-              type: object
-              properties:
-                image_url:
-                  type: string
-                app_key:
-                  type: string
-                workflow_id:
-                  type: integer
-            app_store_articles_attributes:
-              type: object
-              properties:
-                caption:
-                  type: string
-                name:
-                  type: string
-                overview:
-                  type: text
-                cover_url:
-                  type: string
-                text:
-                  type: text
-                date:
-                  type: string
-                  format: date-time
-                visibility:
-                  type: string
-                position:
-                  type: integer
-            banner_attributes:
-              type: object
-              properties:
-                featured_title:
-                  type: string
-                header:
-                  type: string
-                subheader:
-                  type: string
-                url:
-                  type: string
-                custom_image_url:
-                  type: string
-      example:
-        app_store_template_section:
-          title: New title
-          section_type: slide
-          position: 1
-          app_ids:
-          - 1
-          - 2
-          - 3
-          workflow_ids:
-          - 1
-          - 2
-          - 3
-          banner_ids:
-          - 1
-          app_store_article_keys:
-          - provider.article_name
-          app_store_template_apps_attributes:
-          - image_url: https://www.example.com/image.jpg
-            app_key: app_key1
-          - image_url: https://www.example.com/image.jpg
-            app_key: app_key2
-          - image_url: https://www.example.com/image.jpg
-            workflow_id: 1
-          app_store_articles_attributes:
-          - caption: Caption
-            name: Article name
-            visibility: public
-          banner_attributes:
-            featured_title: Featured Title
-            header: Header
-            subheader: Sub header
-            url: https://example.com/foo/bar
-            custom_image_url: aws_image_url
   securitySchemes:
     api_key:
       type: apiKey

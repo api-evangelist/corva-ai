@@ -245,19 +245,50 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
+    TierPayload:
       properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
+        tier:
+          type: object
+          properties:
+            name:
+              type: string
+            price:
+              type: float
+            segment:
+              type: string
+              enum:
+              - drilling
+              - completion
+              - intervention
+            features:
+              type: object
+            app_ids:
+              type: array
+              items:
+                type: integer
       example:
-        code: 403
-        message: Access denied
+        tier:
+          name: Best Tier
+          price: 19.95
+          segment: drilling
+          features:
+            alert_count: 10
+            asset_count: 5
+            user_count: 5
+            api_access: true
+            data_quality: true
+            mobile_apps: true
+            sso: true
+            wellview_integration: true
+          app_ids:
+          - 12345
+          - 40345
+    TierList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tier'
     Tier:
       properties:
         id:
@@ -334,45 +365,7 @@ components:
           apps:
           - id: '1'
             type: app
-    TierPayload:
-      properties:
-        tier:
-          type: object
-          properties:
-            name:
-              type: string
-            price:
-              type: float
-            segment:
-              type: string
-              enum:
-              - drilling
-              - completion
-              - intervention
-            features:
-              type: object
-            app_ids:
-              type: array
-              items:
-                type: integer
-      example:
-        tier:
-          name: Best Tier
-          price: 19.95
-          segment: drilling
-          features:
-            alert_count: 10
-            asset_count: 5
-            user_count: 5
-            api_access: true
-            data_quality: true
-            mobile_apps: true
-            sso: true
-            wellview_integration: true
-          app_ids:
-          - 12345
-          - 40345
-    NotFoundError:
+    AuthorizationError:
       required:
       - code
       - message
@@ -383,14 +376,8 @@ components:
         message:
           type: string
       example:
-        code: 404
-        message: Not found
-    TierList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Tier'
+        code: 403
+        message: Access denied
     AuthenticationError:
       required:
       - code
@@ -404,6 +391,19 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

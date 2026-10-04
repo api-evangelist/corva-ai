@@ -1895,218 +1895,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    DashboardFolderList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/DashboardFolder'
-    DataFilterPayload:
-      properties:
-        name:
-          type: string
-        filter_type:
-          type: string
-        query_string:
-          type: string
-        details:
-          type: array
-        options:
-          type: object
-      example:
-        name: DateRange
-        filter_type: static
-        query_string: ''
-        details:
-        - id: uuid1
-          key: All
-          value: all
-          checked: false
-        - id: uuid2
-          key: All
-          value: all
-          checked: false
-        options:
-          selection: single
-          is_default: true
-          default_key: All
-          selected_key: All
-    Dashboard:
-      required:
-      - id
-      - name
-      - type
-      - layout
-      - slug
-      - order
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        type:
-          type: string
-        layout:
-          type: string
-        slug:
-          type: string
-        icon:
-          type: string
-        locked:
-          type: boolean
-        order:
-          type: integer
-          format: int64
-        settings:
-          type: object
-        segment:
-          type: array
-        apps:
-          type: array
-        reports:
-          type: array
-        data_filters:
-          type: array
-        timezone:
-          type: string
-        unit_system:
-          type: string
-        category:
-          type: string
-        owner_name:
-          type: string
-        owner_dashboard_share_id:
-          type: integer
-          format: int64
-      example:
-        id: 24
-        name: Traces
-        type: asset_dashboard
-        layout: singleApp
-        slug: traces-13978158c5
-        icon: traces
-        locked: true
-        order: 13
-        settings:
-          show_control_apps: true
-        segment:
-        - drilling
-        - completion
-        apps: []
-        reports: []
-        data_filters: []
-        timezone: America/Chicago
-        unit_system: Unit System
-        category: usageAnalyticsDashboard
-        owner_name: Derek Smith
-        owner_dashboard_share_id: 12345
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    DashboardV2Payload:
-      properties:
-        dashboard:
-          type: object
-          properties:
-            type:
-              type: string
-            name:
-              type: string
-            layout:
-              type: string
-            icon:
-              type: string
-            settings:
-              type: object
-              properties:
-                show_control_apps:
-                  type: boolean
-                timezones:
-                  type: object
-                  properties:
-                    asset_id_1:
-                      type: string
-                unit_systems:
-                  type: object
-                  properties:
-                    asset_id_1:
-                      type: string
-            order:
-              type: integer
-            segment:
-              type: array
-            timezone:
-              type: string
-            unit_system:
-              type: string
-            category:
-              type: string
-      example:
-        dashboard:
-          type: asset_dashboard
-          name: Traces
-          layout: singleApp
-          icon: traces
-          settings:
-            show_control_apps: true
-            timezones:
-              pad_id_1: America/Chicago
-            unit_systems:
-              frac_fleet_id_1: Imperial
-          order: 13
-          segment:
-          - drilling
-          - completion
-          timezone: America/Chicago
-          unit_system: Unit System
-          category: usageAnalyticsDashboard
-    DashboardFolderPayload:
-      properties:
-        dashboard_folder:
-          type: object
-          properties:
-            name:
-              type: string
-            position:
-              type: integer
-      example:
-        dashboard_folder:
-          name: Folder X
-          position: 13
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    DashboardFolderDashboardShareUpdatePayload:
-      properties:
-        dashboard_folder_dashboard_share:
-          type: object
-          properties:
-            position:
-              type: integer
-      example:
-        dashboard_folder_dashboard_share:
-          position: 13
     DashboardFolderShare:
       properties:
         id:
@@ -2203,9 +1991,422 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DashboardV2Minimum'
-    BulkCreatedDashboardApps:
-      items:
-        $ref: '#/components/schemas/DashboardApp'
+    DashboardV2List:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardV2'
+    Dashboard:
+      required:
+      - id
+      - name
+      - type
+      - layout
+      - slug
+      - order
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        type:
+          type: string
+        layout:
+          type: string
+        slug:
+          type: string
+        icon:
+          type: string
+        locked:
+          type: boolean
+        order:
+          type: integer
+          format: int64
+        settings:
+          type: object
+        segment:
+          type: array
+        apps:
+          type: array
+        reports:
+          type: array
+        data_filters:
+          type: array
+        timezone:
+          type: string
+        unit_system:
+          type: string
+        category:
+          type: string
+        owner_name:
+          type: string
+        owner_dashboard_share_id:
+          type: integer
+          format: int64
+      example:
+        id: 24
+        name: Traces
+        type: asset_dashboard
+        layout: singleApp
+        slug: traces-13978158c5
+        icon: traces
+        locked: true
+        order: 13
+        settings:
+          show_control_apps: true
+        segment:
+        - drilling
+        - completion
+        apps: []
+        reports: []
+        data_filters: []
+        timezone: America/Chicago
+        unit_system: Unit System
+        category: usageAnalyticsDashboard
+        owner_name: Derek Smith
+        owner_dashboard_share_id: 12345
+    DashboardFolderShareList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardFolderShare'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+        - id: 12345
+          type: dashboard_folder_share
+          attributes:
+            id: 12345
+            owner_id: 12345
+            shared_by_id: 12340
+            dashboard_folder_id: 12345
+            viewed: false
+            created_at: '2024-08-07T09:11:52.326Z'
+            updated_at: '2024-08-07T09:11:52.326Z'
+          relationships:
+            owner:
+              data:
+                id: 12345
+                type: user
+            shared_by:
+              data:
+                id: 12340
+                type: user
+            dashboard_folder:
+              data:
+                id: 12345
+                type: dashboard_folder
+        included:
+        - id: 12345
+          type: user
+          attributes:
+            id: 12345
+            first_name: John
+            last_name: Smith
+        - id: 12340
+          type: user
+          attributes:
+            id: 12340
+            first_name: Mary
+            last_name: Smith
+        - id: 12345
+          type: dashboard_folder
+          attributes:
+            id: 12345
+            first_name: Mary
+            last_name: Smith
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    DashboardV2:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            type:
+              type: string
+            order:
+              type: integer
+              format: int64
+            name:
+              type: string
+            layout:
+              type: string
+            slug:
+              type: string
+            locked:
+              type: boolean
+            icon:
+              type: string
+            settings:
+              type: object
+            segment:
+              type: array
+            timezone:
+              type: string
+            unit_system:
+              type: string
+            category:
+              type: string
+            owner_name:
+              type: string
+            owner_dashboard_share_id:
+              type: integer
+              format: int64
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            reports:
+              type: object
+              properties:
+                data:
+                  type: array
+            data_filters:
+              type: object
+              properties:
+                data:
+                  type: array
+            apps:
+              type: object
+              properties:
+                data:
+                  type: array
+      example:
+        id: 12345
+        type: dashboard
+        attributes:
+          id: '123'
+          type: asset_dashboard
+          order: 13
+          name: Traces
+          layout: singleApp
+          slug: traces-13978158c5
+          locked: true
+          icon: traces
+          settings:
+            show_control_apps: true
+            timezones:
+              pad_id_1: America/Chicago
+            unit_systems:
+              frac_fleet_id_1: Imperial
+          segment:
+          - drilling
+          - completion
+          timezone: America/Chicago
+          unit_system: Unit System
+          category: usageAnalyticsDashboard
+          owner_name: Derek Smith
+          owner_dashboard_share_id: 12345
+        relationships:
+          company:
+            data:
+              id: '1'
+              type: company
+          data_filters:
+            data: []
+          apps:
+            data: []
+    DashboardFolderList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardFolder'
+    DataFilter:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            details:
+              type: string
+            options:
+              type: string
+            filter_type:
+              type: string
+            query_string:
+              type: string
+            created_at:
+              type: string
+            updated_at:
+              type: string
+            dashboard_id:
+              type: integer
+              format: int64
+            company_id:
+              type: integer
+              format: int64
+      example:
+        id: 12345
+        type: data_filter
+        attributes:
+          id: '123'
+          name: DataFilter1
+          details: ''
+          options: ''
+          filter_type: static
+          query_string: ''
+          created_at: '2021-03-01T13:01:45.872Z'
+          updated_at: '2021-03-01T13:01:45.872Z'
+          dashboard_id: 123
+          company_id: 1
+    DataFilterPayload:
+      properties:
+        name:
+          type: string
+        filter_type:
+          type: string
+        query_string:
+          type: string
+        details:
+          type: array
+        options:
+          type: object
+      example:
+        name: DateRange
+        filter_type: static
+        query_string: ''
+        details:
+        - id: uuid1
+          key: All
+          value: all
+          checked: false
+        - id: uuid2
+          key: All
+          value: all
+          checked: false
+        options:
+          selection: single
+          is_default: true
+          default_key: All
+          selected_key: All
+    DashboardFolderDashboardShare:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            dashboard_folder_id:
+              type: integer
+              format: int64
+            dashboard_share_id:
+              type: integer
+              format: int64
+            position:
+              type: integer
+              format: int64
+        relationships:
+          type: object
+          properties:
+            dashboard_folder:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            dashboard_share:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 123
+        type: dashboard_folder_dashboard_share
+        attributes:
+          id: '123'
+          dashboard_folder_id: 123
+          dashboard_share_id: 1234
+          position: 1
+        relationships:
+          dashboard_folder:
+            data:
+              id: '123'
+              type: dashboard_folder
+          dashboard_share:
+            data:
+              id: '1234'
+              type: dashboard_share
+    DashboardFolderPayload:
+      properties:
+        dashboard_folder:
+          type: object
+          properties:
+            name:
+              type: string
+            position:
+              type: integer
+      example:
+        dashboard_folder:
+          name: Folder X
+          position: 13
     DashboardApp:
       properties:
         id:
@@ -2358,70 +2559,131 @@ components:
           settings:
             dashboard_custom_icon: corva.bha
             dashboard_icon_color: '#FF0000'
-    DashboardFolderDashboardShare:
+    DashboardFolderShareUpdatePayload:
       properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
+        dashboard_folder_share:
           type: object
           properties:
-            id:
+            viewed:
+              type: boolean
+      example:
+        dashboard_folder_share:
+          viewed: true
+    DashboardV2Payload:
+      properties:
+        dashboard:
+          type: object
+          properties:
+            type:
+              type: string
+            name:
+              type: string
+            layout:
+              type: string
+            icon:
+              type: string
+            settings:
+              type: object
+              properties:
+                show_control_apps:
+                  type: boolean
+                timezones:
+                  type: object
+                  properties:
+                    asset_id_1:
+                      type: string
+                unit_systems:
+                  type: object
+                  properties:
+                    asset_id_1:
+                      type: string
+            order:
               type: integer
-              format: int64
-            dashboard_folder_id:
-              type: integer
-              format: int64
+            segment:
+              type: array
+            timezone:
+              type: string
+            unit_system:
+              type: string
+            category:
+              type: string
+      example:
+        dashboard:
+          type: asset_dashboard
+          name: Traces
+          layout: singleApp
+          icon: traces
+          settings:
+            show_control_apps: true
+            timezones:
+              pad_id_1: America/Chicago
+            unit_systems:
+              frac_fleet_id_1: Imperial
+          order: 13
+          segment:
+          - drilling
+          - completion
+          timezone: America/Chicago
+          unit_system: Unit System
+          category: usageAnalyticsDashboard
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    DashboardFolderDashboardSharePayload:
+      properties:
+        dashboard_folder_dashboard_share:
+          type: object
+          properties:
             dashboard_share_id:
               type: integer
-              format: int64
             position:
               type: integer
-              format: int64
-        relationships:
-          type: object
-          properties:
-            dashboard_folder:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                      format: int64
-                    type:
-                      type: string
-            dashboard_share:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                      format: int64
-                    type:
-                      type: string
       example:
-        id: 123
-        type: dashboard_folder_dashboard_share
-        attributes:
-          id: '123'
-          dashboard_folder_id: 123
-          dashboard_share_id: 1234
-          position: 1
-        relationships:
-          dashboard_folder:
-            data:
-              id: '123'
-              type: dashboard_folder
-          dashboard_share:
-            data:
-              id: '1234'
-              type: dashboard_share
+        dashboard_folder_dashboard_share:
+          dashboard_share_id: 123
+          position: 13
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    DashboardAppBatchUpdatePayload:
+      properties:
+        dashboard_apps:
+          type: array
+      example:
+        dashboard_apps:
+        - id: 123
+          settings: {}
+          coordinates:
+            x: 0
+            y: 1
+        - id: 124
+          settings: {}
+          coordinates:
+            x: 0
+            y: 3
+    BulkCreatedDashboardApps:
+      items:
+        $ref: '#/components/schemas/DashboardApp'
     DashboardFolderShareCreatePayload:
       properties:
         dashboard_folder_share:
@@ -2435,236 +2697,6 @@ components:
         dashboard_folder_share:
           owner_id: 1234
           dashboard_folder_id: 1234
-    DashboardFolderShareUpdatePayload:
-      properties:
-        dashboard_folder_share:
-          type: object
-          properties:
-            viewed:
-              type: boolean
-      example:
-        dashboard_folder_share:
-          viewed: true
-    DashboardV2:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            type:
-              type: string
-            order:
-              type: integer
-              format: int64
-            name:
-              type: string
-            layout:
-              type: string
-            slug:
-              type: string
-            locked:
-              type: boolean
-            icon:
-              type: string
-            settings:
-              type: object
-            segment:
-              type: array
-            timezone:
-              type: string
-            unit_system:
-              type: string
-            category:
-              type: string
-            owner_name:
-              type: string
-            owner_dashboard_share_id:
-              type: integer
-              format: int64
-        relationships:
-          type: object
-          properties:
-            company:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                      format: int64
-                    type:
-                      type: string
-            reports:
-              type: object
-              properties:
-                data:
-                  type: array
-            data_filters:
-              type: object
-              properties:
-                data:
-                  type: array
-            apps:
-              type: object
-              properties:
-                data:
-                  type: array
-      example:
-        id: 12345
-        type: dashboard
-        attributes:
-          id: '123'
-          type: asset_dashboard
-          order: 13
-          name: Traces
-          layout: singleApp
-          slug: traces-13978158c5
-          locked: true
-          icon: traces
-          settings:
-            show_control_apps: true
-            timezones:
-              pad_id_1: America/Chicago
-            unit_systems:
-              frac_fleet_id_1: Imperial
-          segment:
-          - drilling
-          - completion
-          timezone: America/Chicago
-          unit_system: Unit System
-          category: usageAnalyticsDashboard
-          owner_name: Derek Smith
-          owner_dashboard_share_id: 12345
-        relationships:
-          company:
-            data:
-              id: '1'
-              type: company
-          data_filters:
-            data: []
-          apps:
-            data: []
-    DashboardV2List:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/DashboardV2'
-    DataFilter:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            name:
-              type: string
-            details:
-              type: string
-            options:
-              type: string
-            filter_type:
-              type: string
-            query_string:
-              type: string
-            created_at:
-              type: string
-            updated_at:
-              type: string
-            dashboard_id:
-              type: integer
-              format: int64
-            company_id:
-              type: integer
-              format: int64
-      example:
-        id: 12345
-        type: data_filter
-        attributes:
-          id: '123'
-          name: DataFilter1
-          details: ''
-          options: ''
-          filter_type: static
-          query_string: ''
-          created_at: '2021-03-01T13:01:45.872Z'
-          updated_at: '2021-03-01T13:01:45.872Z'
-          dashboard_id: 123
-          company_id: 1
-    DashboardFolderShareList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/DashboardFolderShare'
-        included:
-          type: array
-          items:
-            properties:
-              id:
-                type: integer
-              type:
-                type: string
-              attributes:
-                type: object
-      example:
-        data:
-        - id: 12345
-          type: dashboard_folder_share
-          attributes:
-            id: 12345
-            owner_id: 12345
-            shared_by_id: 12340
-            dashboard_folder_id: 12345
-            viewed: false
-            created_at: '2024-08-07T09:11:52.326Z'
-            updated_at: '2024-08-07T09:11:52.326Z'
-          relationships:
-            owner:
-              data:
-                id: 12345
-                type: user
-            shared_by:
-              data:
-                id: 12340
-                type: user
-            dashboard_folder:
-              data:
-                id: 12345
-                type: dashboard_folder
-        included:
-        - id: 12345
-          type: user
-          attributes:
-            id: 12345
-            first_name: John
-            last_name: Smith
-        - id: 12340
-          type: user
-          attributes:
-            id: 12340
-            first_name: Mary
-            last_name: Smith
-        - id: 12345
-          type: dashboard_folder
-          attributes:
-            id: 12345
-            first_name: Mary
-            last_name: Smith
     DashboardTimezones:
       properties:
         asset_type:
@@ -2683,19 +2715,6 @@ components:
         timezone: America/Chicago
         parent_asset_type: FracFleet
         parent_asset_name: Active Frac Fleet
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
     DashboardFolder:
       properties:
         id:
@@ -2754,41 +2773,22 @@ components:
               type: user
           dashboard_folder_dashboard_shares:
             data: []
+    DashboardFolderDashboardShareUpdatePayload:
+      properties:
+        dashboard_folder_dashboard_share:
+          type: object
+          properties:
+            position:
+              type: integer
+      example:
+        dashboard_folder_dashboard_share:
+          position: 13
     DataFilterList:
       properties:
         data:
           type: array
           items:
             $ref: '#/components/schemas/DataFilter'
-    DashboardAppBatchUpdatePayload:
-      properties:
-        dashboard_apps:
-          type: array
-      example:
-        dashboard_apps:
-        - id: 123
-          settings: {}
-          coordinates:
-            x: 0
-            y: 1
-        - id: 124
-          settings: {}
-          coordinates:
-            x: 0
-            y: 3
-    DashboardFolderDashboardSharePayload:
-      properties:
-        dashboard_folder_dashboard_share:
-          type: object
-          properties:
-            dashboard_share_id:
-              type: integer
-            position:
-              type: integer
-      example:
-        dashboard_folder_dashboard_share:
-          dashboard_share_id: 123
-          position: 13
   securitySchemes:
     api_key:
       type: apiKey

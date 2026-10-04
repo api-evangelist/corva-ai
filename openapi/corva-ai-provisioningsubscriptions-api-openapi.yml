@@ -494,54 +494,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    ProvisioningSubscriptionUpdatePayload:
-      properties:
-        provisioning_subscription:
-          type: object
-          properties:
-            name:
-              type: string
-            asset_type:
-              type: string
-              enum:
-              - company
-              - program
-              - rig
-              - frac_fleet
-              - drillout_unit
-            asset_ids:
-              type: array
-              items:
-                type: integer
-            apps:
-              type: array
-              items:
-                type: integer
-      example:
-        provisioning_subscription:
-          name: Product Name
-          asset_type: company
-          asset_ids:
-          - 1
-          - 2
-          - 3
-          app_ids:
-          - 1
-          - 2
-          - 3
     ProvisioningSubscriptionPayload:
       properties:
         provisioning_subscription:
@@ -591,12 +543,6 @@ components:
           stream_asset_ids:
           - 12345
           - 23456
-    ProvisioningSubscriptionList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProvisioningSubscription'
     NotFoundError:
       required:
       - code
@@ -610,7 +556,7 @@ components:
       example:
         code: 404
         message: Not found
-    AuthenticationError:
+    AuthorizationError:
       required:
       - code
       - message
@@ -621,8 +567,8 @@ components:
         message:
           type: string
       example:
-        code: 401
-        message: Missing authentication. Please try again.
+        code: 403
+        message: Access denied
     ProvisioningSubscription:
       properties:
         id:
@@ -757,6 +703,60 @@ components:
           assets:
           - id: '3'
             type: product_subscription_asset
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    ProvisioningSubscriptionList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProvisioningSubscription'
+    ProvisioningSubscriptionUpdatePayload:
+      properties:
+        provisioning_subscription:
+          type: object
+          properties:
+            name:
+              type: string
+            asset_type:
+              type: string
+              enum:
+              - company
+              - program
+              - rig
+              - frac_fleet
+              - drillout_unit
+            asset_ids:
+              type: array
+              items:
+                type: integer
+            apps:
+              type: array
+              items:
+                type: integer
+      example:
+        provisioning_subscription:
+          name: Product Name
+          asset_type: company
+          asset_ids:
+          - 1
+          - 2
+          - 3
+          app_ids:
+          - 1
+          - 2
+          - 3
   securitySchemes:
     api_key:
       type: apiKey

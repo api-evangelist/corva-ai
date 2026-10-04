@@ -272,63 +272,36 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
+    ProjectFileList:
       properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectFileObject'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
       example:
-        code: 403
-        message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    ProjectFilePayload:
-      properties:
-        project_file:
-          type: object
-          properties:
-            name:
-              type: string
-            project_folder_id:
-              type: integer
-            file:
-              type: string
-      example:
-        project_file:
-          name: File name
-          project_folder_id: 111
-          file: 'Content of the file
-
-            Next line'
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
+        data:
+        - id: 12345
+          type: project_file
+          attributes:
+            id: 12345
+            name: File Name
+            path: Folder Name/File Name
+            project_folder_id: 12346
+            signed_url: https://fe-projects.s3.amazonaws.com/Folder%201/File%201?X-Amz-Expires=900&X-Amz-Date=20240206T105358Z&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=REDACTED_AWS_ACCESS_KEY_ID%2F20240206%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-SignedHeaders=host&X-Amz-Signature=f3da284edec0619ddd315a57d9a28343be1baf7a868cbb77afba2e47beb34d03
+            created_at: '2022-11-11T09:11:52.326Z'
+            updated_at: '2022-11-11T09:11:52.326Z'
+          relationships: {}
+        included: []
     ProjectFileObject:
       properties:
         data:
@@ -397,36 +370,63 @@ components:
             name: Folder Name
             created_at: '2022-11-11T09:11:52.326Z'
             updated_at: '2022-11-11T09:11:52.326Z'
-    ProjectFileList:
+    AuthorizationError:
+      required:
+      - code
+      - message
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectFileObject'
-        included:
-          type: array
-          items:
-            properties:
-              id:
-                type: integer
-              type:
-                type: string
-              attributes:
-                type: object
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
       example:
-        data:
-        - id: 12345
-          type: project_file
-          attributes:
-            id: 12345
-            name: File Name
-            path: Folder Name/File Name
-            project_folder_id: 12346
-            signed_url: https://fe-projects.s3.amazonaws.com/Folder%201/File%201?X-Amz-Expires=900&X-Amz-Date=20240206T105358Z&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=REDACTED_AWS_ACCESS_KEY_ID%2F20240206%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-SignedHeaders=host&X-Amz-Signature=f3da284edec0619ddd315a57d9a28343be1baf7a868cbb77afba2e47beb34d03
-            created_at: '2022-11-11T09:11:52.326Z'
-            updated_at: '2022-11-11T09:11:52.326Z'
-          relationships: {}
-        included: []
+        code: 403
+        message: Access denied
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    ProjectFilePayload:
+      properties:
+        project_file:
+          type: object
+          properties:
+            name:
+              type: string
+            project_folder_id:
+              type: integer
+            file:
+              type: string
+      example:
+        project_file:
+          name: File name
+          project_folder_id: 111
+          file: 'Content of the file
+
+            Next line'
   securitySchemes:
     api_key:
       type: apiKey

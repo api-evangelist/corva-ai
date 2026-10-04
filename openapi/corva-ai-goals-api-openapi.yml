@@ -269,35 +269,6 @@ components:
             rotary_distance_drilled: '555'
             laterial_distance_drilled: '1251'
             rotary_drilling_time: '4594'
-    GoalUpdatePayload:
-      properties:
-        goal:
-          type: object
-          properties:
-            name:
-              type: string
-            data:
-              type: object
-      example:
-        goal:
-          name: Casing 14in
-          data:
-            rotary_distance_drilled: '555'
-            laterial_distance_drilled: '1251'
-            rotary_drilling_time: '4594'
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
     NotFoundError:
       required:
       - code
@@ -311,19 +282,6 @@ components:
       example:
         code: 404
         message: Not found
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     Goal:
       properties:
         id:
@@ -350,6 +308,48 @@ components:
           id: 123
           name: Casing Name
           goal_type: casing
+          data:
+            rotary_distance_drilled: '555'
+            laterial_distance_drilled: '1251'
+            rotary_drilling_time: '4594'
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    GoalUpdatePayload:
+      properties:
+        goal:
+          type: object
+          properties:
+            name:
+              type: string
+            data:
+              type: object
+      example:
+        goal:
+          name: Casing 14in
           data:
             rotary_distance_drilled: '555'
             laterial_distance_drilled: '1251'

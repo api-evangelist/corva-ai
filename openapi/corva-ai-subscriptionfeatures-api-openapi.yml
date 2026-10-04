@@ -88,32 +88,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
     SubscriptionFeature:
       properties:
         id:
@@ -152,6 +126,19 @@ components:
           asset_type: program
           created_at: '2010-01-01T00:00:00.000Z'
           updated_at: '2010-01-01T00:00:00.000Z'
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
     AuthenticationError:
       required:
       - code
@@ -165,6 +152,19 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     SubscriptionFeatureList:
       properties:
         data:

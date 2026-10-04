@@ -3147,115 +3147,77 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AlertDetailsV2List:
+    AlertClassificationPayload:
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertDetailsV2'
-    AlertTotals:
-      properties:
-        total:
-          type: integer
-          description: Total number of alerts matching the filters
-        top_alerts:
-          type: array
-          description: Alert definitions with the most alerts, ordered by count descending
-          items:
-            type: object
-            properties:
-              id:
-                type: integer
-                description: Alert definition id, the value accepted by the alert_definition_id filter
-              name:
-                type: string
-              level:
-                type: string
-              count:
-                type: integer
-        level_counts:
+        alert:
           type: object
-          description: Alert counts keyed by alert definition level
-        level_percentages:
-          type: object
-          description: Percentage of the total keyed by alert definition level, rounded to 2 decimals
+          properties:
+            alert_classification:
+              type: string
+      example:
+        alert:
+          alert_classification: true_positive
     AlertV2Single:
       properties:
         data:
           type: object
           $ref: '#/components/schemas/AlertV2'
-    AlertTotalsV2:
+    AlertDetailsV2:
       properties:
-        total:
-          type: integer
-          description: Total number of alerts matching the filters
-        top_alerts:
-          type: array
-          description: Alert definitions with the most alerts, ordered by count descending
-          items:
-            type: object
-            properties:
-              id:
-                type: integer
-                description: Alert definition id, the value accepted by the alert_definition_id filter
-              name:
-                type: string
-              level:
-                type: string
-              count:
-                type: integer
-        level_counts:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
           type: object
-          description: Alert counts keyed by alert level
-        level_percentages:
-          type: object
-          description: Percentage of the total keyed by alert level, rounded to 2 decimals
-    ContextResponse:
-      properties:
-        response:
-          type: object
-      example:
-        context:
-          time_zone: America/Chicago
-          language: en
-          unit_system:
-            yp: hsf
-            oil: bbl
-            area: ft2
-            mass: lb
-            force: klbf
-            speed: ft/h
-            length: ft
-            system: imperial
-            torque: ft-klbf
-            volume: gal
-            density: ppg
-            pressure: psi
-            shortLength: in
-            temperature: F
-            massPerLength: lb-ft
-            volumeFlowRate: gal/min
-          provider: provider-name
-          type: Asset::Well
-          name: My Well
-          last_active_at: '2000-01-01T00:00:00.000Z'
-          status: active
-          area: Permian
-          lon_lat:
-            latitude: 0.0
-            longitude: 0.0
-          well_end: 0
-          total_cost: 0
-          total_time: 0
-          well_start: 0
-          total_depth: 0
-          timezone: America/Chicago
-          top_hole: {}
-          bottom_hole: {}
-          last_mongo_refresh: '2000-01-01T00:00:00.000Z'
-          spud_at: null
-          first_active_at: null
-          witsml_data_frequency: null
+          properties:
+            alert_id:
+              type: integer
+              format: int64
+            alert_at:
+              type: string
+              format: date-time
+            alert_definition_id:
+              type: integer
+              format: int64
+            alert_definition_name:
+              type: string
+            active:
+              type: boolean
+            segment:
+              type: string
+              enum:
+              - drilling
+              - completion
+              - intervention
+              description: First segment key of the Alert Definition
+            subscription:
+              type: boolean
+              description: True when the current user has a desktop subscription with subscribed assets for the Alert Definition
+            level:
+              type: string
+            asset_name:
+              type: string
+            parent_asset_id:
+              type: integer
+              format: int64
+            parent_asset_name:
+              type: string
+            frac_fleet_id:
+              type: integer
+              format: int64
+            frac_fleet_name:
+              type: string
+            intervention_unit_id:
+              type: integer
+              format: int64
+            intervention_unit_name:
+              type: string
+            topic:
+              type: string
+            risk_value:
+              type: number
+              description: Minimum risk value found in the alert data, null otherwise
     AlertDefinition:
       required:
       - id
@@ -3347,19 +3309,12 @@ components:
               type: array
               items:
                 type: object
-    AuthenticationError:
-      required:
-      - code
-      - message
+    AlertDetailsV2List:
       properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertDetailsV2'
     V1UserMinimal:
       properties:
         id:
@@ -3392,109 +3347,7 @@ components:
         profile_photo: aws_s3_file_path
         current_segment: drilling
         created_at: '2020-02-04T12:48:59.593Z'
-    AlertBulkAcknowledgementPayload:
-      properties:
-        alert:
-          type: object
-          properties:
-            ids:
-              type: array
-              items:
-                type: integer
-            acknowledged:
-              type: boolean
-      example:
-        alert:
-          ids:
-          - 1
-          - 2
-          - 3
-          acknowledged: true
-    AlertCheckResultV2:
-      properties:
-        notify:
-          type: boolean
-          description: Whether the alert passes every notification rule for the current user
-        message:
-          type: string
-          description: '''Subscribed'' when notify is true, the first failed rule otherwise'
-        subscription:
-          type: boolean
-          description: Whether the user has a subscription to the alert definition
-        types:
-          type: array
-          description: Notification type identifiers of the subscription (plus list), empty without a subscription
-          items:
-            type: string
-    CommentV2:
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            body:
-              type: string
-            created_at:
-              type: string
-              format: date-time
-            updated_at:
-              type: string
-              format: date-time
-            feed_activity_id:
-              type: integer
-              format: int64
-            likes_count:
-              type: integer
-            attachment:
-              type: object
-              properties:
-                file_name:
-                  type: string
-                s3_link:
-                  type: string
-                signed_url:
-                  type: string
-            attachments:
-              type: array
-              items:
-                properties:
-                  file_name:
-                    type: string
-                  s3_link:
-                    type: string
-                  signed_url:
-                    type: string
-        relationships:
-          type: object
-          properties:
-            user:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    type:
-                      type: string
-            likes:
-              type: object
-              properties:
-                data:
-                  type: array
-                  items:
-                    properties:
-                      id:
-                        type: string
-                      type:
-                        type: string
-    AuthorizationError:
+    AuthenticationError:
       required:
       - code
       - message
@@ -3505,26 +3358,8 @@ components:
         message:
           type: string
       example:
-        code: 403
-        message: Access denied
-    AlertOccurrenceClassificationPayload:
-      properties:
-        alert_occurrence:
-          type: object
-          required:
-          - alert_classification
-          properties:
-            alert_classification:
-              type: string
-              enum:
-              - unclassified
-              - true_positive
-              - false_positive
-              - informational
-              - threshold_reached
-      example:
-        alert_occurrence:
-          alert_classification: true_positive
+        code: 401
+        message: Missing authentication. Please try again.
     CommentPayload:
       properties:
         comment:
@@ -3622,21 +3457,376 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AlertNotificationTypeV2'
-    CheckResponse:
+    ContextResponse:
       properties:
-        matched:
-          type: boolean
-        data:
+        response:
           type: object
       example:
-        matched: 'true'
-        data:
-          start: '2010-01-01T00:00:00.000Z'
-          finish: '2010-01-02T00:00:00.00Z'
-          threshold: other data can go here
-          '%filter[:id]%-%{filter[:sample_function]}%-dataset': other data can go here
-          '%filter[:id]%-%{filter[:sample_function]}%-match': other data can go here
-          '%filter[:id]%-%{filter[:sample_function]}%-value': other data can go here
+        context:
+          time_zone: America/Chicago
+          language: en
+          unit_system:
+            yp: hsf
+            oil: bbl
+            area: ft2
+            mass: lb
+            force: klbf
+            speed: ft/h
+            length: ft
+            system: imperial
+            torque: ft-klbf
+            volume: gal
+            density: ppg
+            pressure: psi
+            shortLength: in
+            temperature: F
+            massPerLength: lb-ft
+            volumeFlowRate: gal/min
+          provider: provider-name
+          type: Asset::Well
+          name: My Well
+          last_active_at: '2000-01-01T00:00:00.000Z'
+          status: active
+          area: Permian
+          lon_lat:
+            latitude: 0.0
+            longitude: 0.0
+          well_end: 0
+          total_cost: 0
+          total_time: 0
+          well_start: 0
+          total_depth: 0
+          timezone: America/Chicago
+          top_hole: {}
+          bottom_hole: {}
+          last_mongo_refresh: '2000-01-01T00:00:00.000Z'
+          spud_at: null
+          first_active_at: null
+          witsml_data_frequency: null
+    Comment:
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int64
+        body:
+          type: string
+        attachment:
+          type: object
+          properties:
+            file_name:
+              type: string
+            s3_link:
+              type: string
+        attachments:
+          type: array
+          items:
+            properties:
+              file_name:
+                type: string
+              s3_link:
+                type: string
+        created_at:
+          type: string
+          format: date-time
+        mentioned_users:
+          type: array
+          items:
+            $ref: '#/components/schemas/V1UserMinimal'
+        likes_count:
+          type: integer
+        user:
+          type: object
+          $ref: '#/components/schemas/V1UserMinimal'
+        likes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Like'
+    AlertEscalation:
+      required:
+      - id
+      - alert_id
+      properties:
+        id:
+          type: integer
+          format: int64
+        alert_id:
+          type: integer
+          format: int64
+        source:
+          type: string
+          enum:
+          - manual
+          - automatic
+          description: How the escalation was triggered
+        notes:
+          type: string
+        closed_at:
+          type: string
+          format: date-time
+          description: Null when escalation is active
+        created_at:
+          type: string
+          format: date-time
+        escalated_by:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+              description: Present when user exists
+            first_name:
+              type: string
+              description: Present when user exists
+            last_name:
+              type: string
+              description: Present when user exists
+            profile_photo:
+              type: string
+              description: Present when user exists
+            email:
+              type: string
+            removed:
+              type: boolean
+              description: True when user has been removed
+        escalated_to:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int64
+                description: Present when user exists
+              first_name:
+                type: string
+                description: Present when user exists
+              last_name:
+                type: string
+                description: Present when user exists
+              profile_photo:
+                type: string
+                description: Present when user exists
+              email:
+                type: string
+              removed:
+                type: boolean
+                description: True when user has been removed
+    AlertAcknowledgementPayload:
+      properties:
+        alert:
+          type: object
+          properties:
+            acknowledged:
+              type: boolean
+      example:
+        alert:
+          acknowledged: true
+    TriggerResponse:
+      properties:
+        status:
+          type: string
+        alerts:
+          type: array
+          items:
+            type: object
+      example:
+        status: OK
+        alerts:
+        - id: 1
+          alert_definition_id: 1
+          asset_id: 1
+          data:
+            start: '2010-01-01T00:00:00.000Z'
+            finish: '2010-01-02T00:00:00.00Z'
+            anything: other data can go here
+          created_at: '2010-01-01T00:00:00.000Z'
+          updated_at: '2010-01-01T00:00:00.000Z'
+          alert_at: '2010-01-01T00:00:00.000Z'
+          decision_path: Custom decision path
+          status: open
+          occurrences: 1
+          last_alert_at: '2010-01-01T00:00:00.000Z'
+          closed_at: null
+          company_id: 1
+          validated: false
+          validated_at: null
+          validated_by_id: null
+          comments_amount: 0
+          likes_count: 0
+          report: null
+    AlertOccurrenceClassificationPayload:
+      properties:
+        alert_occurrence:
+          type: object
+          required:
+          - alert_classification
+          properties:
+            alert_classification:
+              type: string
+              enum:
+              - unclassified
+              - true_positive
+              - false_positive
+              - informational
+              - threshold_reached
+      example:
+        alert_occurrence:
+          alert_classification: true_positive
+    AlertCheckResultV2:
+      properties:
+        notify:
+          type: boolean
+          description: Whether the alert passes every notification rule for the current user
+        message:
+          type: string
+          description: '''Subscribed'' when notify is true, the first failed rule otherwise'
+        subscription:
+          type: boolean
+          description: Whether the user has a subscription to the alert definition
+        types:
+          type: array
+          description: Notification type identifiers of the subscription (plus list), empty without a subscription
+          items:
+            type: string
+    AlertClassificationPayloadV2:
+      properties:
+        alert:
+          type: object
+          required:
+          - alert_classification
+          properties:
+            alert_classification:
+              type: string
+              enum:
+              - unclassified
+              - true_positive
+              - false_positive
+              - informational
+              - threshold_reached
+      example:
+        alert:
+          alert_classification: true_positive
+    AlertBulkAcknowledgementPayload:
+      properties:
+        alert:
+          type: object
+          properties:
+            ids:
+              type: array
+              items:
+                type: integer
+            acknowledged:
+              type: boolean
+      example:
+        alert:
+          ids:
+          - 1
+          - 2
+          - 3
+          acknowledged: true
+    CommentV2:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            body:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            feed_activity_id:
+              type: integer
+              format: int64
+            likes_count:
+              type: integer
+            attachment:
+              type: object
+              properties:
+                file_name:
+                  type: string
+                s3_link:
+                  type: string
+                signed_url:
+                  type: string
+            attachments:
+              type: array
+              items:
+                properties:
+                  file_name:
+                    type: string
+                  s3_link:
+                    type: string
+                  signed_url:
+                    type: string
+        relationships:
+          type: object
+          properties:
+            user:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+            likes:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+    AlertTransitionPayload:
+      properties:
+        alert:
+          type: object
+          properties:
+            status:
+              type: string
+              description: Target status
+            notes:
+              type: string
+              description: Optional notes describing the reason for the transition
+      example:
+        alert:
+          status: closed
+          notes: Investigated and resolved.
+    AlertEscalatePayload:
+      properties:
+        escalation:
+          type: object
+          properties:
+            user_ids:
+              type: array
+              description: IDs of users to escalate to (must be in same company)
+              items:
+                type: integer
+            notes:
+              type: string
+      example:
+        escalation:
+          user_ids:
+          - 42
+          - 99
+          notes: Needs immediate attention.
     Like:
       required:
       - id
@@ -3650,16 +3840,46 @@ components:
         user:
           type: object
           $ref: '#/components/schemas/V1UserMinimal'
-    AlertAcknowledgementPayload:
+    AlertEscalationUserV2:
       properties:
-        alert:
+        id:
+          type: integer
+          format: int64
+          description: Present when the user record still exists
+        email:
+          type: string
+        first_name:
+          type: string
+          description: Present when the user record still exists
+        last_name:
+          type: string
+          description: Present when the user record still exists
+        profile_photo:
+          type: string
+          description: Present when the user record still exists
+        removed:
+          type: boolean
+          description: True when the user has been removed; only email is then available
+    AlertNotificationTypeV2:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
           type: object
+          required:
+          - id
+          - identifier
+          - name
           properties:
-            acknowledged:
-              type: boolean
-      example:
-        alert:
-          acknowledged: true
+            id:
+              type: integer
+              format: int64
+            identifier:
+              type: string
+            name:
+              type: string
     AlertOccurrence:
       required:
       - id
@@ -3744,6 +3964,105 @@ components:
         updated_at:
           type: string
           format: date-time
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    CheckResponse:
+      properties:
+        matched:
+          type: boolean
+        data:
+          type: object
+      example:
+        matched: 'true'
+        data:
+          start: '2010-01-01T00:00:00.000Z'
+          finish: '2010-01-02T00:00:00.00Z'
+          threshold: other data can go here
+          '%filter[:id]%-%{filter[:sample_function]}%-dataset': other data can go here
+          '%filter[:id]%-%{filter[:sample_function]}%-match': other data can go here
+          '%filter[:id]%-%{filter[:sample_function]}%-value': other data can go here
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AlertTotals:
+      properties:
+        total:
+          type: integer
+          description: Total number of alerts matching the filters
+        top_alerts:
+          type: array
+          description: Alert definitions with the most alerts, ordered by count descending
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: Alert definition id, the value accepted by the alert_definition_id filter
+              name:
+                type: string
+              level:
+                type: string
+              count:
+                type: integer
+        level_counts:
+          type: object
+          description: Alert counts keyed by alert definition level
+        level_percentages:
+          type: object
+          description: Percentage of the total keyed by alert definition level, rounded to 2 decimals
+    AlertTotalsV2:
+      properties:
+        total:
+          type: integer
+          description: Total number of alerts matching the filters
+        top_alerts:
+          type: array
+          description: Alert definitions with the most alerts, ordered by count descending
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: Alert definition id, the value accepted by the alert_definition_id filter
+              name:
+                type: string
+              level:
+                type: string
+              count:
+                type: integer
+        level_counts:
+          type: object
+          description: Alert counts keyed by alert level
+        level_percentages:
+          type: object
+          description: Percentage of the total keyed by alert level, rounded to 2 decimals
+    AlertV2List:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertV2'
     Alert:
       required:
       - id
@@ -3828,338 +4147,6 @@ components:
         active_escalation:
           description: Active escalation if one exists, null otherwise
           $ref: '#/components/schemas/AlertEscalation'
-    AlertEscalatePayload:
-      properties:
-        escalation:
-          type: object
-          properties:
-            user_ids:
-              type: array
-              description: IDs of users to escalate to (must be in same company)
-              items:
-                type: integer
-            notes:
-              type: string
-      example:
-        escalation:
-          user_ids:
-          - 42
-          - 99
-          notes: Needs immediate attention.
-    AlertUserV2:
-      properties:
-        id:
-          type: integer
-          format: int64
-        email:
-          type: string
-        first_name:
-          type: string
-        last_name:
-          type: string
-        profile_photo:
-          type: string
-    AlertClassificationPayload:
-      properties:
-        alert:
-          type: object
-          properties:
-            alert_classification:
-              type: string
-      example:
-        alert:
-          alert_classification: true_positive
-    AlertDetailsV2:
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            alert_id:
-              type: integer
-              format: int64
-            alert_at:
-              type: string
-              format: date-time
-            alert_definition_id:
-              type: integer
-              format: int64
-            alert_definition_name:
-              type: string
-            active:
-              type: boolean
-            segment:
-              type: string
-              enum:
-              - drilling
-              - completion
-              - intervention
-              description: First segment key of the Alert Definition
-            subscription:
-              type: boolean
-              description: True when the current user has a desktop subscription with subscribed assets for the Alert Definition
-            level:
-              type: string
-            asset_name:
-              type: string
-            parent_asset_id:
-              type: integer
-              format: int64
-            parent_asset_name:
-              type: string
-            frac_fleet_id:
-              type: integer
-              format: int64
-            frac_fleet_name:
-              type: string
-            intervention_unit_id:
-              type: integer
-              format: int64
-            intervention_unit_name:
-              type: string
-            topic:
-              type: string
-            risk_value:
-              type: number
-              description: Minimum risk value found in the alert data, null otherwise
-    TriggerResponse:
-      properties:
-        status:
-          type: string
-        alerts:
-          type: array
-          items:
-            type: object
-      example:
-        status: OK
-        alerts:
-        - id: 1
-          alert_definition_id: 1
-          asset_id: 1
-          data:
-            start: '2010-01-01T00:00:00.000Z'
-            finish: '2010-01-02T00:00:00.00Z'
-            anything: other data can go here
-          created_at: '2010-01-01T00:00:00.000Z'
-          updated_at: '2010-01-01T00:00:00.000Z'
-          alert_at: '2010-01-01T00:00:00.000Z'
-          decision_path: Custom decision path
-          status: open
-          occurrences: 1
-          last_alert_at: '2010-01-01T00:00:00.000Z'
-          closed_at: null
-          company_id: 1
-          validated: false
-          validated_at: null
-          validated_by_id: null
-          comments_amount: 0
-          likes_count: 0
-          report: null
-    AlertEscalation:
-      required:
-      - id
-      - alert_id
-      properties:
-        id:
-          type: integer
-          format: int64
-        alert_id:
-          type: integer
-          format: int64
-        source:
-          type: string
-          enum:
-          - manual
-          - automatic
-          description: How the escalation was triggered
-        notes:
-          type: string
-        closed_at:
-          type: string
-          format: date-time
-          description: Null when escalation is active
-        created_at:
-          type: string
-          format: date-time
-        escalated_by:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-              description: Present when user exists
-            first_name:
-              type: string
-              description: Present when user exists
-            last_name:
-              type: string
-              description: Present when user exists
-            profile_photo:
-              type: string
-              description: Present when user exists
-            email:
-              type: string
-            removed:
-              type: boolean
-              description: True when user has been removed
-        escalated_to:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: integer
-                format: int64
-                description: Present when user exists
-              first_name:
-                type: string
-                description: Present when user exists
-              last_name:
-                type: string
-                description: Present when user exists
-              profile_photo:
-                type: string
-                description: Present when user exists
-              email:
-                type: string
-              removed:
-                type: boolean
-                description: True when user has been removed
-    AlertClassificationPayloadV2:
-      properties:
-        alert:
-          type: object
-          required:
-          - alert_classification
-          properties:
-            alert_classification:
-              type: string
-              enum:
-              - unclassified
-              - true_positive
-              - false_positive
-              - informational
-              - threshold_reached
-      example:
-        alert:
-          alert_classification: true_positive
-    AlertEscalationUserV2:
-      properties:
-        id:
-          type: integer
-          format: int64
-          description: Present when the user record still exists
-        email:
-          type: string
-        first_name:
-          type: string
-          description: Present when the user record still exists
-        last_name:
-          type: string
-          description: Present when the user record still exists
-        profile_photo:
-          type: string
-          description: Present when the user record still exists
-        removed:
-          type: boolean
-          description: True when the user has been removed; only email is then available
-    Comment:
-      required:
-      - id
-      properties:
-        id:
-          type: integer
-          format: int64
-        body:
-          type: string
-        attachment:
-          type: object
-          properties:
-            file_name:
-              type: string
-            s3_link:
-              type: string
-        attachments:
-          type: array
-          items:
-            properties:
-              file_name:
-                type: string
-              s3_link:
-                type: string
-        created_at:
-          type: string
-          format: date-time
-        mentioned_users:
-          type: array
-          items:
-            $ref: '#/components/schemas/V1UserMinimal'
-        likes_count:
-          type: integer
-        user:
-          type: object
-          $ref: '#/components/schemas/V1UserMinimal'
-        likes:
-          type: array
-          items:
-            $ref: '#/components/schemas/Like'
-    AlertTransitionPayload:
-      properties:
-        alert:
-          type: object
-          properties:
-            status:
-              type: string
-              description: Target status
-            notes:
-              type: string
-              description: Optional notes describing the reason for the transition
-      example:
-        alert:
-          status: closed
-          notes: Investigated and resolved.
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AlertNotificationTypeV2:
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-        attributes:
-          type: object
-          required:
-          - id
-          - identifier
-          - name
-          properties:
-            id:
-              type: integer
-              format: int64
-            identifier:
-              type: string
-            name:
-              type: string
-    AlertV2List:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertV2'
     AlertV2:
       properties:
         id:
@@ -4381,6 +4368,19 @@ components:
             updated_at:
               type: string
               format: date-time
+    AlertUserV2:
+      properties:
+        id:
+          type: integer
+          format: int64
+        email:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        profile_photo:
+          type: string
   securitySchemes:
     api_key:
       type: apiKey

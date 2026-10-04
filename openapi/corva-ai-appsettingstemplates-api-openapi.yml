@@ -474,19 +474,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
     PublishAppSettingsTemplatePayload:
       properties:
         data:
@@ -514,32 +501,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AppSettingsTemplate'
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     AppSettingsTemplateShareList:
       properties:
         data:
@@ -598,26 +559,19 @@ components:
             data:
               id: 999
               type: user
-    AppSettingsTemplatePayload:
+    AuthorizationError:
+      required:
+      - code
+      - message
       properties:
-        app_settings_template:
-          type: object
-          properties:
-            name:
-              type: string
-            settings:
-              type: object
-            metadata:
-              type: object
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
       example:
-        app_settings_template:
-          name: CustomTemplate1
-          settings:
-            setting1: foobar
-            setting2: some_s3_link
-          metadata:
-            key1: value1
-            key2: value2
+        code: 403
+        message: Access denied
     AppSettingsTemplate:
       properties:
         id:
@@ -666,6 +620,52 @@ components:
           - 123
           asset_id: 1
           asset_type: Rig
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AppSettingsTemplatePayload:
+      properties:
+        app_settings_template:
+          type: object
+          properties:
+            name:
+              type: string
+            settings:
+              type: object
+            metadata:
+              type: object
+      example:
+        app_settings_template:
+          name: CustomTemplate1
+          settings:
+            setting1: foobar
+            setting2: some_s3_link
+          metadata:
+            key1: value1
+            key2: value2
   securitySchemes:
     api_key:
       type: apiKey

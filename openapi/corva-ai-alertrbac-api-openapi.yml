@@ -402,47 +402,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AlertRbacStatus:
-      properties:
-        alert_rbac_enabled:
-          type: boolean
-          description: Whether per-company alert RBAC enforcement is on
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    AlertRoleList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertRole'
-    AlertAbilityCatalogItem:
-      required:
-      - resource_class
-      - ability
-      - name
-      properties:
-        resource_class:
-          type: string
-          description: Resource the ability applies to
-          enum:
-          - Alert
-        ability:
-          type: string
-          description: Assignable ability key (e.g. acknowledge, close, escalate)
-        name:
-          type: string
-          description: Localized display name for the matrix UI
     AlertRoleAbilitiesPayload:
       properties:
         abilities:
@@ -461,37 +420,12 @@ components:
                 description: Resource class for the ability
                 enum:
                 - Alert
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AlertRoleSingle:
+    AlertAbilityCatalog:
       properties:
         data:
-          type: object
-          $ref: '#/components/schemas/AlertRole'
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertAbilityCatalogItem'
     AlertRole:
       properties:
         id:
@@ -534,6 +468,61 @@ components:
             updated_at:
               type: string
               format: date-time
+    AlertRoleSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AlertRole'
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AlertRbacStatus:
+      properties:
+        alert_rbac_enabled:
+          type: boolean
+          description: Whether per-company alert RBAC enforcement is on
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AlertRoleList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertRole'
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
     AlertRolePayload:
       properties:
         alert_role:
@@ -545,12 +534,23 @@ components:
               type: string
             description:
               type: string
-    AlertAbilityCatalog:
+    AlertAbilityCatalogItem:
+      required:
+      - resource_class
+      - ability
+      - name
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertAbilityCatalogItem'
+        resource_class:
+          type: string
+          description: Resource the ability applies to
+          enum:
+          - Alert
+        ability:
+          type: string
+          description: Assignable ability key (e.g. acknowledge, close, escalate)
+        name:
+          type: string
+          description: Localized display name for the matrix UI
   securitySchemes:
     api_key:
       type: apiKey

@@ -251,6 +251,14 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    CompanyV1UnitSystemParam:
+      properties:
+        name_of_metric:
+          type: string
+      example:
+        angle: value
+        system: imperial
+        density: ppg
     CompanyType:
       properties:
         id:
@@ -288,12 +296,32 @@ components:
       example:
         code: 403
         message: Access denied
-    CompanyListStructure:
+    AuthenticationError:
+      required:
+      - code
+      - message
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/CompanyType'
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     CompanyV1:
       properties:
         id:
@@ -359,40 +387,6 @@ components:
         alert_workflow_id: 5
         alert_rbac_enabled: false
         tool_ordering_enabled: false
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    CompanyV1UnitSystemParam:
-      properties:
-        name_of_metric:
-          type: string
-      example:
-        angle: value
-        system: imperial
-        density: ppg
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     CompanyV1List:
       items:
         $ref: '#/components/schemas/CompanyV1'
@@ -428,6 +422,12 @@ components:
         alert_workflow_id: 5
         alert_rbac_enabled: false
         tool_ordering_enabled: false
+    CompanyListStructure:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanyType'
   securitySchemes:
     api_key:
       type: apiKey

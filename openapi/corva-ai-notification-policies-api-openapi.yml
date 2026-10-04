@@ -201,41 +201,70 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    NotificationPolicyThresholdInput:
-      properties:
-        id:
-          type: integer
-          format: int64
-          description: Present when updating an existing threshold row
-        kind:
-          type: string
-          enum:
-          - occurrences
-          - duration
-        value:
-          type: integer
-        _destroy:
-          type: boolean
-          description: Set true to remove this threshold row
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    NotificationPolicyList:
+    NotificationPolicySingle:
       properties:
         data:
-          type: array
-          items:
-            $ref: '#/components/schemas/NotificationPolicy'
+          type: object
+          $ref: '#/components/schemas/NotificationPolicy'
+    NotificationPolicyPayload:
+      required:
+      - notification_policy
+      properties:
+        notification_policy:
+          type: object
+          required:
+          - context
+          - scope
+          properties:
+            context:
+              type: string
+              enum:
+              - alerts
+            scope:
+              type: string
+              enum:
+              - default
+              - company
+              - user
+              - pad
+              - rig
+              - frac_fleet
+              - intervention_unit
+              - well
+              - alert_group
+              - alert_definition
+              - alert_group_and_pad
+              - alert_group_and_rig
+              - alert_group_and_frac_fleet
+              - alert_group_and_intervention_unit
+              - alert_group_and_well
+              - alert_definition_and_pad
+              - alert_definition_and_rig
+              - alert_definition_and_frac_fleet
+              - alert_definition_and_intervention_unit
+              - alert_definition_and_well
+            enabled:
+              type: boolean
+            snoozed_until:
+              type: string
+              format: date-time
+            notification_type_ids:
+              type: array
+              items:
+                type: integer
+                format: int64
+            notification_policy_scopes_attributes:
+              type: array
+              items:
+                $ref: '#/components/schemas/NotificationPolicyScopeInput'
+            notification_policy_filters_attributes:
+              type: array
+              items:
+                $ref: '#/components/schemas/NotificationPolicyFilterInput'
+            notification_policy_thresholds_attributes:
+              type: array
+              items:
+                $ref: '#/components/schemas/NotificationPolicyThresholdInput'
     NotificationPolicyFilterInput:
       properties:
         id:
@@ -317,37 +346,12 @@ components:
             updated_at:
               type: string
               format: date-time
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    NotificationPolicySingle:
+    NotificationPolicyList:
       properties:
         data:
-          type: object
-          $ref: '#/components/schemas/NotificationPolicy'
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationPolicy'
     NotificationPolicyScopeInput:
       properties:
         id:
@@ -372,65 +376,61 @@ components:
         _destroy:
           type: boolean
           description: Set true to remove this scope row
-    NotificationPolicyPayload:
-      required:
-      - notification_policy
+    NotificationPolicyThresholdInput:
       properties:
-        notification_policy:
-          type: object
-          required:
-          - context
-          - scope
-          properties:
-            context:
-              type: string
-              enum:
-              - alerts
-            scope:
-              type: string
-              enum:
-              - default
-              - company
-              - user
-              - pad
-              - rig
-              - frac_fleet
-              - intervention_unit
-              - well
-              - alert_group
-              - alert_definition
-              - alert_group_and_pad
-              - alert_group_and_rig
-              - alert_group_and_frac_fleet
-              - alert_group_and_intervention_unit
-              - alert_group_and_well
-              - alert_definition_and_pad
-              - alert_definition_and_rig
-              - alert_definition_and_frac_fleet
-              - alert_definition_and_intervention_unit
-              - alert_definition_and_well
-            enabled:
-              type: boolean
-            snoozed_until:
-              type: string
-              format: date-time
-            notification_type_ids:
-              type: array
-              items:
-                type: integer
-                format: int64
-            notification_policy_scopes_attributes:
-              type: array
-              items:
-                $ref: '#/components/schemas/NotificationPolicyScopeInput'
-            notification_policy_filters_attributes:
-              type: array
-              items:
-                $ref: '#/components/schemas/NotificationPolicyFilterInput'
-            notification_policy_thresholds_attributes:
-              type: array
-              items:
-                $ref: '#/components/schemas/NotificationPolicyThresholdInput'
+        id:
+          type: integer
+          format: int64
+          description: Present when updating an existing threshold row
+        kind:
+          type: string
+          enum:
+          - occurrences
+          - duration
+        value:
+          type: integer
+        _destroy:
+          type: boolean
+          description: Set true to remove this threshold row
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

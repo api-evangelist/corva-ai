@@ -200,19 +200,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
     AppDataset:
       properties:
         id:
@@ -281,6 +268,25 @@ components:
             data:
               id: 12345
               type: dataset
+    AppDatasetList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppDataset'
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
     AppDatasetPayload:
       properties:
         app_dataset:
@@ -299,19 +305,6 @@ components:
           operations:
           - read
           - write
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
     AuthenticationError:
       required:
       - code
@@ -325,12 +318,19 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    AppDatasetList:
+    NotFoundError:
+      required:
+      - code
+      - message
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppDataset'
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

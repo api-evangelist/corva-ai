@@ -134,19 +134,12 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
+    AppTypeList:
       properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppType'
     AppType:
       properties:
         identifier:
@@ -172,15 +165,7 @@ components:
           doc_intro: '[{''type'':''paragraph'',''children'':[{''text'':''These are the Backend apps...''}]}]'
           doc_description: '[{''type'':''paragraph'',''children'':[{''text'':''These are the Backend apps...''}]}]'
           doc_content: '[{''type'':''paragraph'',''children'':[{''text'':''These are the Backend apps...''}]}]'
-    AppTypePayload:
-      properties:
-        doc_intro:
-          type: string
-        doc_description:
-          type: string
-        doc_content:
-          type: string
-    NotFoundError:
+    AuthorizationError:
       required:
       - code
       - message
@@ -191,8 +176,8 @@ components:
         message:
           type: string
       example:
-        code: 404
-        message: Not found
+        code: 403
+        message: Access denied
     AuthenticationError:
       required:
       - code
@@ -206,12 +191,27 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    AppTypeList:
+    NotFoundError:
+      required:
+      - code
+      - message
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppType'
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AppTypePayload:
+      properties:
+        doc_intro:
+          type: string
+        doc_description:
+          type: string
+        doc_content:
+          type: string
   securitySchemes:
     api_key:
       type: apiKey

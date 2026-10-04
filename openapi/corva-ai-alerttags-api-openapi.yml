@@ -185,6 +185,19 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     AlertTag:
       properties:
         id:
@@ -256,24 +269,12 @@ components:
               type: integer
               format: int64
               description: Create only; defaults to the current company
-    AlertTagSingle:
+    AlertTagList:
       properties:
         data:
-          type: object
-          $ref: '#/components/schemas/AlertTag'
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertTag'
     AuthenticationError:
       required:
       - code
@@ -287,12 +288,11 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    AlertTagList:
+    AlertTagSingle:
       properties:
         data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertTag'
+          type: object
+          $ref: '#/components/schemas/AlertTag'
   securitySchemes:
     api_key:
       type: apiKey

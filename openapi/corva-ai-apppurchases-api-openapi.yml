@@ -297,19 +297,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
     PurchaseSubscription:
       properties:
         id:
@@ -473,6 +460,57 @@ components:
           assets:
           - id: '3'
             type: product_subscription_asset
+    AppPurchasePayload:
+      properties:
+        app_purchase:
+          type: array
+          items:
+            $ref: '#/components/schemas/PurchaseSubscriptionPayload'
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AppPurchaseList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppPurchase'
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     PurchaseSubscriptionPayload:
       properties:
         name:
@@ -536,25 +574,6 @@ components:
         - 4
         app_ids:
         - 1
-    AppPurchaseList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppPurchase'
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
     AppPurchase:
       properties:
         id:
@@ -606,25 +625,6 @@ components:
             data:
             - id: 15124
               type: purchase_subscription
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    AppPurchasePayload:
-      properties:
-        app_purchase:
-          type: array
-          items:
-            $ref: '#/components/schemas/PurchaseSubscriptionPayload'
   securitySchemes:
     api_key:
       type: apiKey

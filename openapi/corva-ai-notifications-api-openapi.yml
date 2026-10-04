@@ -348,95 +348,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    NotificationPayload:
-      properties:
-        notification:
-          type: object
-          properties:
-            message:
-              type: string
-      example:
-        notification:
-          message: Updated notification message
-    Comment:
-      required:
-      - id
-      properties:
-        id:
-          type: integer
-          format: int64
-        body:
-          type: string
-        attachment:
-          type: object
-          properties:
-            file_name:
-              type: string
-            s3_link:
-              type: string
-        attachments:
-          type: array
-          items:
-            properties:
-              file_name:
-                type: string
-              s3_link:
-                type: string
-        created_at:
-          type: string
-          format: date-time
-        mentioned_users:
-          type: array
-          items:
-            $ref: '#/components/schemas/V1UserMinimal'
-        likes_count:
-          type: integer
-        user:
-          type: object
-          $ref: '#/components/schemas/V1UserMinimal'
-        likes:
-          type: array
-          items:
-            $ref: '#/components/schemas/Like'
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     ActivityPost:
       required:
       - id
@@ -493,6 +404,53 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Like'
+    Comment:
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int64
+        body:
+          type: string
+        attachment:
+          type: object
+          properties:
+            file_name:
+              type: string
+            s3_link:
+              type: string
+        attachments:
+          type: array
+          items:
+            properties:
+              file_name:
+                type: string
+              s3_link:
+                type: string
+        created_at:
+          type: string
+          format: date-time
+        mentioned_users:
+          type: array
+          items:
+            $ref: '#/components/schemas/V1UserMinimal'
+        likes_count:
+          type: integer
+        user:
+          type: object
+          $ref: '#/components/schemas/V1UserMinimal'
+        likes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Like'
+    UnreadCount:
+      properties:
+        count:
+          type: integer
+          format: int64
+      example:
+        count: 12345
     Notification:
       required:
       - id
@@ -529,19 +487,6 @@ components:
                   $ref: '#/components/schemas/Comment'
                 activity_post:
                   $ref: '#/components/schemas/ActivityPost'
-    Like:
-      required:
-      - id
-      properties:
-        id:
-          type: integer
-          format: int64
-        created_at:
-          type: string
-          format: date-time
-        user:
-          type: object
-          $ref: '#/components/schemas/V1UserMinimal'
     V1UserMinimal:
       properties:
         id:
@@ -574,13 +519,68 @@ components:
         profile_photo: aws_s3_file_path
         current_segment: drilling
         created_at: '2020-02-04T12:48:59.593Z'
-    UnreadCount:
+    NotificationPayload:
       properties:
-        count:
+        notification:
+          type: object
+          properties:
+            message:
+              type: string
+      example:
+        notification:
+          message: Updated notification message
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    Like:
+      required:
+      - id
+      properties:
+        id:
           type: integer
           format: int64
-      example:
-        count: 12345
+        created_at:
+          type: string
+          format: date-time
+        user:
+          type: object
+          $ref: '#/components/schemas/V1UserMinimal'
   securitySchemes:
     api_key:
       type: apiKey

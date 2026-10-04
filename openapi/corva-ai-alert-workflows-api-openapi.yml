@@ -181,71 +181,10 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    AlertWorkflowV2:
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-        attributes:
-          type: object
-          required:
-          - id
-          - name
-          - flow
-          properties:
-            id:
-              type: integer
-              format: int64
-            name:
-              type: string
-            flow:
-              type: object
-              description: State machine definition. Keys are status names; each value has a "transitions" array.
-              properties:
-                status_name:
-                  type: object
-                  properties:
-                    transitions:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          status:
-                            type: string
-                            description: Target status
-                          interaction:
-                            type: string
-                            description: e.g. "immediate"
-                          hidden:
-                            type: boolean
-                            description: Whether this transition is hidden from the UI
-            default:
-              type: boolean
-              description: True for the global default workflow
-            company_id:
-              type: integer
-              format: int64
-              description: Null for global workflows
-            created_at:
-              type: string
-              format: date-time
-            updated_at:
-              type: string
-              format: date-time
+    AlertWorkflowList:
+      type: array
+      items:
+        $ref: '#/components/schemas/AlertWorkflow'
     NotFoundError:
       required:
       - code
@@ -259,6 +198,19 @@ components:
       example:
         code: 404
         message: Not found
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
     AlertWorkflow:
       required:
       - id
@@ -332,11 +284,6 @@ components:
         company_id: null
         created_at: '2026-04-09T12:00:00Z'
         updated_at: '2026-04-09T12:00:00Z'
-    AlertWorkflowV2Single:
-      properties:
-        data:
-          type: object
-          $ref: '#/components/schemas/AlertWorkflowV2'
     AuthenticationError:
       required:
       - code
@@ -350,16 +297,69 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
+    AlertWorkflowV2:
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          type: object
+          required:
+          - id
+          - name
+          - flow
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            flow:
+              type: object
+              description: State machine definition. Keys are status names; each value has a "transitions" array.
+              properties:
+                status_name:
+                  type: object
+                  properties:
+                    transitions:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            description: Target status
+                          interaction:
+                            type: string
+                            description: e.g. "immediate"
+                          hidden:
+                            type: boolean
+                            description: Whether this transition is hidden from the UI
+            default:
+              type: boolean
+              description: True for the global default workflow
+            company_id:
+              type: integer
+              format: int64
+              description: Null for global workflows
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+    AlertWorkflowV2Single:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AlertWorkflowV2'
     AlertWorkflowV2List:
       properties:
         data:
           type: array
           items:
             $ref: '#/components/schemas/AlertWorkflowV2'
-    AlertWorkflowList:
-      type: array
-      items:
-        $ref: '#/components/schemas/AlertWorkflow'
   securitySchemes:
     api_key:
       type: apiKey

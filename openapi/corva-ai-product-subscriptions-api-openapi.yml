@@ -366,6 +366,108 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    ProductSubscriptionUpdatePayload:
+      properties:
+        product_subscription:
+          type: object
+          properties:
+            name:
+              type: string
+            asset_type:
+              type: string
+              enum:
+              - company
+              - program
+              - rig
+              - frac_fleet
+              - drillout_unit
+            billing_period:
+              type: string
+              enum:
+              - monthly
+              - daily
+              - annually
+            billing_calc_method:
+              type: string
+              enum:
+              - well_afe_day
+              - well_afe_month
+              - corva_active_day
+              - corva_active_month
+            billing_contact:
+              type: string
+            billing_email:
+              type: string
+            billing_phone:
+              type: string
+            account_manager:
+              type: string
+            price:
+              type: float
+            features:
+              type: object
+            asset_ids:
+              type: array
+              items:
+                type: integer
+            apps:
+              type: array
+              items:
+                type: integer
+            tier_ids:
+              type: array
+              items:
+                type: integer
+      example:
+        product_subscription:
+          price: 19.95
+          features:
+            alert_count: 10
+            asset_count: 5
+            user_count: 5
+            api_access: true
+            data_quality: true
+            mobile_apps: true
+            sso: true
+            wellview_integration: true
+          name: Product Name
+          asset_type: rig
+          billing_period: monthly
+          billing_calc_method: well_afe_day
+          billing_contact: Billing contact
+          billing_email: example@email.com
+          billing_phone: +1-415 652 0000
+          account_manager: Manager name
+          asset_ids:
+          - 1
+          - 2
+          - 3
+          app_ids:
+          - 1
+          - 2
+          - 3
+          tier_ids:
+          - 12345
+          - 12346
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    ProductSubscriptionList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductSubscription'
     AuthorizationError:
       required:
       - code
@@ -379,12 +481,6 @@ components:
       example:
         code: 403
         message: Access denied
-    ProductSubscriptionList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductSubscription'
     ProductSubscriptionPayload:
       properties:
         product_subscription:
@@ -475,19 +571,6 @@ components:
           tier_ids:
           - 12345
           - 12346
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
     AuthenticationError:
       required:
       - code
@@ -687,89 +770,6 @@ components:
           tiers:
           - id: '1'
             type: tier
-    ProductSubscriptionUpdatePayload:
-      properties:
-        product_subscription:
-          type: object
-          properties:
-            name:
-              type: string
-            asset_type:
-              type: string
-              enum:
-              - company
-              - program
-              - rig
-              - frac_fleet
-              - drillout_unit
-            billing_period:
-              type: string
-              enum:
-              - monthly
-              - daily
-              - annually
-            billing_calc_method:
-              type: string
-              enum:
-              - well_afe_day
-              - well_afe_month
-              - corva_active_day
-              - corva_active_month
-            billing_contact:
-              type: string
-            billing_email:
-              type: string
-            billing_phone:
-              type: string
-            account_manager:
-              type: string
-            price:
-              type: float
-            features:
-              type: object
-            asset_ids:
-              type: array
-              items:
-                type: integer
-            apps:
-              type: array
-              items:
-                type: integer
-            tier_ids:
-              type: array
-              items:
-                type: integer
-      example:
-        product_subscription:
-          price: 19.95
-          features:
-            alert_count: 10
-            asset_count: 5
-            user_count: 5
-            api_access: true
-            data_quality: true
-            mobile_apps: true
-            sso: true
-            wellview_integration: true
-          name: Product Name
-          asset_type: rig
-          billing_period: monthly
-          billing_calc_method: well_afe_day
-          billing_contact: Billing contact
-          billing_email: example@email.com
-          billing_phone: +1-415 652 0000
-          account_manager: Manager name
-          asset_ids:
-          - 1
-          - 2
-          - 3
-          app_ids:
-          - 1
-          - 2
-          - 3
-          tier_ids:
-          - 12345
-          - 12346
   securitySchemes:
     api_key:
       type: apiKey

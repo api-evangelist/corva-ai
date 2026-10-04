@@ -302,19 +302,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EdrProvider'
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
     AuthenticationError:
       required:
       - code
@@ -328,6 +315,19 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     EdrProvider:
       properties:
         id:

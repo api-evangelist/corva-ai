@@ -134,19 +134,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
     DatasetType:
       properties:
         identifier:
@@ -163,15 +150,7 @@ components:
           identifier: time
           name: Time
           doc_description: '[{''type'':''paragraph'',''children'':[{''text'':''These are the Backend apps...''}]}]'
-    DatasetTypePayload:
-      properties:
-        doc_intro:
-          type: string
-        doc_description:
-          type: string
-        doc_content:
-          type: string
-    NotFoundError:
+    AuthorizationError:
       required:
       - code
       - message
@@ -182,8 +161,8 @@ components:
         message:
           type: string
       example:
-        code: 404
-        message: Not found
+        code: 403
+        message: Access denied
     AuthenticationError:
       required:
       - code
@@ -197,6 +176,27 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    DatasetTypePayload:
+      properties:
+        doc_intro:
+          type: string
+        doc_description:
+          type: string
+        doc_content:
+          type: string
     DatasetTypeList:
       properties:
         data:

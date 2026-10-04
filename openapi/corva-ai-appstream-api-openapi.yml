@@ -826,90 +826,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    AppStreamBatchUpdatePayload:
-      properties:
-        app_stream:
-          type: object
-          properties:
-            status:
-              type: string
-      example:
-        app_stream:
-          status: active
-    V2AppStreamList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/V2AppStreamIndex'
-        included:
-          type: array
-          items:
-            properties:
-              id:
-                type: integer
-              type:
-                type: string
-              attributes:
-                type: object
-      example:
-        data:
-        - id: 12345
-          type: app_stream
-          attributes:
-            id: 12345
-            name: App Stream 6
-            visibility: public
-            segment: drilling
-            company_id: '1234'
-            asset_id: '12345'
-            configuration: {}
-            status: idle
-            source_type: drilling
-            log_type: time
-            log_identifier: time
-            settings: {}
-            streamx_edr_providers: []
-            last_active_at: '2020-01-01T08:00:00.000Z'
-            data_received_at: '2020-01-01T08:00:00.000Z'
-            created_at: '2022-11-11T09:11:52.326Z'
-            updated_at: '2022-11-11T09:11:52.326Z'
-          relationships:
-            company:
-              data:
-                id: 12345
-                type: company
-            app_connections:
-              data:
-              - id: 12456
-                type: app_connection
-              - id: 345
-                type: app_connection
-        included:
-        - id: 12345
-          type: company
-          attributes:
-            id: 12345
-            name: Corva
-        - id: 345
-          type: app_connection
-          attributes:
-            id: 348
-            app_id: 1234
-            status: active
     AppStreamItem:
       properties:
         id:
@@ -1085,7 +1001,71 @@ components:
         notes: Notes
         app: {}
         company: {}
-    NotFoundError:
+    AppStreamList:
+      items:
+        $ref: '#/components/schemas/AppStreamItem'
+    V2AppStreamList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/V2AppStreamIndex'
+        included:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              attributes:
+                type: object
+      example:
+        data:
+        - id: 12345
+          type: app_stream
+          attributes:
+            id: 12345
+            name: App Stream 6
+            visibility: public
+            segment: drilling
+            company_id: '1234'
+            asset_id: '12345'
+            configuration: {}
+            status: idle
+            source_type: drilling
+            log_type: time
+            log_identifier: time
+            settings: {}
+            streamx_edr_providers: []
+            last_active_at: '2020-01-01T08:00:00.000Z'
+            data_received_at: '2020-01-01T08:00:00.000Z'
+            created_at: '2022-11-11T09:11:52.326Z'
+            updated_at: '2022-11-11T09:11:52.326Z'
+          relationships:
+            company:
+              data:
+                id: 12345
+                type: company
+            app_connections:
+              data:
+              - id: 12456
+                type: app_connection
+              - id: 345
+                type: app_connection
+        included:
+        - id: 12345
+          type: company
+          attributes:
+            id: 12345
+            name: Corva
+        - id: 345
+          type: app_connection
+          attributes:
+            id: 348
+            app_id: 1234
+            status: active
+    AuthorizationError:
       required:
       - code
       - message
@@ -1096,8 +1076,8 @@ components:
         message:
           type: string
       example:
-        code: 404
-        message: Not found
+        code: 403
+        message: Access denied
     V2AppStreamIndex:
       properties:
         id:
@@ -1220,44 +1200,6 @@ components:
               type: app_connection
             - id: 345
               type: app_connection
-    AppConnectionSettingsBackfillPayload:
-      properties:
-        app_key1:
-          type: object
-        app_key2:
-          type: object
-      example:
-        corva.source-app:
-          setting1: foobar
-          setting2: some_s3_link
-        corva.data_quality:
-          start: 1696846892
-          end: 1696847513
-    AppConnectionUpdateItemPayload:
-      properties:
-        id:
-          type: integer
-          format: int64
-        settings:
-          type: object
-        status:
-          type: string
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    AppStreamList:
-      items:
-        $ref: '#/components/schemas/AppStreamItem'
     V2AppStreamItem:
       properties:
         data:
@@ -1408,6 +1350,64 @@ components:
               id: 348
               app_id: 1234
               status: active
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AppConnectionSettingsBackfillPayload:
+      properties:
+        app_key1:
+          type: object
+        app_key2:
+          type: object
+      example:
+        corva.source-app:
+          setting1: foobar
+          setting2: some_s3_link
+        corva.data_quality:
+          start: 1696846892
+          end: 1696847513
+    AppStreamBatchUpdatePayload:
+      properties:
+        app_stream:
+          type: object
+          properties:
+            status:
+              type: string
+      example:
+        app_stream:
+          status: active
+    AppConnectionUpdateItemPayload:
+      properties:
+        id:
+          type: integer
+          format: int64
+        settings:
+          type: object
+        status:
+          type: string
   securitySchemes:
     api_key:
       type: apiKey

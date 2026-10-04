@@ -1575,151 +1575,32 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    SummaryAggregationPayload:
+    DataCreateWithMessageProduce:
       properties:
-        match_field:
-          type: string
-          title: Match Field
-          description: 'Field used for interval bounds on the source collection (regular dataset only; not timeseries). Allowed: timestamp, measured_depth.'
-          default: timestamp
-        operations:
-          items:
-            $ref: '#/components/schemas/SummaryAggregationOperation'
-          type: array
-          minItems: 1
-          title: Operations
-          description: Aggregation operations list.
-        intervals:
-          items:
-            $ref: '#/components/schemas/SummaryAggregationInterval'
-          type: array
-          minItems: 1
-          title: Intervals
-          description: Intervals to process.
-        asset_id:
-          type: integer
-          title: Asset Id
-          description: Restricts $match to this asset_id (same scoping as interval producers).
-        exclude_data_fields:
-          items:
-            type: string
-          type: array
-          title: Exclude Data Fields
-          description: Fields excluded from numeric aggregation in data object.
-        include_data_fields:
-          additionalProperties: true
-          type: object
-          title: Include Data Fields
-          description: Literal key-value pairs merged into the resulting summary data object.
-        publish_mode:
-          type: string
-          enum:
-          - concurrent
-          - batch
-          title: Publish Mode
-          description: 'Redis publishing mode: concurrent publishes each finished interval, batch publishes once after all intervals complete.'
-          default: concurrent
-      type: object
-      required:
-      - intervals
-      - asset_id
-      title: SummaryAggregationPayload
-      description: Request body for aggregate-summary upsert (writes target collection); includes Redis publish scheduling.
-    SummaryAggregationInterval:
-      properties:
-        start:
-          type: integer
-          title: Start
-          description: Interval start value (exclusive).
-        end:
-          type: integer
-          title: End
-          description: Interval end value (inclusive).
-      type: object
-      required:
-      - start
-      - end
-      title: SummaryAggregationInterval
-    DataUpdate:
-      properties:
-        company_id:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Company Id
-        provider:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Provider
-        collection:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Collection
-        asset_id:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Asset Id
-          description: Asset ID. Required for time and depth based data.
-        version:
-          type: integer
-          title: Version
-          description: Version of the data document
-        app_version:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: App Version
-          description: Version of the app that generated the data
         data:
-          additionalProperties: true
-          type: object
+          items:
+            $ref: '#/components/schemas/DataCreate'
+          type: array
+          maxItems: 1000
+          minItems: 1
           title: Data
-        timestamp:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Timestamp
-          description: Timestamp (epoch time). Required for time based data, optional for rest.
-        log_identifier:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Log Identifier
-          description: Identifier to scope the data by app stream. Required for depth based data, optional for rest.
-        measured_depth:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Measured Depth
-          description: Measured depth. Required for depth based data, optional for rest.
-        metadata:
-          anyOf:
-          - $ref: '#/components/schemas/TimeSeriesMetadata'
-          - type: 'null'
-        stage_number:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Stage Number
-          description: Stage number for completion data
-        datetime:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Datetime
-        _id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Id
-      additionalProperties: true
+        producer:
+          $ref: '#/components/schemas/MessageProduce'
       type: object
       required:
-      - version
-      title: DataUpdate
+      - data
+      - producer
+      title: DataCreateWithMessageProduce
+      description: Input for data creation with message producing.
+    Sorting:
+      properties:
+        sort:
+          additionalProperties: true
+          type: object
+          title: Sort
+          default: {}
+      type: object
+      title: Sorting
     TimeSeriesMetadata:
       properties:
         company_id:
@@ -1735,6 +1616,23 @@ components:
       additionalProperties: true
       type: object
       title: TimeSeriesMetadata
+    SummaryAggregationOperation:
+      type: string
+      enum:
+      - median
+      - avg
+      - min
+      - max
+      title: SummaryAggregationOperation
+    MessageProduce:
+      properties:
+        app_connection_id:
+          type: integer
+          title: App Connection Id
+      type: object
+      required:
+      - app_connection_id
+      title: MessageProduce
     ProduceDepthIn:
       properties:
         timestamp:
@@ -1755,100 +1653,57 @@ components:
       required:
       - measured_depth
       title: ProduceDepthIn
-    DataCountResult:
+    Body_listDataByProviderAndDataset:
       properties:
-        count:
-          type: integer
-          title: Count
-          default: 0
-      type: object
-      title: DataCountResult
-    Sorting:
-      properties:
+        query:
+          additionalProperties: true
+          type: object
+          title: Query
+          description: Search conditions
         sort:
-          additionalProperties: true
-          type: object
-          title: Sort
-          default: {}
-      type: object
-      title: Sorting
-    DataCreate:
-      properties:
-        company_id:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Company Id
-        provider:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Provider
-        collection:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Collection
-        asset_id:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Asset Id
-          description: Asset ID. Required for time and depth based data.
-        version:
+          $ref: '#/components/schemas/Sorting'
+          description: Sort conditions
+          default:
+            timestamp: 1
+        skip:
           type: integer
-          title: Version
-          description: Version of the data document
-        app_version:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: App Version
-          description: Version of the app that generated the data
-        data:
-          additionalProperties: true
-          type: object
-          title: Data
-        timestamp:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Timestamp
-          description: Timestamp (epoch time). Required for time based data, optional for rest.
-        log_identifier:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Log Identifier
-          description: Identifier to scope the data by app stream. Required for depth based data, optional for rest.
-        measured_depth:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Measured Depth
-          description: Measured depth. Required for depth based data, optional for rest.
-        metadata:
-          anyOf:
-          - $ref: '#/components/schemas/TimeSeriesMetadata'
-          - type: 'null'
-        stage_number:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Stage Number
-          description: Stage number for completion data
-        datetime:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Datetime
-          description: ISO 8601 datetime string representation. Used as index inside time-series collections.
-      additionalProperties: true
+          minimum: 0.0
+          title: Skip
+          description: 'Number of records to skip (default: 0)'
+          default: 0
+        limit:
+          type: integer
+          maximum: 10000.0
+          minimum: 1.0
+          title: Limit
+          description: Maximum number of results to return
+        fields:
+          type: string
+          title: Fields
+          description: Comma separated list of fields to return
+        include_count:
+          type: boolean
+          title: Include Count
+          description: Include total count of matching documents in Total header
+          default: false
       type: object
       required:
-      - version
-      title: DataCreate
+      - query
+      - limit
+      title: Body_listDataByProviderAndDataset
+    HTTPValidationError:
+      properties:
+        code:
+          type: integer
+          title: Code
+        message:
+          type: string
+          title: Message
+      type: object
+      required:
+      - code
+      - message
+      title: ExceptionResponse
     DataPartialUpdate:
       properties:
         company_id:
@@ -1929,227 +1784,6 @@ components:
       additionalProperties: true
       type: object
       title: DataPartialUpdate
-    DataUpdateManyResult:
-      properties:
-        updated_count:
-          type: integer
-          title: Updated Count
-          default: 0
-      type: object
-      title: DataUpdateManyResult
-    Body_batch_update_with_object_api_v1_data__provider___dataset__batch_update_with_object__patch:
-      properties:
-        data:
-          $ref: '#/components/schemas/DataUpdate'
-          description: Values for update
-        query:
-          type: string
-          contentMediaType: application/json
-          contentSchema: {}
-          title: Query
-          description: Search documents for update
-        limit:
-          type: integer
-          maximum: 10000.0
-          minimum: 1.0
-          title: Limit
-          description: Maximum number of results to return
-          default: 10000
-        batch:
-          type: integer
-          maximum: 1000000.0
-          minimum: 1.0
-          title: Batch
-          description: Batch number of query results restricted by limit to update
-          default: 1
-        sort:
-          $ref: '#/components/schemas/Sorting'
-          description: Sort conditions. Default is sorting asc by timestamp
-          default:
-            timestamp: 1
-      type: object
-      required:
-      - data
-      - query
-      title: Body_batch_update_with_object_api_v1_data__provider___dataset__batch_update_with_object__patch
-    DataCreateWithMessageProduce:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/DataCreate'
-          type: array
-          maxItems: 1000
-          minItems: 1
-          title: Data
-        producer:
-          $ref: '#/components/schemas/MessageProduce'
-      type: object
-      required:
-      - data
-      - producer
-      title: DataCreateWithMessageProduce
-      description: Input for data creation with message producing.
-    DataDeleteManyResult:
-      properties:
-        deleted_count:
-          type: integer
-          title: Deleted Count
-          default: 0
-      type: object
-      title: DataDeleteManyResult
-    Body_aggregate_pipeline_post_api_v1_data__provider___dataset__aggregate_pipeline__post:
-      properties:
-        stages:
-          items:
-            additionalProperties: true
-            type: object
-          type: array
-          title: Stages
-          description: List of aggregation stages.
-      type: object
-      required:
-      - stages
-      title: Body_aggregate_pipeline_post_api_v1_data__provider___dataset__aggregate_pipeline__post
-    Body_listDataByProviderAndDataset:
-      properties:
-        query:
-          additionalProperties: true
-          type: object
-          title: Query
-          description: Search conditions
-        sort:
-          $ref: '#/components/schemas/Sorting'
-          description: Sort conditions
-          default:
-            timestamp: 1
-        skip:
-          type: integer
-          minimum: 0.0
-          title: Skip
-          description: 'Number of records to skip (default: 0)'
-          default: 0
-        limit:
-          type: integer
-          maximum: 10000.0
-          minimum: 1.0
-          title: Limit
-          description: Maximum number of results to return
-        fields:
-          type: string
-          title: Fields
-          description: Comma separated list of fields to return
-        include_count:
-          type: boolean
-          title: Include Count
-          description: Include total count of matching documents in Total header
-          default: false
-      type: object
-      required:
-      - query
-      - limit
-      title: Body_listDataByProviderAndDataset
-    SummaryAggregationOperation:
-      type: string
-      enum:
-      - median
-      - avg
-      - min
-      - max
-      title: SummaryAggregationOperation
-    DataDeleteResult:
-      properties:
-        deleted_docs:
-          items:
-            additionalProperties: true
-            type: object
-          type: array
-          title: Deleted Docs
-          default: []
-        failed_count:
-          type: integer
-          title: Failed Count
-          default: 0
-      type: object
-      title: DataDeleteResult
-    ProduceTimeIn:
-      properties:
-        timestamp:
-          type: integer
-          title: Timestamp
-        collection:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Collection
-      additionalProperties: true
-      type: object
-      required:
-      - timestamp
-      title: ProduceTimeIn
-    HTTPValidationError:
-      properties:
-        code:
-          type: integer
-          title: Code
-        message:
-          type: string
-          title: Message
-      type: object
-      required:
-      - code
-      - message
-      title: ExceptionResponse
-    MessageProduce:
-      properties:
-        app_connection_id:
-          type: integer
-          title: App Connection Id
-      type: object
-      required:
-      - app_connection_id
-      title: MessageProduce
-    SummaryAggregationReturnPayload:
-      properties:
-        match_field:
-          type: string
-          title: Match Field
-          description: 'Field used for interval bounds on the source collection (regular dataset only; not timeseries). Allowed: timestamp, measured_depth.'
-          default: timestamp
-        operations:
-          items:
-            $ref: '#/components/schemas/SummaryAggregationOperation'
-          type: array
-          minItems: 1
-          title: Operations
-          description: Aggregation operations list.
-        intervals:
-          items:
-            $ref: '#/components/schemas/SummaryAggregationInterval'
-          type: array
-          minItems: 1
-          title: Intervals
-          description: Intervals to process.
-        asset_id:
-          type: integer
-          title: Asset Id
-          description: Restricts $match to this asset_id (same scoping as interval producers).
-        exclude_data_fields:
-          items:
-            type: string
-          type: array
-          title: Exclude Data Fields
-          description: Fields excluded from numeric aggregation in data object.
-        include_data_fields:
-          additionalProperties: true
-          type: object
-          title: Include Data Fields
-          description: Literal key-value pairs merged into the resulting summary data object.
-      type: object
-      required:
-      - intervals
-      - asset_id
-      title: SummaryAggregationReturnPayload
-      description: Request body for aggregate-summary return (read-only); all intervals are aggregated before the response.
     MessageProducerData:
       properties:
         app_connection_id:
@@ -2192,26 +1826,29 @@ components:
           description: Deprecated. This field is not used.
       type: object
       title: MessageProducerData
-    DataCreateResult:
+    SummaryAggregationInterval:
       properties:
-        inserted_ids:
-          items:
-            type: string
-          type: array
-          title: Inserted Ids
-          default: []
-        failed_count:
+        start:
           type: integer
-          title: Failed Count
-          default: 0
-        messages:
-          items:
-            type: string
-          type: array
-          title: Messages
-          default: []
+          title: Start
+          description: Interval start value (exclusive).
+        end:
+          type: integer
+          title: End
+          description: Interval end value (inclusive).
       type: object
-      title: DataCreateResult
+      required:
+      - start
+      - end
+      title: SummaryAggregationInterval
+    DataDeleteManyResult:
+      properties:
+        deleted_count:
+          type: integer
+          title: Deleted Count
+          default: 0
+      type: object
+      title: DataDeleteManyResult
     DataDocument:
       properties:
         _id:
@@ -2290,7 +1927,370 @@ components:
       - collection
       - data
       title: DataDocument
-    NotFoundError:
+    Body_aggregate_pipeline_post_api_v1_data__provider___dataset__aggregate_pipeline__post:
+      properties:
+        stages:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Stages
+          description: List of aggregation stages.
+      type: object
+      required:
+      - stages
+      title: Body_aggregate_pipeline_post_api_v1_data__provider___dataset__aggregate_pipeline__post
+    ProduceTimeIn:
+      properties:
+        timestamp:
+          type: integer
+          title: Timestamp
+        collection:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Collection
+      additionalProperties: true
+      type: object
+      required:
+      - timestamp
+      title: ProduceTimeIn
+    DataCreateResult:
+      properties:
+        inserted_ids:
+          items:
+            type: string
+          type: array
+          title: Inserted Ids
+          default: []
+        failed_count:
+          type: integer
+          title: Failed Count
+          default: 0
+        messages:
+          items:
+            type: string
+          type: array
+          title: Messages
+          default: []
+      type: object
+      title: DataCreateResult
+    DataDeleteResult:
+      properties:
+        deleted_docs:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Deleted Docs
+          default: []
+        failed_count:
+          type: integer
+          title: Failed Count
+          default: 0
+      type: object
+      title: DataDeleteResult
+    DataCountResult:
+      properties:
+        count:
+          type: integer
+          title: Count
+          default: 0
+      type: object
+      title: DataCountResult
+    SummaryAggregationReturnPayload:
+      properties:
+        match_field:
+          type: string
+          title: Match Field
+          description: 'Field used for interval bounds on the source collection (regular dataset only; not timeseries). Allowed: timestamp, measured_depth.'
+          default: timestamp
+        operations:
+          items:
+            $ref: '#/components/schemas/SummaryAggregationOperation'
+          type: array
+          minItems: 1
+          title: Operations
+          description: Aggregation operations list.
+        intervals:
+          items:
+            $ref: '#/components/schemas/SummaryAggregationInterval'
+          type: array
+          minItems: 1
+          title: Intervals
+          description: Intervals to process.
+        asset_id:
+          type: integer
+          title: Asset Id
+          description: Restricts $match to this asset_id (same scoping as interval producers).
+        exclude_data_fields:
+          items:
+            type: string
+          type: array
+          title: Exclude Data Fields
+          description: Fields excluded from numeric aggregation in data object.
+        include_data_fields:
+          additionalProperties: true
+          type: object
+          title: Include Data Fields
+          description: Literal key-value pairs merged into the resulting summary data object.
+      type: object
+      required:
+      - intervals
+      - asset_id
+      title: SummaryAggregationReturnPayload
+      description: Request body for aggregate-summary return (read-only); all intervals are aggregated before the response.
+    DataUpdateManyResult:
+      properties:
+        updated_count:
+          type: integer
+          title: Updated Count
+          default: 0
+      type: object
+      title: DataUpdateManyResult
+    DataCreate:
+      properties:
+        company_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Company Id
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+        collection:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Collection
+        asset_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Asset Id
+          description: Asset ID. Required for time and depth based data.
+        version:
+          type: integer
+          title: Version
+          description: Version of the data document
+        app_version:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: App Version
+          description: Version of the app that generated the data
+        data:
+          additionalProperties: true
+          type: object
+          title: Data
+        timestamp:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Timestamp
+          description: Timestamp (epoch time). Required for time based data, optional for rest.
+        log_identifier:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Log Identifier
+          description: Identifier to scope the data by app stream. Required for depth based data, optional for rest.
+        measured_depth:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Measured Depth
+          description: Measured depth. Required for depth based data, optional for rest.
+        metadata:
+          anyOf:
+          - $ref: '#/components/schemas/TimeSeriesMetadata'
+          - type: 'null'
+        stage_number:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Stage Number
+          description: Stage number for completion data
+        datetime:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Datetime
+          description: ISO 8601 datetime string representation. Used as index inside time-series collections.
+      additionalProperties: true
+      type: object
+      required:
+      - version
+      title: DataCreate
+    Body_batch_update_with_object_api_v1_data__provider___dataset__batch_update_with_object__patch:
+      properties:
+        data:
+          $ref: '#/components/schemas/DataUpdate'
+          description: Values for update
+        query:
+          type: string
+          contentMediaType: application/json
+          contentSchema: {}
+          title: Query
+          description: Search documents for update
+        limit:
+          type: integer
+          maximum: 10000.0
+          minimum: 1.0
+          title: Limit
+          description: Maximum number of results to return
+          default: 10000
+        batch:
+          type: integer
+          maximum: 1000000.0
+          minimum: 1.0
+          title: Batch
+          description: Batch number of query results restricted by limit to update
+          default: 1
+        sort:
+          $ref: '#/components/schemas/Sorting'
+          description: Sort conditions. Default is sorting asc by timestamp
+          default:
+            timestamp: 1
+      type: object
+      required:
+      - data
+      - query
+      title: Body_batch_update_with_object_api_v1_data__provider___dataset__batch_update_with_object__patch
+    DataUpdate:
+      properties:
+        company_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Company Id
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+        collection:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Collection
+        asset_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Asset Id
+          description: Asset ID. Required for time and depth based data.
+        version:
+          type: integer
+          title: Version
+          description: Version of the data document
+        app_version:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: App Version
+          description: Version of the app that generated the data
+        data:
+          additionalProperties: true
+          type: object
+          title: Data
+        timestamp:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Timestamp
+          description: Timestamp (epoch time). Required for time based data, optional for rest.
+        log_identifier:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Log Identifier
+          description: Identifier to scope the data by app stream. Required for depth based data, optional for rest.
+        measured_depth:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Measured Depth
+          description: Measured depth. Required for depth based data, optional for rest.
+        metadata:
+          anyOf:
+          - $ref: '#/components/schemas/TimeSeriesMetadata'
+          - type: 'null'
+        stage_number:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Stage Number
+          description: Stage number for completion data
+        datetime:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Datetime
+        _id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id
+      additionalProperties: true
+      type: object
+      required:
+      - version
+      title: DataUpdate
+    SummaryAggregationPayload:
+      properties:
+        match_field:
+          type: string
+          title: Match Field
+          description: 'Field used for interval bounds on the source collection (regular dataset only; not timeseries). Allowed: timestamp, measured_depth.'
+          default: timestamp
+        operations:
+          items:
+            $ref: '#/components/schemas/SummaryAggregationOperation'
+          type: array
+          minItems: 1
+          title: Operations
+          description: Aggregation operations list.
+        intervals:
+          items:
+            $ref: '#/components/schemas/SummaryAggregationInterval'
+          type: array
+          minItems: 1
+          title: Intervals
+          description: Intervals to process.
+        asset_id:
+          type: integer
+          title: Asset Id
+          description: Restricts $match to this asset_id (same scoping as interval producers).
+        exclude_data_fields:
+          items:
+            type: string
+          type: array
+          title: Exclude Data Fields
+          description: Fields excluded from numeric aggregation in data object.
+        include_data_fields:
+          additionalProperties: true
+          type: object
+          title: Include Data Fields
+          description: Literal key-value pairs merged into the resulting summary data object.
+        publish_mode:
+          type: string
+          enum:
+          - concurrent
+          - batch
+          title: Publish Mode
+          description: 'Redis publishing mode: concurrent publishes each finished interval, batch publishes once after all intervals complete.'
+          default: concurrent
+      type: object
+      required:
+      - intervals
+      - asset_id
+      title: SummaryAggregationPayload
+      description: Request body for aggregate-summary upsert (writes target collection); includes Redis publish scheduling.
+    AuthorizationError:
       required:
       - code
       - message
@@ -2301,8 +2301,8 @@ components:
         message:
           type: string
       example:
-        code: 404
-        message: Not found
+        code: 403
+        message: Access denied
     Data:
       required:
       - id
@@ -2341,19 +2341,6 @@ components:
           well_section: Production Curve
           hole_size: 8.75
           bha_id: ''
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
     AuthenticationError:
       required:
       - code
@@ -2367,6 +2354,19 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
   securitySchemes:
     HTTPBearer:
       type: http

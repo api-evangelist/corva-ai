@@ -510,6 +510,43 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    IndexSchema:
+      properties:
+        name:
+          type: string
+          title: Name
+          default: ''
+          example: asset_id_timestamp
+        fields:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Fields
+          example:
+          - asset_id: 1
+          - timestamp: -1
+        unique:
+          type: boolean
+          title: Unique
+          default: false
+        required:
+          type: boolean
+          title: Required
+          default: false
+        status:
+          type: string
+          title: Status
+          default: building
+          example: active
+        settings:
+          anyOf:
+          - $ref: '#/components/schemas/IndexSettings'
+          - type: 'null'
+          example:
+            expire_after_seconds: 3600
+      type: object
+      title: IndexSchema
     CompanyDatasetItemSerializer:
       properties:
         id:
@@ -531,20 +568,163 @@ components:
       - name
       - type
       title: CompanyDatasetItemSerializer
-    IndexStatistics:
+    DataType:
+      type: string
+      enum:
+      - time
+      - depth
+      - reference
+      - timeseries
+      title: DataType
+    DatasetSchema:
+      properties:
+        company_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Company Id
+          example: 123
+        provider:
+          type: string
+          title: Provider
+          default: ''
+          example: corva
+        name:
+          type: string
+          title: Name
+          default: ''
+          example: corva#wits
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+          example: Save WITS data
+        schema:
+          additionalProperties: true
+          type: object
+          title: Schema
+          default: {}
+          example: {}
+        data_type:
+          $ref: '#/components/schemas/DataType'
+          default: time
+          example: time
+        settings:
+          additionalProperties: true
+          type: object
+          title: Settings
+          default: {}
+          example: {}
+        permission_workflow:
+          additionalProperties: true
+          type: object
+          title: Permission Workflow
+          default:
+            read: request
+            write: request
+            delete: request
+          example:
+            delete: request
+            read: request
+            write: request
+        plottable:
+          type: boolean
+          title: Plottable
+          default: false
+        temporary:
+          type: boolean
+          title: Temporary
+          default: false
+      type: object
+      title: DatasetSchema
+    DatasetStatistics:
       properties:
         size:
           type: integer
           title: Size
           default: 0
-          example: 929429
-        usage:
-          type: number
-          title: Usage
+          example: 1000000
+        count:
+          type: integer
+          title: Count
           default: 0
-          example: 112.294923
+          example: 282034
+        storage_size:
+          type: integer
+          title: Storage Size
+          default: 0
+          example: 8839043
+        index_size:
+          type: integer
+          title: Index Size
+          default: 0
+          example: 199234282
       type: object
-      title: IndexStatistics
+      title: DatasetStatistics
+    IndexSerializer:
+      properties:
+        name:
+          type: string
+          title: Name
+          default: ''
+          example: asset_id_timestamp
+        fields:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Fields
+          example:
+          - asset_id: 1
+          - timestamp: -1
+        unique:
+          type: boolean
+          title: Unique
+          default: false
+        required:
+          type: boolean
+          title: Required
+          default: false
+        status:
+          type: string
+          title: Status
+          default: building
+          example: active
+        settings:
+          anyOf:
+          - $ref: '#/components/schemas/IndexSettings'
+          - type: 'null'
+          example:
+            expire_after_seconds: 3600
+        statistics:
+          $ref: '#/components/schemas/IndexStatistics'
+      type: object
+      required:
+      - statistics
+      title: IndexSerializer
+    CompanyDatasetSerializer:
+      additionalProperties:
+        items:
+          $ref: '#/components/schemas/CompanyDatasetItemSerializer'
+        type: array
+      type: object
+      title: CompanyDatasetSerializer
+      example:
+        Big Data Energy:
+        - id: 74
+          name: depth-check
+          provider: big-data-energy
+          type: depth
+        Corva:
+        - id: 44
+          name: activities
+          provider: corva
+          type: time
+        - id: 95
+          name: activities.summary-2tours
+          provider: corva
+          type: time
     HTTPValidationError:
       properties:
         code:
@@ -661,192 +841,20 @@ components:
       required:
       - id
       title: DatasetSerializer
-    IndexSchema:
-      properties:
-        name:
-          type: string
-          title: Name
-          default: ''
-          example: asset_id_timestamp
-        fields:
-          items:
-            additionalProperties: true
-            type: object
-          type: array
-          title: Fields
-          example:
-          - asset_id: 1
-          - timestamp: -1
-        unique:
-          type: boolean
-          title: Unique
-          default: false
-        required:
-          type: boolean
-          title: Required
-          default: false
-        status:
-          type: string
-          title: Status
-          default: building
-          example: active
-        settings:
-          anyOf:
-          - $ref: '#/components/schemas/IndexSettings'
-          - type: 'null'
-          example:
-            expire_after_seconds: 3600
-      type: object
-      title: IndexSchema
-    IndexSerializer:
-      properties:
-        name:
-          type: string
-          title: Name
-          default: ''
-          example: asset_id_timestamp
-        fields:
-          items:
-            additionalProperties: true
-            type: object
-          type: array
-          title: Fields
-          example:
-          - asset_id: 1
-          - timestamp: -1
-        unique:
-          type: boolean
-          title: Unique
-          default: false
-        required:
-          type: boolean
-          title: Required
-          default: false
-        status:
-          type: string
-          title: Status
-          default: building
-          example: active
-        settings:
-          anyOf:
-          - $ref: '#/components/schemas/IndexSettings'
-          - type: 'null'
-          example:
-            expire_after_seconds: 3600
-        statistics:
-          $ref: '#/components/schemas/IndexStatistics'
-      type: object
-      required:
-      - statistics
-      title: IndexSerializer
-    DatasetStatistics:
+    IndexStatistics:
       properties:
         size:
           type: integer
           title: Size
           default: 0
-          example: 1000000
-        count:
-          type: integer
-          title: Count
+          example: 929429
+        usage:
+          type: number
+          title: Usage
           default: 0
-          example: 282034
-        storage_size:
-          type: integer
-          title: Storage Size
-          default: 0
-          example: 8839043
-        index_size:
-          type: integer
-          title: Index Size
-          default: 0
-          example: 199234282
+          example: 112.294923
       type: object
-      title: DatasetStatistics
-    CompanyDatasetSerializer:
-      additionalProperties:
-        items:
-          $ref: '#/components/schemas/CompanyDatasetItemSerializer'
-        type: array
-      type: object
-      title: CompanyDatasetSerializer
-      example:
-        Big Data Energy:
-        - id: 74
-          name: depth-check
-          provider: big-data-energy
-          type: depth
-        Corva:
-        - id: 44
-          name: activities
-          provider: corva
-          type: time
-        - id: 95
-          name: activities.summary-2tours
-          provider: corva
-          type: time
-    DatasetSchema:
-      properties:
-        company_id:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Company Id
-          example: 123
-        provider:
-          type: string
-          title: Provider
-          default: ''
-          example: corva
-        name:
-          type: string
-          title: Name
-          default: ''
-          example: corva#wits
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-          example: Save WITS data
-        schema:
-          additionalProperties: true
-          type: object
-          title: Schema
-          default: {}
-          example: {}
-        data_type:
-          $ref: '#/components/schemas/DataType'
-          default: time
-          example: time
-        settings:
-          additionalProperties: true
-          type: object
-          title: Settings
-          default: {}
-          example: {}
-        permission_workflow:
-          additionalProperties: true
-          type: object
-          title: Permission Workflow
-          default:
-            read: request
-            write: request
-            delete: request
-          example:
-            delete: request
-            read: request
-            write: request
-        plottable:
-          type: boolean
-          title: Plottable
-          default: false
-        temporary:
-          type: boolean
-          title: Temporary
-          default: false
-      type: object
-      title: DatasetSchema
+      title: IndexStatistics
     IndexSettings:
       properties:
         expire_after_seconds:
@@ -866,15 +874,7 @@ components:
               $exists: true
       type: object
       title: IndexSettings
-    DataType:
-      type: string
-      enum:
-      - time
-      - depth
-      - reference
-      - timeseries
-      title: DataType
-    NotFoundError:
+    AuthorizationError:
       required:
       - code
       - message
@@ -885,8 +885,8 @@ components:
         message:
           type: string
       example:
-        code: 404
-        message: Not found
+        code: 403
+        message: Access denied
     Dataset:
       properties:
         id:
@@ -929,19 +929,6 @@ components:
             updated_at:
               type: string
               format: date-time
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
     AuthenticationError:
       required:
       - code
@@ -955,6 +942,19 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
   securitySchemes:
     HTTPBearer:
       type: http

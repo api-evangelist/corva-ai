@@ -283,19 +283,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
     ProjectList:
       properties:
         data:
@@ -356,6 +343,32 @@ components:
           dependencies:
             flask: 1
             python3: 1
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
     NotFoundError:
       required:
       - code
@@ -448,19 +461,6 @@ components:
             email: jo.doe@example.com
             created_at: '2022-11-11T09:11:52.326Z'
             updated_at: '2022-11-11T09:11:52.326Z'
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
   securitySchemes:
     api_key:
       type: apiKey

@@ -116,6 +116,29 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    ColumnMapperTemplateRulePayload:
+      properties:
+        column_mapper_template_rule:
+          properties:
+            duration_in_minutes:
+              type: integer
+            conditions:
+              type: object
+              items:
+                properties:
+                  operator:
+                    type: string
+                  operand:
+                    type: integer
+                  logical_operator:
+                    type: string
+      example:
+        column_mapper_template_rule:
+          duration_in_minutes: 10
+          conditions:
+          - operator: OPERATOR_EQUAL
+            operand: 20
+            logical_operator: null
     ColumnMapperTemplateRule:
       properties:
         id:
@@ -186,19 +209,6 @@ components:
       example:
         code: 403
         message: Access denied
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
     AuthenticationError:
       required:
       - code
@@ -212,29 +222,19 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    ColumnMapperTemplateRulePayload:
+    NotFoundError:
+      required:
+      - code
+      - message
       properties:
-        column_mapper_template_rule:
-          properties:
-            duration_in_minutes:
-              type: integer
-            conditions:
-              type: object
-              items:
-                properties:
-                  operator:
-                    type: string
-                  operand:
-                    type: integer
-                  logical_operator:
-                    type: string
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
       example:
-        column_mapper_template_rule:
-          duration_in_minutes: 10
-          conditions:
-          - operator: OPERATOR_EQUAL
-            operand: 20
-            logical_operator: null
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

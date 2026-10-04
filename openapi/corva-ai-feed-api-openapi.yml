@@ -272,79 +272,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    V1UserMinimal:
-      properties:
-        id:
-          type: integer
-          format: int64
-        first_name:
-          type: string
-        last_name:
-          type: string
-        email:
-          type: string
-        title:
-          type: string
-        role:
-          type: string
-        profile_photo:
-          type: string
-        current_segment:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-      example:
-        id: 1072
-        first_name: Derek
-        last_name: Smith
-        email: email7@corva.ai
-        title: Drilling Engineer
-        role: user
-        profile_photo: aws_s3_file_path
-        current_segment: drilling
-        created_at: '2020-02-04T12:48:59.593Z'
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    ActivityWell:
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        parent_asset:
-          properties:
-            id:
-              type: integer
-              format: int64
-            name:
-              type: string
-    ActivityRig:
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        active_well:
-          properties:
-            id:
-              type: integer
-              format: int64
-            name:
-              type: string
     Comment:
       required:
       - id
@@ -385,41 +312,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Like'
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    ActivitySingle:
-      properties:
-        data:
-          type: object
-          $ref: '#/components/schemas/V2Activity'
-        included:
-          type: array
-          items:
-            properties:
-              oneOf:
-                type: object
-                properties:
-                  comment:
-                    $ref: '#/components/schemas/Comment'
-                  like:
-                    $ref: '#/components/schemas/Like'
-                  user:
-                    $ref: '#/components/schemas/UserMinimal'
-                  well:
-                    $ref: '#/components/schemas/ActivityWell'
-                  rig:
-                    $ref: '#/components/schemas/ActivityRig'
     UserMinimal:
       properties:
         id:
@@ -542,19 +434,19 @@ components:
           attributes:
             id: 123
             name: Company name
-    AuthenticationError:
+    Like:
       required:
-      - code
-      - message
+      - id
       properties:
-        code:
+        id:
           type: integer
-          format: int32
-        message:
+          format: int64
+        created_at:
           type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
+          format: date-time
+        user:
+          type: object
+          $ref: '#/components/schemas/V1UserMinimal'
     ActivitiesList:
       properties:
         data:
@@ -578,19 +470,134 @@ components:
                     $ref: '#/components/schemas/ActivityWell'
                   rig:
                     $ref: '#/components/schemas/ActivityRig'
-    Like:
-      required:
-      - id
+    V1UserMinimal:
       properties:
         id:
           type: integer
           format: int64
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        title:
+          type: string
+        role:
+          type: string
+        profile_photo:
+          type: string
+        current_segment:
+          type: string
         created_at:
           type: string
           format: date-time
-        user:
+      example:
+        id: 1072
+        first_name: Derek
+        last_name: Smith
+        email: email7@corva.ai
+        title: Drilling Engineer
+        role: user
+        profile_photo: aws_s3_file_path
+        current_segment: drilling
+        created_at: '2020-02-04T12:48:59.593Z'
+    ActivityPayload:
+      properties:
+        activity:
           type: object
-          $ref: '#/components/schemas/V1UserMinimal'
+          properties:
+            asset_id:
+              type: integer
+            app_id:
+              type: integer
+            context:
+              type: object
+            segment:
+              type: string
+      example:
+        activity:
+          asset_id: 123445
+          context:
+            post:
+              body: post body
+          segment: drilling
+          app_id: 11234
+    ActivitySingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/V2Activity'
+        included:
+          type: array
+          items:
+            properties:
+              oneOf:
+                type: object
+                properties:
+                  comment:
+                    $ref: '#/components/schemas/Comment'
+                  like:
+                    $ref: '#/components/schemas/Like'
+                  user:
+                    $ref: '#/components/schemas/UserMinimal'
+                  well:
+                    $ref: '#/components/schemas/ActivityWell'
+                  rig:
+                    $ref: '#/components/schemas/ActivityRig'
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    ActivityWell:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        parent_asset:
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
     V2Activity:
       required:
       - id
@@ -694,27 +701,20 @@ components:
                         format: int64
                       type:
                         type: string
-    ActivityPayload:
+    ActivityRig:
       properties:
-        activity:
-          type: object
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        active_well:
           properties:
-            asset_id:
+            id:
               type: integer
-            app_id:
-              type: integer
-            context:
-              type: object
-            segment:
+              format: int64
+            name:
               type: string
-      example:
-        activity:
-          asset_id: 123445
-          context:
-            post:
-              body: post body
-          segment: drilling
-          app_id: 11234
   securitySchemes:
     api_key:
       type: apiKey

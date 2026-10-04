@@ -57,28 +57,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    EventFailureResponse:
-      properties:
-        code:
-          type: integer
-        message:
-          type: string
-      example:
-        code: 400
-        message: Payload is invalid
     EventPayload:
       properties:
         event:
@@ -112,7 +90,7 @@ components:
         data:
           name: Dataset Name
           company_id: 1
-    NotFoundError:
+    AuthorizationError:
       required:
       - code
       - message
@@ -123,8 +101,8 @@ components:
         message:
           type: string
       example:
-        code: 404
-        message: Not found
+        code: 403
+        message: Access denied
     AuthenticationError:
       required:
       - code
@@ -138,6 +116,28 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    EventFailureResponse:
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+      example:
+        code: 400
+        message: Payload is invalid
   securitySchemes:
     api_key:
       type: apiKey

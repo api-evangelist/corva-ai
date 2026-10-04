@@ -259,19 +259,21 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
+    FracFleetContractUpdatePayload:
       properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
+        frac_fleet_contract:
+          type: object
+          properties:
+            current:
+              type: boolean
+            data:
+              type: object
       example:
-        code: 403
-        message: Access denied
+        frac_fleet_contract:
+          current: true
+          data:
+            key: value
+            another_key: another_value
     FracFleetContract:
       properties:
         id:
@@ -306,32 +308,6 @@ components:
             another_key: another_value
           created_at: '2020-01-01T08:00:00.000Z'
           updated_at: '2020-01-01T08:00:00.000Z'
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     FracFleetContractCreatePayload:
       properties:
         frac_fleet_contract:
@@ -347,21 +323,45 @@ components:
           data:
             key: value
             another_key: another_value
-    FracFleetContractUpdatePayload:
+    AuthorizationError:
+      required:
+      - code
+      - message
       properties:
-        frac_fleet_contract:
-          type: object
-          properties:
-            current:
-              type: boolean
-            data:
-              type: object
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
       example:
-        frac_fleet_contract:
-          current: true
-          data:
-            key: value
-            another_key: another_value
+        code: 403
+        message: Access denied
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

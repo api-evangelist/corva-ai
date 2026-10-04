@@ -342,39 +342,10 @@ components:
           company_id: 1
           well_id: 2
           rig_id: 3
-    WellPlanV2UpdatePayload:
-      required:
-      - well_plan
+    WellPlanV2Response:
       properties:
-        well_plan:
-          type: object
-          properties:
-            name:
-              type: string
-            status:
-              type: string
-              enum:
-              - draft
-              - review
-              - approved
-            kind:
-              type: string
-              enum:
-              - default
-              - template
-            company_id:
-              type: integer
-              format: int64
-            well_id:
-              type: integer
-              format: int64
-            rig_id:
-              type: integer
-              format: int64
-      example:
-        well_plan:
-          name: Updated plan
-          status: approved
+        data:
+          $ref: '#/components/schemas/WellPlanV2'
     WellPlanV2:
       properties:
         id:
@@ -524,6 +495,52 @@ components:
             data:
             - id: '999'
               type: well_plan_copy
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    WellPlanV2UpdatePayload:
+      required:
+      - well_plan
+      properties:
+        well_plan:
+          type: object
+          properties:
+            name:
+              type: string
+            status:
+              type: string
+              enum:
+              - draft
+              - review
+              - approved
+            kind:
+              type: string
+              enum:
+              - default
+              - template
+            company_id:
+              type: integer
+              format: int64
+            well_id:
+              type: integer
+              format: int64
+            rig_id:
+              type: integer
+              format: int64
+      example:
+        well_plan:
+          name: Updated plan
+          status: approved
     WellPlanCopyV2:
       properties:
         id:
@@ -586,7 +603,7 @@ components:
             - 11
           created_at: '2026-07-17T08:00:00.000Z'
           updated_at: '2026-07-17T08:01:00.000Z'
-    AuthorizationError:
+    AuthenticationError:
       required:
       - code
       - message
@@ -597,8 +614,27 @@ components:
         message:
           type: string
       example:
-        code: 403
-        message: Access denied
+        code: 401
+        message: Missing authentication. Please try again.
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    WellPlanV2List:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WellPlanV2'
     WellPlanCopyV2Response:
       properties:
         data:
@@ -638,42 +674,6 @@ components:
           dashboard_ids:
           - 10
           - 11
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    WellPlanV2List:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/WellPlanV2'
-    WellPlanV2Response:
-      properties:
-        data:
-          $ref: '#/components/schemas/WellPlanV2'
   securitySchemes:
     api_key:
       type: apiKey
