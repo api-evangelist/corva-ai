@@ -1714,6 +1714,8 @@ apis:
   humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/data-api
   baseURL: https://data.corva.ai
   tags:
+  - APIKeys
+  tags_raw:
   - API Key
   properties:
   - type: OpenAPI
@@ -1804,6 +1806,8 @@ apis:
   humanURL: https://dc-docs.corva.ai/docs/API/API%20Reference/data-api
   baseURL: https://data.corva.ai
   tags:
+  - Task-Schedules
+  tags_raw:
   - Task Schedules
   properties:
   - type: OpenAPI
@@ -1817,6 +1821,9 @@ apis:
   - type: GettingStarted
     url: https://dc-docs.corva.ai/docs/API/quickstart
 common:
+- type: CapabilityMap
+  url: capabilities/corva-ai-capability-edges.yml
+  name: Corva AI Business Capability Map
 - type: Overlay
   url: overlays/corva-ai-platform-api-overlay.yaml
 - type: Authentication
