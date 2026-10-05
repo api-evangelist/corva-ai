@@ -1,0 +1,90 @@
+slug: corva-ai
+provider: Corva AI
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 7
+edges:
+- tag: Security
+  spec_file: corva-ai-security-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.9
+  evidence: 'List authentication schemas usable by the company; POST /v2/groups  Create a Group; schemas:
+    PermissionOnGroup, CompanySecurityPolicy, BulkPermissionPayload, GroupsUsersPayload'
+  reason: Operations manage authentication schemas, company domains, groups, group-user assignments, permissions
+    and security policies — i.e. identity federation and access control administration, squarely Identity
+    & Access Management.
+- tag: Users
+  spec_file: corva-ai-users-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.85
+  evidence: POST /v1/user_token  Obtain user token via Auth0 SSO authentication; POST /v1/user_token  ...with
+    multi-factor…; GET /v1/.well-known/jwks.json  Get JWKS public keys; POST /v2/users  Create a User
+  reason: Combines user account lifecycle CRUD with authentication, SSO federation, MFA, refresh tokens,
+    JWKS and API keys — identity and access management for the platform.
+- tag: Dashboards
+  spec_file: corva-ai-dashboards-api-openapi.yml
+  capability_id: BC-610.50
+  capability_id_l1: BC-610
+  capability_name: Analytics & BI Management
+  confidence: 0.8
+  evidence: '"Create a dashboard app with app name and category", "List dashboard folders", "Add a dashboard
+    share to a dashboard folder"'
+  reason: CRUD and sharing of dashboards, dashboard folders and dashboard apps/widgets — this is reporting
+    and BI content delivery, i.e. Analytics & BI Management. Not a domain capability of oil & gas; the
+    surface is dashboard tooling.
+- tag: AppLogs
+  spec_file: corva-ai-applogs-api-openapi.yml
+  capability_id: BC-4220.20
+  capability_id_l1: BC-4220
+  capability_name: Observability Management
+  confidence: 0.78
+  evidence: '"List log streams for app", "List events for log stream", "Search log events"'
+  reason: Log stream enumeration and log event search for deployed apps is squarely observability (logs/metrics/traces)
+    of running software on the platform. Could alternatively be read as generic IT operations monitoring,
+    hence not maximal confidence.
+- tag: AppUsage
+  spec_file: corva-ai-appusage-api-openapi.yml
+  capability_id: BC-4280.30
+  capability_id_l1: BC-4280
+  capability_name: Product Usage Analytics
+  confidence: 0.78
+  evidence: GET /v2/usage_analytics/app_usage/usage_list  Get App Usage Statistics by user; GET .../top_apps  Get
+    Top App Usage Statistics; GET .../total_usage_trend
+  reason: Read-only analytics endpoints aggregating product usage of apps by user, by day, top apps and
+    usage trend — this is product usage analytics over telemetry, not API quota/commercial governance
+    (no plan or rate-limit semantics appear).
+- tag: Tool Ordering
+  spec_file: corva-ai-tool-ordering-api-openapi.yml
+  capability_id: BC-500.30
+  capability_id_l1: BC-500
+  capability_name: Purchase Order Management
+  confidence: 0.78
+  evidence: POST /v2/tool_ordering/orders/{id}/submit  Submit Tool Order; POST .../orders/{id}/acknowledge  Acknowledge
+    Tool Order (vendor action); POST .../components/receive  Receive Shipped Order Components On Rig
+  reason: Full order lifecycle — draft, submit, vendor acknowledgement, cancellation, component receipt
+    — plus Vendor/VendorContact/VendorMembership schemas. This is purchase-order creation, approval and
+    execution against suppliers; some ambiguity between PO Management and wider P2P operations.
+- tag: AlertRBAC
+  spec_file: corva-ai-alertrbac-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.7
+  evidence: '"List Assignable Alert Abilities", "Create Alert Role", "Replace Alert Role Abilities", "Enable
+    Alert RBAC"'
+  reason: Operations define company-scoped roles and abilities and toggle role-based access control, i.e.
+    authorisation/permission administration. That is Identity & Access Management, not alerting per se.
+    Moderate confidence because the scope is confined to one product feature's permissions.
