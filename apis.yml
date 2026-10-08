@@ -1817,6 +1817,8 @@ apis:
   - type: GettingStarted
     url: https://dc-docs.corva.ai/docs/API/quickstart
 common:
+- type: FinOps
+  url: finops/corva-ai-finops.yml
 - type: CapabilityMap
   url: capabilities/corva-ai-capability-edges.yml
   name: Corva AI Business Capability Map
