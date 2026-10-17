@@ -259,21 +259,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    FracFleetContractUpdatePayload:
-      properties:
-        frac_fleet_contract:
-          type: object
-          properties:
-            current:
-              type: boolean
-            data:
-              type: object
-      example:
-        frac_fleet_contract:
-          current: true
-          data:
-            key: value
-            another_key: another_value
     FracFleetContract:
       properties:
         id:
@@ -308,21 +293,19 @@ components:
             another_key: another_value
           created_at: '2020-01-01T08:00:00.000Z'
           updated_at: '2020-01-01T08:00:00.000Z'
-    FracFleetContractCreatePayload:
+    NotFoundError:
+      required:
+      - code
+      - message
       properties:
-        frac_fleet_contract:
-          type: object
-          properties:
-            current:
-              type: boolean
-            data:
-              type: object
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
       example:
-        frac_fleet_contract:
-          current: true
-          data:
-            key: value
-            another_key: another_value
+        code: 404
+        message: Not found
     AuthorizationError:
       required:
       - code
@@ -349,19 +332,36 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    NotFoundError:
-      required:
-      - code
-      - message
+    FracFleetContractUpdatePayload:
       properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
+        frac_fleet_contract:
+          type: object
+          properties:
+            current:
+              type: boolean
+            data:
+              type: object
       example:
-        code: 404
-        message: Not found
+        frac_fleet_contract:
+          current: true
+          data:
+            key: value
+            another_key: another_value
+    FracFleetContractCreatePayload:
+      properties:
+        frac_fleet_contract:
+          type: object
+          properties:
+            current:
+              type: boolean
+            data:
+              type: object
+      example:
+        frac_fleet_contract:
+          current: true
+          data:
+            key: value
+            another_key: another_value
   securitySchemes:
     api_key:
       type: apiKey

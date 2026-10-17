@@ -259,6 +259,19 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     AppStoreTemplateSectionPayload:
       properties:
         app_store_template_section:
@@ -354,6 +367,19 @@ components:
             subheader: Sub header
             url: https://example.com/foo/bar
             custom_image_url: aws_image_url
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
     AppStoreTemplateSectionList:
       properties:
         data:
@@ -432,7 +458,7 @@ components:
             position: 1
             app_id: 123
             workflow_id: null
-    NotFoundError:
+    AuthenticationError:
       required:
       - code
       - message
@@ -443,21 +469,8 @@ components:
         message:
           type: string
       example:
-        code: 404
-        message: Not found
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
+        code: 401
+        message: Missing authentication. Please try again.
     AppStoreTemplateSectionObject:
       properties:
         id:
@@ -628,19 +641,6 @@ components:
               custom_image_url: aws_image_url
               created_at: '2022-11-11T09:11:52.326Z'
               updated_at: '2022-11-11T09:11:52.326Z'
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
   securitySchemes:
     api_key:
       type: apiKey

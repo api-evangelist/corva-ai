@@ -58,6 +58,25 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    WellCacheList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WellCache'
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     WellCache:
       properties:
         asset_id:
@@ -353,12 +372,6 @@ components:
             first_name: John
             last_name: Doe
             profile_photo: ''
-    WellCacheList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/WellCache'
     AuthorizationError:
       required:
       - code
@@ -385,19 +398,6 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

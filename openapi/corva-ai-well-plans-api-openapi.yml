@@ -305,7 +305,82 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    WellPlanV2Payload:
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    WellPlanCopyV2:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            source_well_plan_id:
+              type: integer
+              format: int64
+            target_well_plan_id:
+              type: integer
+              format: int64
+            action:
+              type: string
+              enum:
+              - import_custom_dashboards
+            status:
+              type: string
+              enum:
+              - queued
+              - processing
+              - completed
+            settings:
+              type: object
+              description: Input options for the copy (e.g. a subset of dashboard IDs to import)
+            steps:
+              type: object
+              description: 'Progress tracking: completed step names and copied dashboard IDs'
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+      example:
+        id: 999
+        type: well_plan_copy
+        attributes:
+          id: 999
+          source_well_plan_id: 12345
+          target_well_plan_id: 67890
+          action: import_custom_dashboards
+          status: completed
+          settings:
+            dashboard_ids:
+            - 10
+            - 11
+          steps:
+            completed:
+            - copy_custom_dashboards
+            copied_dashboard_ids:
+            - 10
+            - 11
+          created_at: '2026-07-17T08:00:00.000Z'
+          updated_at: '2026-07-17T08:01:00.000Z'
+    WellPlanV2UpdatePayload:
       required:
       - well_plan
       properties:
@@ -336,16 +411,8 @@ components:
               format: int64
       example:
         well_plan:
-          name: Imported plan
-          status: draft
-          kind: default
-          company_id: 1
-          well_id: 2
-          rig_id: 3
-    WellPlanV2Response:
-      properties:
-        data:
-          $ref: '#/components/schemas/WellPlanV2'
+          name: Updated plan
+          status: approved
     WellPlanV2:
       properties:
         id:
@@ -495,6 +562,20 @@ components:
             data:
             - id: '999'
               type: well_plan_copy
+    WellPlanCopyV2Response:
+      properties:
+        data:
+          $ref: '#/components/schemas/WellPlanCopyV2'
+    WellPlanV2List:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WellPlanV2'
+    WellPlanV2Response:
+      properties:
+        data:
+          $ref: '#/components/schemas/WellPlanV2'
     AuthorizationError:
       required:
       - code
@@ -508,101 +589,6 @@ components:
       example:
         code: 403
         message: Access denied
-    WellPlanV2UpdatePayload:
-      required:
-      - well_plan
-      properties:
-        well_plan:
-          type: object
-          properties:
-            name:
-              type: string
-            status:
-              type: string
-              enum:
-              - draft
-              - review
-              - approved
-            kind:
-              type: string
-              enum:
-              - default
-              - template
-            company_id:
-              type: integer
-              format: int64
-            well_id:
-              type: integer
-              format: int64
-            rig_id:
-              type: integer
-              format: int64
-      example:
-        well_plan:
-          name: Updated plan
-          status: approved
-    WellPlanCopyV2:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            source_well_plan_id:
-              type: integer
-              format: int64
-            target_well_plan_id:
-              type: integer
-              format: int64
-            action:
-              type: string
-              enum:
-              - import_custom_dashboards
-            status:
-              type: string
-              enum:
-              - queued
-              - processing
-              - completed
-            settings:
-              type: object
-              description: Input options for the copy (e.g. a subset of dashboard IDs to import)
-            steps:
-              type: object
-              description: 'Progress tracking: completed step names and copied dashboard IDs'
-            created_at:
-              type: string
-              format: date-time
-            updated_at:
-              type: string
-              format: date-time
-      example:
-        id: 999
-        type: well_plan_copy
-        attributes:
-          id: 999
-          source_well_plan_id: 12345
-          target_well_plan_id: 67890
-          action: import_custom_dashboards
-          status: completed
-          settings:
-            dashboard_ids:
-            - 10
-            - 11
-          steps:
-            completed:
-            - copy_custom_dashboards
-            copied_dashboard_ids:
-            - 10
-            - 11
-          created_at: '2026-07-17T08:00:00.000Z'
-          updated_at: '2026-07-17T08:01:00.000Z'
     AuthenticationError:
       required:
       - code
@@ -616,29 +602,6 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    WellPlanV2List:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/WellPlanV2'
-    WellPlanCopyV2Response:
-      properties:
-        data:
-          $ref: '#/components/schemas/WellPlanCopyV2'
     WellPlanCopyV2Payload:
       required:
       - source_well_plan_id
@@ -674,6 +637,43 @@ components:
           dashboard_ids:
           - 10
           - 11
+    WellPlanV2Payload:
+      required:
+      - well_plan
+      properties:
+        well_plan:
+          type: object
+          properties:
+            name:
+              type: string
+            status:
+              type: string
+              enum:
+              - draft
+              - review
+              - approved
+            kind:
+              type: string
+              enum:
+              - default
+              - template
+            company_id:
+              type: integer
+              format: int64
+            well_id:
+              type: integer
+              format: int64
+            rig_id:
+              type: integer
+              format: int64
+      example:
+        well_plan:
+          name: Imported plan
+          status: draft
+          kind: default
+          company_id: 1
+          well_id: 2
+          rig_id: 3
   securitySchemes:
     api_key:
       type: apiKey

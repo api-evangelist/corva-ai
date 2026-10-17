@@ -152,6 +152,19 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     BulkCreateBlacklistedDataset:
       properties:
         blacklisted_dataset:
@@ -167,56 +180,6 @@ components:
           - 12389
           - 10667
           - 99778
-    CreateBlacklistedDataset:
-      properties:
-        blacklisted_dataset:
-          type: object
-          properties:
-            dataset_id:
-              type: integer
-              format: int64
-      example:
-        blacklisted_dataset:
-          dataset_id: 12389
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
     BlacklistedDataset:
       properties:
         id:
@@ -306,6 +269,43 @@ components:
             id: 222
             name: user
           relationships: {}
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    CreateBlacklistedDataset:
+      properties:
+        blacklisted_dataset:
+          type: object
+          properties:
+            dataset_id:
+              type: integer
+              format: int64
+      example:
+        blacklisted_dataset:
+          dataset_id: 12389
   securitySchemes:
     api_key:
       type: apiKey

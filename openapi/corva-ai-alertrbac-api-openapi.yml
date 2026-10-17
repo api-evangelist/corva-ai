@@ -402,6 +402,19 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     AlertRoleAbilitiesPayload:
       properties:
         abilities:
@@ -426,6 +439,48 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AlertAbilityCatalogItem'
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AlertRoleSingle:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AlertRole'
+    AlertRolePayload:
+      properties:
+        alert_role:
+          type: object
+          required:
+          - name
+          properties:
+            name:
+              type: string
+            description:
+              type: string
     AlertRole:
       properties:
         id:
@@ -468,72 +523,6 @@ components:
             updated_at:
               type: string
               format: date-time
-    AlertRoleSingle:
-      properties:
-        data:
-          type: object
-          $ref: '#/components/schemas/AlertRole'
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    AlertRbacStatus:
-      properties:
-        alert_rbac_enabled:
-          type: boolean
-          description: Whether per-company alert RBAC enforcement is on
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    AlertRoleList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertRole'
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    AlertRolePayload:
-      properties:
-        alert_role:
-          type: object
-          required:
-          - name
-          properties:
-            name:
-              type: string
-            description:
-              type: string
     AlertAbilityCatalogItem:
       required:
       - resource_class
@@ -551,6 +540,17 @@ components:
         name:
           type: string
           description: Localized display name for the matrix UI
+    AlertRoleList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertRole'
+    AlertRbacStatus:
+      properties:
+        alert_rbac_enabled:
+          type: boolean
+          description: Whether per-company alert RBAC enforcement is on
   securitySchemes:
     api_key:
       type: apiKey

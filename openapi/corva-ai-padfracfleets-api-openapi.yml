@@ -200,70 +200,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    CreatePadFracFleetPayload:
-      properties:
-        pad_frac_fleet:
-          type: object
-          properties:
-            frac_fleet_id:
-              type: integer
-              format: int64
-            pad_id:
-              type: integer
-              format: int64
-            current:
-              type: boolean
-      example:
-        pad_frac_fleet:
-          frac_fleet_id: 123
-          pad_id: 333
-          current: false
-    UpdatePadFracFleetPayload:
-      properties:
-        pad_frac_fleet:
-          type: object
-          properties:
-            current:
-              type: boolean
-            contract_data:
-              type: object
-      example:
-        pad_frac_fleet:
-          current: true
-          contract_data:
-            something: value
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    EdrProviders:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/EdrProvider'
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     NotFoundError:
       required:
       - code
@@ -355,6 +291,38 @@ components:
           frac_fleet_lines:
           - id: 555
             type: frac_fleet_line
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    EdrProviders:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EdrProvider'
     EdrProvider:
       properties:
         id:
@@ -442,6 +410,38 @@ components:
             data:
               id: '123'
               type: user
+    UpdatePadFracFleetPayload:
+      properties:
+        pad_frac_fleet:
+          type: object
+          properties:
+            current:
+              type: boolean
+            contract_data:
+              type: object
+      example:
+        pad_frac_fleet:
+          current: true
+          contract_data:
+            something: value
+    CreatePadFracFleetPayload:
+      properties:
+        pad_frac_fleet:
+          type: object
+          properties:
+            frac_fleet_id:
+              type: integer
+              format: int64
+            pad_id:
+              type: integer
+              format: int64
+            current:
+              type: boolean
+      example:
+        pad_frac_fleet:
+          frac_fleet_id: 123
+          pad_id: 333
+          current: false
   securitySchemes:
     api_key:
       type: apiKey

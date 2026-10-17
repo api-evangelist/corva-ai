@@ -510,43 +510,30 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    IndexSchema:
+    DatasetStatistics:
       properties:
-        name:
-          type: string
-          title: Name
-          default: ''
-          example: asset_id_timestamp
-        fields:
-          items:
-            additionalProperties: true
-            type: object
-          type: array
-          title: Fields
-          example:
-          - asset_id: 1
-          - timestamp: -1
-        unique:
-          type: boolean
-          title: Unique
-          default: false
-        required:
-          type: boolean
-          title: Required
-          default: false
-        status:
-          type: string
-          title: Status
-          default: building
-          example: active
-        settings:
-          anyOf:
-          - $ref: '#/components/schemas/IndexSettings'
-          - type: 'null'
-          example:
-            expire_after_seconds: 3600
+        size:
+          type: integer
+          title: Size
+          default: 0
+          example: 1000000
+        count:
+          type: integer
+          title: Count
+          default: 0
+          example: 282034
+        storage_size:
+          type: integer
+          title: Storage Size
+          default: 0
+          example: 8839043
+        index_size:
+          type: integer
+          title: Index Size
+          default: 0
+          example: 199234282
       type: object
-      title: IndexSchema
+      title: DatasetStatistics
     CompanyDatasetItemSerializer:
       properties:
         id:
@@ -568,6 +555,20 @@ components:
       - name
       - type
       title: CompanyDatasetItemSerializer
+    IndexStatistics:
+      properties:
+        size:
+          type: integer
+          title: Size
+          default: 0
+          example: 929429
+        usage:
+          type: number
+          title: Usage
+          default: 0
+          example: 112.294923
+      type: object
+      title: IndexStatistics
     DataType:
       type: string
       enum:
@@ -638,30 +639,6 @@ components:
           default: false
       type: object
       title: DatasetSchema
-    DatasetStatistics:
-      properties:
-        size:
-          type: integer
-          title: Size
-          default: 0
-          example: 1000000
-        count:
-          type: integer
-          title: Count
-          default: 0
-          example: 282034
-        storage_size:
-          type: integer
-          title: Storage Size
-          default: 0
-          example: 8839043
-        index_size:
-          type: integer
-          title: Index Size
-          default: 0
-          example: 199234282
-      type: object
-      title: DatasetStatistics
     IndexSerializer:
       properties:
         name:
@@ -703,6 +680,38 @@ components:
       required:
       - statistics
       title: IndexSerializer
+    HTTPValidationError:
+      properties:
+        code:
+          type: integer
+          title: Code
+        message:
+          type: string
+          title: Message
+      type: object
+      required:
+      - code
+      - message
+      title: ExceptionResponse
+    IndexSettings:
+      properties:
+        expire_after_seconds:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Expire After Seconds
+          example: 3600
+        partial_filter_expression:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Partial Filter Expression
+          example:
+            metadata.asset_id:
+              $exists: true
+      type: object
+      title: IndexSettings
     CompanyDatasetSerializer:
       additionalProperties:
         items:
@@ -725,19 +734,43 @@ components:
           name: activities.summary-2tours
           provider: corva
           type: time
-    HTTPValidationError:
+    IndexSchema:
       properties:
-        code:
-          type: integer
-          title: Code
-        message:
+        name:
           type: string
-          title: Message
+          title: Name
+          default: ''
+          example: asset_id_timestamp
+        fields:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Fields
+          example:
+          - asset_id: 1
+          - timestamp: -1
+        unique:
+          type: boolean
+          title: Unique
+          default: false
+        required:
+          type: boolean
+          title: Required
+          default: false
+        status:
+          type: string
+          title: Status
+          default: building
+          example: active
+        settings:
+          anyOf:
+          - $ref: '#/components/schemas/IndexSettings'
+          - type: 'null'
+          example:
+            expire_after_seconds: 3600
       type: object
-      required:
-      - code
-      - message
-      title: ExceptionResponse
+      title: IndexSchema
     DatasetSerializer:
       properties:
         company_id:
@@ -841,39 +874,19 @@ components:
       required:
       - id
       title: DatasetSerializer
-    IndexStatistics:
+    NotFoundError:
+      required:
+      - code
+      - message
       properties:
-        size:
+        code:
           type: integer
-          title: Size
-          default: 0
-          example: 929429
-        usage:
-          type: number
-          title: Usage
-          default: 0
-          example: 112.294923
-      type: object
-      title: IndexStatistics
-    IndexSettings:
-      properties:
-        expire_after_seconds:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Expire After Seconds
-          example: 3600
-        partial_filter_expression:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Partial Filter Expression
-          example:
-            metadata.asset_id:
-              $exists: true
-      type: object
-      title: IndexSettings
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     AuthorizationError:
       required:
       - code
@@ -887,6 +900,19 @@ components:
       example:
         code: 403
         message: Access denied
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
     Dataset:
       properties:
         id:
@@ -929,32 +955,6 @@ components:
             updated_at:
               type: string
               format: date-time
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
   securitySchemes:
     HTTPBearer:
       type: http

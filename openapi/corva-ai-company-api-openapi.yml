@@ -251,6 +251,19 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     CompanyV1UnitSystemParam:
       properties:
         name_of_metric:
@@ -259,30 +272,6 @@ components:
         angle: value
         system: imperial
         density: ppg
-    CompanyType:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            name:
-              type: string
-            provider:
-              type: string
-      example:
-        id: 111
-        type: company
-        attributes:
-          id: 1
-          name: Company Name
-          provider: Provider name
     AuthorizationError:
       required:
       - code
@@ -309,19 +298,6 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
     CompanyV1:
       properties:
         id:
@@ -428,6 +404,30 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CompanyType'
+    CompanyType:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            provider:
+              type: string
+      example:
+        id: 111
+        type: company
+        attributes:
+          id: 1
+          name: Company Name
+          provider: Provider name
   securitySchemes:
     api_key:
       type: apiKey

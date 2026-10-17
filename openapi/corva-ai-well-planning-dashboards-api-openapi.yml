@@ -522,6 +522,35 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    DashboardAppBatchUpdatePayload:
+      properties:
+        dashboard_apps:
+          type: array
+      example:
+        dashboard_apps:
+        - id: 123
+          settings: {}
+          coordinates:
+            x: 0
+            y: 1
+        - id: 124
+          settings: {}
+          coordinates:
+            x: 0
+            y: 3
     DashboardApp:
       properties:
         id:
@@ -593,6 +622,177 @@ components:
             data:
               id: '1'
               type: package
+    WellPlanningDashboardAppV2BulkCreatePayload:
+      properties:
+        app_key:
+          type: string
+        name:
+          type: string
+        category:
+          type: string
+        assets:
+          type: array
+          items:
+            properties:
+              assetId:
+                type: string
+              rigId:
+                type: string
+              fracFleetId:
+                type: string
+              padId:
+                type: string
+        settings:
+          type: object
+        coordinates:
+          type: object
+      example:
+        app_key: corva.well-planning.app
+        assets:
+        - assetId: 1
+        - rigId: 2
+        - fracFleetId: 3
+          padId: 4
+        settings:
+          key: value
+        coordinates:
+          x: 1
+          y: 2
+          w: 3
+          h: 4
+    WellPlanningDashboardV2Response:
+      properties:
+        data:
+          $ref: '#/components/schemas/WellPlanningDashboardV2'
+    WellPlanningDashboardV2Payload:
+      required:
+      - asset_id
+      - dashboard
+      properties:
+        asset_id:
+          type: integer
+          format: int64
+        dashboard:
+          type: object
+          properties:
+            name:
+              type: string
+            type:
+              type: string
+              description: custom_well_planning_dashboard (default) or default_well_planning_dashboard
+            layout:
+              type: string
+            icon:
+              type: string
+            show_workflows_help:
+              type: boolean
+            settings:
+              type: object
+              properties:
+                show_control_apps:
+                  type: boolean
+                timezones:
+                  type: object
+                  properties:
+                    asset_id_1:
+                      type: string
+                unit_systems:
+                  type: object
+                  properties:
+                    asset_id_1:
+                      type: string
+                global_offset_wells:
+                  type: object
+            order:
+              type: integer
+            segment:
+              type: array
+            timezone:
+              type: string
+            unit_system:
+              type: string
+            category:
+              type: string
+      example:
+        asset_id: 1
+        dashboard:
+          name: Well Planning
+          type: custom_well_planning_dashboard
+          layout: grid
+          icon: well-planning
+          show_workflows_help: true
+          settings:
+            show_control_apps: true
+            timezones:
+              asset_id_1: America/Chicago
+            unit_systems:
+              asset_id_1: Imperial
+            global_offset_wells: {}
+          order: 13
+          segment:
+          - drilling
+          timezone: America/Chicago
+          unit_system: Imperial
+          category: wellPlanningDashboard
+    DashboardAppList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardApp'
+    WellPlanningDashboardAppV2Payload:
+      properties:
+        app_key:
+          type: string
+        name:
+          type: string
+        category:
+          type: string
+        settings:
+          type: object
+        coordinates:
+          type: object
+      example:
+        app_key: corva.well-planning.app
+        settings:
+          key: value
+        coordinates:
+          x: 1
+          y: 2
+          w: 3
+          h: 4
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    WellPlanningDashboardV2List:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WellPlanningDashboardV2'
     WellPlanningDashboardV2:
       properties:
         id:
@@ -698,130 +898,6 @@ components:
               type: company
           apps:
             data: []
-    WellPlanningDashboardV2Payload:
-      required:
-      - asset_id
-      - dashboard
-      properties:
-        asset_id:
-          type: integer
-          format: int64
-        dashboard:
-          type: object
-          properties:
-            name:
-              type: string
-            type:
-              type: string
-              description: custom_well_planning_dashboard (default) or default_well_planning_dashboard
-            layout:
-              type: string
-            icon:
-              type: string
-            show_workflows_help:
-              type: boolean
-            settings:
-              type: object
-              properties:
-                show_control_apps:
-                  type: boolean
-                timezones:
-                  type: object
-                  properties:
-                    asset_id_1:
-                      type: string
-                unit_systems:
-                  type: object
-                  properties:
-                    asset_id_1:
-                      type: string
-                global_offset_wells:
-                  type: object
-            order:
-              type: integer
-            segment:
-              type: array
-            timezone:
-              type: string
-            unit_system:
-              type: string
-            category:
-              type: string
-      example:
-        asset_id: 1
-        dashboard:
-          name: Well Planning
-          type: custom_well_planning_dashboard
-          layout: grid
-          icon: well-planning
-          show_workflows_help: true
-          settings:
-            show_control_apps: true
-            timezones:
-              asset_id_1: America/Chicago
-            unit_systems:
-              asset_id_1: Imperial
-            global_offset_wells: {}
-          order: 13
-          segment:
-          - drilling
-          timezone: America/Chicago
-          unit_system: Imperial
-          category: wellPlanningDashboard
-    WellPlanningDashboardAppV2Payload:
-      properties:
-        app_key:
-          type: string
-        name:
-          type: string
-        category:
-          type: string
-        settings:
-          type: object
-        coordinates:
-          type: object
-      example:
-        app_key: corva.well-planning.app
-        settings:
-          key: value
-        coordinates:
-          x: 1
-          y: 2
-          w: 3
-          h: 4
-    DashboardAppBatchUpdatePayload:
-      properties:
-        dashboard_apps:
-          type: array
-      example:
-        dashboard_apps:
-        - id: 123
-          settings: {}
-          coordinates:
-            x: 0
-            y: 1
-        - id: 124
-          settings: {}
-          coordinates:
-            x: 0
-            y: 3
-    WellPlanningDashboardV2Response:
-      properties:
-        data:
-          $ref: '#/components/schemas/WellPlanningDashboardV2'
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
     WellPlanningDashboardV2UpdatePayload:
       required:
       - dashboard
@@ -883,82 +959,6 @@ components:
           timezone: America/Chicago
           unit_system: Imperial
           category: wellPlanningDashboard
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    WellPlanningDashboardAppV2BulkCreatePayload:
-      properties:
-        app_key:
-          type: string
-        name:
-          type: string
-        category:
-          type: string
-        assets:
-          type: array
-          items:
-            properties:
-              assetId:
-                type: string
-              rigId:
-                type: string
-              fracFleetId:
-                type: string
-              padId:
-                type: string
-        settings:
-          type: object
-        coordinates:
-          type: object
-      example:
-        app_key: corva.well-planning.app
-        assets:
-        - assetId: 1
-        - rigId: 2
-        - fracFleetId: 3
-          padId: 4
-        settings:
-          key: value
-        coordinates:
-          x: 1
-          y: 2
-          w: 3
-          h: 4
-    DashboardAppList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/DashboardApp'
-    WellPlanningDashboardV2List:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/WellPlanningDashboardV2'
   securitySchemes:
     api_key:
       type: apiKey

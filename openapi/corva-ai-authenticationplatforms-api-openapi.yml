@@ -75,24 +75,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthenticationPlatformV2Single:
-      properties:
-        data:
-          type: object
-          $ref: '#/components/schemas/AuthenticationPlatformV2'
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
     NotFoundError:
       required:
       - code
@@ -106,12 +88,6 @@ components:
       example:
         code: 404
         message: Not found
-    AuthenticationPlatformV2List:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AuthenticationPlatformV2'
     AuthenticationPlatformV2:
       properties:
         id:
@@ -143,6 +119,30 @@ components:
             updated_at:
               type: string
               format: date-time
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AuthenticationPlatformV2List:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticationPlatformV2'
+    AuthenticationPlatformV2Single:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AuthenticationPlatformV2'
   securitySchemes:
     api_key:
       type: apiKey

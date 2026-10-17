@@ -108,19 +108,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
     CompetitorStatsData:
       properties:
         data:
@@ -282,6 +269,19 @@ components:
               median: 377.137945
               q1: 377.137945
               q3: 445.8042675
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
     AuthenticationError:
       required:
       - code

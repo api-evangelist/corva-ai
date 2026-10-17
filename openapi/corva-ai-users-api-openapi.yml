@@ -1292,51 +1292,7 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    ApiKeyList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ApiKey'
-    UserStreaksList:
-      properties:
-        data:
-          type: array
-          items:
-            properties:
-              id:
-                type: string
-                format: int64
-              type:
-                type: string
-              attributes:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  email:
-                    type: integer
-                  streak:
-                    type: object
-                    properties:
-                      current_streak:
-                        type: integer
-                      longest_streak:
-                        type: integer
-                      last_active_on:
-                        type: date
-      example:
-        data:
-        - id: '1'
-          type: user
-          attributes:
-            id: 1
-            email: example@email.com
-            streak:
-              current_streak: 1
-              longest_streak: 10
-              last_active_on: '2025-04-25'
-    AuthenticationError:
+    NotFoundError:
       required:
       - code
       - message
@@ -1347,92 +1303,36 @@ components:
         message:
           type: string
       example:
-        code: 401
-        message: Missing authentication. Please try again.
-    IdentityVerifierList:
+        code: 404
+        message: Not found
+    Auth0Authentication:
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/IdentityVerifier'
-    UserPayloadUpdate:
-      properties:
-        user:
-          type: object
-          properties:
-            user_id:
-              type: integer
-            email:
-              type: string
-            first_name:
-              type: string
-            last_name:
-              type: string
-            title:
-              type: string
-            profile_photo:
-              type: string
-            group:
-              type: array
-              items:
-                type: string
-            group_ids:
-              type: array
-              items:
-                type: integer
-            current_segment:
-              type: string
-            role:
-              type: string
-            favorite_asset_id:
-              type: integer
-            resource:
-              type: array
-              items:
-                type: string
-            theme:
-              type: string
-            mobile:
-              type: string
-            unit_system:
-              type: object
-            custom_unit_system:
-              type: object
+        token:
+          type: string
+        nonce:
+          type: string
       example:
-        user:
-          email: john.doe@example.com
-          first_name: John
-          last_name: Doe
-          title: Title
-          group_ids:
-          - 13
-          - 445
-          - 890
-          role: user
-          theme: dark
-          mobile: '+1555555555'
-          resource:
-          - Conventional
-          unit_system:
-            yp: hsf
-            oil: bbl
-            area: ft2
-            mass: lb
-            force: klbf
-            speed: ft/h
-            length: ft
-            system: imperial
-            torque: ft-klbf
-            volume: gal
-            density: ppg
-            pressure: psi
-            shortLength: in
-            temperature: F
-            massPerLength: lb-ft
-            volumeFlowRate: gal/min
-          custom_unit_system:
-            mass: kg
-            distance: m
+        auth:
+          token: auth0-token-goes-here
+          nonce: auth0-nonce-goes-here
+    UserSettings:
+      properties:
+        favorites:
+          type: object
+        sms_blacklisted:
+          type: boolean
+        restricted_assets:
+          type: array
+        restricted_programs:
+          type: array
+        participates_in_beta_apps:
+          type: boolean
+      example:
+        favorites: {}
+        sms_blacklisted: false
+        restricted_assets: []
+        restricted_programs: []
+        participates_in_beta_apps: false
     UserMinimal:
       properties:
         id:
@@ -1555,15 +1455,98 @@ components:
           attributes:
             id: 123
             name: Company name
-    RefreshTokenAuthentication:
+    ApiKeyPayload:
+      properties:
+        api_key:
+          type: object
+          properties:
+            key:
+              type: string
+            permissions:
+              type: string
+            owner_id:
+              type: integer
+              format: int64
+            owner_type:
+              type: string
+            requested_by_id:
+              type: integer
+              format: int64
+            approved_by_id:
+              type: integer
+              format: int64
+            company_id:
+              type: integer
+              format: int64
+      example:
+        api_key:
+          name: ApiKey Name
+          status: active
+          key: some-auto-generated-key
+          permissions: read
+          owner_id: 12345
+          owner_type: App
+          requested_by_id: 123
+          approved_by_id: 456
+          company_id: 456
+    EmailPasswordMFAAuthentication:
       properties:
         email:
           type: string
         password:
           type: string
+        verification_mode:
+          type: string
+          enum:
+          - email
+          - sms
+          - authenticator
+        verification_code:
+          type: string
       example:
         auth:
-          refresh_token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMzUwLCJleHAiOjE1NzkxOTgyOTksImNvbXBhbnlfaWQiOjI3MjksImltcGVyc29uYXRvcl9pZCI6bnVsbH0.nWitzFwOW5FfXelRrkcTz90u1QUtGNXcJQc2lkcW1_k
+          email: me@mycompany.com
+          password: ThisIsMyP@55w0rd!
+          verification_mode: email
+          verification_code: '123456'
+    UserStreaksList:
+      properties:
+        data:
+          type: array
+          items:
+            properties:
+              id:
+                type: string
+                format: int64
+              type:
+                type: string
+              attributes:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  email:
+                    type: integer
+                  streak:
+                    type: object
+                    properties:
+                      current_streak:
+                        type: integer
+                      longest_streak:
+                        type: integer
+                      last_active_on:
+                        type: date
+      example:
+        data:
+        - id: '1'
+          type: user
+          attributes:
+            id: 1
+            email: example@email.com
+            streak:
+              current_streak: 1
+              longest_streak: 10
+              last_active_on: '2025-04-25'
     ApiKey:
       properties:
         id:
@@ -1652,26 +1635,40 @@ components:
           approved_by:
             id: '456'
             type: user
-    EmailPasswordMFAAuthentication:
+    UserSettingsPayload:
+      properties:
+        custom_property:
+          type: string
+        custom_property2:
+          type: object
+        participates_in_beta_apps:
+          type: boolean
+      example:
+        custom_property: Value
+        custom_property2:
+          key: value
+        participates_in_beta_apps: true
+    AuthenticationSchema:
+      properties:
+        connection:
+          type: string
+        title:
+          type: string
+        provider:
+          type: string
+      example:
+        connection: connection-abc
+        title: Connection to ABC
+        provider: google
+    RefreshTokenAuthentication:
       properties:
         email:
           type: string
         password:
           type: string
-        verification_mode:
-          type: string
-          enum:
-          - email
-          - sms
-          - authenticator
-        verification_code:
-          type: string
       example:
         auth:
-          email: me@mycompany.com
-          password: ThisIsMyP@55w0rd!
-          verification_mode: email
-          verification_code: '123456'
+          refresh_token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMzUwLCJleHAiOjE1NzkxOTgyOTksImNvbXBhbnlfaWQiOjI3MjksImltcGVyc29uYXRvcl9pZCI6bnVsbH0.nWitzFwOW5FfXelRrkcTz90u1QUtGNXcJQc2lkcW1_k
     JwksResponse:
       description: JWKS (JSON Web Key Set) containing public keys for verifying JWT tokens
       properties:
@@ -1687,17 +1684,43 @@ components:
           use: sig
           n: xGOr-H7A7RCQBzJvq9jKMjPqJT5AYo1oqP6LmcR2...
           e: AQAB
-    UserPayloadCreate:
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    UserList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserMinimal'
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    UserPayloadUpdate:
       properties:
         user:
           type: object
           properties:
-            company_id:
-              type: integer
-            password:
-              type: string
-            password_confirmation:
-              type: string
             user_id:
               type: integer
             email:
@@ -1736,34 +1759,21 @@ components:
               type: object
             custom_unit_system:
               type: object
-            unit_ids:
-              type: array
-              items:
-                type: integer
       example:
         user:
-          company_id: 1
-          password: Password
-          password_confirmation: Password
           email: john.doe@example.com
+          first_name: John
+          last_name: Doe
+          title: Title
           group_ids:
           - 13
           - 445
           - 890
-          unit_ids:
-          - 134
-          - 445
-          - 850
-          first_name: John
-          last_name: Doe
-          title: Title
           role: user
           theme: dark
           mobile: '+1555555555'
           resource:
           - Conventional
-          group:
-          - Field
           unit_system:
             yp: hsf
             oil: bbl
@@ -1784,139 +1794,12 @@ components:
           custom_unit_system:
             mass: kg
             distance: m
-    AuthenticationSchema:
-      properties:
-        connection:
-          type: string
-        title:
-          type: string
-        provider:
-          type: string
-      example:
-        connection: connection-abc
-        title: Connection to ABC
-        provider: google
-    AuthenticationResponse:
-      description: 'Authentication response containing JWT tokens. By default returns HMAC (HS256) tokens. To receive JWKS (RS256) tokens, include "X-Token-Format: jwks" header or "token_format: jwks" in auth params.'
-      properties:
-        jwt:
-          type: string
-        auth_key:
-          type: string
-        refresh_token:
-          type: string
-        user_id:
-          type: integer
-          format: int64
-        intercom_hash:
-          type: string
-      example:
-        jwt: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMzUwLCJleHAiOjE1NzkxOTgyOTksImNvbXBhbnlfaWQiOjI3MjksImltcGVyc29uYXRvcl9pZCI6bnVsbH0.nWitzFwOW5FfXelRrkcTz90u1QUtGNXcJQc2lkcW1_k
-        auth_key: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMzUwLCJleHAiOjE1NzkxOTgyOTksImNvbXBhbnlfaWQiOjI3MjksImltcGVyc29uYXRvcl9pZCI6bnVsbH0.nWitzFwOW5FfXelRrkcTz90u1QUtGNXcJQc2lkcW1_k
-        refresh_token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMzUwLCJleHAiOjE1NzkxOTgyOTksImNvbXBhbnlfaWQiOjI3MjksImltcGVyc29uYXRvcl9pZCI6bnVsbH0.nWitzFwOW5FfXelRrkcTz90u1QUtGNXcJQc2lkcW1_k
-        user_id: 1042
-        intercom_hash: 2128ecf9724b23d96da879ff3febc393694c0b43f6f204a6997317c853f593cd
-    UserSettingsUpdated:
-      properties:
-        favorites:
-          type: object
-        sms_blacklisted:
-          type: boolean
-        restricted_assets:
-          type: array
-        restricted_programs:
-          type: array
-        participates_in_beta_apps:
-          type: boolean
-        custom_property:
-          type: string
-        custom_property2:
-          type: object
-      example:
-        favorites: {}
-        sms_blacklisted: false
-        restricted_assets: []
-        restricted_programs: []
-        participates_in_beta_apps: true
-        custom_property: Value
-        custom_property2:
-          key: value
-    UserList:
+    ApiKeyList:
       properties:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/UserMinimal'
-    Auth0Authentication:
-      properties:
-        token:
-          type: string
-        nonce:
-          type: string
-      example:
-        auth:
-          token: auth0-token-goes-here
-          nonce: auth0-nonce-goes-here
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    ApiKeyPayload:
-      properties:
-        api_key:
-          type: object
-          properties:
-            key:
-              type: string
-            permissions:
-              type: string
-            owner_id:
-              type: integer
-              format: int64
-            owner_type:
-              type: string
-            requested_by_id:
-              type: integer
-              format: int64
-            approved_by_id:
-              type: integer
-              format: int64
-            company_id:
-              type: integer
-              format: int64
-      example:
-        api_key:
-          name: ApiKey Name
-          status: active
-          key: some-auto-generated-key
-          permissions: read
-          owner_id: 12345
-          owner_type: App
-          requested_by_id: 123
-          approved_by_id: 456
-          company_id: 456
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
+            $ref: '#/components/schemas/ApiKey'
     User:
       properties:
         id:
@@ -2077,52 +1960,6 @@ components:
               type: group
             - id: 124
               type: group
-    JwksKey:
-      description: JWKS public key for JWT token verification
-      properties:
-        kid:
-          type: string
-          description: Key ID
-        kty:
-          type: string
-          description: Key type (RSA)
-        alg:
-          type: string
-          description: Algorithm (RS256)
-        use:
-          type: string
-          description: Key usage (sig for signature)
-        n:
-          type: string
-          description: Base64url-encoded RSA modulus
-        e:
-          type: string
-          description: Base64url-encoded RSA exponent
-      example:
-        kid: corva-api-1731540000
-        kty: RSA
-        alg: RS256
-        use: sig
-        n: xGOr-H7A7RCQBzJvq9jKMjPqJT5AYo1oqP6LmcR2...
-        e: AQAB
-    UserSettings:
-      properties:
-        favorites:
-          type: object
-        sms_blacklisted:
-          type: boolean
-        restricted_assets:
-          type: array
-        restricted_programs:
-          type: array
-        participates_in_beta_apps:
-          type: boolean
-      example:
-        favorites: {}
-        sms_blacklisted: false
-        restricted_assets: []
-        restricted_programs: []
-        participates_in_beta_apps: false
     IdentityVerifier:
       properties:
         id:
@@ -2154,19 +1991,182 @@ components:
         auth:
           email: me@mycompany.com
           password: ThisIsMyP@55w0rd!
-    UserSettingsPayload:
+    AuthenticationResponse:
+      description: 'Authentication response containing JWT tokens. By default returns HMAC (HS256) tokens. To receive JWKS (RS256) tokens, include "X-Token-Format: jwks" header or "token_format: jwks" in auth params.'
       properties:
+        jwt:
+          type: string
+        auth_key:
+          type: string
+        refresh_token:
+          type: string
+        user_id:
+          type: integer
+          format: int64
+        intercom_hash:
+          type: string
+      example:
+        jwt: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMzUwLCJleHAiOjE1NzkxOTgyOTksImNvbXBhbnlfaWQiOjI3MjksImltcGVyc29uYXRvcl9pZCI6bnVsbH0.nWitzFwOW5FfXelRrkcTz90u1QUtGNXcJQc2lkcW1_k
+        auth_key: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMzUwLCJleHAiOjE1NzkxOTgyOTksImNvbXBhbnlfaWQiOjI3MjksImltcGVyc29uYXRvcl9pZCI6bnVsbH0.nWitzFwOW5FfXelRrkcTz90u1QUtGNXcJQc2lkcW1_k
+        refresh_token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMzUwLCJleHAiOjE1NzkxOTgyOTksImNvbXBhbnlfaWQiOjI3MjksImltcGVyc29uYXRvcl9pZCI6bnVsbH0.nWitzFwOW5FfXelRrkcTz90u1QUtGNXcJQc2lkcW1_k
+        user_id: 1042
+        intercom_hash: 2128ecf9724b23d96da879ff3febc393694c0b43f6f204a6997317c853f593cd
+    UserPayloadCreate:
+      properties:
+        user:
+          type: object
+          properties:
+            company_id:
+              type: integer
+            password:
+              type: string
+            password_confirmation:
+              type: string
+            user_id:
+              type: integer
+            email:
+              type: string
+            first_name:
+              type: string
+            last_name:
+              type: string
+            title:
+              type: string
+            profile_photo:
+              type: string
+            group:
+              type: array
+              items:
+                type: string
+            group_ids:
+              type: array
+              items:
+                type: integer
+            current_segment:
+              type: string
+            role:
+              type: string
+            favorite_asset_id:
+              type: integer
+            resource:
+              type: array
+              items:
+                type: string
+            theme:
+              type: string
+            mobile:
+              type: string
+            unit_system:
+              type: object
+            custom_unit_system:
+              type: object
+            unit_ids:
+              type: array
+              items:
+                type: integer
+      example:
+        user:
+          company_id: 1
+          password: Password
+          password_confirmation: Password
+          email: john.doe@example.com
+          group_ids:
+          - 13
+          - 445
+          - 890
+          unit_ids:
+          - 134
+          - 445
+          - 850
+          first_name: John
+          last_name: Doe
+          title: Title
+          role: user
+          theme: dark
+          mobile: '+1555555555'
+          resource:
+          - Conventional
+          group:
+          - Field
+          unit_system:
+            yp: hsf
+            oil: bbl
+            area: ft2
+            mass: lb
+            force: klbf
+            speed: ft/h
+            length: ft
+            system: imperial
+            torque: ft-klbf
+            volume: gal
+            density: ppg
+            pressure: psi
+            shortLength: in
+            temperature: F
+            massPerLength: lb-ft
+            volumeFlowRate: gal/min
+          custom_unit_system:
+            mass: kg
+            distance: m
+    IdentityVerifierList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdentityVerifier'
+    JwksKey:
+      description: JWKS public key for JWT token verification
+      properties:
+        kid:
+          type: string
+          description: Key ID
+        kty:
+          type: string
+          description: Key type (RSA)
+        alg:
+          type: string
+          description: Algorithm (RS256)
+        use:
+          type: string
+          description: Key usage (sig for signature)
+        n:
+          type: string
+          description: Base64url-encoded RSA modulus
+        e:
+          type: string
+          description: Base64url-encoded RSA exponent
+      example:
+        kid: corva-api-1731540000
+        kty: RSA
+        alg: RS256
+        use: sig
+        n: xGOr-H7A7RCQBzJvq9jKMjPqJT5AYo1oqP6LmcR2...
+        e: AQAB
+    UserSettingsUpdated:
+      properties:
+        favorites:
+          type: object
+        sms_blacklisted:
+          type: boolean
+        restricted_assets:
+          type: array
+        restricted_programs:
+          type: array
+        participates_in_beta_apps:
+          type: boolean
         custom_property:
           type: string
         custom_property2:
           type: object
-        participates_in_beta_apps:
-          type: boolean
       example:
+        favorites: {}
+        sms_blacklisted: false
+        restricted_assets: []
+        restricted_programs: []
+        participates_in_beta_apps: true
         custom_property: Value
         custom_property2:
           key: value
-        participates_in_beta_apps: true
   securitySchemes:
     api_key:
       type: apiKey

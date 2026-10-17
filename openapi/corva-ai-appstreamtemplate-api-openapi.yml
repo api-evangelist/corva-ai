@@ -239,71 +239,7 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AppStreamTemplatePayload:
-      properties:
-        app_stream_template:
-          type: object
-          properties:
-            name:
-              type: string
-            description:
-              type: string
-            segment:
-              type: string
-              enum:
-              - drilling
-              - completion
-              - intervention
-            source_type:
-              type: string
-              enum:
-              - drilling
-              - drillout
-              - frac
-              - pumpdown
-              - wireline
-            log_type:
-              type: string
-              enum:
-              - time
-              - depth
-      example:
-        app_stream_template:
-          name: CustomTemplate1
-          description: Description
-          segment: drilling
-          source_type: drilling
-          log_type: time
-    AppStreamTemplateAppSummary:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            app_stream_template_id:
-              type: integer
-              format: int64
-            app_id:
-              type: integer
-              format: int64
-            key:
-              type: string
-      example:
-        id: 12345
-        type: app_stream_template_app
-        attributes:
-          id: 12345
-          app_stream_template_id: 299
-          app_id: 999
-          key: corva.streamx-witsml-source
-    AuthorizationError:
+    NotFoundError:
       required:
       - code
       - message
@@ -314,8 +250,8 @@ components:
         message:
           type: string
       example:
-        code: 403
-        message: Access denied
+        code: 404
+        message: Not found
     AppStreamTemplateList:
       properties:
         data:
@@ -359,6 +295,19 @@ components:
             app_stream_template_id: 12345
             app_id: 999
             key: corva.streamx-witsml-source
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
     AuthenticationError:
       required:
       - code
@@ -372,19 +321,70 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    NotFoundError:
-      required:
-      - code
-      - message
+    AppStreamTemplateAppSummary:
       properties:
-        code:
+        id:
           type: integer
-          format: int32
-        message:
+          format: int64
+        type:
           type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            app_stream_template_id:
+              type: integer
+              format: int64
+            app_id:
+              type: integer
+              format: int64
+            key:
+              type: string
       example:
-        code: 404
-        message: Not found
+        id: 12345
+        type: app_stream_template_app
+        attributes:
+          id: 12345
+          app_stream_template_id: 299
+          app_id: 999
+          key: corva.streamx-witsml-source
+    AppStreamTemplatePayload:
+      properties:
+        app_stream_template:
+          type: object
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            segment:
+              type: string
+              enum:
+              - drilling
+              - completion
+              - intervention
+            source_type:
+              type: string
+              enum:
+              - drilling
+              - drillout
+              - frac
+              - pumpdown
+              - wireline
+            log_type:
+              type: string
+              enum:
+              - time
+              - depth
+      example:
+        app_stream_template:
+          name: CustomTemplate1
+          description: Description
+          segment: drilling
+          source_type: drilling
+          log_type: time
     AppStreamTemplate:
       properties:
         id:

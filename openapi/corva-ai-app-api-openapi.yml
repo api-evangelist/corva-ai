@@ -153,57 +153,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AppMetric:
-      properties:
-        ts:
-          type: integer
-        value:
-          type: float
-      example:
-        ts: 1638462480
-        value: 1.0
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    AppMetricList:
-      properties:
-        data:
-          type: object
-          items:
-            $ref: '#/components/schemas/AppMetric'
-        period:
-          type: integer
-        available_from:
-          type: integer
-      example:
-        data:
-          ts: 1638462480
-          value: 1.0
-        period: 120
-        available_from: 1643116200
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     NotFoundError:
       required:
       - code
@@ -217,13 +166,32 @@ components:
       example:
         code: 404
         message: Not found
-    AppMetricError:
+    AuthorizationError:
+      required:
+      - code
+      - message
       properties:
-        errors:
-          type: object
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
       example:
-        errors:
-        - Some error occurred
+        code: 403
+        message: Access denied
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
     AppMetricsList:
       items:
         properties:
@@ -247,6 +215,38 @@ components:
           value: 1.0
         period: 600
         available_from: 1602305040
+    AppMetric:
+      properties:
+        ts:
+          type: integer
+        value:
+          type: float
+      example:
+        ts: 1638462480
+        value: 1.0
+    AppMetricError:
+      properties:
+        errors:
+          type: object
+      example:
+        errors:
+        - Some error occurred
+    AppMetricList:
+      properties:
+        data:
+          type: object
+          items:
+            $ref: '#/components/schemas/AppMetric'
+        period:
+          type: integer
+        available_from:
+          type: integer
+      example:
+        data:
+          ts: 1638462480
+          value: 1.0
+        period: 120
+        available_from: 1643116200
   securitySchemes:
     api_key:
       type: apiKey

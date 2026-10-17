@@ -5445,347 +5445,37 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    DrilloutUnitPayload:
-      properties:
-        name:
-          type: string
-        pad_id:
-          type: integer
-        well_id:
-          type: integer
-        billing_company_ids:
-          type: array
-      example:
-        name: My Drillout Unit
-        pad_id: 823
-        well_id: 22812
-        billing_company_ids:
-        - 456
-        - 45
-        - 98
-    AncestorsResponse:
-      example:
-        data:
-          id: 123
-          attributes:
-            ancestor_ids:
-            - 121
-            - 122
-    Pad:
+    NotFoundError:
       required:
-      - id
+      - code
+      - message
       properties:
-        id:
+        code:
           type: integer
-          format: int64
-        attributes:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            name:
-              type: string
-            current_frac_fleet_id:
-              type: integer
-              format: int64
-            last_active_at:
-              type: string
-              format: date-time
-            active:
-              type: boolean
-            parent_frac_fleet_id:
-              type: integer
-              format: int64
-            current:
-              type: boolean
-        relationships:
-          type: object
-          properties:
-            company:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    type:
-                      type: string
-            program:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    type:
-                      type: string
-            drillout_unit:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    type:
-                      type: string
-            pad_frac_fleets:
-              type: object
-              properties:
-                data:
-                  type: array
-            wells:
-              type: object
-              properties:
-                data:
-                  type: array
-            active_wells:
-              type: object
-              properties:
-                data:
-                  type: array
-      example:
-        id: 9210
-        type: pad
-        attributes:
-          name: My Pad
-          current_frac_fleet_id: 782
-          last_active_at: '2020-01-01T00:00:00.000Z'
-          active: true
-          parent_frac_fleet_id: 782
-          current: true
-        relationships:
-          company:
-            data:
-              id: 823
-              type: company
-          program:
-            data:
-              id: 9913
-              type: program
-          drillout_unit:
-            data:
-              id: 273
-              type: drillout_unit
-          pad_frac_fleets:
-            data:
-            - id: 923
-              type: pad_frac_fleet
-            - id: 928
-              type: pad_frac_fleet
-          wells:
-            data:
-            - id: 16771
-              type: well
-            - id: 16919
-              type: well
-            - id: 17231
-              type: well
-          active_wells:
-            data:
-            - id: 16771
-              type: well
-            - id: 16919
-              type: well
-        included:
-        - id: 902
-          type: pad_frac_fleet
-          attributes:
-            current: true
-            last_current_at: '2020-01-01T00:00:00.000Z'
-            pad:
-              id: 8834
-              name: My Pad
-              created_at: '2020-01-01T00:00:00.000Z'
-              updated_at: '2020-01-01T00:00:00.000Z'
-            frac_fleet:
-              id: 9642
-              name: My Frac Fleet
-              created_at: '2020-01-01T00:00:00.000Z'
-              updated_at: '2020-01-01T00:00:00.000Z'
-        - id: 16771
-          type: well
-          attributes:
-            name: 'Well #1'
-        - id: 16919
-          type: well
-          attributes:
-            name: 'Well #2'
-        - id: 17231
-          type: well
-          attributes:
-            name: 'Well #3'
-        - id: 273
-          type: drillout_unit
-          attributes:
-            name: 'Drillout Unit #1'
-    WirelinePayload:
-      properties:
-        name:
+          format: int32
+        message:
           type: string
       example:
-        name: My Wireline
-    RigTemplateItem:
+        code: 404
+        message: Not found
+    InterventionUnitTemplateItemList:
       properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            rig_template_id:
-              type: integer
-              format: int64
-            rig_template_category_id:
-              type: integer
-              format: int64
-            parent_rig_template_item_id:
-              type: integer
-              format: int64
-            data:
-              type: object
-            created_at:
-              type: string
-              format: date-time
-            updated_at:
-              type: string
-              format: date-time
-            items:
-              type: array
-            rig_template_category:
-              type: object
-              properties:
-                data:
-                  $ref: '#/components/schemas/RigTemplateCategory'
-      example:
-        id: 12345
-        type: rig_template_item
-        attributes:
-          id: 12345
-          rig_template_id: 1
-          rig_template_category_id: 2
-          parent_rig_template_item_id: null
-          data:
-            key: value
-          created_at: '2025-12-17T10:00:00Z'
-          updated_at: '2025-12-17T10:00:00Z'
-          items: []
-        rig_template_category:
-          data:
-            id: 2
-            type: rig_template_category
-            attributes:
-              id: 2
-              name: Category Name
-              settings:
-                key: value
-              schema:
-                key: value
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/InterventionUnitTemplateItem'
     RigTemplateItemList:
       properties:
         data:
           type: array
           items:
             $ref: '#/components/schemas/RigTemplateItemIndex'
-    Rig:
-      required:
-      - id
+    ProgramPayload:
       properties:
-        id:
-          type: integer
-          format: int64
-        attributes:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            name:
-              type: string
-            edr_provider:
-              type: string
-            settings:
-              type: object
-        relationships:
-          type: object
-          properties:
-            company:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    type:
-                      type: string
-            billing_companies:
-              type: object
-              properties:
-                data:
-                  type: array
-      example:
-        id: 1184
-        type: rig
-        attributes:
-          name: My Rig
-          edr_provider: some provider
-          settings: {}
-        relationships:
-          company:
-            data:
-              id: 823
-              type: company
-          billing_companies:
-            data:
-            - id: 923
-              type: company
-            - id: 928
-              type: company
-          program:
-            data:
-              id: 23
-              type: program
-          active_well:
-            data:
-              id: 123092
-              type: well
-          last_active_well:
-            data:
-              id: 123092
-              type: well
-    ProgramCluster:
-      properties:
-        cid:
-          type: integer
-        center:
+        name:
           type: string
-        radius:
-          type: float
-        program_ids:
-          type: array
-        asset_ids:
-          type: array
       example:
-        cid: 1
-        center:
-          longitude: 45.4845
-          latitude: 46.3234
-        radius: 0.282855334465
-        program_ids:
-        - 123
-        - 124
-        asset_ids:
-        - 123
-        - 124
+        name: My Program
     FracFleetCluster:
       properties:
         cid:
@@ -5805,61 +5495,7 @@ components:
         frac_fleet_ids:
         - 123
         - 124
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    RigTemplateCategory:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            name:
-              type: string
-            settings:
-              type: object
-            schema:
-              type: object
-            created_at:
-              type: string
-              format: date-time
-            updated_at:
-              type: string
-              format: date-time
-      example:
-        id: 12345
-        type: rig_template_category
-        attributes:
-          id: 12345
-          name: Category Name
-          settings: {}
-          schema: {}
-          created_at: '2025-12-17T10:00:00Z'
-          updated_at: '2025-12-17T10:00:00Z'
-    RigTemplateCategoryList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/RigTemplateCategoryIndex'
-    WellCluster:
+    RigCluster:
       properties:
         cid:
           type: integer
@@ -5867,9 +5503,11 @@ components:
           type: string
         radius:
           type: float
-        well_ids:
+        rig_ids:
           type: array
         asset_ids:
+          type: array
+        active_well_ids:
           type: array
       example:
         cid: 1
@@ -5877,285 +5515,15 @@ components:
           longitude: 45.4845
           latitude: 46.3234
         radius: 0.282855334465
-        well_ids:
+        rig_ids:
         - 123
         - 124
         asset_ids:
         - 123
         - 124
-    InterventionUnitTemplateItemList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/InterventionUnitTemplateItem'
-    InterventionUnitTemplate:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            intervention_unit_id:
-              type: integer
-              format: int64
-            company_id:
-              type: integer
-              format: int64
-            settings:
-              type: object
-            created_by_id:
-              type: integer
-              format: int64
-            created_by_name:
-              type: string
-            last_edited_by_id:
-              type: integer
-              format: int64
-            last_updated_by_name:
-              type: string
-            created_at:
-              type: string
-              format: date-time
-            updated_at:
-              type: string
-              format: date-time
-    RigTemplateItemPayload:
-      properties:
-        rig_template_item:
-          type: object
-          properties:
-            parent_rig_template_item_id:
-              type: integer
-              format: int64
-            data:
-              type: object
-            nested_rig_template_items_attributes:
-              type: array
-              items:
-                properties:
-                  parent_rig_template_item_id:
-                    type: integer
-                    format: int64
-                  data:
-                    type: object
-      example:
-        rig_template_item:
-          parent_rig_template_item_id: null
-          data:
-            key: value
-          nested_rig_template_items_attributes:
-          - data:
-              key: child_value
-    Program:
-      required:
-      - id
-      properties:
-        id:
-          type: integer
-          format: int64
-        attributes:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            name:
-              type: string
-        relationships:
-          type: object
-          properties:
-            company:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    type:
-                      type: string
-      example:
-        id: 7926
-        type: program
-        attributes:
-          name: My Program
-        relationships:
-          company:
-            data:
-              id: 823
-              type: company
-    InterventionUnitTemplatePayload:
-      properties:
-        intervention_unit_template:
-          type: object
-          properties:
-            intervention_unit_id:
-              type: integer
-              format: int64
-            company_id:
-              type: integer
-              format: int64
-            edr_provider_id:
-              type: integer
-              format: int64
-            column_mapper_template_channel_id:
-              type: integer
-              format: int64
-            settings:
-              type: object
-            intervention_unit_template_items_attributes:
-              type: array
-              items:
-                properties:
-                  id:
-                    type: integer
-                    format: int64
-                  intervention_unit_template_category_id:
-                    type: integer
-                    format: int64
-                  data:
-                    type: object
-                  _destroy:
-                    type: boolean
-    Wireline:
-      required:
-      - id
-      properties:
-        id:
-          type: integer
-          format: int64
-        attributes:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            name:
-              type: string
-        relationships:
-          type: object
-          properties:
-            company:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    type:
-                      type: string
-      example:
-        id: 1184
-        type: wireline
-        attributes:
-          name: My Wireline
-        relationships:
-          company:
-            data:
-              id: 823
-              type: company
-    RigTemplateItemIndex:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            rig_template_id:
-              type: integer
-              format: int64
-            rig_template_category_id:
-              type: integer
-              format: int64
-            parent_rig_template_item_id:
-              type: integer
-              format: int64
-            data:
-              type: object
-            items:
-              type: array
-      example:
-        id: 12345
-        type: rig_template_item
-        attributes:
-          id: 12345
-          rig_template_id: 1
-          rig_template_category_id: 2
-          parent_rig_template_item_id: null
-          data: {}
-          items: []
-    PadDetails:
-      example:
-        data:
-        - id: '7232'
-          type: well
-          attributes:
-            asset_id: 8823
-            name: My Pad Well 1
-            status: active
-          relationships:
-            app_streams:
-              data:
-              - id: '1'
-                type: app_stream
-              - id: '7'
-                type: app_stream
-        - id: '11392'
-          type: well
-          attributes:
-            asset_id: 19423
-            name: My Pad Well 2
-            status: active
-          relationships:
-            app_streams:
-              data:
-              - id: '17'
-                type: app_stream
-        included:
-        - id: '1'
-          type: app_stream
-          attributes:
-            id: '1'
-            status: complete
-            segment: drilling
-            source_type: drilling
-            log_type: time
-            first_active_at: '2020-01-01T00:00:00.000Z'
-            last_active_at: '2020-01-01T00:00:00.000Z'
-        - id: '7'
-          type: app_stream
-          attributes:
-            id: '1'
-            status: active
-            segment: completion
-            source_type: frac
-            log_type: time
-            first_active_at: '2020-01-01T00:00:00.000Z'
-            last_active_at: '2020-01-01T00:00:00.000Z'
-        - id: '17'
-          type: app_stream
-          attributes:
-            id: '1'
-            status: active
-            segment: drilling
-            source_type: drilling
-            log_type: time
-            first_active_at: '2020-01-01T00:00:00.000Z'
-            last_active_at: '2020-01-01T00:00:00.000Z'
+        active_well_ids:
+        - 123
+        - 124
     TypeWell:
       properties:
         id:
@@ -6190,98 +5558,12 @@ components:
           offset_well_id: 456
           subject_well_asset_id: 7527348
           offset_well_asset_id: 12347575
-    DrilloutUnitCluster:
+    RigTemplateList:
       properties:
-        cid:
-          type: integer
-        center:
-          type: string
-        radius:
-          type: float
-        drillout_unit_ids:
+        data:
           type: array
-        well_ids:
-          type: array
-      example:
-        cid: 1
-        center:
-          longitude: 45.4845
-          latitude: 46.3234
-        radius: 0.282855334465
-        drillout_unit_ids:
-        - 123
-        - 124
-        well_ids:
-        - 123
-        - 124
-    RigPayload:
-      properties:
-        name:
-          type: string
-        edr_provider:
-          type: string
-        billing_company_ids:
-          type: array
-        settings:
-          type: object
-      example:
-        name: My Rig
-        edr_provider: EDR
-        billing_company_ids:
-        - 9595
-        - 4129
-    InterventionUnitTemplateCategory:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            name:
-              type: string
-            settings:
-              type: object
-            schema:
-              type: object
-            created_at:
-              type: string
-              format: date-time
-            updated_at:
-              type: string
-              format: date-time
-    InterventionUnitTemplateItemPayload:
-      properties:
-        intervention_unit_template_item:
-          type: object
-          properties:
-            intervention_unit_template_category_id:
-              type: integer
-              format: int64
-            parent_intervention_unit_template_item_id:
-              type: integer
-              format: int64
-            data:
-              type: object
-            nested_intervention_unit_template_items_attributes:
-              type: array
-              items:
-                properties:
-                  id:
-                    type: integer
-                    format: int64
-                  intervention_unit_template_category_id:
-                    type: integer
-                    format: int64
-                  data:
-                    type: object
-                  _destroy:
-                    type: boolean
+          items:
+            $ref: '#/components/schemas/RigTemplateIndex'
     RigTemplate:
       properties:
         id:
@@ -6382,220 +5664,79 @@ components:
             data:
               id: 100
               type: user
-    Asset:
-      required:
-      - id
-      - type
+    AssetResolver:
       properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            name:
-              type: string
-            visible_rerun_id:
-              type: integer
-              description: If the asset has been rerun and the rerun has been set visible, the ID of the rerun asset is returned here.
-            merging_rerun_as_source:
-              type: boolean
-            merging_rerun_as_target:
-              type: boolean
-            running_rerun_as_source:
-              type: boolean
-            running_rerun_as_target:
-              type: boolean
-            source_well:
-              type: object
-              description: If the asset has been created during rerun this property will contain mane and ID of source well
-              properties:
-                id:
-                  type: integer
-                name:
-                  type: string
-            rig_changed_at:
-              type: datetime
-              format: timestamp
-              description: Datetime when the rig was last changed. Returned for Asset::Well.
-            country:
-              type: string
-        relationships:
-          type: object
-      example:
-        id: 7926
-        type: asset
-        attributes:
-          company_id: 123
-          company_name: My Company
-          type: Asset::Well
-          asset_type: well
-          timezone: America/Chicago
-          lon_lat:
-            longitude: -103.0
-            latitude: 32.0
-          created_at: '2020-01-01T00:00:00.000Z'
-          last_active_at: '2020-01-01T00:00:00.000Z'
-          status: active
-          state: drilling
-          visibility: visible
-          rig_changed_at: '2026-06-20T20:01:35.000Z'
-          name: The Best Well
-          parent_asset_id: 12345
-          parent_asset_name: A Big Rig
-          root_asset_id: 123
-          root_asset_name: The Permian Program
-          api_number: 00-111-22222
-          county: Eddy
-          country: United States
-          basin: Permian
-          area: Midland
-          string_design: '4'
-          merging_rerun_as_source: false
-          merging_rerun_as_target: true
-          running_rerun_as_source: false
-          running_rerun_as_target: false
-          top_hole:
-            raw: 32.000000, -103.000000
-            coordinates:
-            - 32.0
-            - -103.0
-          bottom_hole: {}
-          contractor_name: The Contractor
-          directional_driller: The DD
-          mud_company: The Mud Company
-          customer_well_id: customer-id-909488abtx
-          original_well_id: '4444'
-          original_well_created_at: '2020-01-01T00:00:00.000Z'
-          settings:
-            day_shift_start_time: 06:00
-            spud_release: []
-            last_mongo_refresh: '2020-01-01T00:00:00.000Z'
-          stats:
-            spud_at: '2020-01-01T00:00:00.000Z'
-            well_start: 100
-            well_end: 1000
-            total_cost: 10000
-            total_time: 999
-            total_depth: 10000
-            first_active_at: 149900000
-            witsml_data_frequency: 5
-          source_well:
-            id: 12345
-            name: Rerun Source Well
-          custom_properties:
-            anything: goes
-        relationships:
-          company:
-            data:
-              id: '123'
-              type: company
-          parent_asset:
-            data:
-              id: '12345'
-              type: asset
-          active_child:
-            data:
-              id: '54321'
-              type: asset
-          last_active_child:
-            data:
-              id: '54321'
-              type: asset
-    AssetAutocomplete:
-      properties:
-        data:
-          type: array
-      example:
-        data:
-        - Enclave Oil Rig
-        - San Francisco
-        - Enclave Oil Rig, Dock
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    InterventionUnitTemplateCategoryList:
-      properties:
-        data:
+        programs:
           type: array
           items:
-            $ref: '#/components/schemas/InterventionUnitTemplateCategory'
-    PadPayload:
-      properties:
-        name:
-          type: string
-        program:
-          type: integer
-      example:
-        name: My Pad
-        program_id: 482
-        drillout_unit_id: 923
-    PadCluster:
-      properties:
-        cid:
-          type: integer
-        center:
-          type: string
-        radius:
-          type: float
-        pad_ids:
+            properties:
+              ? '{:properties=>#<Swagger::Blocks::Nodes::PropertiesNode:0x0000ffff7f4ebb30 @version="2.0", @data={{...}=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f4eb1a8 @version="2.0", @data={:type=>:object, :properties=>#<Swagger::Blocks::Nodes::PropertiesNode:0x0000ffff7f4eaf78 @version="2.0", @data={:id=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f4e3e80 @version="2.0", @data={:type=>:integer, :format=>:string}>, :type=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f4e3c28 @version="2.0", @data={:type=>:string}>, :attributes=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f4e18b0 @version="2.0", @data={:type=>:object, :properties=>#<Swagger::Blocks::Nodes::PropertiesNode:0x0000ffff7f4e0af0 @version="2.0", @data={:asset_id=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f4e0320 @version="2.0", @data={:type=>:int64}>}>}>}>}>}>}'
+              : type: object
+                properties:
+                  id:
+                    type: integer
+                    format: string
+                  type:
+                    type: string
+                  attributes:
+                    type: object
+                    properties:
+                      asset_id:
+                        type: int64
+        rigs:
           type: array
+          items:
+            properties:
+              ? '{:properties=>#<Swagger::Blocks::Nodes::PropertiesNode:0x0000ffff7f50e6d0 @version="2.0", @data={{...}=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f50d4b0 @version="2.0", @data={:type=>:object, :properties=>#<Swagger::Blocks::Nodes::PropertiesNode:0x0000ffff7f50c7e0 @version="2.0", @data={:id=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f50a3c8 @version="2.0", @data={:type=>:integer, :format=>:string}>, :type=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f509e78 @version="2.0", @data={:type=>:string}>, :attributes=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f508988 @version="2.0", @data={:type=>:object, :properties=>#<Swagger::Blocks::Nodes::PropertiesNode:0x0000ffff7f5088e8 @version="2.0", @data={:asset_id=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f505f30 @version="2.0", @data={:type=>:int64}>}>}>}>}>}>}'
+              : type: object
+                properties:
+                  id:
+                    type: integer
+                    format: string
+                  type:
+                    type: string
+                  attributes:
+                    type: object
+                    properties:
+                      asset_id:
+                        type: int64
+        wells:
+          type: array
+          items:
+            properties:
+              ? '{:properties=>#<Swagger::Blocks::Nodes::PropertiesNode:0x0000ffff7f502c68 @version="2.0", @data={{...}=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f52ee30 @version="2.0", @data={:type=>:object, :properties=>#<Swagger::Blocks::Nodes::PropertiesNode:0x0000ffff7f52d4b8 @version="2.0", @data={:id=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f52bd70 @version="2.0", @data={:type=>:integer, :format=>:string}>, :type=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f5298b8 @version="2.0", @data={:type=>:string}>, :attributes=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f527a68 @version="2.0", @data={:type=>:object, :properties=>#<Swagger::Blocks::Nodes::PropertiesNode:0x0000ffff7f527a18 @version="2.0", @data={:asset_id=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f527680 @version="2.0", @data={:type=>:int64}>}>}>}>}>}>}'
+              : type: object
+                properties:
+                  id:
+                    type: integer
+                    format: string
+                  type:
+                    type: string
+                  attributes:
+                    type: object
+                    properties:
+                      asset_id:
+                        type: int64
       example:
-        cid: 1
-        center:
-          longitude: 45.4845
-          latitude: 46.3234
-        radius: 0.282855334465
-        pad_ids:
-        - 123
-        - 124
-    FracFleetPayload:
-      properties:
-        name:
-          type: string
-      example:
-        name: My Frac Fleet
-        program_id: 9232
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    InterventionUnitTemplateCategoryPayload:
-      properties:
-        intervention_unit_template_category:
-          type: object
-          properties:
-            name:
-              type: string
-            settings:
-              type: object
-            schema:
-              type: object
-    RigTemplateCategoryIndex:
+        programs:
+        - data:
+            id: '8283'
+            type: program
+            attributes:
+              asset_id: 5547
+        rigs:
+        - data:
+            id: '1149'
+            type: rig
+            attributes:
+              asset_id: 10592
+        wells:
+        - data:
+            id: '93'
+            type: well
+            attributes:
+              asset_id: 98283
+    InterventionUnitTemplate:
       properties:
         id:
           type: integer
@@ -6608,37 +5749,37 @@ components:
             id:
               type: integer
               format: int64
-            name:
-              type: string
+            intervention_unit_id:
+              type: integer
+              format: int64
+            company_id:
+              type: integer
+              format: int64
             settings:
               type: object
-            schema:
-              type: object
-      example:
-        id: 12345
-        type: rig_template_category
-        attributes:
-          id: 12345
-          name: Category Name
-          settings: {}
-          schema: {}
-    RigTemplateCategoryPayload:
+            created_by_id:
+              type: integer
+              format: int64
+            created_by_name:
+              type: string
+            last_edited_by_id:
+              type: integer
+              format: int64
+            last_updated_by_name:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+    RigTemplateCategoryList:
       properties:
-        rig_template_category:
-          type: object
-          properties:
-            name:
-              type: string
-            settings:
-              type: object
-            schema:
-              type: object
-      example:
-        rig_template_category:
-          name: Category Name
-          settings: {}
-          schema: {}
-    DrilloutUnit:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RigTemplateCategoryIndex'
+    Wireline:
       required:
       - id
       properties:
@@ -6666,114 +5807,17 @@ components:
                       type: string
                     type:
                       type: string
-            program:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    type:
-                      type: string
-            pad:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    type:
-                      type: string
-            well:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    type:
-                      type: string
-            billing_companies:
-              type: object
-              properties:
-                data:
-                  type: array
       example:
-        id: 9232
-        type: drillout_unit
+        id: 1184
+        type: wireline
         attributes:
-          name: My Drillout Unit
+          name: My Wireline
         relationships:
           company:
             data:
               id: 823
               type: company
-          program:
-            data:
-              id: 23
-              type: program
-          pad:
-            data:
-              id: 1094
-              type: pad
-          well:
-            data:
-              id: 123092
-              type: well
-          billing_companies:
-            data:
-            - id: 923
-              type: company
-            - id: 928
-              type: company
-    RigTemplatePayload:
-      properties:
-        rig_template:
-          type: object
-          properties:
-            rig_id:
-              type: integer
-              format: int64
-            company_id:
-              type: integer
-              format: int64
-            edr_provider_id:
-              type: integer
-              format: int64
-            column_mapper_template_channel_id:
-              type: integer
-              format: int64
-            settings:
-              type: object
-            rig_template_items_attributes:
-              type: array
-              items:
-                properties:
-                  id:
-                    type: integer
-                    format: int64
-                    description: Required for updates, omit for new items
-                  rig_template_category_id:
-                    type: integer
-                    format: int64
-                  data:
-                    type: object
-                  _destroy:
-                    type: boolean
-                    description: Set to true to delete the item (only for updates)
-      example:
-        rig_template:
-          rig_id: 1
-          company_id: 100
-          settings: {}
-          rig_template_items_attributes:
-          - rig_template_category_id: 2
-            data:
-              key: value
-    InterventionUnitTemplateItem:
+    RigTemplateItemIndex:
       properties:
         id:
           type: integer
@@ -6786,9 +5830,70 @@ components:
             id:
               type: integer
               format: int64
-            intervention_unit_template_id:
+            rig_template_id:
               type: integer
               format: int64
+            rig_template_category_id:
+              type: integer
+              format: int64
+            parent_rig_template_item_id:
+              type: integer
+              format: int64
+            data:
+              type: object
+            items:
+              type: array
+      example:
+        id: 12345
+        type: rig_template_item
+        attributes:
+          id: 12345
+          rig_template_id: 1
+          rig_template_category_id: 2
+          parent_rig_template_item_id: null
+          data: {}
+          items: []
+    InterventionUnitTemplateCategoryPayload:
+      properties:
+        intervention_unit_template_category:
+          type: object
+          properties:
+            name:
+              type: string
+            settings:
+              type: object
+            schema:
+              type: object
+    InterventionUnitTemplateList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/InterventionUnitTemplate'
+    PadCluster:
+      properties:
+        cid:
+          type: integer
+        center:
+          type: string
+        radius:
+          type: float
+        pad_ids:
+          type: array
+      example:
+        cid: 1
+        center:
+          longitude: 45.4845
+          latitude: 46.3234
+        radius: 0.282855334465
+        pad_ids:
+        - 123
+        - 124
+    InterventionUnitTemplateItemPayload:
+      properties:
+        intervention_unit_template_item:
+          type: object
+          properties:
             intervention_unit_template_category_id:
               type: integer
               format: int64
@@ -6797,14 +5902,44 @@ components:
               format: int64
             data:
               type: object
-            items:
+            nested_intervention_unit_template_items_attributes:
               type: array
-            created_at:
-              type: string
-              format: date-time
-            updated_at:
-              type: string
-              format: date-time
+              items:
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                  intervention_unit_template_category_id:
+                    type: integer
+                    format: int64
+                  data:
+                    type: object
+                  _destroy:
+                    type: boolean
+    DrilloutUnitCluster:
+      properties:
+        cid:
+          type: integer
+        center:
+          type: string
+        radius:
+          type: float
+        drillout_unit_ids:
+          type: array
+        well_ids:
+          type: array
+      example:
+        cid: 1
+        center:
+          longitude: 45.4845
+          latitude: 46.3234
+        radius: 0.282855334465
+        drillout_unit_ids:
+        - 123
+        - 124
+        well_ids:
+        - 123
+        - 124
     Well:
       required:
       - id
@@ -6987,119 +6122,244 @@ components:
             data:
               id: 923
               type: drillout_unit
-    RigCluster:
+    Rerun:
+      required:
+      - id
+      - type
       properties:
-        cid:
-          type: integer
-        center:
+        id:
           type: string
-        radius:
-          type: float
-        rig_ids:
-          type: array
-        asset_ids:
-          type: array
-        active_well_ids:
-          type: array
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            asset_id:
+              type: integer
+              format: int64
+            primary:
+              type: boolean
+            created_at:
+              type: datetime
+            updated_at:
+              type: datetime
+            source_asset:
+              type: boolean
+            settings:
+              type: object
+        relationships:
+          type: object
       example:
-        cid: 1
-        center:
-          longitude: 45.4845
-          latitude: 46.3234
-        radius: 0.282855334465
-        rig_ids:
-        - 123
-        - 124
-        asset_ids:
-        - 123
-        - 124
-        active_well_ids:
-        - 123
-        - 124
-    RigTemplateList:
+        id: '1243'
+        type: rerun
+        attributes:
+          asset_id: 123
+          primary: null
+          created_at: '2020-01-01T00:00:00.000Z'
+          updated_at: '2020-01-01T00:00:00.000Z'
+          source_asset: true
+          settings: {}
+        relationships: {}
+    AssetAutocomplete:
       properties:
         data:
           type: array
-          items:
-            $ref: '#/components/schemas/RigTemplateIndex'
-    AssetResolver:
-      properties:
-        programs:
-          type: array
-          items:
-            properties:
-              ? '{:properties=>#<Swagger::Blocks::Nodes::PropertiesNode:0x0000ffff7f4ebb30 @version="2.0", @data={{...}=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f4eb1a8 @version="2.0", @data={:type=>:object, :properties=>#<Swagger::Blocks::Nodes::PropertiesNode:0x0000ffff7f4eaf78 @version="2.0", @data={:id=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f4e3e80 @version="2.0", @data={:type=>:integer, :format=>:string}>, :type=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f4e3c28 @version="2.0", @data={:type=>:string}>, :attributes=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f4e18b0 @version="2.0", @data={:type=>:object, :properties=>#<Swagger::Blocks::Nodes::PropertiesNode:0x0000ffff7f4e0af0 @version="2.0", @data={:asset_id=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f4e0320 @version="2.0", @data={:type=>:int64}>}>}>}>}>}>}'
-              : type: object
-                properties:
-                  id:
-                    type: integer
-                    format: string
-                  type:
-                    type: string
-                  attributes:
-                    type: object
-                    properties:
-                      asset_id:
-                        type: int64
-        rigs:
-          type: array
-          items:
-            properties:
-              ? '{:properties=>#<Swagger::Blocks::Nodes::PropertiesNode:0x0000ffff7f50e6d0 @version="2.0", @data={{...}=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f50d4b0 @version="2.0", @data={:type=>:object, :properties=>#<Swagger::Blocks::Nodes::PropertiesNode:0x0000ffff7f50c7e0 @version="2.0", @data={:id=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f50a3c8 @version="2.0", @data={:type=>:integer, :format=>:string}>, :type=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f509e78 @version="2.0", @data={:type=>:string}>, :attributes=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f508988 @version="2.0", @data={:type=>:object, :properties=>#<Swagger::Blocks::Nodes::PropertiesNode:0x0000ffff7f5088e8 @version="2.0", @data={:asset_id=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f505f30 @version="2.0", @data={:type=>:int64}>}>}>}>}>}>}'
-              : type: object
-                properties:
-                  id:
-                    type: integer
-                    format: string
-                  type:
-                    type: string
-                  attributes:
-                    type: object
-                    properties:
-                      asset_id:
-                        type: int64
-        wells:
-          type: array
-          items:
-            properties:
-              ? '{:properties=>#<Swagger::Blocks::Nodes::PropertiesNode:0x0000ffff7f502c68 @version="2.0", @data={{...}=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f52ee30 @version="2.0", @data={:type=>:object, :properties=>#<Swagger::Blocks::Nodes::PropertiesNode:0x0000ffff7f52d4b8 @version="2.0", @data={:id=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f52bd70 @version="2.0", @data={:type=>:integer, :format=>:string}>, :type=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f5298b8 @version="2.0", @data={:type=>:string}>, :attributes=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f527a68 @version="2.0", @data={:type=>:object, :properties=>#<Swagger::Blocks::Nodes::PropertiesNode:0x0000ffff7f527a18 @version="2.0", @data={:asset_id=>#<Swagger::Blocks::Nodes::PropertyNode:0x0000ffff7f527680 @version="2.0", @data={:type=>:int64}>}>}>}>}>}>}'
-              : type: object
-                properties:
-                  id:
-                    type: integer
-                    format: string
-                  type:
-                    type: string
-                  attributes:
-                    type: object
-                    properties:
-                      asset_id:
-                        type: int64
       example:
-        programs:
-        - data:
-            id: '8283'
-            type: program
-            attributes:
-              asset_id: 5547
-        rigs:
-        - data:
-            id: '1149'
-            type: rig
-            attributes:
-              asset_id: 10592
-        wells:
-        - data:
-            id: '93'
-            type: well
-            attributes:
-              asset_id: 98283
-    ProgramPayload:
+        data:
+        - Enclave Oil Rig
+        - San Francisco
+        - Enclave Oil Rig, Dock
+    Asset:
+      required:
+      - id
+      - type
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+            visible_rerun_id:
+              type: integer
+              description: If the asset has been rerun and the rerun has been set visible, the ID of the rerun asset is returned here.
+            merging_rerun_as_source:
+              type: boolean
+            merging_rerun_as_target:
+              type: boolean
+            running_rerun_as_source:
+              type: boolean
+            running_rerun_as_target:
+              type: boolean
+            source_well:
+              type: object
+              description: If the asset has been created during rerun this property will contain mane and ID of source well
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+            rig_changed_at:
+              type: datetime
+              format: timestamp
+              description: Datetime when the rig was last changed. Returned for Asset::Well.
+            country:
+              type: string
+        relationships:
+          type: object
+      example:
+        id: 7926
+        type: asset
+        attributes:
+          company_id: 123
+          company_name: My Company
+          type: Asset::Well
+          asset_type: well
+          timezone: America/Chicago
+          lon_lat:
+            longitude: -103.0
+            latitude: 32.0
+          created_at: '2020-01-01T00:00:00.000Z'
+          last_active_at: '2020-01-01T00:00:00.000Z'
+          status: active
+          state: drilling
+          visibility: visible
+          rig_changed_at: '2026-06-20T20:01:35.000Z'
+          name: The Best Well
+          parent_asset_id: 12345
+          parent_asset_name: A Big Rig
+          root_asset_id: 123
+          root_asset_name: The Permian Program
+          api_number: 00-111-22222
+          county: Eddy
+          country: United States
+          basin: Permian
+          area: Midland
+          string_design: '4'
+          merging_rerun_as_source: false
+          merging_rerun_as_target: true
+          running_rerun_as_source: false
+          running_rerun_as_target: false
+          top_hole:
+            raw: 32.000000, -103.000000
+            coordinates:
+            - 32.0
+            - -103.0
+          bottom_hole: {}
+          contractor_name: The Contractor
+          directional_driller: The DD
+          mud_company: The Mud Company
+          customer_well_id: customer-id-909488abtx
+          original_well_id: '4444'
+          original_well_created_at: '2020-01-01T00:00:00.000Z'
+          settings:
+            day_shift_start_time: 06:00
+            spud_release: []
+            last_mongo_refresh: '2020-01-01T00:00:00.000Z'
+          stats:
+            spud_at: '2020-01-01T00:00:00.000Z'
+            well_start: 100
+            well_end: 1000
+            total_cost: 10000
+            total_time: 999
+            total_depth: 10000
+            first_active_at: 149900000
+            witsml_data_frequency: 5
+          source_well:
+            id: 12345
+            name: Rerun Source Well
+          custom_properties:
+            anything: goes
+        relationships:
+          company:
+            data:
+              id: '123'
+              type: company
+          parent_asset:
+            data:
+              id: '12345'
+              type: asset
+          active_child:
+            data:
+              id: '54321'
+              type: asset
+          last_active_child:
+            data:
+              id: '54321'
+              type: asset
+    RigTemplateCategoryIndex:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            settings:
+              type: object
+            schema:
+              type: object
+      example:
+        id: 12345
+        type: rig_template_category
+        attributes:
+          id: 12345
+          name: Category Name
+          settings: {}
+          schema: {}
+    FracFleetUpdatePayload:
       properties:
         name:
           type: string
+        contract_data:
+          type: object
       example:
-        name: My Program
+        name: Updating Frac Fleet
+        program_id: 9232
+        billing_company_ids:
+        - 456
+        - 1234
+        - 5678
+        contract_data:
+          something: value
+    AncestorsResponse:
+      example:
+        data:
+          id: 123
+          attributes:
+            ancestor_ids:
+            - 121
+            - 122
+    RigTemplateCategoryPayload:
+      properties:
+        rig_template_category:
+          type: object
+          properties:
+            name:
+              type: string
+            settings:
+              type: object
+            schema:
+              type: object
+      example:
+        rig_template_category:
+          name: Category Name
+          settings: {}
+          schema: {}
     WellPayload:
       properties:
         name:
@@ -7204,44 +6464,682 @@ components:
         - Wellbore Name
         - New Wellbore
         wellbore_name: Wellbore1
-    Rerun:
+    RigTemplatePayload:
+      properties:
+        rig_template:
+          type: object
+          properties:
+            rig_id:
+              type: integer
+              format: int64
+            company_id:
+              type: integer
+              format: int64
+            edr_provider_id:
+              type: integer
+              format: int64
+            column_mapper_template_channel_id:
+              type: integer
+              format: int64
+            settings:
+              type: object
+            rig_template_items_attributes:
+              type: array
+              items:
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    description: Required for updates, omit for new items
+                  rig_template_category_id:
+                    type: integer
+                    format: int64
+                  data:
+                    type: object
+                  _destroy:
+                    type: boolean
+                    description: Set to true to delete the item (only for updates)
+      example:
+        rig_template:
+          rig_id: 1
+          company_id: 100
+          settings: {}
+          rig_template_items_attributes:
+          - rig_template_category_id: 2
+            data:
+              key: value
+    PadPayload:
+      properties:
+        name:
+          type: string
+        program:
+          type: integer
+      example:
+        name: My Pad
+        program_id: 482
+        drillout_unit_id: 923
+    DrilloutUnit:
       required:
       - id
-      - type
       properties:
         id:
+          type: integer
+          format: int64
+        attributes:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+            program:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+            pad:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+            well:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+            billing_companies:
+              type: object
+              properties:
+                data:
+                  type: array
+      example:
+        id: 9232
+        type: drillout_unit
+        attributes:
+          name: My Drillout Unit
+        relationships:
+          company:
+            data:
+              id: 823
+              type: company
+          program:
+            data:
+              id: 23
+              type: program
+          pad:
+            data:
+              id: 1094
+              type: pad
+          well:
+            data:
+              id: 123092
+              type: well
+          billing_companies:
+            data:
+            - id: 923
+              type: company
+            - id: 928
+              type: company
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
           type: string
+      example:
+        code: 403
+        message: Access denied
+    InterventionUnitTemplateItem:
+      properties:
+        id:
+          type: integer
+          format: int64
         type:
           type: string
         attributes:
           type: object
           properties:
-            asset_id:
+            id:
               type: integer
               format: int64
-            primary:
-              type: boolean
+            intervention_unit_template_id:
+              type: integer
+              format: int64
+            intervention_unit_template_category_id:
+              type: integer
+              format: int64
+            parent_intervention_unit_template_item_id:
+              type: integer
+              format: int64
+            data:
+              type: object
+            items:
+              type: array
             created_at:
-              type: datetime
+              type: string
+              format: date-time
             updated_at:
-              type: datetime
-            source_asset:
+              type: string
+              format: date-time
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    PadDetails:
+      example:
+        data:
+        - id: '7232'
+          type: well
+          attributes:
+            asset_id: 8823
+            name: My Pad Well 1
+            status: active
+          relationships:
+            app_streams:
+              data:
+              - id: '1'
+                type: app_stream
+              - id: '7'
+                type: app_stream
+        - id: '11392'
+          type: well
+          attributes:
+            asset_id: 19423
+            name: My Pad Well 2
+            status: active
+          relationships:
+            app_streams:
+              data:
+              - id: '17'
+                type: app_stream
+        included:
+        - id: '1'
+          type: app_stream
+          attributes:
+            id: '1'
+            status: complete
+            segment: drilling
+            source_type: drilling
+            log_type: time
+            first_active_at: '2020-01-01T00:00:00.000Z'
+            last_active_at: '2020-01-01T00:00:00.000Z'
+        - id: '7'
+          type: app_stream
+          attributes:
+            id: '1'
+            status: active
+            segment: completion
+            source_type: frac
+            log_type: time
+            first_active_at: '2020-01-01T00:00:00.000Z'
+            last_active_at: '2020-01-01T00:00:00.000Z'
+        - id: '17'
+          type: app_stream
+          attributes:
+            id: '1'
+            status: active
+            segment: drilling
+            source_type: drilling
+            log_type: time
+            first_active_at: '2020-01-01T00:00:00.000Z'
+            last_active_at: '2020-01-01T00:00:00.000Z'
+    RigTemplateCategory:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            settings:
+              type: object
+            schema:
+              type: object
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+      example:
+        id: 12345
+        type: rig_template_category
+        attributes:
+          id: 12345
+          name: Category Name
+          settings: {}
+          schema: {}
+          created_at: '2025-12-17T10:00:00Z'
+          updated_at: '2025-12-17T10:00:00Z'
+    InterventionUnitTemplateCategoryList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/InterventionUnitTemplateCategory'
+    Pad:
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int64
+        attributes:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+            current_frac_fleet_id:
+              type: integer
+              format: int64
+            last_active_at:
+              type: string
+              format: date-time
+            active:
               type: boolean
+            parent_frac_fleet_id:
+              type: integer
+              format: int64
+            current:
+              type: boolean
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+            program:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+            drillout_unit:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+            pad_frac_fleets:
+              type: object
+              properties:
+                data:
+                  type: array
+            wells:
+              type: object
+              properties:
+                data:
+                  type: array
+            active_wells:
+              type: object
+              properties:
+                data:
+                  type: array
+      example:
+        id: 9210
+        type: pad
+        attributes:
+          name: My Pad
+          current_frac_fleet_id: 782
+          last_active_at: '2020-01-01T00:00:00.000Z'
+          active: true
+          parent_frac_fleet_id: 782
+          current: true
+        relationships:
+          company:
+            data:
+              id: 823
+              type: company
+          program:
+            data:
+              id: 9913
+              type: program
+          drillout_unit:
+            data:
+              id: 273
+              type: drillout_unit
+          pad_frac_fleets:
+            data:
+            - id: 923
+              type: pad_frac_fleet
+            - id: 928
+              type: pad_frac_fleet
+          wells:
+            data:
+            - id: 16771
+              type: well
+            - id: 16919
+              type: well
+            - id: 17231
+              type: well
+          active_wells:
+            data:
+            - id: 16771
+              type: well
+            - id: 16919
+              type: well
+        included:
+        - id: 902
+          type: pad_frac_fleet
+          attributes:
+            current: true
+            last_current_at: '2020-01-01T00:00:00.000Z'
+            pad:
+              id: 8834
+              name: My Pad
+              created_at: '2020-01-01T00:00:00.000Z'
+              updated_at: '2020-01-01T00:00:00.000Z'
+            frac_fleet:
+              id: 9642
+              name: My Frac Fleet
+              created_at: '2020-01-01T00:00:00.000Z'
+              updated_at: '2020-01-01T00:00:00.000Z'
+        - id: 16771
+          type: well
+          attributes:
+            name: 'Well #1'
+        - id: 16919
+          type: well
+          attributes:
+            name: 'Well #2'
+        - id: 17231
+          type: well
+          attributes:
+            name: 'Well #3'
+        - id: 273
+          type: drillout_unit
+          attributes:
+            name: 'Drillout Unit #1'
+    InterventionUnitTemplateCategory:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            settings:
+              type: object
+            schema:
+              type: object
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+    RigPayload:
+      properties:
+        name:
+          type: string
+        edr_provider:
+          type: string
+        billing_company_ids:
+          type: array
+        settings:
+          type: object
+      example:
+        name: My Rig
+        edr_provider: EDR
+        billing_company_ids:
+        - 9595
+        - 4129
+    DrilloutUnitPayload:
+      properties:
+        name:
+          type: string
+        pad_id:
+          type: integer
+        well_id:
+          type: integer
+        billing_company_ids:
+          type: array
+      example:
+        name: My Drillout Unit
+        pad_id: 823
+        well_id: 22812
+        billing_company_ids:
+        - 456
+        - 45
+        - 98
+    WirelinePayload:
+      properties:
+        name:
+          type: string
+      example:
+        name: My Wireline
+    FracFleetPayload:
+      properties:
+        name:
+          type: string
+      example:
+        name: My Frac Fleet
+        program_id: 9232
+    Rig:
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int64
+        attributes:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+            edr_provider:
+              type: string
             settings:
               type: object
         relationships:
           type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+            billing_companies:
+              type: object
+              properties:
+                data:
+                  type: array
       example:
-        id: '1243'
-        type: rerun
+        id: 1184
+        type: rig
         attributes:
-          asset_id: 123
-          primary: null
-          created_at: '2020-01-01T00:00:00.000Z'
-          updated_at: '2020-01-01T00:00:00.000Z'
-          source_asset: true
+          name: My Rig
+          edr_provider: some provider
           settings: {}
-        relationships: {}
+        relationships:
+          company:
+            data:
+              id: 823
+              type: company
+          billing_companies:
+            data:
+            - id: 923
+              type: company
+            - id: 928
+              type: company
+          program:
+            data:
+              id: 23
+              type: program
+          active_well:
+            data:
+              id: 123092
+              type: well
+          last_active_well:
+            data:
+              id: 123092
+              type: well
+    RigTemplateIndex:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            rig_id:
+              type: integer
+              format: int64
+            company_id:
+              type: integer
+              format: int64
+            settings:
+              type: object
+            created_by_id:
+              type: integer
+              format: int64
+            created_by_name:
+              type: string
+            last_edited_by_id:
+              type: integer
+              format: int64
+            last_updated_by_name:
+              type: string
+            edr_provider_id:
+              type: integer
+              format: int64
+            column_mapper_template_channel_id:
+              type: integer
+              format: int64
+      example:
+        id: 12345
+        type: rig_template
+        attributes:
+          id: 12345
+          rig_id: 1
+          company_id: 100
+          settings: {}
+          created_by_id: 100
+          created_by_name: John Doe (john.doe@example.com)
+          last_edited_by_id: 100
+          last_updated_by_name: John Doe (john.doe@example.com)
+          edr_provider_id: null
+          column_mapper_template_channel_id: null
+    InterventionUnitTemplatePayload:
+      properties:
+        intervention_unit_template:
+          type: object
+          properties:
+            intervention_unit_id:
+              type: integer
+              format: int64
+            company_id:
+              type: integer
+              format: int64
+            edr_provider_id:
+              type: integer
+              format: int64
+            column_mapper_template_channel_id:
+              type: integer
+              format: int64
+            settings:
+              type: object
+            intervention_unit_template_items_attributes:
+              type: array
+              items:
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                  intervention_unit_template_category_id:
+                    type: integer
+                    format: int64
+                  data:
+                    type: object
+                  _destroy:
+                    type: boolean
     WellCacheRecord:
       example:
         asset_id: 1
@@ -7260,6 +7158,30 @@ components:
             hole_depth: 1234
             bit_depth: 1234
         corva#data-drillstring: {}
+    WellCluster:
+      properties:
+        cid:
+          type: integer
+        center:
+          type: string
+        radius:
+          type: float
+        well_ids:
+          type: array
+        asset_ids:
+          type: array
+      example:
+        cid: 1
+        center:
+          longitude: 45.4845
+          latitude: 46.3234
+        radius: 0.282855334465
+        well_ids:
+        - 123
+        - 124
+        asset_ids:
+        - 123
+        - 124
     FracFleet:
       required:
       - id
@@ -7364,7 +7286,72 @@ components:
           type: company
           attributes:
             name: My Program
-    RigTemplateIndex:
+    RigTemplateItemPayload:
+      properties:
+        rig_template_item:
+          type: object
+          properties:
+            parent_rig_template_item_id:
+              type: integer
+              format: int64
+            data:
+              type: object
+            nested_rig_template_items_attributes:
+              type: array
+              items:
+                properties:
+                  parent_rig_template_item_id:
+                    type: integer
+                    format: int64
+                  data:
+                    type: object
+      example:
+        rig_template_item:
+          parent_rig_template_item_id: null
+          data:
+            key: value
+          nested_rig_template_items_attributes:
+          - data:
+              key: child_value
+    Program:
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int64
+        attributes:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+      example:
+        id: 7926
+        type: program
+        attributes:
+          name: My Program
+        relationships:
+          company:
+            data:
+              id: 823
+              type: company
+    RigTemplateItem:
       properties:
         id:
           type: integer
@@ -7377,65 +7364,78 @@ components:
             id:
               type: integer
               format: int64
-            rig_id:
+            rig_template_id:
               type: integer
               format: int64
-            company_id:
+            rig_template_category_id:
               type: integer
               format: int64
-            settings:
+            parent_rig_template_item_id:
+              type: integer
+              format: int64
+            data:
               type: object
-            created_by_id:
-              type: integer
-              format: int64
-            created_by_name:
+            created_at:
               type: string
-            last_edited_by_id:
-              type: integer
-              format: int64
-            last_updated_by_name:
+              format: date-time
+            updated_at:
               type: string
-            edr_provider_id:
-              type: integer
-              format: int64
-            column_mapper_template_channel_id:
-              type: integer
-              format: int64
+              format: date-time
+            items:
+              type: array
+            rig_template_category:
+              type: object
+              properties:
+                data:
+                  $ref: '#/components/schemas/RigTemplateCategory'
       example:
         id: 12345
-        type: rig_template
+        type: rig_template_item
         attributes:
           id: 12345
-          rig_id: 1
-          company_id: 100
-          settings: {}
-          created_by_id: 100
-          created_by_name: John Doe (john.doe@example.com)
-          last_edited_by_id: 100
-          last_updated_by_name: John Doe (john.doe@example.com)
-          edr_provider_id: null
-          column_mapper_template_channel_id: null
-    InterventionUnitTemplateList:
+          rig_template_id: 1
+          rig_template_category_id: 2
+          parent_rig_template_item_id: null
+          data:
+            key: value
+          created_at: '2025-12-17T10:00:00Z'
+          updated_at: '2025-12-17T10:00:00Z'
+          items: []
+        rig_template_category:
+          data:
+            id: 2
+            type: rig_template_category
+            attributes:
+              id: 2
+              name: Category Name
+              settings:
+                key: value
+              schema:
+                key: value
+    ProgramCluster:
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/InterventionUnitTemplate'
-    FracFleetUpdatePayload:
-      properties:
-        name:
+        cid:
+          type: integer
+        center:
           type: string
-        contract_data:
-          type: object
+        radius:
+          type: float
+        program_ids:
+          type: array
+        asset_ids:
+          type: array
       example:
-        name: Updating Frac Fleet
-        program_id: 9232
-        billing_company_ids:
-        - 456
-        - 1234
-        - 5678
-        contract_data:
-          something: value
+        cid: 1
+        center:
+          longitude: 45.4845
+          latitude: 46.3234
+        radius: 0.282855334465
+        program_ids:
+        - 123
+        - 124
+        asset_ids:
+        - 123
+        - 124
   securitySchemes:
     api_key:
       type: apiKey

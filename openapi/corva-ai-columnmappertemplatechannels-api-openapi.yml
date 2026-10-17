@@ -124,6 +124,45 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
     ColumnMapperTemplateChannel:
       properties:
         id:
@@ -197,60 +236,6 @@ components:
             data:
             - id: '123'
               type: column_mapper_template_rule
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    UpdateColumnMapperTemplateChannelPayload:
-      properties:
-        column_mapper_template_channel:
-          properties:
-            column_name:
-              type: string
-            unit:
-              type: string
-            unitless:
-              type: boolean
-      example:
-        column_mapper_template_channel:
-          column_name: OBR
-          unit: ft
-          unitless: false
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
     CreateColumnMapperTemplateChannelPayload:
       properties:
         column_mapper_template_channel:
@@ -297,6 +282,21 @@ components:
               - operator: OPERATOR_EQUAL
                 operand: 20
                 logical_operator: 'null'
+    UpdateColumnMapperTemplateChannelPayload:
+      properties:
+        column_mapper_template_channel:
+          properties:
+            column_name:
+              type: string
+            unit:
+              type: string
+            unitless:
+              type: boolean
+      example:
+        column_mapper_template_channel:
+          column_name: OBR
+          unit: ft
+          unitless: false
   securitySchemes:
     api_key:
       type: apiKey

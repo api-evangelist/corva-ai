@@ -409,6 +409,33 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    File:
+      properties:
+        key:
+          type: string
+        last_modified:
+          type: string
+          format: date-time
+        content_length:
+          type: integer
+          format: int64
+      example:
+        key: provider_5/recent_historical.csv
+        last_modified: Thu, 09 Jan 2020 18:11:37 +0000
+        content_length: 7723
     SignedFile:
       properties:
         signed_url:
@@ -450,33 +477,6 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
-    File:
-      properties:
-        key:
-          type: string
-        last_modified:
-          type: string
-          format: date-time
-        content_length:
-          type: integer
-          format: int64
-      example:
-        key: provider_5/recent_historical.csv
-        last_modified: Thu, 09 Jan 2020 18:11:37 +0000
-        content_length: 7723
   securitySchemes:
     api_key:
       type: apiKey

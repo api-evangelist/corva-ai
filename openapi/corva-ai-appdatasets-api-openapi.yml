@@ -200,6 +200,69 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
+    AppDatasetList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppDataset'
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AppDatasetPayload:
+      properties:
+        app_dataset:
+          type: object
+          properties:
+            dataset_id:
+              type: integer
+              format: int64
+            operations:
+              type: array
+              items:
+                type: string
+      example:
+        app_dataset:
+          dataset_id: 12345
+          operations:
+          - read
+          - write
     AppDataset:
       properties:
         id:
@@ -268,69 +331,6 @@ components:
             data:
               id: 12345
               type: dataset
-    AppDatasetList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppDataset'
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    AppDatasetPayload:
-      properties:
-        app_dataset:
-          type: object
-          properties:
-            dataset_id:
-              type: integer
-              format: int64
-            operations:
-              type: array
-              items:
-                type: string
-      example:
-        app_dataset:
-          dataset_id: 12345
-          operations:
-          - read
-          - write
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
   securitySchemes:
     api_key:
       type: apiKey

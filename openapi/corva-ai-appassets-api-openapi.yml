@@ -87,59 +87,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    AppAssetStream:
-      properties:
-        id:
-          type: integer
-          format: int64
-          description: App stream ID
-        name:
-          type: string
-          description: App stream name
-        status:
-          type: string
-          description: App stream status
-        statuses:
-          type: object
-          description: App stream status details
-          properties:
-            status:
-              type: string
-              description: Stream status
-            visibility:
-              type: string
-              description: Stream visibility (e.g. visible, deleted)
-        app_version:
-          type:
-          - string
-          - 'null'
-          description: App version from AppConnection on stream (Package build)
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     NotFoundError:
       required:
       - code
@@ -223,6 +170,59 @@ components:
               status: active
               visibility: visible
             app_version: abc123
+    AppAssetStream:
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: App stream ID
+        name:
+          type: string
+          description: App stream name
+        status:
+          type: string
+          description: App stream status
+        statuses:
+          type: object
+          description: App stream status details
+          properties:
+            status:
+              type: string
+              description: Stream status
+            visibility:
+              type: string
+              description: Stream visibility (e.g. visible, deleted)
+        app_version:
+          type:
+          - string
+          - 'null'
+          description: App version from AppConnection on stream (Package build)
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
   securitySchemes:
     api_key:
       type: apiKey

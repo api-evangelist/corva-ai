@@ -1879,6 +1879,19 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     PermissionPayload:
       properties:
         permission:
@@ -1898,6 +1911,44 @@ components:
           resource_class: User
           resource_id: 123
           company_id: 1
+    GroupsUsersPayload:
+      properties:
+        group_id:
+          type: integer
+      example:
+        group_id: 12345
+    BulkPermissionPayload:
+      properties:
+        permission:
+          type: object
+          properties:
+            abilities:
+              type: array
+            resource_class:
+              type: string
+            key:
+              type: string
+            resource_id:
+              type: integer
+            company_id:
+              type: integer
+      example:
+        permission:
+          abilities:
+          - read
+          - update
+          - create
+          - destroy
+          resource_class: User
+          key: all-company-users
+          resource_id: 123
+          company_id: 1
+    PermissionList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PermissionInList'
     Permission:
       properties:
         id:
@@ -1972,12 +2023,7 @@ components:
           owner:
             id: '123'
             type: user
-    CompanyDomainV2Single:
-      properties:
-        data:
-          type: object
-          $ref: '#/components/schemas/CompanyDomainV2'
-    CompanySecurityPolicy:
+    GroupConnection:
       properties:
         id:
           type: integer
@@ -1990,23 +2036,8 @@ components:
             id:
               type: integer
               format: int64
-            enabled:
-              type: boolean
-            schema:
-              type: json
-            status:
+            name:
               type: string
-              description: Human-readable one-line summary of the policy, derived server-side by `Security::PolicyStatusFormatter`. Always "Off" when `enabled` is false. Returns "Misconfigured — please re-save" if the schema fails to format (missing or wrongly-typed required field, or a row still holding the SecurityPolicy field metadata). A `password-expiration-schedule` whose `start_date` is still in the future reports "Scheduled to start …". Otherwise an identifier-specific string such as "MFA required — email + SMS", "Sessions expire after 8 hours", or "Strong — 16+ chars, requires upper, lower, digit, symbol".
-              example: MFA required — email + SMS
-            last_checked_at:
-              type: string
-              format: date-time
-            created_at:
-              type: string
-              format: date-time
-            updated_at:
-              type: string
-              format: date-time
         relationships:
           type: object
           properties:
@@ -2021,56 +2052,58 @@ components:
                       format: int64
                     type:
                       type: string
-            security_policy:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                      format: int64
-                    type:
-                      type: string
-            group:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                      format: int64
-                    type:
-                      type: string
       example:
         id: 12345
-        type: company_security_policy
+        type: group
         attributes:
-          id: 11
-          enabled: true
-          schema:
-            modes:
-            - email
-            - sms
-            required: true
-          status: MFA required — email + sms
-          last_checked_at: '2020-01-01T08:00:00.000Z'
-          created_at: '2022-01-01T08:00:00.000Z'
-          updated_at: '2023-01-01T08:00:00.000Z'
-        relationships:
-          company:
-            data:
-              id: 999
-              type: company
-          security_policy:
-            data:
-              id: 4
-              type: security_policy
-          group:
-            data:
-              id: 90
-              type: group
+          id: '12345'
+          name: Group 1
+        relationships: {}
+    SecurityPolicy:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            identifier:
+              type: string
+            run_mode:
+              type: string
+            description:
+              type: string
+            frequency:
+              type: integer
+              format: int64
+            schema:
+              type: json
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+      example:
+        id: 4
+        type: security_policy
+        attributes:
+          id: '4'
+          name: MFA
+          identifier: identity-verification
+          description: Multi-Factor Authentication
+          frequency: 0
+          schema: {}
+          run_mode: event
+          created_at: '2020-01-01T08:00:00.000Z'
+          updated_at: '2020-01-01T13:00:00.000Z'
     CompanyDomainV2:
       properties:
         id:
@@ -2097,6 +2130,218 @@ components:
             updated_at:
               type: string
               format: date-time
+    PermissionInList:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            ability:
+              type: string
+            resource_class:
+              type: string
+            resource_id:
+              type: integer
+              format: int64
+            conditions:
+              type: json
+        relationships:
+          type: object
+      example:
+        id: 12345
+        type: permission
+        attributes:
+          id: '12345'
+          ability: read
+          resource_class: User
+          resource_id: 123
+          conditions: null
+        relationships: {}
+    PermissionGroup:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            resource_class:
+              type: string
+            resource_name:
+              type: string
+            friendly_name:
+              type: string
+            key:
+              type: string
+            resource_id:
+              type: integer
+              format: int64
+        relationships:
+          type: object
+          properties:
+            permissions:
+              type: array
+              items:
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        format: int64
+                      type:
+                        type: string
+            owner:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: permission_group
+        attributes:
+          id: 12345
+          resource_class: User
+          resource_name: User
+          friendly_name: User
+          key: all-users
+          resource_id: 123
+        relationships:
+          permissions:
+          - data:
+              id: 999
+              type: permission
+          owner:
+            id: '123'
+            type: user
+    GroupList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+    SecurityPolicyList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecurityPolicy'
+    GroupConnectionList:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupConnection'
+    CompanyDomainV2Single:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/CompanyDomainV2'
+    Group:
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            restricted_by_ip:
+              type: boolean
+            has_blacklisted_datasets:
+              type: boolean
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+        relationships:
+          type: object
+          properties:
+            company:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+      example:
+        id: 12345
+        type: group
+        attributes:
+          id: '12345'
+          name: Group 1
+          restricted_by_ip: true
+          has_blacklisted_datasets: true
+          created_at: '2020-01-01T08:00:00.000Z'
+          updated_at: '2020-01-01T13:00:00.000Z'
+        relationships:
+          company:
+            id: '1'
+            type: company
+    GroupUpdatePayload:
+      properties:
+        group:
+          type: object
+          properties:
+            name:
+              type: string
+            company_id:
+              type: integer
+            restricted_by_ip:
+              type: boolean
+      example:
+        group:
+          name: Group 1
+          company_id: 1
+          restricted_by_ip: true
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AuthenticationSchemaV2Single:
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AuthenticationSchemaV2'
     AuthenticationError:
       required:
       - code
@@ -2110,18 +2355,6 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    PermissionGroupList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/PermissionGroup'
-    GroupList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Group'
     PermissionOnGroup:
       properties:
         id:
@@ -2259,39 +2492,13 @@ components:
           company:
             id: '1'
             type: company
-    CompanyDomainV2Payload:
+    CompanyDomainV2List:
       properties:
-        company_domain:
-          type: object
-          required:
-          - domain
-          properties:
-            domain:
-              type: string
-              example: acme.example
-            exclusive:
-              type: boolean
-              example: false
-    CompanySecurityPolicyUpdatePayload:
-      properties:
-        company_security_policy:
-          type: object
-          properties:
-            group_id:
-              type: boolean
-              required: false
-            schema:
-              type: json
-            enabled:
-              type: boolean
-              required: false
-      example:
-        company_security_policy:
-          group_id: 44
-          schema:
-            hello: world
-          enabled: true
-    Group:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanyDomainV2'
+    CompanySecurityPolicy:
       properties:
         id:
           type: integer
@@ -2304,12 +2511,17 @@ components:
             id:
               type: integer
               format: int64
-            name:
+            enabled:
+              type: boolean
+            schema:
+              type: json
+            status:
               type: string
-            restricted_by_ip:
-              type: boolean
-            has_blacklisted_datasets:
-              type: boolean
+              description: Human-readable one-line summary of the policy, derived server-side by `Security::PolicyStatusFormatter`. Always "Off" when `enabled` is false. Returns "Misconfigured — please re-save" if the schema fails to format (missing or wrongly-typed required field, or a row still holding the SecurityPolicy field metadata). A `password-expiration-schedule` whose `start_date` is still in the future reports "Scheduled to start …". Otherwise an identifier-specific string such as "MFA required — email + SMS", "Sessions expire after 8 hours", or "Strong — 16+ chars, requires upper, lower, digit, symbol".
+              example: MFA required — email + SMS
+            last_checked_at:
+              type: string
+              format: date-time
             created_at:
               type: string
               format: date-time
@@ -2330,68 +2542,62 @@ components:
                       format: int64
                     type:
                       type: string
+            security_policy:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
+            group:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    type:
+                      type: string
       example:
         id: 12345
-        type: group
+        type: company_security_policy
         attributes:
-          id: '12345'
-          name: Group 1
-          restricted_by_ip: true
-          has_blacklisted_datasets: true
-          created_at: '2020-01-01T08:00:00.000Z'
-          updated_at: '2020-01-01T13:00:00.000Z'
+          id: 11
+          enabled: true
+          schema:
+            modes:
+            - email
+            - sms
+            required: true
+          status: MFA required — email + sms
+          last_checked_at: '2020-01-01T08:00:00.000Z'
+          created_at: '2022-01-01T08:00:00.000Z'
+          updated_at: '2023-01-01T08:00:00.000Z'
         relationships:
           company:
-            id: '1'
-            type: company
-    AuthenticationSchemaContextV2List:
+            data:
+              id: 999
+              type: company
+          security_policy:
+            data:
+              id: 4
+              type: security_policy
+          group:
+            data:
+              id: 90
+              type: group
+    PermissionGroupList:
       properties:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/AuthenticationSchemaContextV2'
-        meta:
-          type: object
-          properties:
-            counts:
-              type: object
-              description: Per-context-type counts across the returned set.
-              properties:
-                company:
-                  type: integer
-                  format: int64
-                company_domain:
-                  type: integer
-                  format: int64
-                user:
-                  type: integer
-                  format: int64
-    BulkPermissionPayload:
-      properties:
-        permission:
-          type: object
-          properties:
-            abilities:
-              type: array
-            resource_class:
-              type: string
-            key:
-              type: string
-            resource_id:
-              type: integer
-            company_id:
-              type: integer
-      example:
-        permission:
-          abilities:
-          - read
-          - update
-          - create
-          - destroy
-          resource_class: User
-          key: all-company-users
-          resource_id: 123
-          company_id: 1
+            $ref: '#/components/schemas/PermissionGroup'
     GroupCreatePayload:
       properties:
         group:
@@ -2411,51 +2617,12 @@ components:
           company_id: 1
           restricted_by_ip: true
           copy_from_id: 567
-    SecurityPolicy:
+    AuthenticationSchemaV2List:
       properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            name:
-              type: string
-            identifier:
-              type: string
-            run_mode:
-              type: string
-            description:
-              type: string
-            frequency:
-              type: integer
-              format: int64
-            schema:
-              type: json
-            created_at:
-              type: string
-              format: date-time
-            updated_at:
-              type: string
-              format: date-time
-      example:
-        id: 4
-        type: security_policy
-        attributes:
-          id: '4'
-          name: MFA
-          identifier: identity-verification
-          description: Multi-Factor Authentication
-          frequency: 0
-          schema: {}
-          run_mode: event
-          created_at: '2020-01-01T08:00:00.000Z'
-          updated_at: '2020-01-01T13:00:00.000Z'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticationSchemaV2'
     AuthenticationSchemaV2:
       properties:
         id:
@@ -2494,18 +2661,11 @@ components:
             updated_at:
               type: string
               format: date-time
-    AuthenticationSchemaV2Single:
-      properties:
-        data:
-          type: object
-          $ref: '#/components/schemas/AuthenticationSchemaV2'
-    CompanySecurityPolicyCreatePayload:
+    CompanySecurityPolicyUpdatePayload:
       properties:
         company_security_policy:
           type: object
           properties:
-            security_policy_id:
-              type: integer
             group_id:
               type: boolean
               required: false
@@ -2516,141 +2676,10 @@ components:
               required: false
       example:
         company_security_policy:
-          security_policy_id: 12
           group_id: 44
           schema:
             hello: world
           enabled: true
-    GroupConnectionList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/GroupConnection'
-    GroupConnection:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            name:
-              type: string
-        relationships:
-          type: object
-          properties:
-            company:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                      format: int64
-                    type:
-                      type: string
-      example:
-        id: 12345
-        type: group
-        attributes:
-          id: '12345'
-          name: Group 1
-        relationships: {}
-    GroupUpdatePayload:
-      properties:
-        group:
-          type: object
-          properties:
-            name:
-              type: string
-            company_id:
-              type: integer
-            restricted_by_ip:
-              type: boolean
-      example:
-        group:
-          name: Group 1
-          company_id: 1
-          restricted_by_ip: true
-    GroupsUsersPayload:
-      properties:
-        group_id:
-          type: integer
-      example:
-        group_id: 12345
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    CompanySecurityPolicyList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/CompanySecurityPolicy'
-    PermissionInList:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            ability:
-              type: string
-            resource_class:
-              type: string
-            resource_id:
-              type: integer
-              format: int64
-            conditions:
-              type: json
-        relationships:
-          type: object
-      example:
-        id: 12345
-        type: permission
-        attributes:
-          id: '12345'
-          ability: read
-          resource_class: User
-          resource_id: 123
-          conditions: null
-        relationships: {}
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
     AuthenticationSchemaContextV2:
       properties:
         id:
@@ -2709,98 +2738,69 @@ components:
                 is_owned_by_current_company:
                   type: boolean
                   description: True when the schema is owned by the company being queried.
-    AuthenticationSchemaV2List:
+    CompanyDomainV2Payload:
+      properties:
+        company_domain:
+          type: object
+          required:
+          - domain
+          properties:
+            domain:
+              type: string
+              example: acme.example
+            exclusive:
+              type: boolean
+              example: false
+    CompanySecurityPolicyList:
       properties:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/AuthenticationSchemaV2'
-    CompanyDomainV2List:
+            $ref: '#/components/schemas/CompanySecurityPolicy'
+    AuthenticationSchemaContextV2List:
       properties:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/CompanyDomainV2'
-    PermissionGroup:
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          type: string
-        attributes:
+            $ref: '#/components/schemas/AuthenticationSchemaContextV2'
+        meta:
           type: object
           properties:
-            id:
-              type: integer
-              format: int64
-            resource_class:
-              type: string
-            resource_name:
-              type: string
-            friendly_name:
-              type: string
-            key:
-              type: string
-            resource_id:
-              type: integer
-              format: int64
-        relationships:
-          type: object
-          properties:
-            permissions:
-              type: array
-              items:
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                        format: int64
-                      type:
-                        type: string
-            owner:
+            counts:
               type: object
+              description: Per-context-type counts across the returned set.
               properties:
-                data:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                      format: int64
-                    type:
-                      type: string
+                company:
+                  type: integer
+                  format: int64
+                company_domain:
+                  type: integer
+                  format: int64
+                user:
+                  type: integer
+                  format: int64
+    CompanySecurityPolicyCreatePayload:
+      properties:
+        company_security_policy:
+          type: object
+          properties:
+            security_policy_id:
+              type: integer
+            group_id:
+              type: boolean
+              required: false
+            schema:
+              type: json
+            enabled:
+              type: boolean
+              required: false
       example:
-        id: 12345
-        type: permission_group
-        attributes:
-          id: 12345
-          resource_class: User
-          resource_name: User
-          friendly_name: User
-          key: all-users
-          resource_id: 123
-        relationships:
-          permissions:
-          - data:
-              id: 999
-              type: permission
-          owner:
-            id: '123'
-            type: user
-    PermissionList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/PermissionInList'
-    SecurityPolicyList:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/SecurityPolicy'
+        company_security_policy:
+          security_policy_id: 12
+          group_id: 44
+          schema:
+            hello: world
+          enabled: true
   securitySchemes:
     api_key:
       type: apiKey

@@ -151,47 +151,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AppStreamTemplateAppPayload:
-      properties:
-        app_stream_template_app:
-          type: object
-          properties:
-            name:
-              type: string
-            settings:
-              type: object
-      example:
-        app_stream_template_app:
-          key: some_key
-          settings:
-            setting1: foobar
-            setting2: some_other_setting
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
-    AuthenticationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 401
-        message: Missing authentication. Please try again.
     NotFoundError:
       required:
       - code
@@ -205,6 +164,19 @@ components:
       example:
         code: 404
         message: Not found
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
     AppStreamTemplateApp:
       properties:
         id:
@@ -272,6 +244,34 @@ components:
             data:
               id: 999
               type: app
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
+    AppStreamTemplateAppPayload:
+      properties:
+        app_stream_template_app:
+          type: object
+          properties:
+            name:
+              type: string
+            settings:
+              type: object
+      example:
+        app_stream_template_app:
+          key: some_key
+          settings:
+            setting1: foobar
+            setting2: some_other_setting
   securitySchemes:
     api_key:
       type: apiKey

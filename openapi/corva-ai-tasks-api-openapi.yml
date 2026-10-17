@@ -282,19 +282,45 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    TaskPayload:
+    NotFoundError:
+      required:
+      - code
+      - message
       properties:
-        fail_reason:
+        code:
+          type: integer
+          format: int32
+        message:
           type: string
-        payload:
-          type: object
       example:
-        fail_reason: null
-        payload:
-          offsets:
-          - 248
-          - 93434
-          factor: 56
+        code: 404
+        message: Not found
+    AuthorizationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 403
+        message: Access denied
+    AuthenticationError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 401
+        message: Missing authentication. Please try again.
     TaskShow:
       properties:
         id:
@@ -383,19 +409,6 @@ components:
           properties:
             attribute: value
           payload: {}
-    AuthorizationError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 403
-        message: Access denied
     TaskConfiguration:
       properties:
         app_key:
@@ -422,32 +435,19 @@ components:
           - 93434
           factor: 56
         app_version: 2
-    AuthenticationError:
-      required:
-      - code
-      - message
+    TaskPayload:
       properties:
-        code:
-          type: integer
-          format: int32
-        message:
+        fail_reason:
           type: string
+        payload:
+          type: object
       example:
-        code: 401
-        message: Missing authentication. Please try again.
-    NotFoundError:
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      example:
-        code: 404
-        message: Not found
+        fail_reason: null
+        payload:
+          offsets:
+          - 248
+          - 93434
+          factor: 56
   securitySchemes:
     api_key:
       type: apiKey

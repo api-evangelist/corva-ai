@@ -53,17 +53,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    SearchSuggestionResult:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/SearchSuggestionItem'
-      example:
-        data:
-        - id: 111
-          name: An app name
-          type: App
     SearchSuggestionItem:
       properties:
         id:
@@ -77,6 +66,19 @@ components:
         id: 111
         name: An app name
         type: App
+    NotFoundError:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      example:
+        code: 404
+        message: Not found
     AuthorizationError:
       required:
       - code
@@ -103,19 +105,17 @@ components:
       example:
         code: 401
         message: Missing authentication. Please try again.
-    NotFoundError:
-      required:
-      - code
-      - message
+    SearchSuggestionResult:
       properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchSuggestionItem'
       example:
-        code: 404
-        message: Not found
+        data:
+        - id: 111
+          name: An app name
+          type: App
   securitySchemes:
     api_key:
       type: apiKey
