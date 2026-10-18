@@ -3,6 +3,7 @@ provider: Corva AI
 generated_by: planning/capability-mapping/scripts/classify_capabilities.py
 model: claude-opus-5
 frame:
+- Oil & Gas
 - Software & Technology
 min_confidence: 0.7
 capability_model:
@@ -11,7 +12,7 @@ capability_model:
   attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
     CC BY 4.0
   notice: NOTICE
-edge_count: 7
+edge_count: 11
 edges:
 - tag: Security
   spec_file: corva-ai-security-api-openapi.yml
@@ -24,6 +25,18 @@ edges:
   reason: Operations manage authentication schemas, company domains, groups, group-user assignments, permissions
     and security policies — i.e. identity federation and access control administration, squarely Identity
     & Access Management.
+- tag: Tool Ordering
+  spec_file: corva-ai-tool-ordering-api-openapi.yml
+  capability_id: BC-500.30
+  capability_id_l1: BC-500
+  capability_name: Purchase Order Management
+  confidence: 0.85
+  evidence: POST /v2/tool_ordering/orders  Create Tool Order; POST /v2/tool_ordering/orders/{id}/submit  Submit
+    Tool Order; POST .../acknowledge  Acknowledge Tool Order (vendor action); POST .../components/receive  Receive
+    Shipped Order Components On Rig
+  reason: Full order lifecycle against vendors — draft, submit, vendor acknowledge, component shipment
+    and receipt on rig, with Vendor/VendorContact schemas — this is purchase order creation, approval
+    and receipting.
 - tag: Users
   spec_file: corva-ai-users-api-openapi.yml
   capability_id: BC-620.20
@@ -45,6 +58,28 @@ edges:
   reason: CRUD and sharing of dashboards, dashboard folders and dashboard apps/widgets — this is reporting
     and BI content delivery, i.e. Analytics & BI Management. Not a domain capability of oil & gas; the
     surface is dashboard tooling.
+- tag: Well Plans
+  spec_file: corva-ai-well-plans-api-openapi.yml
+  capability_id: BC-3020.10
+  capability_id_l1: BC-3020
+  capability_name: Well Engineering & Design
+  confidence: 0.8
+  evidence: POST /v2/well_plans  Create a well plan; POST /v2/well_plans/copy  Copy data from one well
+    plan into another; schema WellPlanV2
+  reason: Authoring and maintenance of well plans on an upstream drilling platform corresponds to well
+    engineering and design for drilling programmes.
+- tag: WellView
+  spec_file: corva-ai-wellview-api-openapi.yml
+  capability_id: BC-3020
+  capability_id_l1: BC-3020
+  capability_name: Drilling & Wells Management
+  confidence: 0.8
+  evidence: getV2IntegrationWellviewBha  Retrieve Corva BHA/Drillstring data; getV2IntegrationWellviewFracStageDesign  Retrieve
+    Corva Frac Stage Design data
+  reason: Although framed as a WellView integration, the operations exchange drilling and completions
+    engineering content — BHA/drillstring, frac, frac stage design and summary, plugs, job settings —
+    which is squarely Drilling & Wells Management. The mix of drillstring (drilling) and frac stage (completions)
+    content prevents a confident single L2 choice.
 - tag: AppLogs
   spec_file: corva-ai-applogs-api-openapi.yml
   capability_id: BC-4220.20
@@ -66,17 +101,16 @@ edges:
   reason: Read-only analytics endpoints aggregating product usage of apps by user, by day, top apps and
     usage trend — this is product usage analytics over telemetry, not API quota/commercial governance
     (no plan or rate-limit semantics appear).
-- tag: Tool Ordering
-  spec_file: corva-ai-tool-ordering-api-openapi.yml
-  capability_id: BC-500.30
-  capability_id_l1: BC-500
-  capability_name: Purchase Order Management
-  confidence: 0.78
-  evidence: POST /v2/tool_ordering/orders/{id}/submit  Submit Tool Order; POST .../orders/{id}/acknowledge  Acknowledge
-    Tool Order (vendor action); POST .../components/receive  Receive Shipped Order Components On Rig
-  reason: Full order lifecycle — draft, submit, vendor acknowledgement, cancellation, component receipt
-    — plus Vendor/VendorContact/VendorMembership schemas. This is purchase-order creation, approval and
-    execution against suppliers; some ambiguity between PO Management and wider P2P operations.
+- tag: InterventionUnitEvents
+  spec_file: corva-ai-interventionunitevents-api-openapi.yml
+  capability_id: BC-3020.40
+  capability_id_l1: BC-3020
+  capability_name: Well Intervention & Workover Management
+  confidence: 0.72
+  evidence: GET /v2/intervention_unit_events 'Get a list of Intervention Units Events by well'; POST /v2/wells/{well_id}/intervention_unit_events
+  reason: Events recorded against intervention units, scoped per well, on an upstream drilling/completions
+    platform — this is operational record-keeping for well intervention/workover activity. Some residual
+    chance the object is a generic equipment-event log, hence moderate confidence.
 - tag: AlertRBAC
   spec_file: corva-ai-alertrbac-api-openapi.yml
   capability_id: BC-620.20
@@ -88,3 +122,12 @@ edges:
   reason: Operations define company-scoped roles and abilities and toggle role-based access control, i.e.
     authorisation/permission administration. That is Identity & Access Management, not alerting per se.
     Moderate confidence because the scope is confined to one product feature's permissions.
+- tag: Well Plan Checklists
+  spec_file: corva-ai-well-plan-checklists-api-openapi.yml
+  capability_id: BC-3020.10
+  capability_id_l1: BC-3020
+  capability_name: Well Engineering & Design
+  confidence: 0.7
+  evidence: GET /v2/well_plan_checklists  List well plan checklists; schema WellPlanChecklistV2
+  reason: Checklists attached to well plans in a drilling platform, i.e. assurance artefacts of the well
+    design/planning process; read-only surface keeps confidence moderate.
