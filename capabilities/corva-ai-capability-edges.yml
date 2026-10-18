@@ -47,6 +47,15 @@ edges:
     multi-factor…; GET /v1/.well-known/jwks.json  Get JWKS public keys; POST /v2/users  Create a User
   reason: Combines user account lifecycle CRUD with authentication, SSO federation, MFA, refresh tokens,
     JWKS and API keys — identity and access management for the platform.
+- tag: Well Plans
+  spec_file: corva-ai-well-plans-api-openapi.yml
+  capability_id: BC-3020.10
+  capability_id_l1: BC-3020
+  capability_name: Well Engineering & Design
+  confidence: 0.85
+  evidence: POST /v2/well_plans  Create a well plan
+  reason: CRUD over well plans on an upstream drilling platform is well engineering and design of drilling
+    programmes.
 - tag: Dashboards
   spec_file: corva-ai-dashboards-api-openapi.yml
   capability_id: BC-610.50
@@ -58,16 +67,6 @@ edges:
   reason: CRUD and sharing of dashboards, dashboard folders and dashboard apps/widgets — this is reporting
     and BI content delivery, i.e. Analytics & BI Management. Not a domain capability of oil & gas; the
     surface is dashboard tooling.
-- tag: Well Plans
-  spec_file: corva-ai-well-plans-api-openapi.yml
-  capability_id: BC-3020.10
-  capability_id_l1: BC-3020
-  capability_name: Well Engineering & Design
-  confidence: 0.8
-  evidence: POST /v2/well_plans  Create a well plan; POST /v2/well_plans/copy  Copy data from one well
-    plan into another; schema WellPlanV2
-  reason: Authoring and maintenance of well plans on an upstream drilling platform corresponds to well
-    engineering and design for drilling programmes.
 - tag: WellView
   spec_file: corva-ai-wellview-api-openapi.yml
   capability_id: BC-3020
