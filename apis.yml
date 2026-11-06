@@ -36,7 +36,7 @@ accessModel:
   - authentication
   - rate-limits
   - security
-  generated: '2026-11-02'
+  generated: '2026-11-06'
   method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/corva-ai.png
 type: Index
